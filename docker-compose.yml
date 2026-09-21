@@ -1,0 +1,64 @@
+services:
+
+  db:
+    image: postgres:16-alpine
+    container_name: faceelit-db
+    environment:
+      POSTGRES_DB: faceelit
+      POSTGRES_USER: faceelit
+      POSTGRES_PASSWORD: faceelit
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U faceelit -d faceelit"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Capte tous les mails en développement — UI sur http://localhost:8025
+  mail:
+    image: axllent/mailpit:latest
+    container_name: faceelit-mail
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  # --- Services applicatifs : profil "full" uniquement ---------------------
+  # En développement courant on lance db + mail ici, et le back/front
+  # en local (hot reload). `--profile full` sert à valider l'image Docker.
+
+  server:
+    build:
+      context: ./server
+    container_name: faceelit-server
+    profiles: ["full"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:postgresql://db:5432/faceelit
+      DATABASE_USER: faceelit
+      DATABASE_PASSWORD: faceelit
+      MAIL_HOST: mail
+      MAIL_PORT: 1025
+      MAIL_USER: ""
+      MAIL_PASSWORD: ""
+      FACEEL_CORS_ORIGINS: http://localhost:8081
+    ports:
+      - "8080:8080"
+
+  client:
+    build:
+      context: ./client
+    container_name: faceelit-client
+    profiles: ["full"]
+    depends_on:
+      - server
+    ports:
+      - "8081:80"
+
+volumes:
+  db-data:

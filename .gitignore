@@ -1,0 +1,42 @@
+# --- Secrets -----------------------------------------------------------------
+# Attention : .env.development et .env.production SONT versionnés
+# (ils ne contiennent aucun secret). Seul .env local est ignoré.
+.env
+.env.local
+.env.*.local
+
+# --- Notes de travail --------------------------------------------------------
+NOTES.md
+
+# --- Ancien scaffold React + actifs de référence ------------------------------
+# Sauvegarde locale. À trier puis supprimer (cf. README).
+legacy/
+
+# --- Frontend ----------------------------------------------------------------
+node_modules/
+client/dist/
+# Répertoire temporaire du build SSR de vite-ssg (rendu des pages statiques,
+# nettoyé normalement en fin de build, mais peut survivre à un build interrompu).
+client/.vite-ssg-temp/
+client/coverage/
+client/playwright-report/
+client/test-results/
+*.tsbuildinfo
+
+# --- Backend -----------------------------------------------------------------
+server/target/
+
+# --- Claude Code -------------------------------------------------------------
+# Paramètres locaux (tokens, préférences personnelles) — ne pas partager.
+# CLAUDE.md, .claude/agents/ et .claude/skills/ SONT versionnés (partagés équipe).
+.claude/settings.local.json
+
+# --- IDE ---------------------------------------------------------------------
+.idea/
+*.iml
+.vscode/
+!.vscode/extensions.json
+
+# --- OS ----------------------------------------------------------------------
+.DS_Store
+Thumbs.db

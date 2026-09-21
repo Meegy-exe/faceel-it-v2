@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/faceelit
+    username: faceelit
+    password: faceelit
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+
+  # MailHog via docker-compose : les mails partent dans une UI locale,
+  # jamais chez un vrai destinataire.
+  mail:
+    host: localhost
+    port: 1025
+
+logging:
+  level:
+    com.faceelit.website: DEBUG
+    org.hibernate.SQL: DEBUG
+
+faceel:
+  cors:
+    allowed-origins: http://localhost:5173

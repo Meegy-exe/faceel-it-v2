@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Darker+Grotesque:wght@600;700;800;900&amp;display=swap" rel="stylesheet" />
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#0a0a1e;color:#f4f3ee;font-family:'Poppins',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:#0bd904;text-decoration:none}
+  a:hover{color:#3de85c}
+  h1,h2,h3,h4{margin:0;font-weight:700;letter-spacing:-.03em;line-height:1.04;text-wrap:balance}
+  p{margin:0}
+  @keyframes aUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+  @keyframes aReveal{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+  @keyframes aRise{from{opacity:0;transform:translateY(46px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes aSlide{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+  @keyframes aDrift{0%{transform:translate3d(0,0,0) scale(1.04)}50%{transform:translate3d(0,-1.5%,0) scale(1.07)}100%{transform:translate3d(0,0,0) scale(1.04)}}
+  [data-reveal]{animation:aReveal .9s cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% cover 26%}
+  [data-rise]{animation:aRise 1s cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% cover 30%}
+  [data-slide]{animation:aSlide .9s cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% cover 26%}
+  @supports not (animation-timeline: view()){[data-reveal],[data-rise],[data-slide]{animation:none}}
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;animation-delay:0ms !important}}
+</style>
+</helmet>
+
+<div ref="{{ pageRef }}" data-screen-label="Agence & contact" style="position:relative;background:#0a0a1e">
+  <dc-import name="NavA" active="contact" hint-size="100%,78px"></dc-import>
+
+  <section style="position:relative;padding:180px 0 70px;overflow:hidden">
+    <div style="position:absolute;inset:0;background:radial-gradient(80% 70% at 75% 0%,rgba(26,26,166,.45),transparent 62%)"></div>
+    <div style="position:relative;max-width:1280px;margin:0 auto;padding:0 32px">
+      <span style="display:flex;flex-wrap:wrap;gap:.55em;font-size:.88rem;color:rgba(244,243,238,.6)"><a href="Accueil.dc.html" style="color:rgba(244,243,238,.6)">Accueil</a><span style="opacity:.45">/</span><span style="color:#0bd904">Agence &amp; contact</span></span>
+      <h1 style="margin-top:22px;font-size:clamp(2.5rem,5.6vw,4.4rem);max-width:20ch;opacity:0;animation:aUp .8s cubic-bezier(.2,.7,.2,1) .1s forwards">Passez nous voir, le café est prêt.</h1>
+      <p style="margin-top:24px;max-width:56ch;font-size:1.1rem;line-height:1.66;color:rgba(244,243,238,.76);opacity:0;animation:aUp .8s cubic-bezier(.2,.7,.2,1) .2s forwards">Nos bureaux sont à Wasquehal, à deux pas de Lille&nbsp;: tram, voiture ou vélo. Client, candidat ou simple curieux, la porte est la même.</p>
+    </div>
+  </section>
+
+  <section style="padding:40px 0 100px">
+    <div style="max-width:1280px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:start">
+      <div data-reveal="1" data-reveal="1" style="border-radius:22px;overflow:hidden;aspect-ratio:4/3"><img src="assets/photos/agence-mur-vegetal.jpg" alt="L'agence Faceel-it, mur végétal" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .9s cubic-bezier(.2,.7,.2,1)" style-hover="transform:scale(1.05)" /></div>
+      <div data-reveal="1">
+        <div style="display:flex;flex-direction:column">
+          <div style="padding:22px 0;border-bottom:1px solid rgba(244,243,238,.14)">
+            <h4 style="font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;color:#0bd904;font-weight:600">Adresse</h4>
+            <p style="margin-top:10px;color:rgba(244,243,238,.8);line-height:1.7">10 allée du château blanc<br />59290 Wasquehal, Hauts-de-France</p>
+          </div>
+          <div style="padding:22px 0;border-bottom:1px solid rgba(244,243,238,.14)">
+            <h4 style="font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;color:#0bd904;font-weight:600">Nous écrire</h4>
+            <a href="mailto:contact@faceel-it.com" style="margin-top:10px;display:inline-block;font-size:1.15rem;font-weight:500">contact@faceel-it.com</a>
+          </div>
+          <div style="padding:22px 0;border-bottom:1px solid rgba(244,243,238,.14)">
+            <h4 style="font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;color:#0bd904;font-weight:600">Nous suivre</h4>
+            <a href="https://www.linkedin.com/company/faceel-it" target="_blank" rel="noopener" style="margin-top:10px;display:inline-block;color:rgba(244,243,238,.85)">LinkedIn — @faceel-it · 18 687 abonnés</a>
+          </div>
+          <div style="padding:22px 0">
+            <h4 style="font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;color:#0bd904;font-weight:600">Sur place</h4>
+            <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px">
+              <span style="font-size:.86rem;border:1px solid rgba(244,243,238,.2);border-radius:999px;padding:.42em .95em;color:rgba(244,243,238,.85)">Tram &amp; parking</span><span style="font-size:.86rem;border:1px solid rgba(244,243,238,.2);border-radius:999px;padding:.42em .95em;color:rgba(244,243,238,.85)">Local vélo &amp; douche</span><span style="font-size:.86rem;border:1px solid rgba(244,243,238,.2);border-radius:999px;padding:.42em .95em;color:rgba(244,243,238,.85)">Mur végétal</span><span style="font-size:.86rem;border:1px solid rgba(244,243,238,.2);border-radius:999px;padding:.42em .95em;color:rgba(244,243,238,.85)">Salle de détente</span><span style="font-size:.86rem;border:1px solid rgba(244,243,238,.2);border-radius:999px;padding:.42em .95em;color:rgba(244,243,238,.85)">Petit-déjeuner</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <a href="mailto:contact@faceel-it.com?subject=Projet" style="display:inline-flex;align-items:center;justify-content:center;gap:.6em;font-weight:600;font-size:.95rem;padding:.9em 1.4em;border-radius:999px;background:#0bd904;color:#0a0a1e;transition:transform .25s" style-hover="transform:translateY(-2px);color:#0a0a1e">Parler d'un projet <span>&rarr;</span></a>
+          <a href="mailto:contact@faceel-it.com?subject=Le%20Caf%C3%A9%20Faceel" style="display:inline-flex;align-items:center;justify-content:center;gap:.6em;font-weight:600;font-size:.95rem;padding:.9em 1.4em;border-radius:999px;border:1.5px solid rgba(244,243,238,.3);color:#f4f3ee;transition:border-color .25s,transform .25s" style-hover="border-color:#0bd904;transform:translateY(-2px);color:#f4f3ee">Réserver un café <span>&rarr;</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding:104px 0 86px;background:#f4f3ee;color:#0a0a1e">
+    <div style="max-width:1280px;margin:0 auto;padding:0 32px">
+      <div data-reveal="1" data-reveal="1" style="display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center">
+        <div>
+          <span style="display:inline-flex;align-items:center;gap:.7em;font-size:.72rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#06a800"><span style="width:28px;height:2px;background:#0bd904"></span>Ancrage local</span>
+          <h2 style="margin-top:20px;font-size:clamp(1.9rem,3.8vw,3rem);max-width:20ch">Une ESN d'ici, qui travaille d'ici.</h2>
+          <p style="margin-top:20px;color:#4d4d68;line-height:1.75;max-width:50ch">Nos équipes interviennent au plus près de vos sites, pour des acteurs régionaux comme nationaux. Être implanté ici, c'est aussi soutenir ce qui s'y passe&nbsp;: clubs sportifs et rendez-vous tech de la métropole.</p>
+          <a href="Sport.dc.html" style="margin-top:24px;display:inline-flex;align-items:center;gap:.5em;font-weight:600;font-size:.95rem;color:#06a800">Nos partenariats <span>&rarr;</span></a>
+        </div>
+        <div style="border-radius:22px;overflow:hidden;aspect-ratio:16/10"><img src="assets/photos/lille.jpg" alt="Lille, Hauts-de-France" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .9s cubic-bezier(.2,.7,.2,1)" style-hover="transform:scale(1.05)" /></div>
+      </div>
+    </div>
+  </section>
+
+  <dc-import name="FooterA" hint-size="100%,420px"></dc-import>
+  <dc-import name="Faceelbot" hint-size="320px,56px"></dc-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  constructor(p){ super(p); this.pageRef = React.createRef(); }
+  renderVals(){ return { pageRef: this.pageRef }; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cas client Boulanger — Faceel-it</title>
+<meta name="description" content="Refonte de l'application mobile Boulanger : Moderniser l'app, fluidifier les parcours et placer une IA conversationnelle au cœur de l'expérience client." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&family=Darker+Grotesque:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/site.css" />
+<script>document.documentElement.className += ' anim-ready';</script>
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><img src="assets/logo-blanc.png" alt="Faceel-it" /></a>
+    <div class="nav-right">
+      <a class="nav-contact" href="mailto:contact@faceel-it.com">contact@faceel-it.com</a>
+      <button class="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="overlay-menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<nav class="overlay" id="overlay-menu" aria-label="Menu principal">
+  <div class="overlay-inner">
+    <div class="overlay-nav">
+      <div class="ov-item"><a class="ov-link" href="index.html">Accueil</a></div>
+      <div class="ov-item">
+        <button class="ov-link" type="button">Expertises <span class="caret">&#9662;</span></button>
+        <div class="ov-sub">
+          <a href="bu-digital.html">Digital</a>
+          <a href="bu-product.html">Product</a>
+          <a href="bu-data-ia.html">Data &amp; IA</a>
+          <a href="bu-cyber.html">Cyber</a>
+          <a href="index.html#cas">Cas clients</a>
+        </div>
+      </div>
+      <div class="ov-item">
+        <button class="ov-link" type="button">Le collectif <span class="caret">&#9662;</span></button>
+        <div class="ov-sub">
+          <a href="collectif.html#histoire">Notre histoire</a>
+          <a href="collectif.html#equipe">L'équipe &amp; les fondateurs</a>
+          <a href="collectif.html#rse">Engagements &amp; RSE</a>
+          <a href="collectif.html#sport">Sport &amp; vie d'équipe</a>
+        </div>
+      </div>
+      <div class="ov-item">
+        <button class="ov-link" type="button">Carrières <span class="caret">&#9662;</span></button>
+        <div class="ov-sub">
+          <a href="carrieres.html#pourquoi">Pourquoi nous rejoindre</a>
+          <a href="carrieres.html#offres">Nos offres</a>
+          <a href="carrieres.html#process">Notre process</a>
+        </div>
+      </div>
+      <div class="ov-item"><a class="ov-link" href="mailto:contact@faceel-it.com">Contact</a></div>
+    </div>
+    <aside class="overlay-aside">
+      <div class="grp"><h5>Contact</h5><a href="mailto:contact@faceel-it.com">contact@faceel-it.com</a><p>10 allée du château blanc<br />59290 Wasquehal</p></div>
+      <div class="grp"><h5>Suivez-nous</h5><a href="https://www.linkedin.com/company/faceel-it" target="_blank" rel="noopener">LinkedIn — @faceel-it</a></div>
+      <a class="btn btn-green ov-cta" href="mailto:contact@faceel-it.com">Nous contacter <span class="arrow">&rarr;</span></a>
+    </aside>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <canvas data-waves></canvas>
+  <div class="wrap">
+    <div class="breadcrumb"><a href="index.html">Accueil</a><span class="sep">/</span><a href="index.html#cas">Cas clients</a><span class="sep">/</span><span class="cur">Boulanger</span></div>
+    <div class="eyebrow on-dark" style="margin-bottom:18px">Cas client &middot; Retail · Application mobile</div>
+    <h1>Refonte de l'application mobile Boulanger</h1>
+    <p class="lede">Moderniser l'app, fluidifier les parcours et placer une IA conversationnelle au cœur de l'expérience client.</p>
+    <div class="kpis">
+      <div class="kpi"><div class="n">TOP&nbsp;7</div><div class="l">de l'App Store — une première pour l'enseigne</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="lead-2col reveal">
+      <div><span class="eyebrow">Le contexte</span><h2 style="font-size:clamp(1.9rem,4.2vw,3rem);margin-top:16px">Le point de départ.</h2></div>
+      <div>
+        <p style="color:var(--muted);line-height:1.75;font-size:1.05rem">Boulanger souhaitait moderniser son application mobile pour améliorer l'expérience client et soutenir le lancement de projets stratégiques — tout en renforçant ses capacités de développement sur les pôles Android et iOS.</p>
+        <p style="color:var(--muted);line-height:1.75;font-size:1.05rem;margin-top:16px">L'enjeu : élever la qualité globale de l'app, moderniser l'interface et fluidifier les parcours, sans compromis sur la stabilité aux heures de forte affluence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band deep">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow on-dark">Notre mission</span><h2>Ce que nos équipes ont livré.</h2></div>
+    <div class="feature-grid reveal" style="grid-template-columns:repeat(4,1fr)">
+      <div class="feature"><span class="ficon"><svg class="ico"><use href="#i-layers"></use></svg></span><h3>SDK multiplateforme</h3><p>Un socle robuste et évolutif en Kotlin Multiplatform, partagé entre iOS et Android.</p></div>
+      <div class="feature"><span class="ficon"><svg class="ico"><use href="#i-code"></use></svg></span><h3>Front natif performant</h3><p>Interfaces natives en SwiftUI (iOS) et Jetpack Compose (Android), pour une expérience fluide.</p></div>
+      <div class="feature"><span class="ficon"><svg class="ico"><use href="#i-bulb"></use></svg></span><h3>IA conversationnelle</h3><p>Intégration d'un assistant IA personnalisé, pensé comme élément central du parcours.</p></div>
+      <div class="feature"><span class="ficon"><svg class="ico"><use href="#i-compass"></use></svg></span><h3>Pilotage transparent</h3><p>Une gestion de projet réactive sous Jira, en lien direct avec les équipes métier.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band dark">
+  <div class="wrap">
+    <div class="sec-head reveal" style="margin-bottom:52px"><span class="eyebrow on-dark">Les résultats</span><h2>Ce que ça a changé.</h2></div>
+    <div class="stats reveal" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat"><div class="n">TOP 7</div><div class="lab">de l'App Store, pour la première fois</div></div>
+      <div class="stat"><div class="n">Fluide</div><div class="lab">des parcours utilisateurs repensés</div></div>
+      <div class="stat"><div class="n">Black Friday</div><div class="lab">stabilité confirmée pendant les pics d'activité</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Stack technique</span><h2>Les technologies mobilisées.</h2></div>
+    <div class="tag-row reveal" style="margin-top:34px"><span>Kotlin Multiplatform</span><span>SwiftUI</span><span>Jetpack Compose</span><span>GraphQL</span><span>Java Spring Boot</span><span>Jira</span></div>
+  </div>
+</section>
+
+<section class="band deep">
+  <div class="wrap">
+    <div class="pullquote reveal">
+      <span class="mark">&ldquo;</span>
+      <blockquote>Travailler sur ce projet a été une belle expérience, aussi challengeante que valorisante.</blockquote>
+      <div class="by">Quentin C. — Développeur Android, Faceel-it</div>
+    </div>
+    <div class="reveal" style="margin-top:70px">
+      <span class="eyebrow on-dark">L'équipe</span>
+      <div class="team-grid" style="margin-top:34px;grid-template-columns:repeat(5,1fr)">
+      <div class="member"><div class="mn">Thibaut L.</div><div class="mr">Business Analyst</div></div>
+      <div class="member"><div class="mn">Ali</div><div class="mr">Tech Lead / iOS</div></div>
+      <div class="member"><div class="mn">Aurélien</div><div class="mr">Développeur iOS</div></div>
+      <div class="member"><div class="mn">Quentin C.</div><div class="mr">Développeur Android</div></div>
+      <div class="member"><div class="mn">Quentin D.</div><div class="mr">Développeur Android</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="cta-strip reveal">
+      <div class="ghost-word">it</div>
+      <h2>Un projet similaire&nbsp;?</h2>
+      <p>Racontez-nous votre besoin — on vous dit très vite comment on peut vous aider.</p>
+      <a class="btn btn-dark" href="mailto:contact@faceel-it.com">Discutons de votre projet <span class="arrow">&rarr;</span></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="logo" href="index.html"><img src="assets/logo-blanc.png" alt="Faceel-it" /></a>
+        <p>L'ESN qui remet l'humain au c&oelig;ur du numérique. Digital, Product, Data &amp; IA, Cyber &mdash; au service de vos ambitions.</p>
+      </div>
+      <div class="foot-col"><h4>Explorer</h4><a href="expertises.html">Expertises</a><a href="carrieres.html">Carrières</a><a href="collectif.html">Le collectif</a><a href="mailto:contact@faceel-it.com">Contact</a></div>
+      <div class="foot-col"><h4>Contact</h4><a href="mailto:contact@faceel-it.com">contact@faceel-it.com</a><a href="#">10 allée du château blanc<br />59290 Wasquehal</a><a href="https://www.linkedin.com/company/faceel-it" target="_blank" rel="noopener">LinkedIn &mdash; @faceel-it</a></div>
+    </div>
+    <div class="foot-bottom"><span>&copy; 2026 Faceel-it &mdash; Tous droits réservés.</span><span><a href="#">Mentions légales</a> &nbsp;&middot;&nbsp; <a href="#">Politique de confidentialité</a></span></div>
+  </div>
+</footer>
+
+</body>
+</html>

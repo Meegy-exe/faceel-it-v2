@@ -1,0 +1,20 @@
+# Site vitrine public : indexation générale autorisée.
+User-agent: *
+Allow: /
+
+# Banc d'essai interne du Design System (cf. src/views/StyleguideView.vue) :
+# déjà en noindex au niveau de la page (src/composables/useSeo.ts), exclu
+# aussi ici pour ne pas faire explorer une route jetable sans contenu éditorial.
+Disallow: /styleguide
+
+# Préfixe relayé par Nginx vers l'API backend (JSON, rien à indexer) :
+# aucune utilité à le faire explorer.
+Disallow: /api/
+
+# Le sitemap n'est pas encore généré : cette ligne anticipe le pré-rendu au
+# build (arbitrage n°5, cf. CLAUDE.md) qui l'alimentera depuis
+# src/router/routes.ts (staticPrerenderRoutes) et les routes dynamiques
+# publiées par l'API. Tant que ce chantier n'est pas fait, cette URL renvoie
+# 404 — un comportement que les crawlers gèrent sans casser la lecture du
+# reste de ce fichier, mais qu'il ne faut pas laisser en l'état indéfiniment.
+Sitemap: https://www.faceel-it.com/sitemap.xml

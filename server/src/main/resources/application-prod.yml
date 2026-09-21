@@ -1,0 +1,29 @@
+# Aucun secret en dur. Tout vient de l'environnement du conteneur.
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USER}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail.smtp.starttls.enable: true
+
+logging:
+  level:
+    root: INFO
+    com.faceelit.website: INFO
+
+springdoc:
+  swagger-ui:
+    enabled: false   # pas d'UI de documentation exposée en production
+
+faceel:
+  cors:
+    allowed-origins: ${FACEEL_CORS_ORIGINS}

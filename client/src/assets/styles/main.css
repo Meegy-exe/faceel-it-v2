@@ -1,0 +1,321 @@
+@import 'tailwindcss';
+
+/**
+ * Poppins auto-hébergée (`@fontsource/poppins`, npm), pas un lien
+ * `fonts.googleapis.com` : ce site collecte des candidatures/contacts
+ * (RGPD, cf. CLAUDE.md) — un CDN de police tiers enverrait l'IP de chaque
+ * visiteur à Google à chaque chargement de page, et ajouterait un domaine
+ * externe à autoriser dans la CSP stricte déjà en place (Nginx, cf.
+ * README). L'auto-hébergement évite les deux. Seuls les 4 poids réellement
+ * utilisés par le site sont importés (`font-normal` implicite du corps de
+ * texte, `font-semibold`/`font-bold`/`font-extrabold` des titres et
+ * boutons — vérifié par grep des classes `font-*` avant de choisir cette
+ * liste) : chaque fichier déclare des `@font-face` pour plusieurs
+ * écritures (latin, latin-ext, cyrillic…) mais le navigateur ne télécharge
+ * que le sous-ensemble dont l'`unicode-range` correspond aux caractères
+ * réellement présents sur la page (mécanisme natif CSS, pas un poids mort
+ * téléchargé pour rien).
+ */
+@import '@fontsource/poppins/400.css';
+@import '@fontsource/poppins/600.css';
+@import '@fontsource/poppins/700.css';
+@import '@fontsource/poppins/800.css';
+
+/**
+ * TOKENS DE DESIGN — Faceel-IT v2
+ *
+ * Tailwind v4 : la configuration se fait ici, en CSS. Il n'y a plus de
+ * `tailwind.config.js` (le plugin `@tailwindcss/vite` ne le lit pas, sauf
+ * réactivation explicite via la directive legacy `@config`). Chaque variable
+ * `--color-*`, `--animate-*`, `--shadow-*`... déclarée dans `@theme` génère
+ * automatiquement les utilitaires correspondants : `bg-primary-900`,
+ * `animate-float`, `shadow-soft`, etc.
+ *
+ * CONTRASTES (anticipe l'audit WCAG de l'étape 4) :
+ *   accent-500 (#12D80A) sur primary-900 (#000066) → 9,1:1  ✅ AAA
+ *   accent-500 (#12D80A) sur blanc                 → 1,9:1  ❌ décor uniquement
+ *   accent-700 (#0B8408) sur blanc                 → 4,9:1  ✅ AA
+ * Règle : `accent-500` sert de fond, de bordure ou de texte SUR FOND SOMBRE.
+ * Pour du texte accentué sur fond clair, utiliser `accent-700`.
+ */
+@theme {
+  /* --- Marque : Primary #000066 ------------------------------------------ */
+  --color-primary-50: #eef0ff;
+  --color-primary-100: #dde1ff;
+  --color-primary-200: #bcc4ff;
+  --color-primary-300: #94a0ff;
+  --color-primary-400: #6673ff;
+  --color-primary-500: #3d47f5;
+  --color-primary-600: #2a2fd6;
+  --color-primary-700: #1d20a8;
+  --color-primary-800: #0f1180;
+  --color-primary-900: #000066;
+  --color-primary-950: #00003d;
+  --color-primary: #000066;
+
+  /* --- Marque : Accent #12D80A ------------------------------------------- */
+  --color-accent-50: #edfee9;
+  --color-accent-100: #d5fccd;
+  --color-accent-200: #aef8a1;
+  --color-accent-300: #78f065;
+  --color-accent-400: #3ee52c;
+  --color-accent-500: #12d80a;
+  --color-accent-600: #0aad05;
+  --color-accent-700: #0b8408;
+  --color-accent-800: #0d680c;
+  --color-accent-900: #0d570f;
+  --color-accent-950: #013106;
+  --color-accent: #12d80a;
+
+  /* --- Marque : Light #F4F6FF -------------------------------------------- */
+  --color-light: #f4f6ff;
+  --color-light-100: #fafbff;
+  --color-light-200: #f4f6ff;
+  --color-light-300: #e8ecff;
+  --color-light-400: #d8dfff;
+
+  /* --- Typographie ------------------------------------------------------- */
+  /**
+   * Poppins verrouillée en V0.1.10 (cf. ADR 14) : exigence
+   * client explicite d'une police unique sur tout le site. `--font-mono`
+   * n'est PAS concernée — rôle sémantique distinct (extraits de code,
+   * raccourcis clavier dans `StyleguideView.vue`), jamais utilisée pour du
+   * texte de site réel (titres, paragraphes, boutons).
+   */
+  --font-display: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Échelles fluides (mobile-first : pas de palier `sm:text-*` à écrire). */
+  --text-mega: clamp(2.75rem, 9vw, 6rem);
+  --text-mega--line-height: 0.95;
+  --text-mega--letter-spacing: -0.04em;
+  --text-mega--font-weight: 800;
+
+  --text-display: clamp(2rem, 5.5vw, 3.5rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.03em;
+  --text-display--font-weight: 800;
+
+  --text-title: clamp(1.375rem, 3vw, 1.875rem);
+  --text-title--line-height: 1.2;
+  --text-title--letter-spacing: -0.02em;
+  --text-title--font-weight: 700;
+
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1;
+  --text-eyebrow--letter-spacing: 0.14em;
+  --text-eyebrow--font-weight: 700;
+
+  /* --- Rayons ------------------------------------------------------------ */
+  --radius-card: 1.25rem;
+  --radius-panel: 1.75rem;
+
+  /* --- Ombres douces / relief (inspiration Exalt) ------------------------ */
+  --shadow-soft: 0 2px 4px -1px rgb(0 0 102 / 0.06), 0 12px 24px -8px rgb(0 0 102 / 0.14);
+  --shadow-lift: 0 8px 12px -4px rgb(0 0 102 / 0.1), 0 28px 52px -12px rgb(0 0 102 / 0.24);
+  --shadow-panel: 0 24px 64px -16px rgb(0 0 102 / 0.28);
+  --shadow-glow: 0 0 0 1px rgb(18 216 10 / 0.35), 0 10px 36px -10px rgb(18 216 10 / 0.5);
+  --shadow-hairline: inset 0 1px 0 0 rgb(255 255 255 / 0.1);
+
+  /* --- Courbes ----------------------------------------------------------- */
+  --ease-snap: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.4, 0.64, 1);
+  /**
+   * V0.1.23 (cf. ADR 27) — courbe « départ rapide, atterrissage en douceur »
+   * (accélération quasi immédiate, décélération longue sans dépassement),
+   * distincte d'`--ease-snap` (micro-interactions courtes, ~200-300ms :
+   * survols, ouvertures de menu) : pensée pour un déplacement AMPLE
+   * (700ms+), typiquement une translation de grande amplitude comme le
+   * glissement de carte de `CoverCarousel`. Jeton nommé plutôt qu'une valeur
+   * arbitraire `ease-[cubic-bezier(...)]` posée directement dans le
+   * composant : les courbes d'animation sont un token de design au même
+   * titre que les couleurs/ombres (cf. CLAUDE.md), pas une valeur locale à
+   * un seul composant.
+   */
+  --ease-premium: cubic-bezier(0.25, 1, 0.5, 1);
+  /**
+   * V0.1.30 — courbe « départ canon, arrivée très douce » (accélération
+   * encore plus brutale qu'`--ease-premium` en sortie de course, mais une
+   * décélération tout aussi longue) : demande client explicite pour l'effet
+   * « stack swipe » de `CoverCarousel` (la carte entrante doit clairement
+   * "claquer" au démarrage plutôt que s'éveiller en douceur). Jeton distinct
+   * plutôt que réutiliser `--ease-premium` : les deux courbes ne partagent
+   * pas la même valeur, les confondre aurait été une approximation, pas une
+   * réutilisation.
+   */
+  --ease-swipe: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* --- Animations (inspiration Treez) ------------------------------------ */
+  --animate-float: float 7s var(--ease-snap) infinite;
+  --animate-float-slow: float 13s var(--ease-snap) infinite;
+  --animate-pulse-soft: pulse-soft 4s ease-in-out infinite;
+  --animate-drift: drift 18s linear infinite;
+  --animate-sheen: sheen 0.9s var(--ease-snap);
+  --animate-fade-up: fade-up 0.45s var(--ease-snap) both;
+  --animate-blink: blink 2.4s steps(1, end) infinite;
+  /* Ascension lente d'un point du nuage de données, avec dérive latérale. */
+  --animate-rise: rise 12s ease-in-out infinite;
+  /**
+   * Défilement horizontal infini (bandeau partenaires). Durée fixe et non
+   * dérivée du nombre d'éléments : tout calcul de rendu doit rester
+   * déterministe dans ce projet (pré-rendu `vite-ssg`), une constante l'est
+   * par construction. La translation ne va que jusqu'à -50 % : le contenu
+   * de la piste est dupliqué à l'identique par `PartnerCarousel`, donc -50 %
+   * correspond exactement à la fin de la première copie — la boucle
+   * redémarre sans saut visible.
+   */
+  --animate-marquee: marquee 32s linear infinite;
+  @keyframes rise {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(8px, -28px, 0);
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(0, -18px, 0) scale(1.04);
+    }
+  }
+
+  @keyframes pulse-soft {
+    0%,
+    100% {
+      opacity: 0.35;
+      transform: scale(0.96);
+    }
+    50% {
+      opacity: 0.85;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes drift {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      transform: translate3d(-64px, -64px, 0);
+    }
+  }
+
+  @keyframes sheen {
+    0% {
+      transform: translateX(-120%) skewX(-18deg);
+    }
+    100% {
+      transform: translateX(220%) skewX(-18deg);
+    }
+  }
+
+  @keyframes fade-up {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, 14px, 0);
+    }
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes blink {
+    0%,
+    45% {
+      opacity: 0.15;
+    }
+    50%,
+    95% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+}
+
+/**
+ * Piste de carrousel sans barre de défilement visible (`CollectifView`).
+ *
+ * `@utility` et non une classe posée dans `@layer components` : c'est la
+ * primitive Tailwind v4 pour déclarer un utilitaire, elle le place dans la
+ * bonne couche de cascade et le rend composable avec les variantes
+ * (`sm:`, `hover:`…) — une classe écrite à la main perdrait les deux.
+ *
+ * Trois déclarations pour un seul effet : `scrollbar-width` (standard, Firefox
+ * et Chromium récents), `-ms-overflow-style` (anciens Edge/IE) et le
+ * pseudo-élément WebKit (Safari, qui n'implémente toujours pas la propriété
+ * standard). Aucune n'est redondante à ce jour.
+ *
+ * ACCESSIBILITÉ — le défilement reste possible au doigt, à la molette ET au
+ * clavier : seule la barre est masquée, jamais `overflow`. Les cartes de la
+ * piste sont des `<button>` focusables, donc atteignables à la tabulation, et
+ * le navigateur fait défiler la piste jusqu'à l'élément focalisé tout seul.
+ */
+@utility hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/**
+ * Réglages de base. Volontairement minimal : tout le reste est porté par les
+ * composants. `scroll-behavior` et le lissage des polices sont impossibles à
+ * exprimer en utilitaires sur `<html>`, d'où ce bloc.
+ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background-color: var(--color-light);
+    color: var(--color-primary-900);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Curseur custom : rond plein accent-500, anneau creux au survol des
+     éléments cliquables pour distinguer visuellement l'affordance. */
+  html,
+  body {
+    cursor:
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><circle cx="12" cy="12" r="8" fill="%2312D80A"/></svg>')
+        12 12,
+      auto;
+  }
+
+  a,
+  button,
+  .cursor-pointer {
+    cursor:
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="11" fill="none" stroke="%2312D80A" stroke-width="3"/></svg>')
+        16 16,
+      pointer;
+  }
+}

@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: faceel-it-website
+
+  profiles:
+    default: dev
+
+  jpa:
+    # validate, JAMAIS update : Flyway est seul maître du schéma.
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc.time_zone: UTC
+        format_sql: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+
+  jackson:
+    default-property-inclusion: always   # on émet les null explicitement (cf. contrat)
+    serialization:
+      write-dates-as-timestamps: false   # ISO-8601, jamais d'epoch
+      fail-on-empty-beans: false
+    deserialization:
+      fail-on-unknown-properties: true
+
+  mvc:
+    # Erreurs au format RFC 9457 Problem Details, conformément au contrat.
+    problemdetails:
+      enabled: true
+
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: 8080
+  shutdown: graceful
+  error:
+    include-message: never
+    include-stacktrace: never
+  compression:
+    enabled: true
+    mime-types: application/json,text/html,text/css,application/javascript
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+faceel:
+  api:
+    base-path: /api/v1
+  cors:
+    allowed-origins: ${FACEEL_CORS_ORIGINS:http://localhost:5173}
+  contact:
+    recipient: ${FACEEL_CONTACT_RECIPIENT:contact@faceel-it.com}

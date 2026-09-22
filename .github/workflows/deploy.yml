@@ -1,8 +1,8 @@
-name: Build and Push to GMKtec
+name: Build and Push to GHCR
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "deploy/staging" ]
 
 jobs:
   build-and-push:

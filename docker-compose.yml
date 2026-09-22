@@ -1,5 +1,4 @@
 services:
-
   db:
     image: postgres:16-alpine
     container_name: faceelit-db
@@ -7,33 +6,25 @@ services:
       POSTGRES_DB: faceelit
       POSTGRES_USER: faceelit
       POSTGRES_PASSWORD: faceelit
-    ports:
-      - "5432:5432"
+
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U faceelit -d faceelit"]
+      test: [ "CMD-SHELL", "pg_isready -U faceelit -d faceelit" ]
       interval: 5s
       timeout: 3s
       retries: 10
 
-  # Capte tous les mails en développement — UI sur http://localhost:8025
   mail:
     image: axllent/mailpit:latest
     container_name: faceelit-mail
-    ports:
-      - "1025:1025"
-      - "8025:8025"
 
-  # --- Services applicatifs : profil "full" uniquement ---------------------
-  # En développement courant on lance db + mail ici, et le back/front
-  # en local (hot reload). `--profile full` sert à valider l'image Docker.
 
   server:
     build:
       context: ./server
     container_name: faceelit-server
-    profiles: ["full"]
+    profiles: [ "full" ]
     depends_on:
       db:
         condition: service_healthy
@@ -46,19 +37,31 @@ services:
       MAIL_PORT: 1025
       MAIL_USER: ""
       MAIL_PASSWORD: ""
-      FACEEL_CORS_ORIGINS: http://localhost:8081
-    ports:
-      - "8080:8080"
+      # hébergé temporairement
+      FACEEL_CORS_ORIGINS: https://starter-tamper-laurel.ngrok-free.dev
+
 
   client:
     build:
       context: ./client
     container_name: faceelit-client
-    profiles: ["full"]
+    profiles: [ "full" ]
     depends_on:
       - server
-    ports:
-      - "8081:80"
+
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: faceelit-ngrok
+    profiles: [ "full" ]
+    restart: unless-stopped
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    command:
+      - "http"
+      - "--domain=starter-tamper-laurel.ngrok-free.dev"
+      - "client:80"
+
 
 volumes:
   db-data:

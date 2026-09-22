@@ -32,15 +32,23 @@ export const footerColumns: FooterColumn[] = [
     title: 'Nos services',
     links: [
       { label: 'La tech au service des métiers', to: { path: '/', hash: '#services' } },
-      { label: 'Nos secteurs d’activités', to: { path: '/', hash: '#secteurs' } },
+      { label: "Nos secteurs d'activités", to: { path: '/', hash: '#secteurs' } },
       { label: 'Notre valeur ajoutée', to: { path: '/', hash: '#valeurs' } },
     ],
   },
   {
-    title: 'L’agence',
+    title: "L'agence",
     links: [
       { label: 'Politique RSE', to: { path: '/', hash: '#rse' } },
       { label: 'Nous rejoindre', href: 'mailto:contact@faceel-it.com' },
+    ],
+  },
+  {
+    title: 'Informations légales',
+    links: [
+      { label: 'Mentions légales', to: { name: 'mentions-legales' } },
+      { label: 'Politique de confidentialité', to: { name: 'politique-confidentialite' } },
+      { label: 'Politique de cookies', to: { name: 'politique-cookies' } },
     ],
   },
 ]
@@ -48,4 +56,4 @@ export const footerColumns: FooterColumn[] = [
 /** Baseline affichée sous le logotype, reprise du pied de page de l'ancien site. */
 export const footerDescription =
   'Cabinet de conseil expert en Data, Intelligence Artificielle et Transformation digitale. ' +
-  'Au-delà du code, c’est l’engagement de notre collectif qui fait aboutir vos projets.'
+  "Au-delà du code, c'est l'engagement de notre collectif qui fait aboutir vos projets."

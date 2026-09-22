@@ -4,14 +4,13 @@ import { RouterLink, useRoute } from 'vue-router'
 import { onClickOutside } from '@vueuse/core'
 import logoDark from '@/assets/images/logo-bleu.png'
 import logoWhite from '@/assets/images/logo-blanc.png'
-import type { MegaMenuEntry } from './types'
-import { MENU_DEFAULT, MENU_PANEL_CONFIG } from '@/features/navigation/mainNav'
+import { NAV_DEFAULT, type NavItem } from '@/features/navigation/mainNav'
 
 const open = defineModel<boolean>('open', { default: false })
 const isDarkTheme = defineModel<boolean>('dark', { default: true })
 
 const props = defineProps<{
-  entries: MegaMenuEntry[]
+  entries: NavItem[]
   scrollRoot?: HTMLElement | null
 }>()
 
@@ -36,17 +35,13 @@ onClickOutside(headerRef, () => {
 })
 
 /* -------------------------------------------------------------------------- */
-/* Panneau gauche — info dynamique au survol                                  */
+/* Panneau gauche + zone droite — dynamiques au survol                        */
 /* -------------------------------------------------------------------------- */
 
-const hoveredId = ref<string | null>(null)
-
-const panelInfo = computed(
-  () => (hoveredId.value ? MENU_PANEL_CONFIG[hoveredId.value] : undefined) ?? MENU_DEFAULT,
-)
+const activeItem = ref<NavItem>(NAV_DEFAULT)
 
 /* -------------------------------------------------------------------------- */
-/* Sous-menu (Drill-down)                                                     */
+/* Sous-menu (Drill-down mobile)                                              */
 /* -------------------------------------------------------------------------- */
 
 const expandedId = ref<string | null>(null)
@@ -239,7 +234,7 @@ const focusRingClass = computed(() =>
       </div>
     </div>
 
-    <!-- PANNEAU DE MENU (Fixé en blanc) -->
+    <!-- PANNEAU DE MENU -->
     <div
       id="app-nav-panel"
       class="absolute top-full left-0 w-full origin-top border-b border-primary-900/10 bg-white shadow-2xl shadow-black/10 transition-all duration-500 ease-snap motion-reduce:transition-none overflow-hidden"
@@ -250,11 +245,7 @@ const focusRingClass = computed(() =>
       "
       :aria-hidden="!open"
     >
-      <nav
-        aria-label="Navigation principale"
-        class="w-full min-h-[400px]"
-      >
-        <!-- Transition croisée entre le niveau principal et le sous-menu -->
+      <nav aria-label="Navigation principale" class="w-full min-h-[400px]">
         <Transition
           enter-active-class="transition-opacity duration-300 ease-out"
           enter-from-class="opacity-0"
@@ -264,18 +255,16 @@ const focusRingClass = computed(() =>
           leave-to-class="opacity-0"
           mode="out-in"
         >
-          <!-- VUE 1 : MENU PRINCIPAL — layout split (encart bleu gauche + liens droite) -->
+          <!-- VUE 1 : MENU PRINCIPAL — layout 3 zones (desktop) -->
           <div
             v-if="!expandedEntry"
             key="main-menu"
             class="flex min-h-[400px] w-full"
-            @mouseleave="hoveredId = null"
+            @mouseleave="activeItem = NAV_DEFAULT"
           >
 
-            <!-- Panneau gauche : infos dynamiques (desktop uniquement).
-                 `justify-between` pousse le CTA en bas, le contenu textuel
-                 reste en haut — même si la description est courte. -->
-            <div class="hidden lg:flex flex-col justify-between w-80 xl:w-96 shrink-0 bg-[#000066] p-8">
+            <!-- ZONE 1 : Panneau gauche (info dynamique, desktop uniquement) -->
+            <div class="hidden lg:flex flex-col justify-start w-80 xl:w-96 shrink-0 bg-[#000066] p-8">
               <Transition
                 enter-active-class="transition-opacity duration-200 ease-out"
                 enter-from-class="opacity-0"
@@ -285,178 +274,190 @@ const focusRingClass = computed(() =>
                 leave-to-class="opacity-0"
                 mode="out-in"
               >
-                <div :key="panelInfo.title">
+                <div :key="activeItem.id">
                   <p class="mb-4 text-xs font-semibold uppercase tracking-widest text-accent-500">
                     Faceel-IT
                   </p>
                   <h2 class="font-display text-2xl font-bold leading-tight text-white">
-                    {{ panelInfo.title }}
+                    {{ activeItem.title }}
                   </h2>
                   <p class="mt-4 text-sm leading-relaxed text-white/70">
-                    {{ panelInfo.description }}
+                    {{ activeItem.description }}
                   </p>
                 </div>
               </Transition>
-
-              <RouterLink
-                :to="panelInfo.ctaTo"
-                class="mt-8 inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10 focus-visible:outline-accent-500"
-                @click="closeMenu()"
-              >
-                {{ panelInfo.ctaLabel }}
-                <svg class="size-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </RouterLink>
             </div>
 
-            <!-- Panneau droit : liste des entrées -->
-            <div class="flex-1 px-4 py-8 sm:px-6 lg:px-8 xl:px-10">
+            <!-- ZONE 2 : Liste des entrées principales
+                 - Mobile  : pleine largeur, seule zone visible
+                 - Desktop : colonne étroite (fond gris clair), sépare zone 1 et zone 3 -->
+            <div class="flex-1 lg:flex-none lg:w-64 xl:w-72 lg:shrink-0 lg:bg-gray-50 lg:border-r lg:border-gray-100 py-6 lg:py-8 px-3 lg:px-3">
               <ul class="flex flex-col gap-1">
                 <li v-for="entry in entries" :key="entry.id">
 
-                  <!-- Bouton Drill-down (avec sous-menu) -->
+                  <!-- Drill-down mobile (pas de lien direct → sous-pages multiples) -->
                   <button
-                    v-if="entry.columns"
+                    v-if="!entry.to"
                     type="button"
-                    class="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left font-display text-lg font-bold text-primary-900 hover:bg-primary-900/5 focus-visible:outline-primary-900 transition-colors duration-200 motion-reduce:transition-none"
+                    class="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left font-display font-bold text-primary-900 transition-colors duration-200 motion-reduce:transition-none"
+                    :class="activeItem.id === entry.id
+                      ? 'bg-primary-900/8 text-primary-900'
+                      : 'hover:bg-primary-900/5'"
                     :tabindex="open ? undefined : -1"
-                    @mouseenter="hoveredId = entry.id"
+                    @mouseenter="activeItem = entry"
                     @click="drillDown(entry.id)"
                   >
                     <span
                       aria-hidden="true"
-                      class="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-900/5 text-primary-900"
+                      class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-900/5 text-primary-900"
                     >
-                      <svg v-if="entryIconKind(entry.id) === 'entreprise'" class="size-5" viewBox="0 0 24 24" fill="none">
-                        <rect x="4" y="7.5" width="16" height="11" rx="1.5" stroke="currentColor" stroke-width="2" />
-                        <path d="M9 7.5V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v1.5M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                      </svg>
-                      <svg v-else-if="entryIconKind(entry.id) === 'references'" class="size-5" viewBox="0 0 24 24" fill="none">
+                      <svg v-if="entryIconKind(entry.id) === 'references'" class="size-4" viewBox="0 0 24 24" fill="none">
                         <path d="M4 21V9.5L12 4l8 5.5V21M9 21v-6h6v6M4 21h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                       </svg>
-                      <svg v-else-if="entryIconKind(entry.id) === 'collectif'" class="size-5" viewBox="0 0 24 24" fill="none">
+                      <svg v-else-if="entryIconKind(entry.id) === 'collectif'" class="size-4" viewBox="0 0 24 24" fill="none">
                         <circle cx="9" cy="8" r="3.5" stroke="currentColor" stroke-width="2" />
                         <path d="M2.5 19.5v-1.2c0-2.4 2.9-4.3 6.5-4.3s6.5 1.9 6.5 4.3v1.2M16 5.2a3.5 3.5 0 0 1 0 5.6M18 14.2c2.1.6 3.5 2.1 3.5 3.9v1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                       </svg>
-                      <svg v-else class="size-5" viewBox="0 0 24 24" fill="none">
+                      <svg v-else class="size-4" viewBox="0 0 24 24" fill="none">
                         <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                       </svg>
                     </span>
-                    <span class="flex-1">{{ entry.label }}</span>
-                    <svg class="size-4 shrink-0 text-primary-900/40" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <span class="flex-1 text-base">{{ entry.label }}</span>
+                    <svg class="size-4 shrink-0 text-primary-900/30 lg:hidden" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                       <path d="m8 5 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                   </button>
 
-                  <!-- Lien simple (sans sous-menu) -->
-                  <component
-                    :is="entry.to !== undefined ? 'RouterLink' : 'a'"
+                  <!-- Lien direct -->
+                  <RouterLink
                     v-else
-                    v-bind="entry.to !== undefined ? { to: entry.to } : { href: entry.href }"
-                    class="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 font-display text-lg font-bold text-primary-900 hover:bg-primary-900/5 focus-visible:outline-primary-900 transition-colors duration-200 motion-reduce:transition-none"
+                    :to="entry.to"
+                    class="flex w-full items-center gap-3 rounded-xl px-4 py-3 font-display font-bold text-primary-900 transition-colors duration-200 motion-reduce:transition-none"
+                    :class="activeItem.id === entry.id
+                      ? 'bg-primary-900/8 text-primary-900'
+                      : 'hover:bg-primary-900/5'"
                     :tabindex="open ? undefined : -1"
-                    @mouseenter="hoveredId = entry.id"
+                    @mouseenter="activeItem = entry"
                     @click="closeMenu()"
                   >
                     <span
                       aria-hidden="true"
-                      class="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-900/5 text-primary-900"
+                      class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-900/5 text-primary-900"
                     >
-                      <svg v-if="entryIconKind(entry.id) === 'entreprise'" class="size-5" viewBox="0 0 24 24" fill="none">
+                      <svg v-if="entryIconKind(entry.id) === 'entreprise'" class="size-4" viewBox="0 0 24 24" fill="none">
                         <rect x="4" y="7.5" width="16" height="11" rx="1.5" stroke="currentColor" stroke-width="2" />
                         <path d="M9 7.5V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v1.5M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                       </svg>
-                      <svg v-else-if="entryIconKind(entry.id) === 'references'" class="size-5" viewBox="0 0 24 24" fill="none">
-                        <path d="M4 21V9.5L12 4l8 5.5V21M9 21v-6h6v6M4 21h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                      </svg>
-                      <svg v-else-if="entryIconKind(entry.id) === 'collectif'" class="size-5" viewBox="0 0 24 24" fill="none">
-                        <circle cx="9" cy="8" r="3.5" stroke="currentColor" stroke-width="2" />
-                        <path d="M2.5 19.5v-1.2c0-2.4 2.9-4.3 6.5-4.3s6.5 1.9 6.5 4.3v1.2M16 5.2a3.5 3.5 0 0 1 0 5.6M18 14.2c2.1.6 3.5 2.1 3.5 3.9v1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                      </svg>
-                      <svg v-else class="size-5" viewBox="0 0 24 24" fill="none">
+                      <svg v-else class="size-4" viewBox="0 0 24 24" fill="none">
                         <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                       </svg>
                     </span>
-                    <span class="flex-1">{{ entry.label }}</span>
-                  </component>
+                    <span class="flex-1 text-base">{{ entry.label }}</span>
+                  </RouterLink>
 
                 </li>
               </ul>
 
-              <!-- `surface="light"` EN DUR, jamais `isBarDark` : ce rendu vit
-                   dans le panneau blanc, pas dans la barre — sa lisibilité ne
-                   doit jamais dépendre du thème de la section survolée. -->
-              <div class="mt-6 border-t border-primary-900/10 pt-4 lg:hidden">
+              <!-- `surface="light"` EN DUR : ce rendu vit dans le panneau
+                   blanc, pas dans la barre — sa lisibilité ne doit jamais
+                   dépendre du thème de la section survolée. -->
+              <div class="mt-6 border-t border-primary-900/10 pt-4 px-1 lg:hidden">
                 <slot name="actions" surface="light" />
               </div>
             </div>
 
+            <!-- ZONE 3 : Sous-liens de l'entrée survolée (desktop uniquement) -->
+            <div class="hidden lg:flex flex-1 flex-col justify-start py-10 px-8">
+              <Transition
+                enter-active-class="transition-opacity duration-200 ease-out"
+                enter-from-class="opacity-0"
+                enter-to-class="opacity-100"
+                leave-active-class="transition-opacity duration-150 ease-in"
+                leave-from-class="opacity-100"
+                leave-to-class="opacity-0"
+                mode="out-in"
+              >
+                <ul v-if="activeItem.subItems?.length" :key="activeItem.id" class="flex flex-col gap-2">
+                  <li v-for="sub in activeItem.subItems" :key="sub.label">
+                    <component
+                      :is="sub.to !== undefined ? 'RouterLink' : 'a'"
+                      v-bind="sub.to !== undefined ? { to: sub.to } : { href: sub.href ?? '#' }"
+                      class="group flex items-start gap-4 rounded-xl p-4 transition-colors duration-200 hover:bg-gray-50 focus-visible:outline-primary-900 motion-reduce:transition-none"
+                      :tabindex="open ? undefined : -1"
+                      @click="closeMenu()"
+                    >
+                      <div class="flex-1">
+                        <p class="text-base font-semibold text-primary-900">{{ sub.label }}</p>
+                        <p v-if="sub.description" class="mt-0.5 text-sm text-primary-900/55">
+                          {{ sub.description }}
+                        </p>
+                      </div>
+                      <svg
+                        class="mt-1 size-4 shrink-0 text-primary-900/25 transition-colors duration-200 group-hover:text-accent-500 motion-reduce:transition-none"
+                        viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"
+                      >
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </component>
+                  </li>
+                </ul>
+
+                <!-- État vide (NAV_DEFAULT ou entrée sans subItems) -->
+                <div v-else key="empty" class="flex h-full min-h-[200px] flex-col items-center justify-center gap-3 text-center">
+                  <p class="text-sm text-primary-900/30">
+                    Survolez un onglet pour découvrir les liens.
+                  </p>
+                </div>
+              </Transition>
+            </div>
+
           </div>
 
-          <!-- VUE 2 : SOUS-MENU (Drill-down panel, centré) -->
+          <!-- VUE 2 : SOUS-MENU MOBILE (drill-down pour entrées sans lien direct) -->
           <div v-else key="sub-menu" class="w-full flex flex-col items-center px-4 py-8 sm:px-6 lg:px-8 xl:px-12">
-            <!-- Header du sous-menu -->
-            <div class="relative flex w-full max-w-7xl items-center justify-center mb-12 px-3">
-              <!-- Bouton Retour aligné à gauche -->
+            <div class="relative flex w-full max-w-7xl items-center justify-center mb-10 px-3">
               <button
                 type="button"
                 class="absolute left-0 flex items-center gap-2 rounded-xl py-2 pr-4 font-display text-base font-bold text-primary-900 hover:bg-primary-900/5 focus-visible:outline-primary-900 transition-colors duration-200 motion-reduce:transition-none"
                 @click="goBack()"
               >
                 <svg class="size-5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <path
-                    d="m12 15-5-5 5-5"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
+                  <path d="m12 15-5-5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
                 <span class="hidden sm:inline">Retour</span>
               </button>
 
-              <!-- Titre centré -->
-              <h2
-                class="font-display text-2xl md:text-3xl font-extrabold tracking-tight text-primary-900 text-center"
-              >
+              <h2 class="font-display text-2xl md:text-3xl font-extrabold tracking-tight text-primary-900 text-center">
                 {{ expandedEntry.label }}
               </h2>
             </div>
 
-            <!-- Contenu des colonnes aéré et centré -->
-            <div
-              class="flex w-full max-w-5xl flex-col gap-10 md:flex-row md:justify-center md:gap-x-24 px-3"
-            >
-              <div
-                v-for="column in expandedEntry.columns"
-                :key="column.title"
-                class="md:flex-1 w-full"
-              >
-                <p class="mb-5 text-eyebrow uppercase text-primary-900/45">
-                  {{ column.title }}
-                </p>
-                <ul class="space-y-3">
-                  <li v-for="link in column.links" :key="link.label">
-                    <component
-                      :is="link.to !== undefined ? 'RouterLink' : 'a'"
-                      v-bind="link.to !== undefined ? { to: link.to } : { href: link.href }"
-                      class="flex items-center gap-3 rounded-lg py-2 text-lg text-primary-900/80 hover:bg-primary-900/5 hover:text-primary-900 focus-visible:outline-primary-900 transition-colors duration-200 motion-reduce:transition-none"
-                      :tabindex="open ? undefined : -1"
-                    >
-                      {{ link.label }}
-                      <span
-                        v-if="link.badge"
-                        class="rounded-full bg-accent-500/15 px-2 py-0.5 text-[0.625rem] font-bold uppercase tracking-wider text-accent-700"
-                      >
-                        {{ link.badge }}
-                      </span>
-                    </component>
-                  </li>
-                </ul>
-              </div>
-            </div>
+            <ul class="w-full max-w-md flex flex-col gap-2">
+              <li v-for="sub in expandedEntry.subItems" :key="sub.label">
+                <component
+                  :is="sub.to !== undefined ? 'RouterLink' : 'a'"
+                  v-bind="sub.to !== undefined ? { to: sub.to } : { href: sub.href ?? '#' }"
+                  class="flex items-start gap-4 rounded-xl p-4 transition-colors duration-200 hover:bg-gray-50 focus-visible:outline-primary-900 motion-reduce:transition-none"
+                  :tabindex="open ? undefined : -1"
+                  @click="closeMenu()"
+                >
+                  <div class="flex-1">
+                    <p class="text-base font-semibold text-primary-900">{{ sub.label }}</p>
+                    <p v-if="sub.description" class="mt-0.5 text-sm text-primary-900/55">
+                      {{ sub.description }}
+                    </p>
+                  </div>
+                  <svg
+                    class="mt-1 size-4 shrink-0 text-primary-900/25"
+                    viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"
+                  >
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </component>
+              </li>
+            </ul>
           </div>
+
         </Transition>
       </nav>
     </div>

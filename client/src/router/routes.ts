@@ -118,6 +118,24 @@ export const routes: RouteRecordRaw[] = [
     meta: { fullPageScroll: true },
   },
   {
+    path: '/mentions-legales',
+    name: 'mentions-legales',
+    component: () => import('@/views/legal/MentionsLegalesView.vue'),
+    meta: { classicScroll: true },
+  },
+  {
+    path: '/politique-confidentialite',
+    name: 'politique-confidentialite',
+    component: () => import('@/views/legal/PrivacyPolicyView.vue'),
+    meta: { classicScroll: true },
+  },
+  {
+    path: '/politique-cookies',
+    name: 'politique-cookies',
+    component: () => import('@/views/legal/CookiesPolicyView.vue'),
+    meta: { classicScroll: true },
+  },
+  {
     // JETABLE — banc d'essai du Design System, à retirer avant la mise en ligne.
     // Absente de `staticPrerenderRoutes` : jamais pré-rendue, jamais indexable.
     path: '/styleguide',

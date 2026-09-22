@@ -82,7 +82,7 @@ defineSlots<{
       'relative isolate overflow-hidden bg-[#000066] px-4 pb-10 text-white sm:px-6 lg:px-8 xl:px-12',
       fullPageScroll
         ? 'w-full h-full snap-start snap-always flex flex-col justify-end pt-12'
-        : 'pt-20 sm:pt-24',
+        : 'snap-start snap-always pt-20 sm:pt-24',
     ]"
   >
     <!-- Décor calme : le pied de page ne doit pas concurrencer le contenu qui
@@ -99,7 +99,7 @@ defineSlots<{
     <div class="w-full">
       <!-- Mobile-first : une colonne, puis deux à partir de `sm`, puis la
            marque prend deux fractions à partir de `lg`. -->
-      <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1.4fr] lg:gap-8">
+      <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr_1.4fr] lg:gap-8">
         <!-- Marque ------------------------------------------------------- -->
         <div class="sm:col-span-2 lg:col-span-1">
           <slot name="logo">

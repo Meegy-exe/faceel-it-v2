@@ -1,61 +1,45 @@
 import type { RouteLocationRaw } from 'vue-router'
-import type { MegaMenuEntry } from '@/components/ui/types'
 
 /* -------------------------------------------------------------------------- */
-/* Infos du panneau gauche du menu — dynamiques au survol de chaque entrée.   */
+/* Types — chaque entrée porte ses infos de panneau gauche ET ses sous-liens. */
 /* -------------------------------------------------------------------------- */
 
-export interface MenuPanelInfo {
+export interface NavSubItem {
+  label: string
+  description?: string
+  to?: RouteLocationRaw
+  href?: string
+}
+
+export interface NavItem {
+  id: string
+  label: string
+  /** Titre affiché dans le panneau gauche du mega-menu au survol. */
   title: string
+  /** Description affichée dans le panneau gauche au survol. */
   description: string
   ctaLabel: string
   ctaTo: RouteLocationRaw
+  /**
+   * Présent : l'entrée est un lien direct (mobile = navigation immédiate,
+   * desktop = lien cliquable + subItems affichés dans la zone droite au survol).
+   * Absent : l'entrée ouvre un drill-down sur mobile (pas de navigation directe).
+   */
+  to?: RouteLocationRaw
+  href?: string
+  /** Sous-liens affichés dans la zone droite du mega-menu au survol (desktop)
+   *  et en drill-down sur mobile (si `to` est absent). */
+  subItems?: NavSubItem[]
 }
 
-export const MENU_DEFAULT: MenuPanelInfo = {
-  title: "Bienvenue",
+/* Panneau gauche par défaut — affiché quand aucun onglet n'est survolé. */
+export const NAV_DEFAULT: NavItem = {
+  id: '_default',
+  label: '',
+  title: "Faceel-IT",
   description: "ESN spécialisée dans la transformation digitale. Nous accompagnons entreprises et talents dans les métiers du numérique, cloud et data.",
   ctaLabel: "Découvrir Faceel-IT",
   ctaTo: { name: 'histoire' },
-}
-
-export const MENU_PANEL_CONFIG: Record<string, MenuPanelInfo> = {
-  entreprise: {
-    title: "Je suis une entreprise",
-    description: "Nous vous accompagnons dans vos projets data, cloud et applicatifs avec des consultants expérimentés, sélectionnés sur mesure.",
-    ctaLabel: "Découvrir nos expertises",
-    ctaTo: { name: 'entreprise' },
-  },
-  candidat: {
-    title: "Je suis candidat",
-    description: "Rejoignez un collectif où votre talent compte vraiment. CDI, CDD, stage — construisez votre carrière avec nous.",
-    ctaLabel: "Voir nos offres",
-    ctaTo: { name: 'offres' },
-  },
-  offres: {
-    title: "Consulter nos offres",
-    description: "Data, cloud, développement, conseil — des postes sur mesure qui correspondent à votre profil et à vos ambitions.",
-    ctaLabel: "Explorer les offres",
-    ctaTo: { name: 'offres' },
-  },
-  'qui-sommes-nous': {
-    title: "Qui sommes-nous ?",
-    description: "Une ESN à taille humaine fondée sur l'expertise, la proximité et l'engagement. Découvrez notre histoire et notre collectif.",
-    ctaLabel: "Notre histoire",
-    ctaTo: { name: 'histoire' },
-  },
-  references: {
-    title: "Nos secteurs",
-    description: "Retail, industrie, logistique, banque et assurance — nous intervenons là où la donnée et le digital font la différence.",
-    ctaLabel: "En savoir plus",
-    ctaTo: { path: '/', hash: '#secteurs' },
-  },
-  ia: {
-    title: "Discutons IA",
-    description: "L'intelligence artificielle au service de votre transformation. Cas d'usage concrets et accompagnement sur mesure.",
-    ctaLabel: "Explorer nos approches IA",
-    ctaTo: { name: 'ia' },
-  },
 }
 
 /**
@@ -70,116 +54,93 @@ export const MENU_PANEL_CONFIG: Record<string, MenuPanelInfo> = {
  * section plutôt qu'une formule de phrase (« Expertises » pour « Je suis une
  * entreprise »), demande client explicite pour une navigation plus
  * scannable. Le client est revenu sur ce point précis en V1.0 : l'entrée
- * `entreprise` porte de nouveau sa formule longue d'origine. Le principe
- * reste néanmoins la référence par défaut pour toute future entrée — c'est
- * pourquoi « Je suis candidat » (ajoutée en V0.9) n'a, elle, jamais eu de
- * raccourci demandé et n'en a donc jamais porté.
- *
- * Le reste de ce fichier (CTA globaux, cibles provisoires) est sans rapport
- * avec ce choix de libellé, cf. paragraphes suivants.
+ * `entreprise` porte de nouveau sa formule longue d'origine.
  *
  * CIBLES PROVISOIRES — l'arborescence publique se limite pour l'instant à `/`.
  * Toutes les entrées pointent donc vers des ancres réelles de l'accueil : rien
  * ici ne mène à un 404. À l'ouverture des pages dédiées, remplacer les
- * `hash` par les `name` de route correspondants ; la forme objet
- * `{ path, hash }` reste compatible, seul l'import change.
+ * `hash` par les `name` de route correspondants.
  *
- * ENTRÉE « TÉMOIGNAGES » RETIRÉE (V0.1.20, cf. ADR 24) : elle ciblait
- * `#interviews`, ancre qui n'existe plus depuis le retrait intégral de la
- * section Interviews de `HomeView.vue` (demande client, pivot « scroll
- * snapping »). Retirée plutôt que repointée vers une autre section : aucune
- * section existante n'offre un contenu équivalent (témoignages vidéo), la
- * repointer aurait été trompeur pour l'utilisateur.
- *
- * ENTRÉE « L'ÉQUIPE » RETIRÉE (V0.1.22, cf. ADR 26) : elle ciblait `#equipe`,
- * ancre qui n'existe plus depuis le retrait intégral de la section Équipe de
- * `HomeView.vue` (demande client explicite). Même raisonnement que le
- * retrait de « Témoignages » ci-dessus : aucune section restante n'offre un
- * contenu équivalent, repointer aurait été trompeur.
+ * ENTRÉES SANS `to` (qui-sommes-nous, references) : pas de page unique dédiée,
+ * les sous-liens constituent la destination réelle. Mobile : drill-down.
+ * Desktop : zone droite du mega-menu au survol.
  */
-export const mainNavEntries: MegaMenuEntry[] = [
+export const mainNavEntries: NavItem[] = [
   {
     id: 'entreprise',
-    // Libellé restauré en toutes lettres (V1.0, demande client explicite) —
-    // remplace le raccourci « Expertises » posé en V0.1.12, cf. commentaire
-    // d'en-tête « INTITULÉS COURTS ». La cible ne change pas : la migration
-    // de `{ path: '/', hash: '#services' }` vers `{ name: 'entreprise' }`
-    // avait déjà eu lieu en V0.8, lors de l'ouverture de sa page dédiée
-    // (`EnterpriseView.vue`, route `/je-suis-une-entreprise`).
     label: 'Je suis une entreprise',
+    title: 'Je suis une entreprise',
+    description: "Nous vous accompagnons dans vos projets data, cloud et applicatifs avec des consultants experts, sélectionnés sur mesure.",
+    ctaLabel: "Découvrir nos expertises",
+    ctaTo: { name: 'entreprise' },
     to: { name: 'entreprise' },
+    subItems: [
+      { label: "Nos expertises", description: "Data, cloud, développement, conseil", to: { name: 'entreprise' } },
+      { label: "Nos références clients", description: "Projets et secteurs accompagnés", to: { name: 'entreprise' } },
+    ],
   },
-  // Entrée ajoutée en V0.9, immédiatement après « Je suis une entreprise » :
-  // les deux parcours d'entrée du site restent côte à côte, avant les
-  // rubriques d'identité de la société.
   {
     id: 'candidat',
     label: 'Je suis candidat',
+    title: 'Rejoignez le collectif',
+    description: "Rejoignez un collectif où votre talent compte vraiment. CDI, CDD, stage — construisez votre carrière avec nous.",
+    ctaLabel: "Voir nos offres",
+    ctaTo: { name: 'offres' },
     to: { name: 'candidat' },
+    subItems: [
+      { label: "Nos offres d'emploi", description: "Data, cloud, dev, conseil", to: { name: 'offres' } },
+      { label: "Processus de recrutement", description: "Simple, humain et rapide", to: { name: 'candidat' } },
+      { label: "La vie chez Faceel-IT", description: "Culture, avantages, collectif", to: { name: 'candidat' } },
+    ],
   },
-  // Ajoutée en V1.2, immédiatement après « Je suis candidat » : suite naturelle
-  // du parcours candidat — on parcourt l'accroche puis on consulte les offres.
   {
     id: 'offres',
     label: 'Consulter nos offres',
+    title: 'Nos offres',
+    description: "Data, cloud, développement, conseil — des postes sur mesure qui correspondent à votre profil et à vos ambitions.",
+    ctaLabel: "Explorer les offres",
+    ctaTo: { name: 'offres' },
     to: { name: 'offres' },
+    subItems: [
+      { label: "Toutes nos offres", description: "Filtrer par compétence ou localisation", to: { name: 'offres' } },
+    ],
   },
-  /**
-   * Premières entrées qui visent de VRAIES pages et non des ancres de
-   * l'accueil (cf. « cibles provisoires » ci-dessus) : `{ name: ... }` plutôt
-   * qu'un chemin en dur — le jour où l'URL change, la route reste l'unique
-   * endroit à modifier.
-   *
-   * Regroupées sous « Qui sommes-nous » avec `columns` (et non deux entrées de
-   * premier niveau) : c'est la forme que `App.vue` rend en section accordéon
-   * du tiroir, exactement comme « Secteurs » — les deux pages parlent de la
-   * même chose, l'identité de la société, et le menu doit le montrer.
-   */
   {
     id: 'qui-sommes-nous',
     label: 'Qui sommes-nous',
-    columns: [
-      {
-        title: 'Qui sommes-nous',
-        links: [
-          { label: 'Notre histoire', to: { name: 'histoire' } },
-          { label: 'Notre collectif', to: { name: 'collectif' } },
-        ],
-      },
+    title: "Qui sommes-nous ?",
+    description: "Une ESN à taille humaine fondée sur l'expertise, la proximité et l'engagement. Découvrez notre histoire et notre collectif.",
+    ctaLabel: "Notre histoire",
+    ctaTo: { name: 'histoire' },
+    subItems: [
+      { label: "Notre histoire", description: "Nos origines et notre vision", to: { name: 'histoire' } },
+      { label: "Notre collectif", description: "L'équipe et les valeurs Faceel-IT", to: { name: 'collectif' } },
     ],
   },
   {
     id: 'references',
     label: 'Secteurs',
-    columns: [
-      {
-        title: 'Nos secteurs',
-        links: [
-          { label: 'Ecommerce', to: { path: '/', hash: '#secteurs' } },
-          { label: 'Industrie', to: { path: '/', hash: '#secteurs' } },
-          { label: 'Logistique', to: { path: '/', hash: '#secteurs' } },
-          { label: 'Banque & Assurance', to: { path: '/', hash: '#secteurs' } },
-        ],
-      },
+    title: 'Nos secteurs',
+    description: "Retail, industrie, logistique, banque et assurance — nous intervenons là où la donnée et le digital font la différence.",
+    ctaLabel: "En savoir plus",
+    ctaTo: { path: '/', hash: '#secteurs' },
+    subItems: [
+      { label: "Ecommerce", to: { path: '/', hash: '#secteurs' } },
+      { label: "Industrie", to: { path: '/', hash: '#secteurs' } },
+      { label: "Logistique", to: { path: '/', hash: '#secteurs' } },
+      { label: "Banque & Assurance", to: { path: '/', hash: '#secteurs' } },
     ],
   },
-  /**
-   * Entrée ajoutée en V1.1, en dernière position : contrairement aux deux
-   * parcours d'entrée (« entreprise »/« candidat », regroupés en tête) et aux
-   * rubriques d'identité de la société, « Discutons IA » met en avant une
-   * offre — placée après elles plutôt qu'au milieu, dans la continuité
-   * naturelle vers les deux CTA globaux du Header (« Nous contacter »/
-   * « Nous rejoindre »).
-   *
-   * NE PAS CONFONDRE avec l'ancienne pilule « Discutons IA » retirée en
-   * V0.1.12 (cf. commentaire d'en-tête « INTITULÉS COURTS ») : celle-ci était
-   * un bouton d'action dans le Header (`#leading` de `MegaMenu`), pas une
-   * entrée de ce menu. Le nom se recoupe, le rôle et l'emplacement sont
-   * entièrement différents.
-   */
   {
     id: 'ia',
     label: 'Discutons IA',
+    title: 'Discutons IA',
+    description: "L'intelligence artificielle au service de votre transformation. Cas d'usage concrets et accompagnement sur mesure.",
+    ctaLabel: "Explorer nos approches IA",
+    ctaTo: { name: 'ia' },
     to: { name: 'ia' },
+    subItems: [
+      { label: "Nos approches IA", description: "Cas d'usage et accompagnement sur mesure", to: { name: 'ia' } },
+    ],
   },
 ]

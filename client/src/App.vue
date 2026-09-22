@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import MegaMenu from '@/components/ui/MegaMenu.vue'
+import CookieBanner from '@/components/ui/CookieBanner.vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import { mainNavEntries } from '@/features/navigation/mainNav'
 import { footerColumns, footerDescription } from '@/features/navigation/footerNav'
@@ -38,6 +39,7 @@ import { footerColumns, footerDescription } from '@/features/navigation/footerNa
  */
 const route = useRoute()
 const isFullPageScroll = computed(() => route.meta.fullPageScroll === true)
+const isClassicScroll = computed(() => route.meta.classicScroll === true)
 
 /**
  * NAVBAR EN SUPERPOSITION (V0.3) — deux états possédés ici.
@@ -212,7 +214,11 @@ const ArrowRightIcon: FunctionalComponent = () =>
       <div
         ref="scrollRoot"
         class="h-full flex-1 overflow-y-auto transition-all duration-300"
-        :class="isFullPageScroll ? 'snap-y snap-mandatory' : 'flex flex-col'"
+        :class="isClassicScroll
+          ? 'flex flex-col'
+          : isFullPageScroll
+            ? 'snap-y snap-mandatory'
+            : 'snap-y snap-mandatory flex flex-col'"
       >
         <main id="contenu" :class="isFullPageScroll ? 'contents' : 'flex-1'">
           <RouterView />
@@ -357,5 +363,6 @@ const ArrowRightIcon: FunctionalComponent = () =>
         </TheFooter>
       </div>
     </div>
+    <CookieBanner />
   </div>
 </template>

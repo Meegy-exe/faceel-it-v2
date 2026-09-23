@@ -282,6 +282,7 @@ onBeforeUnmount(() => {
          retirait la diapositive du flux, collapsant le conteneur parent). -->
     <div class="my-auto grid">
       <Transition
+        mode="out-in"
         enter-from-class="translate-x-full"
         enter-active-class="z-10 transition-transform duration-700 ease-in-out motion-reduce:transition-none"
         enter-to-class="translate-x-0"
@@ -289,7 +290,7 @@ onBeforeUnmount(() => {
         leave-active-class="z-0 transition-all duration-700 ease-in-out motion-reduce:transition-none"
         leave-to-class="opacity-0 scale-95"
       >
-        <div :key="activeIndex" class="col-start-1 row-start-1 w-full px-20 md:px-24 lg:px-28">
+        <div :key="activeIndex" class="col-start-1 row-start-1 w-full px-4 md:px-24 lg:px-28">
           <slot name="slide" :index="activeIndex" />
         </div>
       </Transition>

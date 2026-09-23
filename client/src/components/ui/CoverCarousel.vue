@@ -61,11 +61,11 @@ function getSlideStyle(index: number, activeIndex: number) {
   }
   // PREV (Ancrée exactement sur la ligne du padding gauche)
   if (diff === -1) {
-    return 'z-10 left-0 translate-x-0 scale-75 opacity-30 origin-left pointer-events-none'
+    return 'z-10 left-0 translate-x-0 scale-75 opacity-30 origin-left pointer-events-none max-md:opacity-0 max-md:invisible'
   }
   // NEXT (Ancrée exactement sur la ligne du padding droit)
   if (diff === 1) {
-    return 'z-10 left-full -translate-x-full scale-75 opacity-30 origin-right pointer-events-none'
+    return 'z-10 left-full -translate-x-full scale-75 opacity-30 origin-right pointer-events-none max-md:opacity-0 max-md:invisible'
   }
   // CARTES LOINTAINES GAUCHE
   if (diff < -1) {
@@ -137,7 +137,7 @@ onBeforeUnmount(() => {
     <!-- Conteneur principal -->
     <div class="relative my-auto flex w-full items-center overflow-hidden">
       <!-- Piste avec les MÊMES paddings que les en-têtes de HomeView -->
-      <div class="relative h-[250px] w-full px-20 md:px-24 lg:px-28">
+      <div class="relative h-[250px] w-full px-4 md:px-24 lg:px-28">
         <div class="relative h-full w-full">
           <div
             v-for="(_, index) in count"

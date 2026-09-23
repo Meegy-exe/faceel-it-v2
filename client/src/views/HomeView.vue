@@ -127,6 +127,23 @@ const EVENT_PHOTOS: EventPhoto[] = [
   { src: eventPadelEquipe, alt: "Équipe réunie autour d'un terrain de padel" },
 ]
 
+/** Carrousel mobile : index courant, avance toutes les 3 s. SSR-safe : le
+ *  setInterval est instancié uniquement dans onMounted, jamais pendant le
+ *  pré-rendu (même discipline que les autres carrousels du site). */
+const mobilePhotoIndex = ref(0)
+let mobilePhotoInterval: ReturnType<typeof setInterval> | undefined
+
+onMounted(() => {
+  if (import.meta.env.SSR) return
+  mobilePhotoInterval = setInterval(() => {
+    mobilePhotoIndex.value = (mobilePhotoIndex.value + 1) % EVENT_PHOTOS.length
+  }, 3_000)
+})
+
+onBeforeUnmount(() => {
+  if (mobilePhotoInterval !== undefined) clearInterval(mobilePhotoInterval)
+})
+
 /* -------------------------------------------------------------------------- */
 /* Secteurs d'activités                                                       */
 /* -------------------------------------------------------------------------- */
@@ -345,13 +362,11 @@ onBeforeUnmount(() => {
           class="mt-6 flex max-w-7xl flex-col items-start gap-y-2 animate-fade-up motion-reduce:animate-none font-display text-5xl leading-[1.1] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl [animation-delay:80ms] drop-shadow-xl"
         >
           <span class="block text-white">On ne rejoint pas <br class="lg:hidden" />une ESN.</span>
-          <span class="inline-flex h-[1.1em] items-baseline text-accent-500">
-            <span class="sr-only">{{ HERO_TYPED_TEXT }}</span>
-            <span aria-hidden="true">{{ typedText || '\u200B' }}</span>
-            <span
+          <span class="text-accent-500">
+            <span class="sr-only">{{ HERO_TYPED_TEXT }}</span><span aria-hidden="true">{{ typedText || '\u200B' }}<span
               aria-hidden="true"
-              class="ml-2 inline-block h-[0.7em] w-[0.09em] translate-y-[0.05em] animate-blink self-center bg-accent-500 motion-reduce:animate-none"
-            />
+              class="ml-0.5 inline-block h-[0.7em] w-[0.09em] translate-y-[0.05em] animate-blink bg-accent-500 motion-reduce:animate-none"
+            /></span>
           </span>
         </h1>
       </div>
@@ -365,7 +380,7 @@ onBeforeUnmount(() => {
   >
     <header
       ref="servicesEl"
-      class="max-w-4xl px-20 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
+      class="max-w-4xl px-4 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
       :class="scrollRevealClass(servicesReveal)"
     >
       <h2 class="font-display text-display text-balance text-primary-900">
@@ -400,7 +415,7 @@ onBeforeUnmount(() => {
   >
     <header
       ref="valeursEl"
-      class="max-w-5xl px-20 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
+      class="max-w-5xl px-4 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
       :class="scrollRevealClass(valeursReveal)"
     >
       <h2 class="font-display text-display text-balance text-white">Nos valeurs</h2>
@@ -512,7 +527,7 @@ onBeforeUnmount(() => {
   >
     <header
       ref="secteursEl"
-      class="max-w-4xl px-20 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
+      class="max-w-4xl px-4 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
       :class="scrollRevealClass(secteursReveal)"
     >
       <h2 class="font-display text-display text-balance text-primary-900">
@@ -546,7 +561,7 @@ onBeforeUnmount(() => {
   >
     <header
       ref="rseEl"
-      class="max-w-4xl px-20 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
+      class="max-w-4xl px-4 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
       :class="scrollRevealClass(rseReveal)"
     >
       <h2 class="font-display text-display text-balance text-white">Politique RSE</h2>
@@ -591,14 +606,9 @@ onBeforeUnmount(() => {
       </p>
     </header>
 
-    <!-- Bento asymétrique : 2 colonnes en mobile, 4 au-delà — la tuile en
-         vedette (`col-span-2 row-span-2`) reste inchangée d'un palier à
-         l'autre, seul le nombre de colonnes disponibles fait basculer les 4
-         tuiles restantes d'un empilement 2×2 sous la vedette (mobile) à une
-         bande de 4 colonnes à sa droite (desktop) — sans classe responsive
-         dédiée par tuile. -->
+    <!-- Grille bento — masquée sur mobile, visible à partir de sm: -->
     <ul
-      class="mx-auto mt-12 grid w-full max-w-6xl grid-cols-2 auto-rows-[9rem] gap-4 sm:grid-cols-4 sm:auto-rows-[10rem] lg:auto-rows-[12rem]"
+      class="mx-auto mt-12 hidden w-full max-w-6xl grid-cols-2 auto-rows-[9rem] gap-4 sm:grid sm:grid-cols-4 sm:auto-rows-[10rem] lg:auto-rows-[12rem]"
     >
       <li
         v-for="(photo, index) in EVENT_PHOTOS"
@@ -615,5 +625,37 @@ onBeforeUnmount(() => {
         />
       </li>
     </ul>
+
+    <!-- Slider automatique — visible sur mobile uniquement -->
+    <div class="relative mx-auto mt-10 h-72 w-full overflow-hidden rounded-xl sm:hidden">
+      <TransitionGroup
+        enter-active-class="transition-opacity duration-700 ease-in-out motion-reduce:transition-none"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition-opacity duration-700 ease-in-out motion-reduce:transition-none absolute inset-0"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <img
+          v-for="(photo, index) in EVENT_PHOTOS"
+          v-show="index === mobilePhotoIndex"
+          :key="photo.src"
+          :src="photo.src"
+          :alt="photo.alt"
+          loading="lazy"
+          decoding="async"
+          class="absolute inset-0 h-full w-full object-cover"
+        />
+      </TransitionGroup>
+      <!-- Indicateurs de position -->
+      <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5" aria-hidden="true">
+        <span
+          v-for="(_, i) in EVENT_PHOTOS"
+          :key="i"
+          class="block h-1.5 rounded-full transition-all duration-300"
+          :class="i === mobilePhotoIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/40'"
+        />
+      </div>
+    </div>
   </section>
 </template>

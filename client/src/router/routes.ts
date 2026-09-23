@@ -136,6 +136,18 @@ export const routes: RouteRecordRaw[] = [
     meta: { classicScroll: true },
   },
   {
+    path: '/accessibilite',
+    name: 'accessibilite',
+    component: () => import('@/views/legal/AccessibilityView.vue'),
+    meta: { classicScroll: true },
+  },
+  {
+    path: '/contact',
+    name: 'contact',
+    component: () => import('@/views/ContactView.vue'),
+    meta: { classicScroll: true },
+  },
+  {
     // JETABLE — banc d'essai du Design System, à retirer avant la mise en ligne.
     // Absente de `staticPrerenderRoutes` : jamais pré-rendue, jamais indexable.
     path: '/styleguide',

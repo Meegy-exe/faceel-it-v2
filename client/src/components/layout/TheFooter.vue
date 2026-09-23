@@ -1,183 +1,258 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import AnimatedBackground from '@/components/ui/AnimatedBackground.vue'
-import type { FooterColumn } from '@/components/ui/types'
+import CookieManagerModal from '@/components/ui/CookieManagerModal.vue'
 import logoSrc from '@/assets/images/2.svg'
 
-/**
- * Pied de page du site.
- *
- * Vit dans `components/layout/` et non dans `components/ui/` : il connaît la
- * notion de « pied de page d'un site », ce qui n'est pas une primitive
- * d'interface. Il ne remonte pas pour autant vers `features/` — les liens
- * arrivent par prop, fournis par la coquille (`App.vue`), pour que la règle de
- * dépendance du README reste tenue.
- *
- * Surface sombre, donc tous les couples de couleurs sont calculés sur navy :
- *   blanc/navy 15,9:1 · blanc-70%/navy 9,4:1 · accent-500/navy 9,1:1
- * Le vert n'est utilisé qu'en touches — puces, soulignement au survol,
- * séparateur — jamais en aplat.
- *
- * `fullPageScroll` (V0.1.22, cf. ADR 26) : bascule ce pied de page en
- * diapositive plein écran (`snap-start min-h-dvh flex flex-col
- * justify-end`) quand la route active enveloppe `<main>`/`<TheFooter>` dans
- * le conteneur de scroll-snap d'`App.vue` (`isFullPageScroll` côté
- * `App.vue`, dérivé de `route.meta.fullPageScroll`) — override client
- * explicite des limites d'ADR 24/25, qui gardaient ce composant hors de tout
- * modèle de scroll-snap parce qu'il est PARTAGÉ par toutes les routes
- * (Styleguide, 404 comprises). Prop plutôt que classe figée : ce composant
- * n'est monté qu'une seule fois par `App.vue`, ses deux autres consommateurs
- * de route (`/styleguide`, la 404) n'ont pas vocation à devenir des
- * diapositives plein écran — `false` par défaut y préserve le pied de page
- * compact « collé en bas » existant, inchangé.
- */
+const isCookieModalOpen = ref(false)
+
 const route = useRoute()
 
 withDefaults(
   defineProps<{
-    /** Colonnes de liens rapides. Trois maximum en pratique, sinon ça déborde. */
-    columns: FooterColumn[]
-    /** Reprise de la baseline sous le logotype. */
-    description: string
-    /** Cf. commentaire ci-dessus — `false` par défaut (comportement inchangé). */
     fullPageScroll?: boolean
+    /** Conservé optionnel pour compatibilité App.vue — contenu désormais codé en dur. */
+    columns?: unknown[]
+    description?: string
   }>(),
   { fullPageScroll: false },
 )
-
-defineSlots<{
-  /** Remplace le logotype par défaut. */
-  logo?(): unknown
-  /** Icônes de réseaux sociaux, sous la baseline de marque (V0.1.12). */
-  social?(): unknown
-  /** Bloc de contact : adresse, téléphone, courriel. */
-  contact?(): unknown
-  /**
-   * Duo de CTA de conversion, repris du Header en fin de navigation
-   * (V0.1.12, ticket #14) — deux `BaseButton`, jamais un seul ni plus.
-   */
-  ctas?(): unknown
-  /** Barre basse : mentions légales, politique de confidentialité… */
-  legal?(): unknown
-}>()
 </script>
 
 <template>
-  <!-- `fullPageScroll` (V0.1.22, cf. ADR 26) : `snap-start min-h-dvh w-full
-       flex flex-col justify-end` en fait une diapositive d'ancrage à part
-       entière quand `App.vue` enveloppe `<main>`/`<TheFooter>` dans son
-       conteneur de scroll-snap (route `/` uniquement) — `min-h-dvh` plutôt
-       que `h-dvh` strict : le contenu du pied de page (4 colonnes + CTA +
-       barre basse) peut légitimement dépasser un seul viewport sur un petit
-       mobile, `min-h-dvh` le laisse grandir plutôt que le rogner (fallback
-       explicitement permis par le brief). `justify-end` pousse le contenu
-       vers le bas de la diapositive, cohérent avec un pied de page. Pas de
-       `snap-start` ni `min-h-dvh` en dehors de ce cas : `/styleguide` et la
-       404 partagent ce même composant et n'ont pas vocation à hériter d'un
-       pied de page pleine hauteur. -->
   <footer
     :class="[
-      // `bg-[#000066]` et non plus `bg-primary-950` (#00003D) : sur l'accueil,
-      // le pied de page est la DERNIÈRE diapositive du défilement enclenché,
-      // juste après la section RSE. Deux bleus foncés différents s'y
-      // succédaient donc à l'écran, ce qui se lit comme un défaut d'alignement
-      // de la charte — un seul et unique bleu foncé sur toute la page.
-      'relative isolate overflow-hidden bg-[#000066] px-4 pb-10 text-white sm:px-6 lg:px-8 xl:px-12',
+      'w-full bg-[#000066]',
       route.meta.classicScroll
-        ? 'w-full shrink-0 pt-20 sm:pt-24'
+        ? 'shrink-0'
         : fullPageScroll
-          ? 'w-full h-full snap-start snap-always flex flex-col justify-end pt-12'
-          : 'snap-start snap-always pt-20 sm:pt-24',
+          ? 'snap-start snap-always'
+          : 'snap-start snap-always',
     ]"
   >
-    <!-- Décor calme : le pied de page ne doit pas concurrencer le contenu qui
-         le précède. `aurora` n'embarque ni traits ni particules. -->
-    <AnimatedBackground variant="aurora" tone="dark" />
 
-    <!-- w-full (V0.1.4, ex-max-w-[100rem] depuis V0.1.3, cf. ADR 09) : le
-         padding horizontal qui compense l'absence de plafond de largeur vit
-         désormais sur le `<footer>` lui-même, là où vivait déjà l'ancien
-         padding fixe. L'échelle elle-même est revenue à un standard resserré
-         (`px-4 sm:px-6 lg:px-8 xl:px-12`) en V0.1.9 : l'échelle fluide
-         `px-6 md:px-12 lg:px-24 xl:px-32 2xl:px-40` de V0.1.4 écrasait le
-         contenu au centre sur grand écran (cf. ADR 13). -->
-    <div class="w-full">
-      <!-- Mobile-first : une colonne, puis deux à partir de `sm`, puis la
-           marque prend deux fractions à partir de `lg`. -->
-      <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr_1.4fr] lg:gap-8">
-        <!-- Marque ------------------------------------------------------- -->
-        <div class="sm:col-span-2 lg:col-span-1">
-          <slot name="logo">
-            <img :src="logoSrc" alt="Faceel-IT" class="h-16 w-auto object-contain" />
-          </slot>
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         BANDE 1 : Fond bleu foncé — marque + notes de satisfaction
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="relative isolate overflow-hidden bg-[#000066] px-4 pt-24 pb-16 text-white sm:px-6 md:pt-40 md:pb-20 lg:px-8 xl:px-12">
+      <AnimatedBackground variant="aurora" tone="dark" />
 
-          <p class="mt-5 max-w-sm text-base leading-relaxed text-white/70">
-            {{ description }}
+      <div class="relative z-10 flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-16">
+
+        <!-- Colonne gauche : identité + réseaux sociaux -->
+        <div class="flex-1">
+          <img :src="logoSrc" alt="Faceel-IT" class="h-16 w-auto object-contain" />
+
+          <p class="mt-5 max-w-lg text-base leading-relaxed text-white/70 md:text-lg">
+            Cabinet de conseil expert en Data, Intelligence Artificielle et Transformation digitale. Au-delà du code, c'est l'engagement de notre collectif qui fait aboutir vos projets.
           </p>
 
-          <div v-if="$slots.social" class="mt-6 flex items-center gap-3">
-            <slot name="social" />
+          <div class="mt-6 flex items-center gap-2">
+            <a
+              href="https://www.linkedin.com/company/faceel-it/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Faceel-IT sur LinkedIn"
+              class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" class="size-5">
+                <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.1 1.43-2.1 2.9V21h-4V9Z" />
+              </svg>
+            </a>
+            <a
+              href="https://www.youtube.com/@faceelit"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Faceel-IT sur YouTube"
+              class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" class="size-5">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M3 5h18v14H3V5Zm7 4 6 3-6 3V9Z" />
+              </svg>
+            </a>
+            <a
+              href="https://www.instagram.com/faceelit/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Faceel-IT sur Instagram"
+              class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+            >
+              <svg viewBox="0 0 24 24" fill="none" class="size-5">
+                <rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" stroke-width="1.8" />
+                <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8" />
+                <circle cx="17" cy="7" r="1" fill="currentColor" />
+              </svg>
+            </a>
+            <a
+              href="https://www.glassdoor.fr/Avis/Faceel-IT-Avis-E8791143.htm"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Faceel-IT sur Glassdoor"
+              class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+            >
+              <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                <path d="M10 1.5l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.2-5.4 3.2 1.3-6-4.6-4.1 6.1-.6L10 1.5Z" />
+              </svg>
+            </a>
           </div>
         </div>
 
-        <!-- Liens rapides ------------------------------------------------ -->
-        <!-- `aria-label` et non `aria-labelledby` : le titre de colonne est un
-             `<p>` décoratif sans identifiant. Nommer chaque `<nav>` évite que
-             le lecteur d'écran annonce trois « navigation » indistinctes. -->
-        <nav v-for="column in columns" :key="column.title" :aria-label="column.title">
-          <p class="text-eyebrow uppercase text-white/45">{{ column.title }}</p>
+        <!-- Colonne droite : notes Glassdoor + Google -->
+        <div class="flex shrink-0 gap-4">
+          <a
+            href="https://www.glassdoor.fr/Avis/Faceel-it-Lille-Avis-EI_IE4844076.0,9_IL.10,15_IM1111.htm"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex flex-col items-center rounded-xl bg-white px-8 py-6 text-gray-900 shadow-md transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+          >
+            <p class="text-5xl font-extrabold leading-none tracking-tight">5,0</p>
+            <p class="mt-2 text-sm font-bold text-green-600">Glassdoor</p>
+          </a>
 
-          <ul class="mt-5 space-y-3">
-            <li v-for="link in column.links" :key="link.label">
-              <component
-                :is="link.to !== undefined ? 'RouterLink' : 'a'"
-                v-bind="link.to !== undefined ? { to: link.to } : { href: link.href }"
-                class="group inline-flex items-center gap-2.5 rounded-md text-white/70 transition-colors duration-200 hover:text-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
-              >
-                <!-- Puce d'accent : elle grandit ET change de couleur, pour ne
-                     pas reposer sur la seule teinte. -->
-                <span
-                  aria-hidden="true"
-                  class="size-1.5 shrink-0 rounded-full bg-white/25 transition-all duration-200 group-hover:scale-150 group-hover:bg-accent-500 motion-reduce:transition-none"
-                />
-                {{ link.label }}
-              </component>
+          <a
+            href="https://www.google.com/search?sca_esv=40dae565ac35b613&hl=fr&gl=fr&output=search&kgmid=/g/11r3m97yrh&q=Faceel-it&shndl=30&shem=lcuae,lstl1,uaasie&source=sh/x/loc/uni/m1/1&kgs=88c0721b1fda94c2"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex flex-col items-center rounded-xl bg-white px-8 py-6 text-gray-900 shadow-md transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+          >
+            <p class="text-5xl font-extrabold leading-none tracking-tight">5/5</p>
+            <p class="mt-2 text-sm font-bold">
+              <span class="text-[#4285F4]">G</span><span class="text-[#EA4335]">o</span><span class="text-[#FBBC05]">o</span><span class="text-[#4285F4]">g</span><span class="text-[#34A853]">l</span><span class="text-[#EA4335]">e</span>
+            </p>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         BANDE 2 : Fond clair — navigation en 4 colonnes
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="bg-gray-50 px-4 py-12 text-gray-900 sm:px-6 lg:px-8 xl:px-12">
+      <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-4">
+
+        <!-- Nos services -->
+        <nav aria-label="Nos services">
+          <p class="text-xs font-semibold uppercase tracking-widest text-gray-500">Nos services</p>
+          <ul class="mt-5 space-y-3 text-sm">
+            <li>
+              <RouterLink to="/#services" class="text-gray-700 transition-colors duration-200 hover:text-[#000066]">
+                La tech au service des métiers
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink to="/#valeurs" class="text-gray-700 transition-colors duration-200 hover:text-[#000066]">
+                Nos valeurs ajoutées
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink to="/#secteurs" class="text-gray-700 transition-colors duration-200 hover:text-[#000066]">
+                Nos secteurs d'activités
+              </RouterLink>
             </li>
           </ul>
         </nav>
 
-        <!-- Contact ------------------------------------------------------ -->
+        <!-- L'agence -->
+        <nav aria-label="L'agence">
+          <p class="text-xs font-semibold uppercase tracking-widest text-gray-500">L'agence</p>
+          <ul class="mt-5 space-y-3 text-sm">
+            <li>
+              <RouterLink to="/#rse" class="text-gray-700 transition-colors duration-200 hover:text-[#000066]">
+                Politique RSE
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink to="/nous-rejoindre" class="text-gray-700 transition-colors duration-200 hover:text-[#000066]">
+                Nous rejoindre
+              </RouterLink>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Informations légales -->
+        <nav aria-label="Informations légales">
+          <p class="text-xs font-semibold uppercase tracking-widest text-gray-500">Informations légales</p>
+          <ul class="mt-5 space-y-3 text-sm">
+            <li>
+              <RouterLink to="/mentions-legales" class="text-gray-700 transition-colors duration-200 hover:text-[#000066]">
+                Mentions légales
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink to="/politique-cookies" class="text-gray-700 transition-colors duration-200 hover:text-[#000066]">
+                Politique des cookies
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink to="/politique-confidentialite" class="text-gray-700 transition-colors duration-200 hover:text-[#000066]">
+                Politique de confidentialité des données
+              </RouterLink>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="cursor-pointer text-gray-700 transition-colors duration-200 hover:text-[#000066]"
+                @click.prevent="isCookieModalOpen = true"
+              >
+                Gestion des cookies
+              </a>
+            </li>
+            <li>
+              <RouterLink to="/accessibilite" class="text-gray-700 transition-colors duration-200 hover:text-[#000066]">
+                Déclaration d'accessibilité
+              </RouterLink>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Contact -->
         <div>
-          <p class="text-eyebrow uppercase text-white/45">Contact</p>
-          <div class="mt-5">
-            <slot name="contact" />
-          </div>
+          <p class="text-xs font-semibold uppercase tracking-widest text-gray-500">Contact</p>
+          <address class="mt-5 space-y-3 text-sm not-italic text-gray-700">
+            <p>10 allée du Château Blanc<br />59290 Wasquehal</p>
+            <p>
+              <a href="tel:+33359617188" class="transition-colors duration-200 hover:text-[#000066]">
+                03 59 61 71 88
+              </a>
+            </p>
+            <p>
+              <a href="mailto:contact@faceel-it.com" class="transition-colors duration-200 hover:text-[#000066]">
+                contact@faceel-it.com
+              </a>
+            </p>
+          </address>
         </div>
-      </div>
 
-      <!-- Duo de CTA de conversion, visible en fin de navigation
-           (V0.1.12, ticket #14) : mêmes deux `BaseButton` que le Header,
-           `block` + `sm:w-auto` fourni par l'appelant pour rester pleine
-           largeur en mobile-first sans qu'aucune classe de disposition ne
-           soit à deviner ici. -->
-      <div
-        v-if="$slots.ctas"
-        class="mt-16 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
-      >
-        <slot name="ctas" />
-      </div>
-
-      <!-- Barre basse ---------------------------------------------------- -->
-      <div
-        class="mt-16 flex flex-col gap-4 border-t border-white/10 pt-8 text-sm text-white/45 sm:flex-row sm:items-center sm:justify-between"
-      >
-        <p>Faceel-IT — ESN, Wasquehal, Hauts-de-France.</p>
-
-        <!-- Pas d'année : elle serait figée au moment du build par le
-             pré-rendu, et la recalculer côté client provoquerait un écart
-             d'hydratation au passage de janvier. -->
-        <slot name="legal" />
       </div>
     </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         BANDE 3 : CTAs de conversion + copyright
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="bg-gray-50 border-t border-gray-200 px-4 py-10 sm:px-6 lg:px-8 xl:px-12">
+      <div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+        <RouterLink
+          to="/contact"
+          class="inline-flex w-full items-center justify-center rounded-lg border-2 border-[#000066] px-6 py-3 text-sm font-semibold text-[#000066] transition-colors duration-200 hover:bg-[#000066] hover:text-white sm:w-auto"
+        >
+          Nous contacter
+        </RouterLink>
+        <RouterLink
+          to="/nous-rejoindre"
+          class="inline-flex w-full items-center justify-center rounded-lg bg-green-500 px-6 py-3 text-sm font-semibold text-gray-900 transition-colors duration-200 hover:bg-green-400 sm:w-auto"
+        >
+          Nous rejoindre
+        </RouterLink>
+      </div>
+
+      <p class="mt-8 text-center text-sm text-gray-400">
+        Faceel-IT — ESN, Wasquehal, Hauts-de-France.
+      </p>
+    </div>
+
   </footer>
+
+  <CookieManagerModal :is-open="isCookieModalOpen" @close="isCookieModalOpen = false" />
 </template>

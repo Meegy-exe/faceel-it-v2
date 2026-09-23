@@ -125,7 +125,9 @@ const GLASSDOOR_HREF =
  * seule destination réelle qui reste : à remplacer par une vraie route dès
  * qu'une page contact existera.
  */
-const CONTACT_HREF = `mailto:${EMAIL}`
+/** Remplace l'ancien mailto provisoire — page /contact désormais disponible. */
+const CONTACT_TO = '/contact'
+const REJOINDRE_TO = '/nous-rejoindre'
 
 /** Flèche du CTA « Nous rejoindre », en composant fonctionnel local plutôt
  * qu'un `<svg>` recopié à chaque emplacement (Header desktop, menu mobile,
@@ -174,10 +176,10 @@ const ArrowRightIcon: FunctionalComponent = () =>
            `MegaMenu` connaît le fond réel de chaque rendu, `App.vue` non. -->
       <template #actions="{ surface }">
         <div class="flex items-center gap-3">
-          <BaseButton variant="outline" size="sm" :surface="surface" :href="CONTACT_HREF">
+          <BaseButton variant="outline" size="sm" :surface="surface" :to="CONTACT_TO">
             Nous contacter
           </BaseButton>
-          <BaseButton variant="accent" size="sm" :surface="surface" :href="CONTACT_HREF">
+          <BaseButton variant="accent" size="sm" :surface="surface" :to="REJOINDRE_TO">
             Nous rejoindre
             <template #iconRight><ArrowRightIcon /></template>
           </BaseButton>
@@ -337,7 +339,7 @@ const ArrowRightIcon: FunctionalComponent = () =>
               surface="dark"
               block
               class="sm:w-auto"
-              :href="CONTACT_HREF"
+              :to="CONTACT_TO"
             >
               Nous contacter
             </BaseButton>
@@ -347,7 +349,7 @@ const ArrowRightIcon: FunctionalComponent = () =>
               surface="dark"
               block
               class="sm:w-auto"
-              :href="CONTACT_HREF"
+              :to="REJOINDRE_TO"
             >
               Nous rejoindre
               <template #iconRight><ArrowRightIcon /></template>

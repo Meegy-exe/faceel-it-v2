@@ -82,10 +82,7 @@ export function useScrollReveal(target: Ref<HTMLElement | null>): Ref<ScrollReve
           if (entry.isIntersecting) stop()
           return
         }
-        if (entry.isIntersecting) {
-          state.value = 'visible'
-          stop()
-        }
+        state.value = entry.isIntersecting ? 'visible' : 'hidden'
       },
       { threshold: 0.3 },
     )
@@ -124,7 +121,8 @@ export function scrollRevealClass(
   direction: ScrollRevealDirection = 'up',
 ): string {
   if (state === 'hidden') {
-    return `opacity-0 ${HIDDEN_OFFSET[direction]} motion-reduce:opacity-100 motion-reduce:translate-y-0 motion-reduce:translate-x-0`
+    // transition-none : reset instantané — pas de fondu lent vers l'état invisible.
+    return `opacity-0 ${HIDDEN_OFFSET[direction]} transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0 motion-reduce:translate-x-0`
   }
-  return 'opacity-100 translate-y-0 translate-x-0'
+  return 'opacity-100 translate-y-0 translate-x-0 transition-all duration-700 ease-out motion-reduce:transition-none'
 }

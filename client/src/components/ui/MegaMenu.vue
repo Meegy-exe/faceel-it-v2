@@ -382,18 +382,18 @@ const focusRingClass = computed(() =>
                     <component
                       :is="sub.to !== undefined ? 'RouterLink' : 'a'"
                       v-bind="sub.to !== undefined ? { to: sub.to } : { href: sub.href ?? '#' }"
-                      class="group flex items-start gap-4 rounded-xl p-4 transition-colors duration-200 hover:bg-gray-50 focus-visible:outline-primary-900 motion-reduce:transition-none"
+                      class="group flex items-center gap-3 rounded-xl p-4 transition-colors duration-200 hover:bg-gray-50 focus-visible:outline-primary-900 motion-reduce:transition-none"
                       :tabindex="open ? undefined : -1"
                       @click="closeMenu()"
                     >
-                      <div class="flex-1">
+                      <div>
                         <p class="text-base font-semibold text-primary-900">{{ sub.label }}</p>
                         <p v-if="sub.description" class="mt-0.5 text-sm text-primary-900/55">
                           {{ sub.description }}
                         </p>
                       </div>
                       <svg
-                        class="mt-1 size-4 shrink-0 text-primary-900/25 transition-colors duration-200 group-hover:text-accent-500 motion-reduce:transition-none"
+                        class="size-4 shrink-0 text-primary-900/25 transition-colors duration-200 group-hover:text-accent-500 motion-reduce:transition-none"
                         viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"
                       >
                         <path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>

@@ -492,7 +492,7 @@ onBeforeUnmount(() => {
   >
     <div
       ref="chiffresEl"
-      class="mx-auto flex w-full max-w-5xl flex-col items-center text-center transition-all duration-700 ease-out motion-reduce:transition-none"
+      class="mx-auto flex w-full max-w-5xl flex-col items-center text-center"
       :class="scrollRevealClass(chiffresReveal)"
     >
       <!-- Pas de `<h2>` distinct : même parti que `#confiance` juste au-dessus

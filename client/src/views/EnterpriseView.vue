@@ -131,6 +131,12 @@ function animateCount(target: Ref<number>, endValue: number, durationMs = 1400) 
 }
 
 watch(statsReveal, (state, previous) => {
+  if (state === 'hidden') {
+    statCollaborateurs.value = 0
+    statProjets.value = 0
+    statClients.value = 0
+    return
+  }
   if (state !== 'visible' || previous !== 'hidden') return
   animateCount(statCollaborateurs, STAT_COLLABORATEURS)
   animateCount(statProjets, STAT_PROJETS)
@@ -138,6 +144,10 @@ watch(statsReveal, (state, previous) => {
 })
 
 watch(testimonialReveal, (state, previous) => {
+  if (state === 'hidden') {
+    statRecommandation.value = 0
+    return
+  }
   if (state !== 'visible' || previous !== 'hidden') return
   animateCount(statRecommandation, STAT_RECOMMANDATION)
 })
@@ -300,7 +310,7 @@ const GROWTH_DASH_LENGTH = 500
   >
     <div
       ref="statsEl"
-      class="mx-auto w-full max-w-5xl transition-all duration-700 ease-out motion-reduce:transition-none"
+      class="mx-auto w-full max-w-5xl"
       :class="scrollRevealClass(statsReveal)"
     >
       <blockquote

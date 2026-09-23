@@ -3,16 +3,8 @@ import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
 import CardCarousel from '@/components/ui/CardCarousel.vue'
 import CoverCarousel from '@/components/ui/CoverCarousel.vue'
 import CarouselSlideContent from '@/components/ui/CarouselSlideContent.vue'
-import PartnerCarousel, { type PartnerCarouselItem } from '@/components/ui/PartnerCarousel.vue'
+import ReferencesSection from '@/components/ui/ReferencesSection.vue'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
-import logoAuchan from '@/assets/images/partners/auchan.svg'
-import logoBoulanger from '@/assets/images/partners/boulanger.svg'
-import logoVerspieren from '@/assets/images/partners/verspieren.svg'
-import logoDecathlon from '@/assets/images/partners/decathlon.svg'
-import logoMidas from '@/assets/images/partners/midas.svg'
-import logoKiabi from '@/assets/images/partners/kiabi.svg'
-import logoMondialRelay from '@/assets/images/partners/mondial_relay.svg'
-import logoLeroyMerlin from '@/assets/images/partners/leroy_merlin.svg'
 // PHOTOS « NOS ÉVÉNEMENTS » — déjà présentes dans `assets/images/` (dépôt
 // client, dossier `Animate the header/assets/photos/`), aucune n'est encore
 // utilisée ailleurs sur le site : pas de nouveau fichier à importer, pas de
@@ -39,8 +31,6 @@ useSeo({
 /* Animations d'apparition au défilement                                      */
 /* -------------------------------------------------------------------------- */
 
-const confianceEl = useTemplateRef<HTMLElement>('confianceEl')
-const confianceReveal = useScrollReveal(confianceEl)
 const chiffresEl = useTemplateRef<HTMLElement>('chiffresEl')
 const chiffresReveal = useScrollReveal(chiffresEl)
 const servicesEl = useTemplateRef<HTMLElement>('servicesEl')
@@ -53,21 +43,6 @@ const valeursEl = useTemplateRef<HTMLElement>('valeursEl')
 const valeursReveal = useScrollReveal(valeursEl)
 const rseEl = useTemplateRef<HTMLElement>('rseEl')
 const rseReveal = useScrollReveal(rseEl)
-
-/* -------------------------------------------------------------------------- */
-/* Confiance — bandeau de logos                                               */
-/* -------------------------------------------------------------------------- */
-
-const PARTNERS: PartnerCarouselItem[] = [
-  { name: 'Auchan', logoUrl: logoAuchan, url: 'https://www.auchan.fr/' },
-  { name: 'Boulanger', logoUrl: logoBoulanger, url: 'https://www.boulanger.com/' },
-  { name: 'Verspieren', logoUrl: logoVerspieren, url: 'https://www.verspieren.com/' },
-  { name: 'Decathlon', logoUrl: logoDecathlon, url: 'https://www.decathlon.fr/' },
-  { name: 'Midas', logoUrl: logoMidas, url: 'https://www.midas.fr/' },
-  { name: 'Kiabi', logoUrl: logoKiabi, url: 'https://www.kiabi.com/' },
-  { name: 'Mondial Relay', logoUrl: logoMondialRelay, url: 'https://www.mondialrelay.fr/' },
-  { name: 'Leroy Merlin', logoUrl: logoLeroyMerlin, url: 'https://www.leroymerlin.fr/' },
-]
 
 /* -------------------------------------------------------------------------- */
 /* Chiffres clés                                                              */
@@ -100,19 +75,19 @@ const SERVICES: ServiceCard[] = [
     title: 'Accélération digitale',
     description:
       'Concevoir et déployer des solutions numériques performantes pour capter de nouveaux ' +
-      'marchés, améliorer l’expérience client ou moderniser les parcours internes.',
+      "marchés, améliorer l'expérience client ou moderniser les parcours internes.",
   },
   {
     title: 'Performance opérationnelle',
     description:
       'Optimiser les processus métiers (production, logistique, vente, RH) grâce à des ' +
-      'systèmes d’information sur mesure et interconnectés.',
+      "systèmes d'information sur mesure et interconnectés.",
   },
   {
     title: 'Valorisation des données',
     description:
       'Collecter, structurer et analyser les données pour en extraire des leviers de ' +
-      'décision, d’innovation et de pilotage stratégique.',
+      "décision, d'innovation et de pilotage stratégique.",
   },
   {
     title: 'Maîtrise des risques',
@@ -124,7 +99,7 @@ const SERVICES: ServiceCard[] = [
     title: 'Expérience utilisateur',
     description:
       'Concevoir des interfaces intuitives, améliorer la fluidité des parcours clients et ' +
-      'collaborateurs, et renforcer l’engagement des utilisateurs finaux.',
+      "collaborateurs, et renforcer l'engagement des utilisateurs finaux.",
   },
 ]
 
@@ -145,11 +120,11 @@ interface EventPhoto {
  *  lui attribue seul `col-span-2 row-span-2`) — l'ordre du tableau porte donc
  *  une signification visuelle, ce n'est pas une liste interchangeable. */
 const EVENT_PHOTOS: EventPhoto[] = [
-  { src: eventAfterwork, alt: 'Collègues réunis autour d’un after-work' },
+  { src: eventAfterwork, alt: "Collègues réunis autour d'un after-work" },
   { src: eventPaintball, alt: 'Session de paintball entre collaborateurs' },
-  { src: eventCourseGroupe, alt: 'Course à pied en équipe lors d’un événement sportif' },
-  { src: eventCourseSolo, alt: 'Collaborateur à l’arrivée d’une course' },
-  { src: eventPadelEquipe, alt: 'Équipe réunie autour d’un terrain de padel' },
+  { src: eventCourseGroupe, alt: "Course à pied en équipe lors d'un événement sportif" },
+  { src: eventCourseSolo, alt: "Collaborateur à l'arrivée d'une course" },
+  { src: eventPadelEquipe, alt: "Équipe réunie autour d'un terrain de padel" },
 ]
 
 /* -------------------------------------------------------------------------- */
@@ -231,7 +206,7 @@ const RSE_CARDS: RseCard[] = [
     title: 'Mobilité urbaine',
     description:
       'Notre engagement pour une ville plus fluide et durable.\n' +
-      'Nous soutenons activement les initiatives de mobilité urbaine visant à réduire l’empreinte carbone et à faciliter les déplacements doux.',
+      "Nous soutenons activement les initiatives de mobilité urbaine visant à réduire l'empreinte carbone et à faciliter les déplacements doux.",
   },
   {
     title: 'Ecovadis',
@@ -242,12 +217,12 @@ const RSE_CARDS: RseCard[] = [
   {
     title: 'Charte de la diversité',
     description:
-      'Nous mettons en œuvre une politique RH inclusive, favorisant l’égalité des chances et le respect de chacun dans toutes nos missions et recrutements.',
+      "Nous mettons en œuvre une politique RH inclusive, favorisant l'égalité des chances et le respect de chacun dans toutes nos missions et recrutements.",
   },
   {
     title: 'Numeum',
     description:
-      'Nous participons activement à la structuration de la filière numérique française. Ce partenariat nous permet d’être au cœur des enjeux du secteur.',
+      "Nous participons activement à la structuration de la filière numérique française. Ce partenariat nous permet d'être au cœur des enjeux du secteur.",
   },
 ]
 
@@ -255,17 +230,6 @@ function activeRse(index: number): RseCard {
   return RSE_CARDS[index]!
 }
 
-/**
- * Section archivée (retrait visuel, cf. le `<template>` en fin de fichier) —
- * `RSE_CARDS`, `activeRse`, `rseEl` et `rseReveal` restent déclarés tels
- * quels pour une réactivation immédiate. `rseEl` et `RSE_CARDS` restent lus
- * ailleurs (l'un par `useScrollReveal`, l'autre par `activeRse` ci-dessus) et
- * n'ont besoin de rien de plus ; `activeRse` et `rseReveal`, eux, ne sont
- * plus appelés nulle part une fois leur `<section>` mise en commentaire — ce
- * `void` les référence sans effet de bord, pour satisfaire `noUnusedLocals`
- * (`tsconfig.app.json`) sans modifier une seule des déclarations archivées.
- */
-void { activeRse, rseReveal }
 
 /* -------------------------------------------------------------------------- */
 /* Hero — effet machine à écrire                                              */
@@ -453,7 +417,7 @@ onBeforeUnmount(() => {
         >
           réalités métier
         </span>
-        . C’est cette combinaison qui fait
+        . C'est cette combinaison qui fait
         <span
           class="bg-linear-to-t from-accent-500/30 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
         >
@@ -533,35 +497,12 @@ onBeforeUnmount(() => {
       </ul>
     </div>
   </section>
-  <!-- PARTENAIRES — isolée du bloc Services (V0.5) : c'était une seule
-       section `#services-group` qui empilait le bandeau de logos ET le
-       titre/carrousel des expertises dans la même diapositive de scroll-snap.
-       Deux `<section>` pleine page, chacune avec sa hauteur et son `snap-*`
-       propres, donnent à chaque contenu sa diapositive dédiée au lieu de les
-       faire cohabiter dans un `flex-col justify-center` unique.
-       Fond sombre (V0.6, alternance stricte) : `PartnerCarousel` bascule en
-       `tone="dark"` — cf. `PartnerCarousel.vue` pour la tuile claire qui
-       rend chaque logo lisible sur ce fond (une simple bascule de teinte,
-       sans ce filtre dédié, aurait laissé Midas — tracé sans `fill`, donc
-       noir plein par défaut — invisible sur le navy). -->
   <section
-    id="partenaires"
-    data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center bg-[#000066] py-8"
+    id="references"
+    data-theme="light"
+    class="h-full w-full snap-start snap-always"
   >
-    <div
-      id="confiance"
-      ref="confianceEl"
-      class="scroll-mt-24 transition-all duration-700 ease-out motion-reduce:transition-none"
-      :class="scrollRevealClass(confianceReveal)"
-    >
-      <p
-        class="mb-8 px-4 text-center text-eyebrow uppercase text-accent-500 sm:px-6 lg:px-8 xl:px-12"
-      >
-        Ils accélèrent avec nous
-      </p>
-      <PartnerCarousel :partners="PARTNERS" tone="dark" />
-    </div>
+    <ReferencesSection />
   </section>
 
   <section
@@ -575,13 +516,13 @@ onBeforeUnmount(() => {
       :class="scrollRevealClass(secteursReveal)"
     >
       <h2 class="font-display text-display text-balance text-primary-900">
-        Nos secteurs d’activités
+        Nos secteurs d'activités
       </h2>
     </header>
 
     <CardCarousel
       :count="SECTORS.length"
-      label="Nos secteurs d’activités"
+      label="Nos secteurs d'activités"
       tone="light"
       class="flex-1 w-full mt-8"
     >
@@ -598,67 +539,10 @@ onBeforeUnmount(() => {
       </template>
     </CardCarousel>
   </section>
-  <!-- NOS ÉVÉNEMENTS — galerie photo. Dernière diapositive visible, fond
-       sombre : ferme l'alternance stricte (V0.6) sur la même note que le
-       Hero qui l'a ouverte. -->
-  <section
-    id="evenements"
-    data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center bg-[#000066] px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12"
-  >
-    <header
-      ref="evenementsEl"
-      class="mx-auto max-w-3xl text-center transition-all duration-700 ease-out motion-reduce:transition-none"
-      :class="scrollRevealClass(evenementsReveal)"
-    >
-      <p class="text-eyebrow uppercase text-accent-500">La vie d’équipe</p>
-      <h2 class="mt-4 font-display text-display text-balance text-white">Nos événements</h2>
-      <p class="mt-4 text-lg leading-relaxed text-white/70">
-        La cohésion ne s’arrête pas à la porte des bureaux&nbsp;: after-works, événements sportifs
-        et repas partagés rythment aussi la vie de nos équipes.
-      </p>
-    </header>
-
-    <!-- Bento asymétrique : 2 colonnes en mobile, 4 au-delà — la tuile en
-         vedette (`col-span-2 row-span-2`) reste inchangée d'un palier à
-         l'autre, seul le nombre de colonnes disponibles fait basculer les 4
-         tuiles restantes d'un empilement 2×2 sous la vedette (mobile) à une
-         bande de 4 colonnes à sa droite (desktop) — sans classe responsive
-         dédiée par tuile. -->
-    <ul
-      class="mx-auto mt-12 grid w-full max-w-6xl grid-cols-2 auto-rows-[9rem] gap-4 sm:grid-cols-4 sm:auto-rows-[10rem] lg:auto-rows-[12rem]"
-    >
-      <li
-        v-for="(photo, index) in EVENT_PHOTOS"
-        :key="photo.src"
-        class="group relative overflow-hidden rounded-card"
-        :class="index === 0 ? 'col-span-2 row-span-2' : ''"
-      >
-        <img
-          :src="photo.src"
-          :alt="photo.alt"
-          loading="lazy"
-          decoding="async"
-          class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-        />
-      </li>
-    </ul>
-  </section>
-  <!--
-    SECTION « POLITIQUE RSE » — ARCHIVÉE (retrait visuel demandé), PAS
-    SUPPRIMÉE : le code reste entier ci-dessous pour une réactivation
-    ultérieure sans reconstruction. `RSE_CARDS`, `activeRse`, `rseEl` et
-    `rseReveal` restent déclarés dans le script ci-dessus, inchangés, pour
-    que cette section redevienne fonctionnelle d'un simple retrait de ce
-    commentaire — aucune donnée ni logique n'a été retirée avec elle.
-
-
-
-
   <section
     id="rse"
     data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col bg-[#000066] px-4 pt-36 pb-8 sm:px-6 lg:px-8 xl:px-12"
+    class="h-full w-full snap-start snap-always flex flex-col bg-[#000066] px-4 pt-36 pb-8 text-white sm:px-6 lg:px-8 xl:px-12"
   >
     <header
       ref="rseEl"
@@ -688,5 +572,48 @@ onBeforeUnmount(() => {
       </template>
     </CardCarousel>
   </section>
-  -->
+
+  <section
+    id="evenements"
+    data-theme="light"
+    class="h-full w-full snap-start snap-always flex flex-col justify-center bg-white px-4 py-16 text-gray-900 sm:px-6 lg:px-8 xl:px-12"
+  >
+    <header
+      ref="evenementsEl"
+      class="mx-auto max-w-3xl text-center transition-all duration-700 ease-out motion-reduce:transition-none"
+      :class="scrollRevealClass(evenementsReveal)"
+    >
+      <p class="text-eyebrow uppercase text-accent-700">La vie d'équipe</p>
+      <h2 class="mt-4 font-display text-display text-balance text-primary-900">Nos événements</h2>
+      <p class="mt-4 text-lg leading-relaxed text-primary-900/60">
+        La cohésion ne s'arrête pas à la porte des bureaux&nbsp;: after-works, événements sportifs
+        et repas partagés rythment aussi la vie de nos équipes.
+      </p>
+    </header>
+
+    <!-- Bento asymétrique : 2 colonnes en mobile, 4 au-delà — la tuile en
+         vedette (`col-span-2 row-span-2`) reste inchangée d'un palier à
+         l'autre, seul le nombre de colonnes disponibles fait basculer les 4
+         tuiles restantes d'un empilement 2×2 sous la vedette (mobile) à une
+         bande de 4 colonnes à sa droite (desktop) — sans classe responsive
+         dédiée par tuile. -->
+    <ul
+      class="mx-auto mt-12 grid w-full max-w-6xl grid-cols-2 auto-rows-[9rem] gap-4 sm:grid-cols-4 sm:auto-rows-[10rem] lg:auto-rows-[12rem]"
+    >
+      <li
+        v-for="(photo, index) in EVENT_PHOTOS"
+        :key="photo.src"
+        class="group relative overflow-hidden rounded-card"
+        :class="index === 0 ? 'col-span-2 row-span-2' : ''"
+      >
+        <img
+          :src="photo.src"
+          :alt="photo.alt"
+          loading="lazy"
+          decoding="async"
+          class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+        />
+      </li>
+    </ul>
+  </section>
 </template>

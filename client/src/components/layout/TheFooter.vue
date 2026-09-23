@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router'
 import AnimatedBackground from '@/components/ui/AnimatedBackground.vue'
 import type { FooterColumn } from '@/components/ui/types'
 import logoSrc from '@/assets/images/2.svg'
@@ -30,6 +31,8 @@ import logoSrc from '@/assets/images/2.svg'
  * diapositives plein écran — `false` par défaut y préserve le pied de page
  * compact « collé en bas » existant, inchangé.
  */
+const route = useRoute()
+
 withDefaults(
   defineProps<{
     /** Colonnes de liens rapides. Trois maximum en pratique, sinon ça déborde. */
@@ -80,9 +83,11 @@ defineSlots<{
       // succédaient donc à l'écran, ce qui se lit comme un défaut d'alignement
       // de la charte — un seul et unique bleu foncé sur toute la page.
       'relative isolate overflow-hidden bg-[#000066] px-4 pb-10 text-white sm:px-6 lg:px-8 xl:px-12',
-      fullPageScroll
-        ? 'w-full h-full snap-start snap-always flex flex-col justify-end pt-12'
-        : 'snap-start snap-always pt-20 sm:pt-24',
+      route.meta.classicScroll
+        ? 'w-full shrink-0 pt-20 sm:pt-24'
+        : fullPageScroll
+          ? 'w-full h-full snap-start snap-always flex flex-col justify-end pt-12'
+          : 'snap-start snap-always pt-20 sm:pt-24',
     ]"
   >
     <!-- Décor calme : le pied de page ne doit pas concurrencer le contenu qui

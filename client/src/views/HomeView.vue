@@ -342,15 +342,111 @@ onBeforeUnmount(() => {
   stopHeroTypewriterLoop()
   heroReduceMotionQuery?.removeEventListener('change', handleHeroReduceMotionChange)
 })
+
+/* -------------------------------------------------------------------------- */
+/* Hero — vague canvas autonome                                               */
+/* -------------------------------------------------------------------------- */
+
+// SSR-safe : sessionStorage n'existe pas côté serveur
+const isFirstVisit = import.meta.env.SSR ? false : !sessionStorage.getItem('splashPlayed')
+const showSplash = ref(isFirstVisit)
+
+const waveCanvas = ref<HTMLCanvasElement | null>(null)
+let waveAnimationFrameId: number | null = null
+let waveTime = 0
+
+function drawWaves() {
+  const canvas = waveCanvas.value
+  if (!canvas) return
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+  // window.innerWidth/Height correspondent à l'échelle (scale DPR) définie dans resizeWaveCanvas
+  const width = window.innerWidth
+  const height = window.innerHeight
+  ctx.clearRect(0, 0, width, height)
+
+  const numLines = 25
+  for (let i = 0; i < numLines; i++) {
+    ctx.beginPath()
+    ctx.lineWidth = 1.5
+    const opacity = 0.15 + (i / numLines) * 0.70
+    ctx.strokeStyle = `rgba(34, 197, 94, ${opacity})`
+
+    for (let x = 0; x <= width; x += 5) {
+      const baseWave = Math.sin(x * 0.002 + waveTime + i * 0.035) * 150
+      const secondaryWave = Math.sin(x * 0.001 - waveTime * 0.8) * 60
+      const yOffset = (i - numLines / 2) * 5
+      const y = height / 2 + baseWave + secondaryWave + yOffset
+      if (x === 0) ctx.moveTo(x, y)
+      else ctx.lineTo(x, y)
+    }
+    ctx.stroke()
+  }
+}
+
+function animateWaves() {
+  waveTime += 0.0025
+  drawWaves()
+  waveAnimationFrameId = requestAnimationFrame(animateWaves)
+}
+
+function resizeWaveCanvas() {
+  const canvas = waveCanvas.value
+  if (!canvas) return
+  const dpr = window.devicePixelRatio || 1
+  const logicalWidth = window.innerWidth
+  const logicalHeight = window.innerHeight
+  canvas.width = logicalWidth * dpr
+  canvas.height = logicalHeight * dpr
+  const ctx = canvas.getContext('2d')
+  ctx?.scale(dpr, dpr)
+  drawWaves()
+}
+
+onMounted(() => {
+  if (import.meta.env.SSR) return
+  resizeWaveCanvas()
+  window.addEventListener('resize', resizeWaveCanvas)
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  if (isFirstVisit) {
+    sessionStorage.setItem('splashPlayed', 'true')
+    setTimeout(() => {
+      if (!prefersReducedMotion) animateWaves()
+      else drawWaves()
+    }, 800)
+    setTimeout(() => { showSplash.value = false }, 3200)
+  } else {
+    if (!prefersReducedMotion) animateWaves()
+    else drawWaves()
+  }
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', resizeWaveCanvas)
+  if (waveAnimationFrameId !== null) cancelAnimationFrame(waveAnimationFrameId)
+})
 </script>
 
 <template>
+  <!-- Cinématique d'entrée — fixed z-[100] pour se superposer à tout le site -->
+  <div v-if="showSplash" class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
+    <div class="absolute w-0 h-0 rounded-full shadow-[0_0_0_150vmax_#172554] animate-splash-hole"></div>
+    <div class="absolute w-4 h-4 bg-green-500 rounded-full animate-splash-drop"></div>
+  </div>
+
   <section
     id="hero"
     data-theme="dark"
-    class="relative isolate overflow-hidden h-full w-full snap-start snap-always flex flex-col justify-center bg-gradient-to-br from-[#000080] via-[#000066] to-[#000033] text-white pt-24 lg:pt-28"
+    class="relative isolate overflow-hidden h-full w-full snap-start snap-always flex flex-col justify-center text-white pt-24 lg:pt-28"
   >
-    <div class="relative z-10 w-full px-4 py-12 sm:px-6 lg:px-8 xl:px-12">
+    <div class="absolute inset-0 z-0 bg-gradient-to-br from-[#000080] via-[#000066] to-[#000033]">
+      <canvas
+        ref="waveCanvas"
+        class="absolute inset-0 h-full w-full pointer-events-none opacity-80"
+      ></canvas>
+    </div>
+    <div class="relative z-10 w-full px-4 py-12 sm:px-6 lg:px-8 xl:px-12" :class="isFirstVisit ? 'animate-hero-text-delayed' : 'animate-hero-text'">
       <div>
         <p
           class="animate-fade-up motion-reduce:animate-none text-eyebrow uppercase text-accent-500 drop-shadow-md"
@@ -659,3 +755,56 @@ onBeforeUnmount(() => {
     </div>
   </section>
 </template>
+
+<style scoped>
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes splash-drop {
+    0%   { transform: translateY(-100vh) scaleY(1.5); opacity: 0; }
+    10%  { transform: translateY(-100vh) scaleY(1.5); opacity: 1; }
+    25%  { transform: translateY(0) scaleY(1);        opacity: 1; }
+    30%  { transform: translateY(0) scale(3);          opacity: 0; }
+    100% { opacity: 0; visibility: hidden; }
+  }
+
+  @keyframes splash-hole {
+    0%, 25% {
+      width: 0; height: 0; opacity: 1;
+      box-shadow: 0 0 0 150vmax #172554, inset 0 0 0px 0px rgba(34, 197, 94, 0);
+    }
+    30% {
+      width: 0; height: 0; opacity: 1;
+      box-shadow: 0 0 0 150vmax #172554, inset 0 0 40px 10px rgba(34, 197, 94, 0.7);
+    }
+    99% {
+      width: 300vmax; height: 300vmax; opacity: 1;
+      box-shadow: 0 0 0 150vmax #172554, inset 0 0 150px 20px rgba(34, 197, 94, 0);
+    }
+    100% {
+      width: 300vmax; height: 300vmax; opacity: 0; visibility: hidden;
+    }
+  }
+
+  @keyframes hero-text-up {
+    from { transform: translateY(30px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  .animate-splash-drop {
+    animation: splash-drop 3s ease-in forwards;
+  }
+
+  .animate-splash-hole {
+    animation: splash-hole 3s cubic-bezier(0.7, 0, 0.1, 1) forwards;
+  }
+
+  .animate-hero-text {
+    opacity: 0;
+    animation: hero-text-up 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
+
+  .animate-hero-text-delayed {
+    opacity: 0;
+    animation: hero-text-up 1s cubic-bezier(0.25, 1, 0.5, 1) 0.8s forwards;
+  }
+}
+</style>

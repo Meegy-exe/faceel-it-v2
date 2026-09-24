@@ -157,7 +157,8 @@ export const routes: RouteRecordRaw[] = [
   },
   {
     path: '/:pathMatch(.*)*',
-    name: 'not-found',
+    name: 'NotFound',
     component: () => import('@/views/NotFoundView.vue'),
+    meta: { classicScroll: true },
   },
 ]

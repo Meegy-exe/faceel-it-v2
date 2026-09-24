@@ -8,6 +8,7 @@ import CookieBanner from '@/components/ui/CookieBanner.vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import { mainNavEntries } from '@/features/navigation/mainNav'
 import { footerColumns, footerDescription } from '@/features/navigation/footerNav'
+import ChatbotWidget from '@/components/ui/ChatbotWidget.vue'
 
 /**
  * Coquille de l'application : en-tête, contenu, pied de page.
@@ -366,5 +367,6 @@ const ArrowRightIcon: FunctionalComponent = () =>
       </div>
     </div>
     <CookieBanner />
+    <ChatbotWidget />
   </div>
 </template>

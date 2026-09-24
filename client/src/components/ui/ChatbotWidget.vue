@@ -39,7 +39,7 @@ async function openChat() {
   isOpen.value = true
   await scrollToBottom()
   if (chatHistory.value.length === 0) {
-    await simulateBotTyping(chatFlow["start"].messages)
+    await simulateBotTyping(chatFlow["start"]?.messages ?? [])
   }
 }
 
@@ -48,7 +48,7 @@ async function handleOptionClick(option: ChatOption) {
   chatHistory.value.push({ sender: "user", text: option.label })
   currentStepId.value = option.next
   await scrollToBottom()
-  await simulateBotTyping(chatFlow[option.next].messages)
+  await simulateBotTyping(chatFlow[option.next]?.messages ?? [])
 }
 
 async function goBack() {
@@ -57,7 +57,7 @@ async function goBack() {
   const previousStep = stepHistory.value.pop()!
   currentStepId.value = previousStep
   await scrollToBottom()
-  await simulateBotTyping(chatFlow[previousStep].messages)
+  await simulateBotTyping(chatFlow[previousStep]?.messages ?? [])
 }
 </script>
 
@@ -120,7 +120,7 @@ async function goBack() {
       <div class="border-t bg-white p-4">
         <div v-if="!isTyping">
           <!-- Options -->
-          <div v-if="currentStep.options" class="flex flex-col gap-2">
+          <div v-if="currentStep?.options" class="flex flex-col gap-2">
             <button
               v-for="option in currentStep.options"
               :key="option.next"
@@ -132,7 +132,7 @@ async function goBack() {
           </div>
 
           <!-- Action finale -->
-          <div v-else-if="currentStep.action">
+          <div v-else-if="currentStep?.action">
             <router-link
               :to="currentStep.action.url"
               class="block w-full rounded-xl bg-blue-950 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-900"

@@ -5,6 +5,7 @@
 ### `src/app.ts`
  ├─→ `./App.vue`
  ├─→ `./router/routes`
+ ├─→ `./stores/useAuthStore`
  ├─→ `./router`
 
 ### `src/main.ts`
@@ -13,6 +14,7 @@
 ### `src/App.vue`
  ├─→ `@/components/ui/BaseButton.vue`
  ├─→ `@/components/ui/MegaMenu.vue`
+ ├─→ `@/components/ui/CookieBanner.vue`
  ├─→ `@/components/layout/TheFooter.vue`
  ├─→ `@/features/navigation/mainNav`
  ├─→ `@/features/navigation/footerNav`
@@ -34,6 +36,10 @@
  ├─→ `@/composables/useScrollReveal`
  ├─→ `@/composables/useSeo`
 
+### `src/views/OffersView.vue`
+ ├─→ `@/composables/useScrollReveal`
+ ├─→ `@/composables/useSeo`
+
 ### `src/views/CollectifView.vue`
  ├─→ `@/components/ui/ProfileCard.vue`
  ├─→ `@/components/ui/AnimatedBackground.vue`
@@ -44,22 +50,19 @@
  ├─→ `@/components/ui/CardCarousel.vue`
  ├─→ `@/components/ui/CoverCarousel.vue`
  ├─→ `@/components/ui/CarouselSlideContent.vue`
- ├─→ `@/components/ui/PartnerCarousel.vue`
+ ├─→ `@/components/ui/ReferencesSection.vue`
  ├─→ `@/composables/useScrollReveal`
- ├─→ `@/assets/images/partners/auchan.svg`
- ├─→ `@/assets/images/partners/boulanger.svg`
- ├─→ `@/assets/images/partners/verspieren.svg`
- ├─→ `@/assets/images/partners/decathlon.svg`
- ├─→ `@/assets/images/partners/midas.svg`
- ├─→ `@/assets/images/partners/kiabi.svg`
- ├─→ `@/assets/images/partners/mondial_relay.svg`
- ├─→ `@/assets/images/partners/leroy_merlin.svg`
  ├─→ `@/assets/images/photos/afterwork.jpg`
  ├─→ `@/assets/images/photos/paintball.jpg`
  ├─→ `@/assets/images/photos/course-groupe.jpg`
  ├─→ `@/assets/images/photos/course-solo.jpg`
  ├─→ `@/assets/images/padel-equipe.jpg`
  ├─→ `@/composables/useSeo`
+
+### `src/views/ChatbotView.vue`
+ ├─→ `@/data/chatbotFlow_2`
+ ├─→ `@/composables/useSeo`
+ ├─→ `@/assets/images/padel-equipe.jpg`
 
 ### `src/views/HistoireView.vue`
  ├─→ `@/composables/useScrollReveal`
@@ -81,6 +84,9 @@
  ├─→ `@/assets/images/photos/course-solo.jpg`
  ├─→ `@/assets/images/photos/fondateurs.jpg`
 
+### `src/views/OfferDetailView.vue`
+ ├─→ `@/composables/useSeo`
+
 ### `src/views/EnterpriseView.vue`
  ├─→ `@/components/ui/PartnerCarousel.vue`
  ├─→ `@/composables/useScrollReveal`
@@ -95,13 +101,14 @@
  ├─→ `@/assets/images/partners/leroy_merlin.svg`
 
 ### `src/views/NotFoundView.vue`
- ├─→ `@/components/ui/AnimatedBackground.vue`
- ├─→ `@/components/ui/BaseButton.vue`
  ├─→ `@/composables/useSeo`
+
+### `src/views/admin/LoginView.vue`
+ ├─→ `@/stores/useAuthStore`
 
 ### `src/components/layout/TheFooter.vue`
  ├─→ `@/components/ui/AnimatedBackground.vue`
- ├─→ `@/components/ui/types`
+ ├─→ `@/components/ui/CookieManagerModal.vue`
  ├─→ `@/assets/images/2.svg`
 
 ### `src/components/ui/AnimatedBackground.vue`
@@ -125,19 +132,38 @@
 ### `src/components/ui/HighlightCard.vue`
  ├─→ `./types`
 
+### `src/components/ui/ReferencesSection.vue`
+ ├─→ `@/assets/references/adeo.svg`
+ ├─→ `@/assets/references/leroy_merlin.svg`
+ ├─→ `@/assets/references/kiabi.svg`
+ ├─→ `@/assets/references/decathlon.svg`
+ ├─→ `@/assets/references/boulanger.svg`
+ ├─→ `@/assets/references/tape_a_loeil.svg`
+ ├─→ `@/assets/references/midas.svg`
+ ├─→ `@/assets/references/keolis.svg`
+ ├─→ `@/assets/references/ovh.svg`
+ ├─→ `@/assets/references/verspieren.svg`
+ ├─→ `@/assets/references/axa.svg`
+ ├─→ `@/assets/references/oney.svg`
+ ├─→ `@/assets/references/supermarche_match.svg`
+ ├─→ `@/assets/references/kiloutou.svg`
+ ├─→ `@/assets/references/ircem.svg`
+ ├─→ `@/assets/references/chronodrive.svg`
+ ├─→ `@/assets/references/mondial_relay.svg`
+
 ### `src/components/ui/MegaMenu.vue`
  ├─→ `@/assets/images/logo-bleu.png`
  ├─→ `@/assets/images/logo-blanc.png`
- ├─→ `./types`
+ ├─→ `@/features/navigation/mainNav`
 
 ### `src/components/ui/BaseButton.vue`
  ├─→ `./types`
 
+### `src/layouts/AdminLayout.vue`
+ ├─→ `@/stores/useAuthStore`
+
 ### `src/services/http.ts`
  ├─→ `@/types/api`
-
-### `src/features/navigation/mainNav.ts`
- ├─→ `@/components/ui/types`
 
 ### `src/features/navigation/footerNav.ts`
  ├─→ `@/components/ui/types`

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
 import CardCarousel from '@/components/ui/CardCarousel.vue'
 import CoverCarousel from '@/components/ui/CoverCarousel.vue'
 import CarouselSlideContent from '@/components/ui/CarouselSlideContent.vue'
 import ReferencesSection from '@/components/ui/ReferencesSection.vue'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
+import { useAdminStore } from '@/stores/useAdminStore'
 // PHOTOS « NOS ÉVÉNEMENTS » — déjà présentes dans `assets/images/` (dépôt
 // client, dossier `Animate the header/assets/photos/`), aucune n'est encore
 // utilisée ailleurs sur le site : pas de nouveau fichier à importer, pas de
@@ -126,6 +127,16 @@ const EVENT_PHOTOS: EventPhoto[] = [
   { src: eventCourseSolo, alt: "Collaborateur à l'arrivée d'une course" },
   { src: eventPadelEquipe, alt: "Équipe réunie autour d'un terrain de padel" },
 ]
+
+const adminStore = useAdminStore()
+
+/** Agenda dynamique (back-office) : les 3 événements les plus récents,
+ *  triés du plus récent au plus ancien. */
+const recentEvents = computed(() =>
+  [...adminStore.events]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 3),
+)
 
 /** Carrousel mobile : index courant, avance toutes les 3 s. SSR-safe : le
  *  setInterval est instancié uniquement dans onMounted, jamais pendant le
@@ -751,6 +762,32 @@ onBeforeUnmount(() => {
           class="block h-1.5 rounded-full transition-all duration-300"
           :class="i === mobilePhotoIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/40'"
         />
+      </div>
+    </div>
+
+    <!-- Agenda dynamique (back-office) — n'affecte pas la galerie photo ci-dessus -->
+    <div v-if="recentEvents.length > 0" class="mx-auto mt-16 w-full max-w-6xl">
+      <h3 class="text-eyebrow text-center uppercase text-accent-700">Prochains événements</h3>
+
+      <div class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <article
+          v-for="event in recentEvents"
+          :key="event.id"
+          class="overflow-hidden rounded-card bg-blue-900/50"
+        >
+          <img
+            :src="event.imageUrl"
+            :alt="event.title"
+            loading="lazy"
+            decoding="async"
+            class="h-48 w-full object-cover"
+          />
+          <div class="p-6">
+            <p class="text-sm text-accent-500">{{ event.date }}</p>
+            <p class="mb-2 text-lg font-bold text-white">{{ event.title }}</p>
+            <p class="line-clamp-3 text-sm text-white/70">{{ event.description }}</p>
+          </div>
+        </article>
       </div>
     </div>
   </section>

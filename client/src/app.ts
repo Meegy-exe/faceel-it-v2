@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import { routes } from './router/routes'
+import { useAuthStore } from './stores/useAuthStore'
 import './assets/styles/main.css'
 
 /**
@@ -40,7 +41,16 @@ export const createApp = ViteSSG(
       return { top: 0 }
     },
   },
-  ({ app }) => {
+  ({ app, router }) => {
     app.use(createPinia())
+
+    // Guard basique : `/admin` (et ses enfants, meta hérité) exige
+    // `useAuthStore().isAuthenticated` — sinon redirection vers le login.
+    router.beforeEach((to) => {
+      if (to.meta.requiresAuth !== true) return true
+      const auth = useAuthStore()
+      if (!auth.isAuthenticated) return { name: 'admin-login' }
+      return true
+    })
   },
 )

@@ -4,11 +4,13 @@ import { staticPrerenderRoutes } from './staticPrerenderRoutes'
 export { staticPrerenderRoutes }
 
 /**
- * Routes publiques uniquement (arbitrage n°3 : pas de back-office en V1).
+ * Routes publiques + back-office `/admin` (arbitrage n°3 révoqué, cf.
+ * `docs/DECISIONS.md`).
  *
  * Chaque vue est chargée en différé : le pré-rendu au build s'appuie sur
  * `staticPrerenderRoutes` (`./staticPrerenderRoutes.ts`) pour savoir quelles
- * URLs générer en statique.
+ * URLs générer en statique — `/admin` en est volontairement absent (contenu
+ * authentifié, jamais pré-rendu ni indexé).
  */
 export const routes: RouteRecordRaw[] = [
   {
@@ -151,6 +153,49 @@ export const routes: RouteRecordRaw[] = [
     path: '/chat',
     name: 'chat',
     component: () => import('@/views/ChatbotView.vue'),
+  },
+  {
+    path: '/admin/login',
+    name: 'admin-login',
+    component: () => import('@/views/admin/LoginView.vue'),
+    meta: { classicScroll: true },
+  },
+  {
+    path: '/admin',
+    component: () => import('@/layouts/AdminLayout.vue'),
+    meta: { classicScroll: true, requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'admin-dashboard',
+        component: () => import('@/views/admin/DashboardView.vue'),
+      },
+      {
+        path: 'evenements',
+        name: 'admin-events',
+        component: () => import('@/views/admin/EventsView.vue'),
+      },
+      {
+        path: 'afterworks',
+        name: 'admin-afterworks',
+        component: () => import('@/views/admin/AfterworksView.vue'),
+      },
+      {
+        path: 'blog',
+        name: 'admin-blog',
+        component: () => import('@/views/admin/BlogView.vue'),
+      },
+      {
+        path: 'cas-usage',
+        name: 'admin-cas-usage',
+        component: () => import('@/views/admin/CaseStudiesView.vue'),
+      },
+      {
+        path: 'offres',
+        name: 'admin-offres',
+        component: () => import('@/views/admin/JobOffersView.vue'),
+      },
+    ],
   },
   {
     // JETABLE — banc d'essai du Design System, à retirer avant la mise en ligne.

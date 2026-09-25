@@ -219,27 +219,29 @@ const size = computed(() => SIZES[props.size])
       <slot />
     </div>
 
-    <div v-if="$slots.footer || isInteractive" class="mt-6 flex items-center gap-2 pt-2">
-      <slot name="footer">
-        <span class="text-sm font-semibold transition-colors duration-300" :class="tone.title">
-          {{ actionLabel }}
-        </span>
-        <svg
-          class="size-4 transition-transform duration-300 ease-snap group-hover:translate-x-1.5 motion-reduce:transition-none"
-          :class="tone.title"
-          viewBox="0 0 20 20"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            d="M4 10h12m-5-5 5 5-5 5"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </slot>
+    <div v-if="$slots.footer || isInteractive" class="mt-6 flex flex-col items-start gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+      <div class="w-full sm:w-auto">
+        <slot name="footer">
+          <span class="text-sm font-semibold transition-colors duration-300" :class="tone.title">
+            {{ actionLabel }}
+          </span>
+        </slot>
+      </div>
+      <svg
+        class="size-4 shrink-0 transition-transform duration-300 ease-snap group-hover:translate-x-1.5 motion-reduce:transition-none"
+        :class="tone.title"
+        viewBox="0 0 20 20"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M3 10h14M11 4l6 6-6 6"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
     </div>
   </component>
 </template>

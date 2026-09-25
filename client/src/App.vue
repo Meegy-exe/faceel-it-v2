@@ -8,7 +8,6 @@ import CookieBanner from '@/components/ui/CookieBanner.vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import { mainNavEntries } from '@/features/navigation/mainNav'
 import { footerColumns, footerDescription } from '@/features/navigation/footerNav'
-import ChatbotWidget from '@/components/ui/ChatbotWidget.vue'
 
 /**
  * Coquille de l'application : en-tête, contenu, pied de page.
@@ -175,6 +174,22 @@ const ArrowRightIcon: FunctionalComponent = () =>
            `surface` calculée ici pour les deux aurait rendu l'un des deux
            illisible ; c'est exactement le bug que ce scoped slot corrige :
            `MegaMenu` connaît le fond réel de chaque rendu, `App.vue` non. -->
+      <template #chatButton="{ surface }">
+        <router-link
+          to="/chat"
+          class="inline-flex size-9 shrink-0 items-center justify-center rounded-full transition-colors duration-200 focus-visible:outline-3 focus-visible:outline-offset-2 motion-reduce:transition-none"
+          :class="surface === 'dark'
+            ? 'text-white hover:bg-white/10 focus-visible:outline-accent-500'
+            : 'text-primary-900 hover:bg-primary-900/5 focus-visible:outline-primary-900'"
+          aria-label="Discuter avec Faceelbot"
+          @click="menuOpen = false"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" class="size-5" aria-hidden="true">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
+          </svg>
+        </router-link>
+      </template>
+
       <template #actions="{ surface }">
         <div class="flex items-center gap-3">
           <BaseButton variant="outline" size="sm" :surface="surface" :to="CONTACT_TO">
@@ -367,6 +382,5 @@ const ArrowRightIcon: FunctionalComponent = () =>
       </div>
     </div>
     <CookieBanner />
-    <ChatbotWidget />
   </div>
 </template>

@@ -228,7 +228,7 @@ onBeforeUnmount(() => {
     role="region"
     aria-roledescription="carrousel"
     :aria-label="label"
-    class="relative flex h-full w-full flex-col justify-between overflow-hidden"
+    class="relative flex h-full w-full flex-col overflow-hidden sm:justify-between"
     @mouseenter="paused = true"
     @mouseleave="paused = false"
     @focusin="paused = true"
@@ -280,7 +280,7 @@ onBeforeUnmount(() => {
          haute des deux, donc la hauteur de la section ne s'effondre plus
          pendant les 700ms de transition (l'ancien `absolute top-0 left-0`
          retirait la diapositive du flux, collapsant le conteneur parent). -->
-    <div class="my-auto grid">
+    <div class="grid sm:my-auto">
       <Transition
         mode="out-in"
         enter-from-class="translate-x-full"
@@ -309,7 +309,7 @@ onBeforeUnmount(() => {
     <button
       type="button"
       aria-label="Diapositive suivante"
-      class="absolute top-1/2 right-4 z-20 inline-flex size-11 -translate-y-1/2 items-center justify-center transition-colors duration-200 motion-reduce:transition-none focus-visible:outline-3 focus-visible:outline-offset-2 md:right-8 lg:right-12"
+      class="mt-4 flex self-end size-11 items-center justify-center transition-colors duration-200 motion-reduce:transition-none focus-visible:outline-3 focus-visible:outline-offset-2 sm:absolute sm:top-1/2 sm:right-4 sm:z-20 sm:-translate-y-1/2 sm:mt-0 md:right-8 lg:right-12"
       :class="arrowTone"
       @click="handleManualNext()"
     >
@@ -326,7 +326,7 @@ onBeforeUnmount(() => {
 
     <!-- Compteur à pleine opacité depuis V0.1.25 (cf. commentaire d'en-tête
          de `COUNTER_TONE`) — `counterTone` ne porte plus de suffixe `/50`. -->
-    <p aria-hidden="true" class="mt-8 text-center text-sm font-semibold" :class="counterTone">
+    <p aria-hidden="true" class="mt-auto pt-8 text-center text-sm font-semibold" :class="counterTone">
       {{ activeIndex + 1 }} / {{ count }}
     </p>
   </div>

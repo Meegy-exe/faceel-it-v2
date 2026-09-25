@@ -117,7 +117,7 @@ const size = computed(() => SIZES[props.size])
 
     <div
       v-if="$slots.default"
-      class="mt-4 max-w-prose leading-relaxed"
+      class="mt-4 max-w-prose leading-relaxed text-center sm:text-left"
       :class="[tone.body, size.body]"
     >
       <slot />

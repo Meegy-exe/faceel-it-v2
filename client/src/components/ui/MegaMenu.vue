@@ -17,6 +17,11 @@ const props = defineProps<{
 defineSlots<{
   logo?(): unknown
   /**
+   * Toujours visible dans la barre (mobile + desktop). Surface suit `isBarDark`
+   * comme les actions desktop. Typiquement : bouton icône chatbot.
+   */
+  chatButton?(props: { surface: 'light' | 'dark' }): unknown
+  /**
    * Rendu à DEUX endroits distincts (barre desktop + panneau mobile, cf.
    * template) — jamais avec le même fond. `surface` est donc un paramètre du
    * SLOT, pas une prop lue une fois côté appelant : `App.vue` ne peut pas
@@ -224,12 +229,16 @@ const focusRingClass = computed(() =>
           </slot>
         </RouterLink>
 
-        <!-- Les actions du header (bouton Nous contacter / Nous rejoindre).
-             `surface` suit `isBarDark`, PAS `isDarkTheme` seul : c'est cette
-             valeur, et pas le thème brut de la section, qui reflète le fond
-             réel de CETTE barre (menu ouvert compris). -->
-        <div class="ml-auto hidden lg:flex lg:items-center">
-          <slot name="actions" :surface="isBarDark ? 'dark' : 'light'" />
+        <!-- Zone droite de la barre : chatButton (toujours visible) + actions
+             desktop (masquées sur mobile). Le ml-auto pousse tout le groupe
+             contre le bord droit, le chatButton est donc toujours accessible
+             quel que soit l'écran. `surface` suit `isBarDark` (fond réel de
+             la barre, menu ouvert compris, pas le thème brut de la section). -->
+        <div class="ml-auto flex items-center gap-2">
+          <slot name="chatButton" :surface="isBarDark ? 'dark' : 'light'" />
+          <div class="hidden lg:flex lg:items-center">
+            <slot name="actions" :surface="isBarDark ? 'dark' : 'light'" />
+          </div>
         </div>
       </div>
     </div>

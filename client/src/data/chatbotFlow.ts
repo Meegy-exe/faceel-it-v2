@@ -12,12 +12,24 @@ export interface ChatStep {
   messages: string[]
   options?: ChatOption[]
   action?: ChatAction
+  /** Étape de saisie libre : affiche un champ texte au lieu d'options. */
+  inputType?: 'text' | 'email'
+  inputPlaceholder?: string
+  /** Étape suivante une fois la saisie validée. */
+  nextStep?: string
 }
 
 export const chatFlow: Record<string, ChatStep> = {
   start: {
+    messages: ["Bonjour ! 👋"],
+    inputType: 'text',
+    inputPlaceholder: 'Votre prénom...',
+    nextStep: 'greeting',
+  },
+
+  greeting: {
     messages: [
-      "Bonjour ! 👋",
+      'Enchanté {name} ! 🙂',
       "Bienvenue chez Faceel IT. Pour vous guider au mieux, dites-nous ce qui vous amène aujourd'hui :",
     ],
     options: [

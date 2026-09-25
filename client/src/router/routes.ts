@@ -148,6 +148,11 @@ export const routes: RouteRecordRaw[] = [
     meta: { classicScroll: true },
   },
   {
+    path: '/chat',
+    name: 'chat',
+    component: () => import('@/views/ChatbotView.vue'),
+  },
+  {
     // JETABLE — banc d'essai du Design System, à retirer avant la mise en ligne.
     // Absente de `staticPrerenderRoutes` : jamais pré-rendue, jamais indexable.
     path: '/styleguide',

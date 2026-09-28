@@ -9,8 +9,13 @@ useSeo({
 </script>
 
 <template>
-  <section data-theme="dark" class="flex min-h-[70vh] w-full flex-col items-center justify-center bg-blue-950 px-4 text-center">
-    <h1 class="text-8xl md:text-9xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-green-600 mb-4 drop-shadow-lg tracking-tight">
+  <section
+    data-theme="dark"
+    class="flex min-h-[70vh] w-full flex-col items-center justify-center bg-blue-950 px-4 text-center"
+  >
+    <h1
+      class="text-8xl md:text-9xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-green-600 mb-4 drop-shadow-lg tracking-tight"
+    >
       404
     </h1>
     <h2 class="text-2xl md:text-3xl font-bold text-white mb-6">

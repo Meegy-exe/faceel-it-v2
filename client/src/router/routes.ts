@@ -155,6 +155,18 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/ChatbotView.vue'),
   },
   {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/auth/LoginView.vue'),
+    meta: { fullPageScroll: true },
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('@/views/auth/RegisterView.vue'),
+    meta: { fullPageScroll: true },
+  },
+  {
     path: '/admin/login',
     name: 'admin-login',
     component: () => import('@/views/admin/LoginView.vue'),

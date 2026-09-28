@@ -46,10 +46,8 @@ function refuseAll() {
           appear
         >
           <div class="flex w-full max-w-2xl max-h-[90vh] flex-col rounded-2xl bg-white shadow-2xl">
-
             <!-- Corps scrollable -->
             <div class="flex-1 overflow-y-auto px-6 pt-8 pb-4">
-
               <div class="mb-6 flex items-start justify-between gap-4">
                 <h2 class="font-display text-2xl font-extrabold text-primary-900">
                   Je veux choisir
@@ -61,7 +59,9 @@ function refuseAll() {
                   @click="emit('close')"
                 >
                   <svg class="size-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+                    <path
+                      d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"
+                    />
                   </svg>
                 </button>
               </div>
@@ -75,7 +75,6 @@ function refuseAll() {
               </p>
 
               <div class="space-y-4">
-
                 <!-- Catégorie 1 : Strictement nécessaires -->
                 <div class="rounded-xl border border-gray-100 bg-gray-50 p-5">
                   <div class="flex items-start justify-between gap-4">
@@ -87,7 +86,9 @@ function refuseAll() {
                         peuvent pas être désactivés.
                       </p>
                     </div>
-                    <span class="shrink-0 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                    <span
+                      class="shrink-0 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700"
+                    >
                       Toujours actif
                     </span>
                   </div>
@@ -99,9 +100,9 @@ function refuseAll() {
                     <div class="flex-1">
                       <p class="font-semibold text-primary-900">Mesure d'audience (Analytique)</p>
                       <p class="mt-1 text-sm text-gray-500">
-                        Ces cookies nous permettent de mesurer la fréquentation du site
-                        (pages visitées, durée de session) afin d'améliorer son contenu et
-                        ses performances. Les données sont agrégées et anonymisées.
+                        Ces cookies nous permettent de mesurer la fréquentation du site (pages
+                        visitées, durée de session) afin d'améliorer son contenu et ses
+                        performances. Les données sont agrégées et anonymisées.
                       </p>
                     </div>
                     <!-- Toggle -->
@@ -128,8 +129,8 @@ function refuseAll() {
                       <p class="font-semibold text-primary-900">Publicités ciblées</p>
                       <p class="mt-1 text-sm text-gray-500">
                         Ces cookies nous permettent de vous proposer des publicités adaptées à vos
-                        centres d'intérêt, sur notre site et en dehors. Ils peuvent être déposés
-                        par des partenaires tiers.
+                        centres d'intérêt, sur notre site et en dehors. Ils peuvent être déposés par
+                        des partenaires tiers.
                       </p>
                     </div>
                     <!-- Toggle -->
@@ -148,12 +149,13 @@ function refuseAll() {
                     </button>
                   </div>
                 </div>
-
               </div>
             </div>
 
             <!-- Boutons fixes en bas -->
-            <div class="shrink-0 space-y-3 rounded-b-2xl border-t border-gray-100 bg-gray-50 px-6 py-5">
+            <div
+              class="shrink-0 space-y-3 rounded-b-2xl border-t border-gray-100 bg-gray-50 px-6 py-5"
+            >
               <button
                 type="button"
                 class="w-full rounded-lg bg-[#000066] py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#000088]"
@@ -176,7 +178,6 @@ function refuseAll() {
                 Non, je préfère refuser
               </button>
             </div>
-
           </div>
         </Transition>
       </div>

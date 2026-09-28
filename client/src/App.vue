@@ -176,11 +176,34 @@ const ArrowRightIcon: FunctionalComponent = () =>
            `MegaMenu` connaît le fond réel de chaque rendu, `App.vue` non. -->
       <template #chatButton="{ surface }">
         <router-link
+          to="/login"
+          class="inline-flex size-9 shrink-0 items-center justify-center rounded-full transition-colors duration-200 focus-visible:outline-3 focus-visible:outline-offset-2 motion-reduce:transition-none"
+          :class="
+            surface === 'dark'
+              ? 'text-white hover:bg-white/10 focus-visible:outline-accent-500'
+              : 'text-primary-900 hover:bg-primary-900/5 focus-visible:outline-primary-900'
+          "
+          aria-label="Mon espace"
+          @click="menuOpen = false"
+        >
+          <svg viewBox="0 0 24 24" fill="none" class="size-5" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.75" />
+            <path
+              d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+            />
+          </svg>
+        </router-link>
+        <router-link
           to="/chat"
           class="inline-flex size-9 shrink-0 items-center justify-center rounded-full transition-colors duration-200 focus-visible:outline-3 focus-visible:outline-offset-2 motion-reduce:transition-none"
-          :class="surface === 'dark'
-            ? 'text-white hover:bg-white/10 focus-visible:outline-accent-500'
-            : 'text-primary-900 hover:bg-primary-900/5 focus-visible:outline-primary-900'"
+          :class="
+            surface === 'dark'
+              ? 'text-white hover:bg-white/10 focus-visible:outline-accent-500'
+              : 'text-primary-900 hover:bg-primary-900/5 focus-visible:outline-primary-900'
+          "
           aria-label="Discuter avec Faceelbot"
           @click="menuOpen = false"
         >
@@ -232,11 +255,13 @@ const ArrowRightIcon: FunctionalComponent = () =>
       <div
         ref="scrollRoot"
         class="h-full flex-1 overflow-y-auto transition-all duration-300"
-        :class="isClassicScroll
-          ? 'flex flex-col'
-          : isFullPageScroll
-            ? 'snap-y snap-mandatory'
-            : 'snap-y snap-mandatory flex flex-col'"
+        :class="
+          isClassicScroll
+            ? 'flex flex-col'
+            : isFullPageScroll
+              ? 'snap-y snap-mandatory'
+              : 'snap-y snap-mandatory flex flex-col'
+        "
       >
         <main id="contenu" :class="isFullPageScroll ? 'contents' : 'flex-1'">
           <RouterView />

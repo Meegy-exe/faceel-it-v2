@@ -133,9 +133,7 @@ const adminStore = useAdminStore()
 /** Agenda dynamique (back-office) : les 3 événements les plus récents,
  *  triés du plus récent au plus ancien. */
 const recentEvents = computed(() =>
-  [...adminStore.events]
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 3),
+  [...adminStore.events].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3),
 )
 
 /** Carrousel mobile : index courant, avance toutes les 3 s. SSR-safe : le
@@ -258,7 +256,6 @@ function activeRse(index: number): RseCard {
   return RSE_CARDS[index]!
 }
 
-
 /* -------------------------------------------------------------------------- */
 /* Hero — effet machine à écrire                                              */
 /* -------------------------------------------------------------------------- */
@@ -380,7 +377,7 @@ function drawWaves() {
   for (let i = 0; i < numLines; i++) {
     ctx.beginPath()
     ctx.lineWidth = 1.5
-    const opacity = 0.15 + (i / numLines) * 0.70
+    const opacity = 0.15 + (i / numLines) * 0.7
     ctx.strokeStyle = `rgba(34, 197, 94, ${opacity})`
 
     for (let x = 0; x <= width; x += 5) {
@@ -426,7 +423,9 @@ onMounted(() => {
       if (!prefersReducedMotion) animateWaves()
       else drawWaves()
     }, 800)
-    setTimeout(() => { showSplash.value = false }, 3200)
+    setTimeout(() => {
+      showSplash.value = false
+    }, 3200)
   } else {
     if (!prefersReducedMotion) animateWaves()
     else drawWaves()
@@ -441,8 +440,13 @@ onBeforeUnmount(() => {
 
 <template>
   <!-- Cinématique d'entrée — fixed z-[100] pour se superposer à tout le site -->
-  <div v-if="showSplash" class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
-    <div class="absolute w-0 h-0 rounded-full shadow-[0_0_0_150vmax_#172554] animate-splash-hole"></div>
+  <div
+    v-if="showSplash"
+    class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none"
+  >
+    <div
+      class="absolute w-0 h-0 rounded-full shadow-[0_0_0_150vmax_#172554] animate-splash-hole"
+    ></div>
     <div class="absolute w-4 h-4 bg-green-500 rounded-full animate-splash-drop"></div>
   </div>
 
@@ -457,7 +461,10 @@ onBeforeUnmount(() => {
         class="absolute inset-0 h-full w-full pointer-events-none opacity-80"
       ></canvas>
     </div>
-    <div class="relative z-10 w-full px-4 py-12 sm:px-6 lg:px-8 xl:px-12" :class="isFirstVisit ? 'animate-hero-text-delayed' : 'animate-hero-text'">
+    <div
+      class="relative z-10 w-full px-4 py-12 sm:px-6 lg:px-8 xl:px-12"
+      :class="isFirstVisit ? 'animate-hero-text-delayed' : 'animate-hero-text'"
+    >
       <div>
         <p
           class="animate-fade-up motion-reduce:animate-none text-eyebrow uppercase text-accent-500 drop-shadow-md"
@@ -470,9 +477,12 @@ onBeforeUnmount(() => {
         >
           <span class="block text-white">On ne rejoint pas <br class="lg:hidden" />une ESN.</span>
           <span class="text-accent-500">
-            <span class="sr-only">{{ HERO_TYPED_TEXT }}</span><span aria-hidden="true">{{ typedText || '\u200B' }}<span
-              aria-hidden="true"
-              class="ml-0.5 inline-block h-[0.7em] w-[0.09em] translate-y-[0.05em] animate-blink bg-accent-500 motion-reduce:animate-none"
+            <span class="sr-only">{{ HERO_TYPED_TEXT }}</span
+            ><span aria-hidden="true"
+              >{{ typedText || '\u200B'
+              }}<span
+                aria-hidden="true"
+                class="ml-0.5 inline-block h-[0.7em] w-[0.09em] translate-y-[0.05em] animate-blink bg-accent-500 motion-reduce:animate-none"
             /></span>
           </span>
         </h1>
@@ -619,11 +629,7 @@ onBeforeUnmount(() => {
       </ul>
     </div>
   </section>
-  <section
-    id="references"
-    data-theme="light"
-    class="h-full w-full snap-start snap-always"
-  >
+  <section id="references" data-theme="light" class="h-full w-full snap-start snap-always">
     <ReferencesSection />
   </section>
 
@@ -796,34 +802,71 @@ onBeforeUnmount(() => {
 <style scoped>
 @media (prefers-reduced-motion: no-preference) {
   @keyframes splash-drop {
-    0%   { transform: translateY(-100vh) scaleY(1.5); opacity: 0; }
-    10%  { transform: translateY(-100vh) scaleY(1.5); opacity: 1; }
-    25%  { transform: translateY(0) scaleY(1);        opacity: 1; }
-    30%  { transform: translateY(0) scale(3);          opacity: 0; }
-    100% { opacity: 0; visibility: hidden; }
+    0% {
+      transform: translateY(-100vh) scaleY(1.5);
+      opacity: 0;
+    }
+    10% {
+      transform: translateY(-100vh) scaleY(1.5);
+      opacity: 1;
+    }
+    25% {
+      transform: translateY(0) scaleY(1);
+      opacity: 1;
+    }
+    30% {
+      transform: translateY(0) scale(3);
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+      visibility: hidden;
+    }
   }
 
   @keyframes splash-hole {
-    0%, 25% {
-      width: 0; height: 0; opacity: 1;
-      box-shadow: 0 0 0 150vmax #172554, inset 0 0 0px 0px rgba(34, 197, 94, 0);
+    0%,
+    25% {
+      width: 0;
+      height: 0;
+      opacity: 1;
+      box-shadow:
+        0 0 0 150vmax #172554,
+        inset 0 0 0px 0px rgba(34, 197, 94, 0);
     }
     30% {
-      width: 0; height: 0; opacity: 1;
-      box-shadow: 0 0 0 150vmax #172554, inset 0 0 40px 10px rgba(34, 197, 94, 0.7);
+      width: 0;
+      height: 0;
+      opacity: 1;
+      box-shadow:
+        0 0 0 150vmax #172554,
+        inset 0 0 40px 10px rgba(34, 197, 94, 0.7);
     }
     99% {
-      width: 300vmax; height: 300vmax; opacity: 1;
-      box-shadow: 0 0 0 150vmax #172554, inset 0 0 150px 20px rgba(34, 197, 94, 0);
+      width: 300vmax;
+      height: 300vmax;
+      opacity: 1;
+      box-shadow:
+        0 0 0 150vmax #172554,
+        inset 0 0 150px 20px rgba(34, 197, 94, 0);
     }
     100% {
-      width: 300vmax; height: 300vmax; opacity: 0; visibility: hidden;
+      width: 300vmax;
+      height: 300vmax;
+      opacity: 0;
+      visibility: hidden;
     }
   }
 
   @keyframes hero-text-up {
-    from { transform: translateY(30px); opacity: 0; }
-    to   { transform: translateY(0);    opacity: 1; }
+    from {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
   }
 
   .animate-splash-drop {

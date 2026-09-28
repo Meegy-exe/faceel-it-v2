@@ -1,14 +1,12 @@
 <template>
   <article class="min-h-screen h-auto snap-start bg-white px-4 pt-32 pb-20 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-4xl">
-
       <h1 class="font-display text-4xl font-extrabold tracking-tight text-primary-900">
         Politique de gestion des cookies
       </h1>
       <p class="mt-3 text-sm text-primary-900/50">Dernière mise à jour : [À VENIR]</p>
 
       <div class="mt-12 space-y-12 text-base leading-relaxed text-primary-900/80">
-
         <section>
           <h2 class="font-display text-2xl font-bold text-primary-900">
             1. Qu'est-ce qu'un cookie ?
@@ -60,14 +58,14 @@
               Cookies analytiques et de mesure d'audience
             </h3>
             <p class="mt-3">
-              Ces cookies nous permettent d'analyser la fréquentation du site (pages visitées,
-              durée des sessions) afin d'améliorer l'expérience globale et nos services. Les
-              données collectées sont agrégées.
+              Ces cookies nous permettent d'analyser la fréquentation du site (pages visitées, durée
+              des sessions) afin d'améliorer l'expérience globale et nos services. Les données
+              collectées sont agrégées.
             </p>
             <ul class="mt-3 space-y-1 pl-6 list-disc text-sm">
               <li>
-                <strong>Consentement requis&nbsp;:</strong> Oui. Ils ne sont déposés qu'après
-                votre accord explicite (sauf exemption légale spécifique).
+                <strong>Consentement requis&nbsp;:</strong> Oui. Ils ne sont déposés qu'après votre
+                accord explicite (sauf exemption légale spécifique).
               </li>
               <li>
                 <strong>Outils utilisés&nbsp;:</strong> [À VENIR — ex&nbsp;: Matomo, Google
@@ -77,22 +75,19 @@
           </div>
 
           <div class="mt-8">
-            <h3 class="text-xl font-bold text-primary-900">
-              Cookies marketing et réseaux sociaux
-            </h3>
+            <h3 class="text-xl font-bold text-primary-900">Cookies marketing et réseaux sociaux</h3>
             <p class="mt-3">
               Ces cookies peuvent être déposés par des services tiers intégrés au site (vidéos,
-              réseaux sociaux) pour vous proposer des contenus personnalisés ou mesurer
-              l'efficacité de campagnes ciblées.
+              réseaux sociaux) pour vous proposer des contenus personnalisés ou mesurer l'efficacité
+              de campagnes ciblées.
             </p>
             <ul class="mt-3 space-y-1 pl-6 list-disc text-sm">
               <li>
-                <strong>Consentement requis&nbsp;:</strong> Oui. En l'absence de consentement,
-                ces fonctionnalités tierces seront désactivées.
+                <strong>Consentement requis&nbsp;:</strong> Oui. En l'absence de consentement, ces
+                fonctionnalités tierces seront désactivées.
               </li>
               <li>
-                <strong>Services concernés&nbsp;:</strong> [À VENIR — ex&nbsp;: LinkedIn,
-                YouTube…]
+                <strong>Services concernés&nbsp;:</strong> [À VENIR — ex&nbsp;: LinkedIn, YouTube…]
               </li>
             </ul>
           </div>
@@ -108,9 +103,9 @@
 
           <h3 class="mt-6 text-lg font-bold text-primary-900">Via notre module de gestion</h3>
           <p class="mt-3">
-            Un lien intitulé "Gestion des cookies" est disponible en permanence dans le pied de
-            page du site. Il vous permet de réafficher le bandeau de consentement et de mettre à
-            jour vos préférences instantanément.
+            Un lien intitulé "Gestion des cookies" est disponible en permanence dans le pied de page
+            du site. Il vous permet de réafficher le bandeau de consentement et de mettre à jour vos
+            préférences instantanément.
           </p>
           <button
             class="mt-4 rounded-lg border border-primary-900/20 bg-gray-100 px-4 py-2 text-sm font-medium text-primary-900 transition-colors duration-200 hover:bg-gray-200"
@@ -122,9 +117,9 @@
             Via les paramètres de votre navigateur
           </h3>
           <p class="mt-3">
-            Vous pouvez également configurer votre navigateur pour bloquer ou supprimer les
-            cookies. Notez que le blocage des cookies strictement nécessaires peut altérer le
-            fonctionnement du site. Voici les pages d'aide des principaux navigateurs&nbsp;:
+            Vous pouvez également configurer votre navigateur pour bloquer ou supprimer les cookies.
+            Notez que le blocage des cookies strictement nécessaires peut altérer le fonctionnement
+            du site. Voici les pages d'aide des principaux navigateurs&nbsp;:
           </p>
           <ul class="mt-3 space-y-2 pl-6 list-disc">
             <li>
@@ -133,7 +128,8 @@
                 target="_blank"
                 rel="noopener noreferrer"
                 class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
-              >Google Chrome</a>
+                >Google Chrome</a
+              >
             </li>
             <li>
               <a
@@ -141,7 +137,8 @@
                 target="_blank"
                 rel="noopener noreferrer"
                 class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
-              >Mozilla Firefox</a>
+                >Mozilla Firefox</a
+              >
             </li>
             <li>
               <a
@@ -149,7 +146,8 @@
                 target="_blank"
                 rel="noopener noreferrer"
                 class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
-              >Apple Safari</a>
+                >Apple Safari</a
+              >
             </li>
             <li>
               <a
@@ -157,25 +155,24 @@
                 target="_blank"
                 rel="noopener noreferrer"
                 class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
-              >Microsoft Edge</a>
+                >Microsoft Edge</a
+              >
             </li>
           </ul>
         </section>
 
         <section>
-          <h2 class="font-display text-2xl font-bold text-primary-900">
-            4. Contact
-          </h2>
+          <h2 class="font-display text-2xl font-bold text-primary-900">4. Contact</h2>
           <p class="mt-4">
-            Pour toute question relative à notre politique de gestion des cookies, vous pouvez
-            nous contacter à l'adresse suivante&nbsp;:
+            Pour toute question relative à notre politique de gestion des cookies, vous pouvez nous
+            contacter à l'adresse suivante&nbsp;:
             <a
               href="mailto:contact@faceel-it.com"
               class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
-            >contact@faceel-it.com</a>.
+              >contact@faceel-it.com</a
+            >.
           </p>
         </section>
-
       </div>
     </div>
   </article>

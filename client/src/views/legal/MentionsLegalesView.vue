@@ -1,14 +1,12 @@
 <template>
   <article class="min-h-screen h-auto snap-start bg-white px-4 pt-32 pb-20 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-4xl">
-
       <h1 class="font-display text-4xl font-extrabold tracking-tight text-primary-900">
         Mentions légales
       </h1>
       <p class="mt-3 text-sm text-primary-900/50">Dernière mise à jour : [À VENIR]</p>
 
       <div class="mt-12 space-y-12 text-base leading-relaxed text-primary-900/80">
-
         <section>
           <h2 class="font-display text-2xl font-bold text-primary-900">
             1. Éditeur du site et Directeur de la publication
@@ -27,13 +25,19 @@
             <li><strong>RCS&nbsp;:</strong> [À VENIR — ex&nbsp;: RCS Lille Métropole]</li>
             <li>
               <strong>Téléphone&nbsp;:</strong>
-              <a href="tel:+33359617188" class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80">
+              <a
+                href="tel:+33359617188"
+                class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
+              >
                 03 59 61 71 88
               </a>
             </li>
             <li>
               <strong>Courriel&nbsp;:</strong>
-              <a href="mailto:contact@faceel-it.com" class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80">
+              <a
+                href="mailto:contact@faceel-it.com"
+                class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
+              >
                 contact@faceel-it.com
               </a>
             </li>
@@ -42,9 +46,7 @@
         </section>
 
         <section>
-          <h2 class="font-display text-2xl font-bold text-primary-900">
-            2. Hébergement
-          </h2>
+          <h2 class="font-display text-2xl font-bold text-primary-900">2. Hébergement</h2>
           <p class="mt-4">L'hébergement du site est assuré par&nbsp;:</p>
           <ul class="mt-4 space-y-2 pl-6 list-disc">
             <li><strong>Hébergeur&nbsp;:</strong> [À VENIR — nom]</li>
@@ -101,8 +103,8 @@
             Les informations diffusées sur ce site sont fournies à titre indicatif. Faceel-IT
             s'efforce d'assurer l'exactitude de ces informations, mais ne peut en garantir la
             complétude absolue. Faceel-IT décline toute responsabilité pour les éventuelles
-            inexactitudes, ainsi que pour les dommages directs ou indirects résultant de l'accès
-            au site.
+            inexactitudes, ainsi que pour les dommages directs ou indirects résultant de l'accès au
+            site.
           </p>
         </section>
 
@@ -112,24 +114,33 @@
           </h2>
           <p class="mt-4">
             Dans le cadre de l'utilisation du site, Faceel-IT est amenée à collecter et traiter
-            certaines données à caractère personnel. Les modalités détaillées de cette collecte
-            sont définies dans notre
-            <RouterLink to="/politique-confidentialite" class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80">
-              Politique de confidentialité des données
-            </RouterLink>.
+            certaines données à caractère personnel. Les modalités détaillées de cette collecte sont
+            définies dans notre
+            <RouterLink
+              to="/politique-confidentialite"
+              class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
+            >
+              Politique de confidentialité des données </RouterLink
+            >.
           </p>
           <p class="mt-3">
             Pour toute information relative à l'utilisation des traceurs lors de votre navigation,
             veuillez consulter notre
-            <RouterLink to="/politique-cookies" class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80">
-              Politique des cookies
-            </RouterLink>.
+            <RouterLink
+              to="/politique-cookies"
+              class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
+            >
+              Politique des cookies </RouterLink
+            >.
           </p>
           <p class="mt-3">
             Notre engagement en matière d'accès au numérique est détaillé dans notre
-            <RouterLink to="/accessibilite" class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80">
-              Déclaration d'accessibilité
-            </RouterLink>.
+            <RouterLink
+              to="/accessibilite"
+              class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
+            >
+              Déclaration d'accessibilité </RouterLink
+            >.
           </p>
         </section>
 
@@ -139,11 +150,10 @@
           </h2>
           <p class="mt-4">
             Le présent site et ses mentions légales sont soumis au droit français. Tout litige
-            relatif à l'utilisation de ce site sera soumis à la compétence exclusive des
-            tribunaux du ressort de la Cour d'Appel de Lille.
+            relatif à l'utilisation de ce site sera soumis à la compétence exclusive des tribunaux
+            du ressort de la Cour d'Appel de Lille.
           </p>
         </section>
-
       </div>
     </div>
   </article>

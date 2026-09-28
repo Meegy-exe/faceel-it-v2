@@ -144,9 +144,7 @@ const suggestions = computed(() => {
     })
   })
 
-  return [...pool]
-    .filter((s) => s.toLowerCase().includes(q) && s.toLowerCase() !== q)
-    .slice(0, 6)
+  return [...pool].filter((s) => s.toLowerCase().includes(q) && s.toLowerCase() !== q).slice(0, 6)
 })
 
 const filteredOffers = computed(() => {
@@ -162,7 +160,8 @@ const filteredOffers = computed(() => {
       return false
     if (selectedLevels.value.length && !selectedLevels.value.includes(o.level)) return false
     if (selectedMetiers.value.length && !selectedMetiers.value.includes(o.metier)) return false
-    if (selectedContracts.value.length && !selectedContracts.value.includes(o.contract)) return false
+    if (selectedContracts.value.length && !selectedContracts.value.includes(o.contract))
+      return false
     return true
   })
 })
@@ -248,8 +247,8 @@ watch(
 
       <p class="mt-6 max-w-2xl text-lg leading-relaxed text-white/75 sm:text-xl">
         Ici, on ne cherche pas des CV parfaits, mais des personnes engagées, curieuses, et prêtes à
-        construire des projets concrets. Tu veux évoluer, apprendre, avoir un impact&nbsp;? Tu es
-        au bon endroit.
+        construire des projets concrets. Tu veux évoluer, apprendre, avoir un impact&nbsp;? Tu es au
+        bon endroit.
       </p>
     </div>
   </section>
@@ -266,7 +265,6 @@ watch(
   >
     <div class="flex-1 overflow-y-auto px-4 pt-28 pb-8 sm:px-6 lg:px-8 xl:px-12">
       <div class="mx-auto max-w-6xl">
-
         <!-- ① Barre de recherche -->
         <div class="relative w-full mb-8 z-20">
           <span
@@ -315,7 +313,6 @@ watch(
 
         <!-- ② Grille : offres + filtres -->
         <div class="grid gap-8 lg:grid-cols-[1fr_272px]">
-
           <!-- Colonne gauche : liste + pagination -->
           <div>
             <p class="mb-4 text-sm text-primary-900/50">
@@ -362,13 +359,19 @@ watch(
                     </svg>
                     {{ offer.location }}
                   </span>
-                  <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-primary-900/70">
+                  <span
+                    class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-primary-900/70"
+                  >
                     {{ offer.category }}
                   </span>
-                  <span class="rounded-full bg-accent-500/15 px-2.5 py-0.5 text-xs font-medium text-primary-900">
+                  <span
+                    class="rounded-full bg-accent-500/15 px-2.5 py-0.5 text-xs font-medium text-primary-900"
+                  >
                     {{ offer.contract }}
                   </span>
-                  <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-primary-900/70">
+                  <span
+                    class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-primary-900/70"
+                  >
                     {{ offer.level }}
                   </span>
                 </div>
@@ -432,11 +435,13 @@ watch(
               </div>
               <ul class="mt-3 space-y-2.5">
                 <li v-for="level in LEVELS" :key="level">
-                  <label class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors">
+                  <label
+                    class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
+                  >
                     <input
+                      v-model="selectedLevels"
                       type="checkbox"
                       :value="level"
-                      v-model="selectedLevels"
                       class="h-4 w-4 rounded accent-accent-500"
                     />
                     {{ level }}
@@ -448,7 +453,9 @@ watch(
             <!-- Métiers -->
             <div class="mt-5 border-t border-gray-200 pt-5">
               <div class="flex items-center justify-between">
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500">Métiers</h3>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                  Métiers
+                </h3>
                 <button
                   v-if="selectedMetiers.length"
                   class="text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
@@ -459,11 +466,13 @@ watch(
               </div>
               <ul class="mt-3 space-y-2.5">
                 <li v-for="metier in METIERS" :key="metier">
-                  <label class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors">
+                  <label
+                    class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
+                  >
                     <input
+                      v-model="selectedMetiers"
                       type="checkbox"
                       :value="metier"
-                      v-model="selectedMetiers"
                       class="h-4 w-4 rounded accent-accent-500"
                     />
                     {{ metier }}
@@ -488,11 +497,13 @@ watch(
               </div>
               <ul class="mt-3 space-y-2.5">
                 <li v-for="contract in CONTRACTS" :key="contract">
-                  <label class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors">
+                  <label
+                    class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
+                  >
                     <input
+                      v-model="selectedContracts"
                       type="checkbox"
                       :value="contract"
-                      v-model="selectedContracts"
                       class="h-4 w-4 rounded accent-accent-500"
                     />
                     {{ contract }}
@@ -501,15 +512,11 @@ watch(
               </ul>
             </div>
           </aside>
-
         </div>
         <!-- fin grille -->
-
       </div>
       <!-- fin max-w-6xl -->
-
     </div>
     <!-- fin overflow-y-auto -->
-
   </section>
 </template>

@@ -32,9 +32,7 @@ const quickActions = [
 
     <!-- Vue d'ensemble -->
     <section class="mt-8">
-      <h2 class="text-sm font-semibold uppercase tracking-widest text-white/60">
-        Vue d'ensemble
-      </h2>
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-white/60">Vue d'ensemble</h2>
 
       <div class="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
         <div
@@ -93,9 +91,7 @@ const quickActions = [
 
     <!-- Actions rapides -->
     <section class="mt-10">
-      <h2 class="text-sm font-semibold uppercase tracking-widest text-white/60">
-        Actions rapides
-      </h2>
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-white/60">Actions rapides</h2>
 
       <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <RouterLink
@@ -104,7 +100,12 @@ const quickActions = [
           :to="action.to"
           class="flex items-center gap-3 rounded-2xl border border-white/10 bg-primary-800/40 p-5 text-sm font-semibold text-white transition hover:border-accent-500 hover:bg-primary-800/60"
         >
-          <svg class="size-5 shrink-0 text-accent-500" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <svg
+            class="size-5 shrink-0 text-accent-500"
+            viewBox="0 0 20 20"
+            fill="none"
+            aria-hidden="true"
+          >
             <path
               v-if="action.icon === 'calendar'"
               d="M4 8h12M6 3v2m8-2v2M5 5h10a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"

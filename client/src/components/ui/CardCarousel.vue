@@ -326,7 +326,11 @@ onBeforeUnmount(() => {
 
     <!-- Compteur à pleine opacité depuis V0.1.25 (cf. commentaire d'en-tête
          de `COUNTER_TONE`) — `counterTone` ne porte plus de suffixe `/50`. -->
-    <p aria-hidden="true" class="mt-auto pt-8 text-center text-sm font-semibold" :class="counterTone">
+    <p
+      aria-hidden="true"
+      class="mt-auto pt-8 text-center text-sm font-semibold"
+      :class="counterTone"
+    >
       {{ activeIndex + 1 }} / {{ count }}
     </p>
   </div>

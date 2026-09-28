@@ -271,9 +271,10 @@ const focusRingClass = computed(() =>
             class="flex min-h-[400px] w-full"
             @mouseleave="activeItem = NAV_DEFAULT"
           >
-
             <!-- ZONE 1 : Panneau gauche (info dynamique, desktop uniquement) -->
-            <div class="hidden lg:flex flex-col justify-start w-80 xl:w-96 shrink-0 bg-[#000066] p-8">
+            <div
+              class="hidden lg:flex flex-col justify-start w-80 xl:w-96 shrink-0 bg-[#000066] p-8"
+            >
               <Transition
                 enter-active-class="transition-opacity duration-200 ease-out"
                 enter-from-class="opacity-0"
@@ -300,18 +301,21 @@ const focusRingClass = computed(() =>
             <!-- ZONE 2 : Liste des entrées principales
                  - Mobile  : pleine largeur, seule zone visible
                  - Desktop : colonne étroite (fond gris clair), sépare zone 1 et zone 3 -->
-            <div class="flex-1 lg:flex-none lg:w-64 xl:w-72 lg:shrink-0 lg:bg-gray-50 lg:border-r lg:border-gray-100 py-6 lg:py-8 px-3 lg:px-3">
+            <div
+              class="flex-1 lg:flex-none lg:w-64 xl:w-72 lg:shrink-0 lg:bg-gray-50 lg:border-r lg:border-gray-100 py-6 lg:py-8 px-3 lg:px-3"
+            >
               <ul class="flex flex-col gap-1">
                 <li v-for="entry in entries" :key="entry.id">
-
                   <!-- Drill-down mobile (pas de lien direct → sous-pages multiples) -->
                   <button
                     v-if="!entry.to"
                     type="button"
                     class="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left font-display font-bold text-primary-900 transition-colors duration-200 motion-reduce:transition-none"
-                    :class="activeItem.id === entry.id
-                      ? 'bg-primary-900/8 text-primary-900'
-                      : 'hover:bg-primary-900/5'"
+                    :class="
+                      activeItem.id === entry.id
+                        ? 'bg-primary-900/8 text-primary-900'
+                        : 'hover:bg-primary-900/5'
+                    "
                     :tabindex="open ? undefined : -1"
                     @mouseenter="activeItem = entry"
                     @click="drillDown(entry.id)"
@@ -320,20 +324,59 @@ const focusRingClass = computed(() =>
                       aria-hidden="true"
                       class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-900/5 text-primary-900"
                     >
-                      <svg v-if="entryIconKind(entry.id) === 'references'" class="size-4" viewBox="0 0 24 24" fill="none">
-                        <path d="M4 21V9.5L12 4l8 5.5V21M9 21v-6h6v6M4 21h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                      <svg
+                        v-if="entryIconKind(entry.id) === 'references'"
+                        class="size-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M4 21V9.5L12 4l8 5.5V21M9 21v-6h6v6M4 21h16"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
                       </svg>
-                      <svg v-else-if="entryIconKind(entry.id) === 'collectif'" class="size-4" viewBox="0 0 24 24" fill="none">
+                      <svg
+                        v-else-if="entryIconKind(entry.id) === 'collectif'"
+                        class="size-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
                         <circle cx="9" cy="8" r="3.5" stroke="currentColor" stroke-width="2" />
-                        <path d="M2.5 19.5v-1.2c0-2.4 2.9-4.3 6.5-4.3s6.5 1.9 6.5 4.3v1.2M16 5.2a3.5 3.5 0 0 1 0 5.6M18 14.2c2.1.6 3.5 2.1 3.5 3.9v1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path
+                          d="M2.5 19.5v-1.2c0-2.4 2.9-4.3 6.5-4.3s6.5 1.9 6.5 4.3v1.2M16 5.2a3.5 3.5 0 0 1 0 5.6M18 14.2c2.1.6 3.5 2.1 3.5 3.9v1.4"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
                       </svg>
                       <svg v-else class="size-4" viewBox="0 0 24 24" fill="none">
-                        <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path
+                          d="M9 6l6 6-6 6"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
                       </svg>
                     </span>
                     <span class="flex-1 text-base">{{ entry.label }}</span>
-                    <svg class="size-4 shrink-0 text-primary-900/30 lg:hidden" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                      <path d="m8 5 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <svg
+                      class="size-4 shrink-0 text-primary-900/30 lg:hidden"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="m8 5 5 5-5 5"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
                     </svg>
                   </button>
 
@@ -342,9 +385,11 @@ const focusRingClass = computed(() =>
                     v-else
                     :to="entry.to"
                     class="flex w-full items-center gap-3 rounded-xl px-4 py-3 font-display font-bold text-primary-900 transition-colors duration-200 motion-reduce:transition-none"
-                    :class="activeItem.id === entry.id
-                      ? 'bg-primary-900/8 text-primary-900'
-                      : 'hover:bg-primary-900/5'"
+                    :class="
+                      activeItem.id === entry.id
+                        ? 'bg-primary-900/8 text-primary-900'
+                        : 'hover:bg-primary-900/5'
+                    "
                     :tabindex="open ? undefined : -1"
                     @mouseenter="activeItem = entry"
                     @click="closeMenu()"
@@ -353,17 +398,40 @@ const focusRingClass = computed(() =>
                       aria-hidden="true"
                       class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-900/5 text-primary-900"
                     >
-                      <svg v-if="entryIconKind(entry.id) === 'entreprise'" class="size-4" viewBox="0 0 24 24" fill="none">
-                        <rect x="4" y="7.5" width="16" height="11" rx="1.5" stroke="currentColor" stroke-width="2" />
-                        <path d="M9 7.5V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v1.5M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                      <svg
+                        v-if="entryIconKind(entry.id) === 'entreprise'"
+                        class="size-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <rect
+                          x="4"
+                          y="7.5"
+                          width="16"
+                          height="11"
+                          rx="1.5"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        />
+                        <path
+                          d="M9 7.5V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v1.5M4 12h16"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
                       </svg>
                       <svg v-else class="size-4" viewBox="0 0 24 24" fill="none">
-                        <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path
+                          d="M9 6l6 6-6 6"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
                       </svg>
                     </span>
                     <span class="flex-1 text-base">{{ entry.label }}</span>
                   </RouterLink>
-
                 </li>
               </ul>
 
@@ -386,7 +454,11 @@ const focusRingClass = computed(() =>
                 leave-to-class="opacity-0"
                 mode="out-in"
               >
-                <ul v-if="activeItem.subItems?.length" :key="activeItem.id" class="flex flex-col gap-2">
+                <ul
+                  v-if="activeItem.subItems?.length"
+                  :key="activeItem.id"
+                  class="flex flex-col gap-2"
+                >
                   <li v-for="sub in activeItem.subItems" :key="sub.label">
                     <component
                       :is="sub.to !== undefined ? 'RouterLink' : 'a'"
@@ -403,27 +475,42 @@ const focusRingClass = computed(() =>
                       </div>
                       <svg
                         class="size-4 shrink-0 text-primary-900/25 transition-colors duration-200 group-hover:text-accent-500 motion-reduce:transition-none"
-                        viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        aria-hidden="true"
                       >
-                        <path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path
+                          d="M3 8h10M9 4l4 4-4 4"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
                       </svg>
                     </component>
                   </li>
                 </ul>
 
                 <!-- État vide (NAV_DEFAULT ou entrée sans subItems) -->
-                <div v-else key="empty" class="flex h-full min-h-[200px] flex-col items-center justify-center gap-3 text-center">
+                <div
+                  v-else
+                  key="empty"
+                  class="flex h-full min-h-[200px] flex-col items-center justify-center gap-3 text-center"
+                >
                   <p class="text-sm text-primary-900/30">
                     Survolez un onglet pour découvrir les liens.
                   </p>
                 </div>
               </Transition>
             </div>
-
           </div>
 
           <!-- VUE 2 : SOUS-MENU MOBILE (drill-down pour entrées sans lien direct) -->
-          <div v-else key="sub-menu" class="w-full flex flex-col items-center px-4 py-8 sm:px-6 lg:px-8 xl:px-12">
+          <div
+            v-else
+            key="sub-menu"
+            class="w-full flex flex-col items-center px-4 py-8 sm:px-6 lg:px-8 xl:px-12"
+          >
             <div class="relative flex w-full max-w-7xl items-center justify-center mb-10 px-3">
               <button
                 type="button"
@@ -431,12 +518,20 @@ const focusRingClass = computed(() =>
                 @click="goBack()"
               >
                 <svg class="size-5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <path d="m12 15-5-5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <path
+                    d="m12 15-5-5 5-5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
                 <span class="hidden sm:inline">Retour</span>
               </button>
 
-              <h2 class="font-display text-2xl md:text-3xl font-extrabold tracking-tight text-primary-900 text-center">
+              <h2
+                class="font-display text-2xl md:text-3xl font-extrabold tracking-tight text-primary-900 text-center"
+              >
                 {{ expandedEntry.label }}
               </h2>
             </div>
@@ -458,15 +553,18 @@ const focusRingClass = computed(() =>
                   </div>
                   <svg
                     class="mt-1 size-4 shrink-0 text-primary-900/25"
-                    viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    aria-hidden="true"
                   >
-                    <path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                 </component>
               </li>
             </ul>
           </div>
-
         </Transition>
       </nav>
     </div>

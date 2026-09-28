@@ -36,9 +36,10 @@ export interface NavItem {
 export const NAV_DEFAULT: NavItem = {
   id: '_default',
   label: '',
-  title: "Faceel-IT",
-  description: "ESN spécialisée dans la transformation digitale. Nous accompagnons entreprises et talents dans les métiers du numérique, cloud et data.",
-  ctaLabel: "Découvrir Faceel-IT",
+  title: 'Faceel-IT',
+  description:
+    'ESN spécialisée dans la transformation digitale. Nous accompagnons entreprises et talents dans les métiers du numérique, cloud et data.',
+  ctaLabel: 'Découvrir Faceel-IT',
   ctaTo: { name: 'histoire' },
 }
 
@@ -70,77 +71,119 @@ export const mainNavEntries: NavItem[] = [
     id: 'entreprise',
     label: 'Je suis une entreprise',
     title: 'Je suis une entreprise',
-    description: "Nous vous accompagnons dans vos projets data, cloud et applicatifs avec des consultants experts, sélectionnés sur mesure.",
-    ctaLabel: "Découvrir nos expertises",
+    description:
+      'Nous vous accompagnons dans vos projets data, cloud et applicatifs avec des consultants experts, sélectionnés sur mesure.',
+    ctaLabel: 'Découvrir nos expertises',
     ctaTo: { name: 'entreprise' },
     to: { name: 'entreprise' },
     subItems: [
-      { label: "Nos expertises", description: "Data, cloud, développement, conseil", to: { name: 'entreprise' } },
-      { label: "Nos références clients", description: "Projets et secteurs accompagnés", to: { name: 'entreprise' } },
+      {
+        label: 'Nos expertises',
+        description: 'Data, cloud, développement, conseil',
+        to: { name: 'entreprise' },
+      },
+      {
+        label: 'Nos références clients',
+        description: 'Projets et secteurs accompagnés',
+        to: { name: 'entreprise' },
+      },
     ],
   },
   {
     id: 'candidat',
     label: 'Je suis candidat',
     title: 'Rejoignez le collectif',
-    description: "Rejoignez un collectif où votre talent compte vraiment. CDI, CDD, stage — construisez votre carrière avec nous.",
-    ctaLabel: "Voir nos offres",
+    description:
+      'Rejoignez un collectif où votre talent compte vraiment. CDI, CDD, stage — construisez votre carrière avec nous.',
+    ctaLabel: 'Voir nos offres',
     ctaTo: { name: 'offres' },
     to: { name: 'candidat' },
     subItems: [
-      { label: "Nos offres d'emploi", description: "Data, cloud, dev, conseil", to: { name: 'offres' } },
-      { label: "Processus de recrutement", description: "Simple, humain et rapide", to: { name: 'candidat' } },
-      { label: "La vie chez Faceel-IT", description: "Culture, avantages, collectif", to: { name: 'candidat' } },
+      {
+        label: "Nos offres d'emploi",
+        description: 'Data, cloud, dev, conseil',
+        to: { name: 'offres' },
+      },
+      {
+        label: 'Processus de recrutement',
+        description: 'Simple, humain et rapide',
+        to: { name: 'candidat' },
+      },
+      {
+        label: 'La vie chez Faceel-IT',
+        description: 'Culture, avantages, collectif',
+        to: { name: 'candidat' },
+      },
     ],
   },
   {
     id: 'offres',
     label: 'Consulter nos offres',
     title: 'Nos offres',
-    description: "Data, cloud, développement, conseil — des postes sur mesure qui correspondent à votre profil et à vos ambitions.",
-    ctaLabel: "Explorer les offres",
+    description:
+      'Data, cloud, développement, conseil — des postes sur mesure qui correspondent à votre profil et à vos ambitions.',
+    ctaLabel: 'Explorer les offres',
     ctaTo: { name: 'offres' },
     to: { name: 'offres' },
     subItems: [
-      { label: "Toutes nos offres", description: "Filtrer par compétence ou localisation", to: { name: 'offres' } },
+      {
+        label: 'Toutes nos offres',
+        description: 'Filtrer par compétence ou localisation',
+        to: { name: 'offres' },
+      },
     ],
   },
   {
     id: 'qui-sommes-nous',
     label: 'Qui sommes-nous',
-    title: "Qui sommes-nous ?",
-    description: "Une ESN à taille humaine fondée sur l'expertise, la proximité et l'engagement. Découvrez notre histoire et notre collectif.",
-    ctaLabel: "Notre histoire",
+    title: 'Qui sommes-nous ?',
+    description:
+      "Une ESN à taille humaine fondée sur l'expertise, la proximité et l'engagement. Découvrez notre histoire et notre collectif.",
+    ctaLabel: 'Notre histoire',
     ctaTo: { name: 'histoire' },
     subItems: [
-      { label: "Notre histoire", description: "Nos origines et notre vision", to: { name: 'histoire' } },
-      { label: "Notre collectif", description: "L'équipe et les valeurs Faceel-IT", to: { name: 'collectif' } },
+      {
+        label: 'Notre histoire',
+        description: 'Nos origines et notre vision',
+        to: { name: 'histoire' },
+      },
+      {
+        label: 'Notre collectif',
+        description: "L'équipe et les valeurs Faceel-IT",
+        to: { name: 'collectif' },
+      },
     ],
   },
   {
     id: 'references',
     label: 'Secteurs',
     title: 'Nos secteurs',
-    description: "Retail, industrie, logistique, banque et assurance — nous intervenons là où la donnée et le digital font la différence.",
-    ctaLabel: "En savoir plus",
+    description:
+      'Retail, industrie, logistique, banque et assurance — nous intervenons là où la donnée et le digital font la différence.',
+    ctaLabel: 'En savoir plus',
     ctaTo: { path: '/', hash: '#secteurs' },
     subItems: [
-      { label: "Ecommerce", to: { path: '/', hash: '#secteurs' } },
-      { label: "Industrie", to: { path: '/', hash: '#secteurs' } },
-      { label: "Logistique", to: { path: '/', hash: '#secteurs' } },
-      { label: "Banque & Assurance", to: { path: '/', hash: '#secteurs' } },
+      { label: 'Ecommerce', to: { path: '/', hash: '#secteurs' } },
+      { label: 'Industrie', to: { path: '/', hash: '#secteurs' } },
+      { label: 'Logistique', to: { path: '/', hash: '#secteurs' } },
+      { label: 'Banque & Assurance', to: { path: '/', hash: '#secteurs' } },
     ],
   },
   {
     id: 'ia',
     label: 'Discutons IA',
     title: 'Discutons IA',
-    description: "L'intelligence artificielle au service de votre transformation. Cas d'usage concrets et accompagnement sur mesure.",
-    ctaLabel: "Explorer nos approches IA",
+    description:
+      "L'intelligence artificielle au service de votre transformation. Cas d'usage concrets et accompagnement sur mesure.",
+    ctaLabel: 'Explorer nos approches IA',
     ctaTo: { name: 'ia' },
     to: { name: 'ia' },
     subItems: [
-      { label: "Nos approches IA", description: "Cas d'usage et accompagnement sur mesure", to: { name: 'ia' } },
+      {
+        label: 'Nos approches IA',
+        description: "Cas d'usage et accompagnement sur mesure",
+        to: { name: 'ia' },
+      },
     ],
   },
 ]

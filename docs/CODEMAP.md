@@ -52,6 +52,7 @@
  ├─→ `@/components/ui/CarouselSlideContent.vue`
  ├─→ `@/components/ui/ReferencesSection.vue`
  ├─→ `@/composables/useScrollReveal`
+ ├─→ `@/stores/useAdminStore`
  ├─→ `@/assets/images/photos/afterwork.jpg`
  ├─→ `@/assets/images/photos/paintball.jpg`
  ├─→ `@/assets/images/photos/course-groupe.jpg`
@@ -103,8 +104,31 @@
 ### `src/views/NotFoundView.vue`
  ├─→ `@/composables/useSeo`
 
+### `src/views/admin/CaseStudiesView.vue`
+ ├─→ `@/stores/useAdminStore`
+ ├─→ `@/types/admin`
+
 ### `src/views/admin/LoginView.vue`
  ├─→ `@/stores/useAuthStore`
+
+### `src/views/admin/EventsView.vue`
+ ├─→ `@/stores/useAdminStore`
+ ├─→ `@/types/admin`
+
+### `src/views/admin/AfterworksView.vue`
+ ├─→ `@/stores/useAdminStore`
+ ├─→ `@/types/admin`
+
+### `src/views/admin/JobOffersView.vue`
+ ├─→ `@/stores/useAdminStore`
+ ├─→ `@/types/admin`
+
+### `src/views/admin/BlogView.vue`
+ ├─→ `@/stores/useAdminStore`
+ ├─→ `@/types/admin`
+
+### `src/views/admin/DashboardView.vue`
+ ├─→ `@/stores/useAdminStore`
 
 ### `src/components/layout/TheFooter.vue`
  ├─→ `@/components/ui/AnimatedBackground.vue`
@@ -170,6 +194,9 @@
 
 ### `src/mocks/browser.ts`
  ├─→ `./handlers`
+
+### `src/stores/useAdminStore.ts`
+ ├─→ `@/types/admin`
 
 ### `src/composables/useSeo.spec.ts`
  ├─→ `./useSeo`

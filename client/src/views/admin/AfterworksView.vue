@@ -106,10 +106,9 @@ function handleSubmit() {
             </svg>
             <p class="text-xs text-white/60">
               Glissez vos photos ici, ou
-              <span
-                class="cursor-pointer text-accent-500 underline"
-                @click="fileInput?.click()"
-              >parcourez</span>
+              <span class="cursor-pointer text-accent-500 underline" @click="fileInput?.click()"
+                >parcourez</span
+              >
             </p>
             <input
               ref="fileInput"

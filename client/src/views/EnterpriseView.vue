@@ -308,11 +308,7 @@ const GROWTH_DASH_LENGTH = 500
     data-theme="dark"
     class="h-full w-full snap-start snap-always flex flex-col justify-center px-4 py-16 text-center text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
   >
-    <div
-      ref="statsEl"
-      class="mx-auto w-full max-w-5xl"
-      :class="scrollRevealClass(statsReveal)"
-    >
+    <div ref="statsEl" class="mx-auto w-full max-w-5xl" :class="scrollRevealClass(statsReveal)">
       <blockquote
         class="mx-auto max-w-4xl font-display text-3xl leading-snug text-balance sm:text-4xl lg:text-5xl"
       >

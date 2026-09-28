@@ -1,14 +1,12 @@
 <template>
   <article class="min-h-screen h-auto snap-start bg-white px-4 pt-32 pb-20 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-4xl">
-
       <h1 class="font-display text-4xl font-extrabold tracking-tight text-primary-900">
         Politique de confidentialité des données
       </h1>
       <p class="mt-3 text-sm text-primary-900/50">Dernière mise à jour : [À VENIR]</p>
 
       <div class="mt-12 space-y-12 text-base leading-relaxed text-primary-900/80">
-
         <p class="text-lg">
           Vous trouverez sur cette page toutes les informations relatives aux traitements de vos
           données personnelles&nbsp;: où, quand, comment, pourquoi nous les traitons, et quels sont
@@ -153,13 +151,13 @@
             4. Transfert et Sécurité des données
           </h2>
           <p class="mt-4">
-            Les data centers sur lesquels sont hébergées vos données sont localisés exclusivement
-            en France ou en Europe.
+            Les data centers sur lesquels sont hébergées vos données sont localisés exclusivement en
+            France ou en Europe.
           </p>
           <p class="mt-3">
-            Faceel-IT prend toutes les précautions d'usage pour préserver la sécurité de vos
-            données contre toute perte, accès, modification, ou divulgation non autorisée. L'accès
-            aux données est strictement encadré et réservé aux collaborateurs qui ont un besoin
+            Faceel-IT prend toutes les précautions d'usage pour préserver la sécurité de vos données
+            contre toute perte, accès, modification, ou divulgation non autorisée. L'accès aux
+            données est strictement encadré et réservé aux collaborateurs qui ont un besoin
             impératif d'y accéder pour l'exécution de leurs missions.
           </p>
         </section>
@@ -172,8 +170,8 @@
           </p>
           <ul class="mt-4 space-y-4 pl-6 list-disc">
             <li>
-              <strong>Droit d'accès&nbsp;:</strong> Demander des informations sur vos traitements
-              et obtenir une copie de vos données.
+              <strong>Droit d'accès&nbsp;:</strong> Demander des informations sur vos traitements et
+              obtenir une copie de vos données.
             </li>
             <li>
               <strong>Droit de rectification&nbsp;:</strong> Mettre à jour ou corriger des données
@@ -192,8 +190,8 @@
               structuré (pour les traitements basés sur le consentement ou un contrat).
             </li>
             <li>
-              <strong>Droit d'opposition&nbsp;:</strong> Vous opposer à un traitement basé sur
-              notre intérêt légitime, pour des raisons tenant à votre situation particulière.
+              <strong>Droit d'opposition&nbsp;:</strong> Vous opposer à un traitement basé sur notre
+              intérêt légitime, pour des raisons tenant à votre situation particulière.
             </li>
             <li>
               <strong>Droit à l'effacement (droit à l'oubli)&nbsp;:</strong> Obtenir la suppression
@@ -218,19 +216,17 @@
               <a
                 href="mailto:contact@faceel-it.com"
                 class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
-              >contact@faceel-it.com</a>
+                >contact@faceel-it.com</a
+              >
             </li>
-            <li>
-              Par courrier&nbsp;: Faceel-IT, 10 allée du Château Blanc, 59290 Wasquehal
-            </li>
+            <li>Par courrier&nbsp;: Faceel-IT, 10 allée du Château Blanc, 59290 Wasquehal</li>
           </ul>
           <p class="mt-6 text-sm text-primary-900/60">
-            Si vous estimez, après nous avoir contactés, que vos droits sur vos données ne sont
-            pas respectés, vous pouvez adresser une réclamation à la CNIL (Commission Nationale de
+            Si vous estimez, après nous avoir contactés, que vos droits sur vos données ne sont pas
+            respectés, vous pouvez adresser une réclamation à la CNIL (Commission Nationale de
             l'Informatique et des Libertés).
           </p>
         </section>
-
       </div>
     </div>
   </article>

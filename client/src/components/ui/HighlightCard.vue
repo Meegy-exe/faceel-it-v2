@@ -219,7 +219,10 @@ const size = computed(() => SIZES[props.size])
       <slot />
     </div>
 
-    <div v-if="$slots.footer || isInteractive" class="mt-6 flex flex-col items-start gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+    <div
+      v-if="$slots.footer || isInteractive"
+      class="mt-6 flex flex-col items-start gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+    >
       <div class="w-full sm:w-auto">
         <slot name="footer">
           <span class="text-sm font-semibold transition-colors duration-300" :class="tone.title">

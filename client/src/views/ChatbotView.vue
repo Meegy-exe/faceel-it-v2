@@ -150,7 +150,9 @@ function resetConversation() {
       <div class="absolute inset-0 bg-blue-950/70" aria-hidden="true" />
 
       <div class="relative z-10">
-        <p class="inline-block rounded-full bg-accent-500 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-950">
+        <p
+          class="inline-block rounded-full bg-accent-500 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-950"
+        >
           TRAVAILLER CHEZ FACEEL-IT
         </p>
         <h1 class="mt-4 font-display text-4xl font-bold text-white">
@@ -164,7 +166,9 @@ function resetConversation() {
     </section>
 
     <!-- Colonne droite : bot conversationnel -->
-    <section class="flex h-svh md:h-dvh snap-start flex-col overflow-hidden bg-blue-950 pt-24 md:pt-28">
+    <section
+      class="flex h-svh md:h-dvh snap-start flex-col overflow-hidden bg-blue-950 pt-24 md:pt-28"
+    >
       <div class="p-8 pb-0 md:p-16 md:pb-0">
         <div class="flex items-center gap-3">
           <span
@@ -183,7 +187,10 @@ function resetConversation() {
 
       <div class="mt-6 flex flex-1 flex-col overflow-hidden">
         <!-- Historique — seule zone scrollable -->
-        <div ref="chatContainer" class="min-h-0 flex-1 space-y-4 overflow-y-auto md:overscroll-contain p-4 md:p-8">
+        <div
+          ref="chatContainer"
+          class="min-h-0 flex-1 space-y-4 overflow-y-auto md:overscroll-contain p-4 md:p-8"
+        >
           <div
             v-for="(msg, index) in chatHistory"
             :key="index"
@@ -218,9 +225,15 @@ function resetConversation() {
             </span>
             <span class="rounded-2xl rounded-bl-sm border border-white/10 bg-white/5 px-4 py-3">
               <span class="flex gap-1">
-                <span class="h-2 w-2 animate-bounce rounded-full bg-white/40 [animation-delay:0ms] motion-reduce:animate-none" />
-                <span class="h-2 w-2 animate-bounce rounded-full bg-white/40 [animation-delay:150ms] motion-reduce:animate-none" />
-                <span class="h-2 w-2 animate-bounce rounded-full bg-white/40 [animation-delay:300ms] motion-reduce:animate-none" />
+                <span
+                  class="h-2 w-2 animate-bounce rounded-full bg-white/40 [animation-delay:0ms] motion-reduce:animate-none"
+                />
+                <span
+                  class="h-2 w-2 animate-bounce rounded-full bg-white/40 [animation-delay:150ms] motion-reduce:animate-none"
+                />
+                <span
+                  class="h-2 w-2 animate-bounce rounded-full bg-white/40 [animation-delay:300ms] motion-reduce:animate-none"
+                />
               </span>
             </span>
           </div>
@@ -247,7 +260,13 @@ function resetConversation() {
                 aria-label="Envoyer"
               >
                 <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <path
+                    d="M4 10h12m-5-5 5 5-5 5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
               </button>
             </form>
@@ -260,7 +279,13 @@ function resetConversation() {
             >
               {{ dynamicAction.label }}
               <svg class="size-4 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path
+                  d="M4 10h12m-5-5 5 5-5 5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
             </a>
 
@@ -289,7 +314,9 @@ function resetConversation() {
         </div>
 
         <!-- Footer du bot -->
-        <div class="flex items-center justify-between gap-4 border-t border-white/10 px-4 py-4 md:px-8">
+        <div
+          class="flex items-center justify-between gap-4 border-t border-white/10 px-4 py-4 md:px-8"
+        >
           <a
             href="mailto:contact@faceel-it.com"
             class="text-xs text-gray-400 transition-colors hover:text-white"

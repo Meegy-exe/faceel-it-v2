@@ -4,14 +4,6 @@ import { useTemplateRef } from 'vue'
 import PartnerCarousel, { type PartnerCarouselItem } from '@/components/ui/PartnerCarousel.vue'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
 import { useSeo } from '@/composables/useSeo'
-import logoAuchan from '@/assets/images/partners/auchan.svg'
-import logoBoulanger from '@/assets/images/partners/boulanger.svg'
-import logoVerspieren from '@/assets/images/partners/verspieren.svg'
-import logoDecathlon from '@/assets/images/partners/decathlon.svg'
-import logoMidas from '@/assets/images/partners/midas.svg'
-import logoKiabi from '@/assets/images/partners/kiabi.svg'
-import logoMondialRelay from '@/assets/images/partners/mondial_relay.svg'
-import logoLeroyMerlin from '@/assets/images/partners/leroy_merlin.svg'
 
 /**
  * Page « Je suis une entreprise » — V0.8.
@@ -66,14 +58,14 @@ const confianceReveal = useScrollReveal(confianceEl)
 /* -------------------------------------------------------------------------- */
 
 const PARTNERS: PartnerCarouselItem[] = [
-  { name: 'Auchan', logoUrl: logoAuchan, url: 'https://www.auchan.fr/' },
-  { name: 'Boulanger', logoUrl: logoBoulanger, url: 'https://www.boulanger.com/' },
-  { name: 'Verspieren', logoUrl: logoVerspieren, url: 'https://www.verspieren.com/' },
-  { name: 'Decathlon', logoUrl: logoDecathlon, url: 'https://www.decathlon.fr/' },
-  { name: 'Midas', logoUrl: logoMidas, url: 'https://www.midas.fr/' },
-  { name: 'Kiabi', logoUrl: logoKiabi, url: 'https://www.kiabi.com/' },
-  { name: 'Mondial Relay', logoUrl: logoMondialRelay, url: 'https://www.mondialrelay.fr/' },
-  { name: 'Leroy Merlin', logoUrl: logoLeroyMerlin, url: 'https://www.leroymerlin.fr/' },
+  { name: 'Auchan', logoUrl: '/images/partners/auchan.svg', url: 'https://www.auchan.fr/' },
+  { name: 'Boulanger', logoUrl: '/images/partners/boulanger.svg', url: 'https://www.boulanger.com/' },
+  { name: 'Verspieren', logoUrl: '/images/partners/verspieren.svg', url: 'https://www.verspieren.com/' },
+  { name: 'Decathlon', logoUrl: '/images/partners/decathlon.svg', url: 'https://www.decathlon.fr/' },
+  { name: 'Midas', logoUrl: '/images/partners/midas.svg', url: 'https://www.midas.fr/' },
+  { name: 'Kiabi', logoUrl: '/images/partners/kiabi.svg', url: 'https://www.kiabi.com/' },
+  { name: 'Mondial Relay', logoUrl: '/images/partners/mondial_relay.svg', url: 'https://www.mondialrelay.fr/' },
+  { name: 'Leroy Merlin', logoUrl: '/images/partners/leroy_merlin.svg', url: 'https://www.leroymerlin.fr/' },
 ]
 
 /* -------------------------------------------------------------------------- */

@@ -44,12 +44,18 @@ export const createApp = ViteSSG(
   ({ app, router }) => {
     app.use(createPinia())
 
-    // Guard basique : `/admin` (et ses enfants, meta hérité) exige
-    // `useAuthStore().isAuthenticated` — sinon redirection vers le login.
     router.beforeEach((to) => {
-      if (to.meta.requiresAuth !== true) return true
+      if (!to.meta.requiresAuth && !to.meta.requiresAdmin) return true
       const auth = useAuthStore()
-      if (!auth.isAuthenticated) return { name: 'admin-login' }
+
+      // Non connecté : vers la page de login adaptée au contexte.
+      if (!auth.isAuthenticated) {
+        return to.meta.requiresAdmin ? { name: 'admin-login' } : { name: 'login' }
+      }
+
+      // Connecté mais sans les droits admin sur une route protégée admin.
+      if (to.meta.requiresAdmin && !auth.isAdmin) return { name: 'home' }
+
       return true
     })
   },

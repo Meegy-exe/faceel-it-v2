@@ -175,7 +175,7 @@ export const routes: RouteRecordRaw[] = [
   {
     path: '/admin',
     component: () => import('@/layouts/AdminLayout.vue'),
-    meta: { classicScroll: true, requiresAuth: true },
+    meta: { classicScroll: true, requiresAuth: true, requiresAdmin: true },
     children: [
       {
         path: '',

@@ -14,3 +14,13 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    fullPageScroll?: boolean
+    classicScroll?: boolean
+    throwaway?: boolean
+    requiresAuth?: boolean
+    requiresAdmin?: boolean
+  }
+}

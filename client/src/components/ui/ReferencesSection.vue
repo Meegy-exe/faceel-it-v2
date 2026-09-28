@@ -1,22 +1,4 @@
 <script setup lang="ts">
-import imgAdeo from '@/assets/references/adeo.svg'
-import imgLeroyMerlin from '@/assets/references/leroy_merlin.svg'
-import imgKiabi from '@/assets/references/kiabi.svg'
-import imgDecathlon from '@/assets/references/decathlon.svg'
-import imgBoulanger from '@/assets/references/boulanger.svg'
-import imgTapeALoeil from '@/assets/references/tape_a_loeil.svg'
-import imgMidas from '@/assets/references/midas.svg'
-import imgKeolis from '@/assets/references/keolis.svg'
-import imgOvh from '@/assets/references/ovh.svg'
-import imgVerspieren from '@/assets/references/verspieren.svg'
-import imgAxa from '@/assets/references/axa.svg'
-import imgOney from '@/assets/references/oney.svg'
-import imgMatch from '@/assets/references/supermarche_match.svg'
-import imgKiloutou from '@/assets/references/kiloutou.svg'
-import imgIrcem from '@/assets/references/ircem.svg'
-import imgChronodrive from '@/assets/references/chronodrive.svg'
-import imgMondialRelay from '@/assets/references/mondial_relay.svg'
-
 interface Logo {
   name: string
   src: string
@@ -25,26 +7,26 @@ interface Logo {
 }
 
 const ROW_1: Logo[] = [
-  { name: 'Adéo', src: imgAdeo, href: 'https://www.adeo.com/' },
-  { name: 'Leroy Merlin', src: imgLeroyMerlin, href: 'https://www.leroymerlin.fr/' },
-  { name: 'Kiabi', src: imgKiabi, href: 'https://www.kiabi.com/' },
-  { name: 'Decathlon', src: imgDecathlon, href: 'https://www.decathlon.fr/' },
-  { name: 'Boulanger', src: imgBoulanger, href: 'https://www.boulanger.com/' },
-  { name: "Tape à l'Œil", src: imgTapeALoeil, href: 'https://www.taokids.com/' },
-  { name: 'Midas', src: imgMidas, href: 'https://www.midas.fr/' },
-  { name: 'Keolis', src: imgKeolis, href: 'https://www.keolis.com/' },
-  { name: 'OVH', src: imgOvh, href: 'https://www.ovhcloud.com/fr/' },
+  { name: 'Adéo', src: '/images/references/adeo.svg', href: 'https://www.adeo.com/' },
+  { name: 'Leroy Merlin', src: '/images/references/leroy_merlin.svg', href: 'https://www.leroymerlin.fr/' },
+  { name: 'Kiabi', src: '/images/references/kiabi.svg', href: 'https://www.kiabi.com/' },
+  { name: 'Decathlon', src: '/images/references/decathlon.svg', href: 'https://www.decathlon.fr/' },
+  { name: 'Boulanger', src: '/images/references/boulanger.svg', href: 'https://www.boulanger.com/' },
+  { name: "Tape à l'Œil", src: '/images/references/tape_a_loeil.svg', href: 'https://www.taokids.com/' },
+  { name: 'Midas', src: '/images/references/midas.svg', href: 'https://www.midas.fr/' },
+  { name: 'Keolis', src: '/images/references/keolis.svg', href: 'https://www.keolis.com/' },
+  { name: 'OVH', src: '/images/references/ovh.svg', href: 'https://www.ovhcloud.com/fr/' },
 ]
 
 const ROW_2: Logo[] = [
-  { name: 'Verspieren', src: imgVerspieren, href: 'https://www.verspiren.com/', needsInvert: true },
-  { name: 'AXA', src: imgAxa, href: 'https://www.axa.fr/' },
-  { name: 'Oney', src: imgOney, href: 'https://www.oney.fr/' },
-  { name: 'Supermarché Match', src: imgMatch, href: 'https://www.supermarchesmatch.fr/fr' },
-  { name: 'Kiloutou', src: imgKiloutou, href: 'https://www.kiloutou.fr/' },
-  { name: 'IRCEM', src: imgIrcem, href: 'https://www.ircem.com/' },
-  { name: 'Chronodrive', src: imgChronodrive, href: 'https://www.chronodrive.com/' },
-  { name: 'Mondial Relay', src: imgMondialRelay, href: 'https://www.mondialrelay.fr/' },
+  { name: 'Verspieren', src: '/images/references/verspieren.svg', href: 'https://www.verspiren.com/', needsInvert: true },
+  { name: 'AXA', src: '/images/references/axa.svg', href: 'https://www.axa.fr/' },
+  { name: 'Oney', src: '/images/references/oney.svg', href: 'https://www.oney.fr/' },
+  { name: 'Supermarché Match', src: '/images/references/supermarche_match.svg', href: 'https://www.supermarchesmatch.fr/fr' },
+  { name: 'Kiloutou', src: '/images/references/kiloutou.svg', href: 'https://www.kiloutou.fr/' },
+  { name: 'IRCEM', src: '/images/references/ircem.svg', href: 'https://www.ircem.com/' },
+  { name: 'Chronodrive', src: '/images/references/chronodrive.svg', href: 'https://www.chronodrive.com/' },
+  { name: 'Mondial Relay', src: '/images/references/mondial_relay.svg', href: 'https://www.mondialrelay.fr/' },
 ]
 </script>
 

@@ -445,7 +445,7 @@ onBeforeUnmount(() => {
     class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none"
   >
     <div
-      class="absolute w-0 h-0 rounded-full shadow-[0_0_0_150vmax_#172554] animate-splash-hole"
+      class="absolute w-0 h-0 rounded-full shadow-[0_0_0_150vmax_#000066] animate-splash-hole"
     ></div>
     <div class="absolute w-4 h-4 bg-green-500 rounded-full animate-splash-drop"></div>
   </div>
@@ -831,7 +831,7 @@ onBeforeUnmount(() => {
       height: 0;
       opacity: 1;
       box-shadow:
-        0 0 0 150vmax #172554,
+        0 0 0 150vmax #000066,
         inset 0 0 0px 0px rgba(34, 197, 94, 0);
     }
     30% {
@@ -839,7 +839,7 @@ onBeforeUnmount(() => {
       height: 0;
       opacity: 1;
       box-shadow:
-        0 0 0 150vmax #172554,
+        0 0 0 150vmax #000066,
         inset 0 0 40px 10px rgba(34, 197, 94, 0.7);
     }
     99% {
@@ -847,7 +847,7 @@ onBeforeUnmount(() => {
       height: 300vmax;
       opacity: 1;
       box-shadow:
-        0 0 0 150vmax #172554,
+        0 0 0 150vmax #000066,
         inset 0 0 150px 20px rgba(34, 197, 94, 0);
     }
     100% {

@@ -1,5 +1,6 @@
 import { ViteSSG } from 'vite-ssg'
 import { createPinia } from 'pinia'
+import type { RouteLocationNormalized, RouteLocationNormalizedLoaded } from 'vue-router'
 
 import App from './App.vue'
 import { routes } from './router/routes'
@@ -29,7 +30,7 @@ export const createApp = ViteSSG(
   {
     routes,
     base: import.meta.env.BASE_URL,
-    scrollBehavior(to, _from, savedPosition) {
+    scrollBehavior(to: RouteLocationNormalizedLoaded, _from: RouteLocationNormalizedLoaded, savedPosition: any) {
       // Retour arrière : on rend la position exacte, jamais autre chose.
       if (savedPosition) return savedPosition
 
@@ -44,7 +45,7 @@ export const createApp = ViteSSG(
   ({ app, router }) => {
     app.use(createPinia())
 
-    router.beforeEach((to) => {
+    router.beforeEach((to: RouteLocationNormalized) => {
       if (!to.meta.requiresAuth && !to.meta.requiresAdmin) return true
       const auth = useAuthStore()
 

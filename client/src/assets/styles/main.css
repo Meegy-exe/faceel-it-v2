@@ -304,12 +304,12 @@
      éléments cliquables pour distinguer visuellement l'affordance. */
   html,
   body {
-    cursor: url('/cursor.svg') 12 12, auto;
+    cursor: url('/cursor.svg') 12 12, auto !important;
   }
 
   a,
   button,
   .cursor-pointer {
-    cursor: url('/cursor-pointer.svg') 16 16, pointer;
+    cursor: url('/cursor-pointer.svg') 16 16, pointer !important;
   }
 }

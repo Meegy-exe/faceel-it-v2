@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
+import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
 import CardCarousel from '@/components/ui/CardCarousel.vue'
 import CoverCarousel from '@/components/ui/CoverCarousel.vue'
 import CarouselSlideContent from '@/components/ui/CarouselSlideContent.vue'
 import ReferencesSection from '@/components/ui/ReferencesSection.vue'
+import BuSection from '@/components/home/BuSection.vue'
+import LocationMapSection from '@/components/home/LocationMapSection.vue'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
-import { useAdminStore } from '@/stores/useAdminStore'
 // PHOTOS « NOS ÉVÉNEMENTS » — déjà présentes dans `assets/images/` (dépôt
 // client, dossier `Animate the header/assets/photos/`), aucune n'est encore
 // utilisée ailleurs sur le site : pas de nouveau fichier à importer, pas de
@@ -34,16 +35,10 @@ useSeo({
 
 const chiffresEl = useTemplateRef<HTMLElement>('chiffresEl')
 const chiffresReveal = useScrollReveal(chiffresEl)
-const servicesEl = useTemplateRef<HTMLElement>('servicesEl')
-const servicesReveal = useScrollReveal(servicesEl)
 const evenementsEl = useTemplateRef<HTMLElement>('evenementsEl')
 const evenementsReveal = useScrollReveal(evenementsEl)
-const secteursEl = useTemplateRef<HTMLElement>('secteursEl')
-const secteursReveal = useScrollReveal(secteursEl)
 const valeursEl = useTemplateRef<HTMLElement>('valeursEl')
 const valeursReveal = useScrollReveal(valeursEl)
-const rseEl = useTemplateRef<HTMLElement>('rseEl')
-const rseReveal = useScrollReveal(rseEl)
 
 /* -------------------------------------------------------------------------- */
 /* Chiffres clés                                                              */
@@ -62,51 +57,6 @@ const KEY_STATS: KeyStat[] = [
   { value: '30', label: 'Clients satisfaits' },
 ]
 
-/* -------------------------------------------------------------------------- */
-/* Services — « La tech au service des métiers »                              */
-/* -------------------------------------------------------------------------- */
-
-interface ServiceCard {
-  title: string
-  description: string
-}
-
-const SERVICES: ServiceCard[] = [
-  {
-    title: 'Accélération digitale',
-    description:
-      'Concevoir et déployer des solutions numériques performantes pour capter de nouveaux ' +
-      "marchés, améliorer l'expérience client ou moderniser les parcours internes.",
-  },
-  {
-    title: 'Performance opérationnelle',
-    description:
-      'Optimiser les processus métiers (production, logistique, vente, RH) grâce à des ' +
-      "systèmes d'information sur mesure et interconnectés.",
-  },
-  {
-    title: 'Valorisation des données',
-    description:
-      'Collecter, structurer et analyser les données pour en extraire des leviers de ' +
-      "décision, d'innovation et de pilotage stratégique.",
-  },
-  {
-    title: 'Maîtrise des risques',
-    description:
-      'Garantir la conformité (RGPD, sécurité, qualité), la fiabilité des systèmes et la ' +
-      'réduction des vulnérabilités dans des environnements critiques.',
-  },
-  {
-    title: 'Expérience utilisateur',
-    description:
-      'Concevoir des interfaces intuitives, améliorer la fluidité des parcours clients et ' +
-      "collaborateurs, et renforcer l'engagement des utilisateurs finaux.",
-  },
-]
-
-function activeService(index: number): ServiceCard {
-  return SERVICES[index]!
-}
 
 /* -------------------------------------------------------------------------- */
 /* Nos événements — galerie photo                                             */
@@ -128,13 +78,6 @@ const EVENT_PHOTOS: EventPhoto[] = [
   { src: eventPadelEquipe, alt: "Équipe réunie autour d'un terrain de padel" },
 ]
 
-const adminStore = useAdminStore()
-
-/** Agenda dynamique (back-office) : les 3 événements les plus récents,
- *  triés du plus récent au plus ancien. */
-const recentEvents = computed(() =>
-  [...adminStore.events].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3),
-)
 
 /** Carrousel mobile : index courant, avance toutes les 3 s. SSR-safe : le
  *  setInterval est instancié uniquement dans onMounted, jamais pendant le
@@ -153,37 +96,6 @@ onBeforeUnmount(() => {
   if (mobilePhotoInterval !== undefined) clearInterval(mobilePhotoInterval)
 })
 
-/* -------------------------------------------------------------------------- */
-/* Secteurs d'activités                                                       */
-/* -------------------------------------------------------------------------- */
-
-interface SectorCard {
-  title: string
-  description: string
-}
-
-const SECTORS: SectorCard[] = [
-  {
-    title: 'Ecommerce',
-    description: 'E-commerce & omnicanal, CRM & fidélisation, Gestion des stocks.',
-  },
-  {
-    title: 'Industrie',
-    description: 'ERP & production, Maintenance prédictive, Automatisation des flux.',
-  },
-  {
-    title: 'Logistique',
-    description: 'Optimisation supply chain, Traçabilité & tracking, Planification des ressources.',
-  },
-  {
-    title: 'Banque & Assurance',
-    description: 'Conformité & sécurité, Digitalisation des services, IA & automatisation.',
-  },
-]
-
-function activeSector(index: number): SectorCard {
-  return SECTORS[index]!
-}
 
 /* -------------------------------------------------------------------------- */
 /* Valeur ajoutée                                                             */
@@ -217,44 +129,6 @@ function activeValue(index: number): ValueCard {
   return VALUE_CARDS[index]!
 }
 
-/* -------------------------------------------------------------------------- */
-/* Politique RSE                                                              */
-/* -------------------------------------------------------------------------- */
-
-interface RseCard {
-  title: string
-  description: string
-  badge?: string
-}
-
-const RSE_CARDS: RseCard[] = [
-  {
-    title: 'Mobilité urbaine',
-    description:
-      'Notre engagement pour une ville plus fluide et durable.\n' +
-      "Nous soutenons activement les initiatives de mobilité urbaine visant à réduire l'empreinte carbone et à faciliter les déplacements doux.",
-  },
-  {
-    title: 'Ecovadis',
-    description:
-      'Classée dans le top 15 % des entreprises évaluées par EcoVadis, notre entreprise est fière de contribuer à une économie plus responsable.',
-    badge: 'Silver',
-  },
-  {
-    title: 'Charte de la diversité',
-    description:
-      "Nous mettons en œuvre une politique RH inclusive, favorisant l'égalité des chances et le respect de chacun dans toutes nos missions et recrutements.",
-  },
-  {
-    title: 'Numeum',
-    description:
-      "Nous participons activement à la structuration de la filière numérique française. Ce partenariat nous permet d'être au cœur des enjeux du secteur.",
-  },
-]
-
-function activeRse(index: number): RseCard {
-  return RSE_CARDS[index]!
-}
 
 /* -------------------------------------------------------------------------- */
 /* Hero — effet machine à écrire                                              */
@@ -445,7 +319,7 @@ onBeforeUnmount(() => {
     class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none"
   >
     <div
-      class="absolute w-0 h-0 rounded-full shadow-[0_0_0_150vmax_#000066] animate-splash-hole"
+      class="absolute w-0 h-0 rounded-full shadow-[0_0_0_150vmax_#ffffff] animate-splash-hole"
     ></div>
     <div class="absolute w-4 h-4 bg-green-500 rounded-full animate-splash-drop"></div>
   </div>
@@ -490,40 +364,7 @@ onBeforeUnmount(() => {
     </div>
   </section>
 
-  <section
-    id="services"
-    data-theme="light"
-    class="h-full w-full snap-start snap-always flex flex-col bg-light px-4 pt-36 pb-8 sm:px-6 lg:px-8 xl:px-12"
-  >
-    <header
-      ref="servicesEl"
-      class="max-w-4xl px-4 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
-      :class="scrollRevealClass(servicesReveal)"
-    >
-      <h2 class="font-display text-display text-balance text-primary-900">
-        La tech au service des métiers
-      </h2>
-    </header>
-
-    <CardCarousel
-      :count="SERVICES.length"
-      label="Nos expertises"
-      tone="light"
-      class="flex-1 w-full mt-8"
-    >
-      <template #slide="{ index }">
-        <CarouselSlideContent
-          tone="light"
-          size="lg"
-          :title="activeService(index).title"
-          :heading-level="3"
-          class="max-w-5xl"
-        >
-          {{ activeService(index).description }}
-        </CarouselSlideContent>
-      </template>
-    </CardCarousel>
-  </section>
+  <BuSection />
 
   <section
     id="valeurs"
@@ -633,73 +474,7 @@ onBeforeUnmount(() => {
     <ReferencesSection />
   </section>
 
-  <section
-    id="secteurs"
-    data-theme="light"
-    class="h-full w-full snap-start snap-always flex flex-col bg-light px-4 pt-36 pb-8 sm:px-6 lg:px-8 xl:px-12"
-  >
-    <header
-      ref="secteursEl"
-      class="max-w-4xl px-4 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
-      :class="scrollRevealClass(secteursReveal)"
-    >
-      <h2 class="font-display text-display text-balance text-primary-900">
-        Nos secteurs d'activités
-      </h2>
-    </header>
-
-    <CardCarousel
-      :count="SECTORS.length"
-      label="Nos secteurs d'activités"
-      tone="light"
-      class="flex-1 w-full mt-8"
-    >
-      <template #slide="{ index }">
-        <CarouselSlideContent
-          tone="light"
-          size="lg"
-          :title="activeSector(index).title"
-          :heading-level="3"
-          class="max-w-5xl"
-        >
-          {{ activeSector(index).description }}
-        </CarouselSlideContent>
-      </template>
-    </CardCarousel>
-  </section>
-  <section
-    id="rse"
-    data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col bg-[#000066] px-4 pt-36 pb-8 text-white sm:px-6 lg:px-8 xl:px-12"
-  >
-    <header
-      ref="rseEl"
-      class="max-w-4xl px-4 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
-      :class="scrollRevealClass(rseReveal)"
-    >
-      <h2 class="font-display text-display text-balance text-white">Politique RSE</h2>
-    </header>
-
-    <CardCarousel
-      :count="RSE_CARDS.length"
-      label="Politique RSE"
-      tone="dark"
-      class="flex-1 w-full mt-8"
-    >
-      <template #slide="{ index }">
-        <CarouselSlideContent
-          tone="dark"
-          size="lg"
-          :title="activeRse(index).title"
-          :badge="activeRse(index).badge ?? ''"
-          :heading-level="3"
-          class="max-w-5xl"
-        >
-          {{ activeRse(index).description }}
-        </CarouselSlideContent>
-      </template>
-    </CardCarousel>
-  </section>
+  <LocationMapSection />
 
   <section
     id="evenements"
@@ -771,31 +546,6 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <!-- Agenda dynamique (back-office) — n'affecte pas la galerie photo ci-dessus -->
-    <div v-if="recentEvents.length > 0" class="mx-auto mt-16 w-full max-w-6xl">
-      <h3 class="text-eyebrow text-center uppercase text-accent-700">Prochains événements</h3>
-
-      <div class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-        <article
-          v-for="event in recentEvents"
-          :key="event.id"
-          class="overflow-hidden rounded-card bg-blue-900/50"
-        >
-          <img
-            :src="event.imageUrl"
-            :alt="event.title"
-            loading="lazy"
-            decoding="async"
-            class="h-48 w-full object-cover"
-          />
-          <div class="p-6">
-            <p class="text-sm text-accent-500">{{ event.date }}</p>
-            <p class="mb-2 text-lg font-bold text-white">{{ event.title }}</p>
-            <p class="line-clamp-3 text-sm text-white/70">{{ event.description }}</p>
-          </div>
-        </article>
-      </div>
-    </div>
   </section>
 </template>
 
@@ -831,7 +581,7 @@ onBeforeUnmount(() => {
       height: 0;
       opacity: 1;
       box-shadow:
-        0 0 0 150vmax #000066,
+        0 0 0 150vmax #ffffff,
         inset 0 0 0px 0px rgba(34, 197, 94, 0);
     }
     30% {
@@ -839,7 +589,7 @@ onBeforeUnmount(() => {
       height: 0;
       opacity: 1;
       box-shadow:
-        0 0 0 150vmax #000066,
+        0 0 0 150vmax #ffffff,
         inset 0 0 40px 10px rgba(34, 197, 94, 0.7);
     }
     99% {
@@ -847,7 +597,7 @@ onBeforeUnmount(() => {
       height: 300vmax;
       opacity: 1;
       box-shadow:
-        0 0 0 150vmax #000066,
+        0 0 0 150vmax #ffffff,
         inset 0 0 150px 20px rgba(34, 197, 94, 0);
     }
     100% {

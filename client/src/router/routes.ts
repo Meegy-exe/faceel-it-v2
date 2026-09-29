@@ -117,7 +117,13 @@ export const routes: RouteRecordRaw[] = [
     path: '/offres/:id',
     name: 'offre-detail',
     component: () => import('@/views/OfferDetailView.vue'),
-    meta: { fullPageScroll: true },
+    meta: { classicScroll: true },
+  },
+  {
+    path: '/offres/:id/postuler',
+    name: 'offre-postuler',
+    component: () => import('@/views/ApplicationView.vue'),
+    meta: { classicScroll: true },
   },
   {
     path: '/mentions-legales',

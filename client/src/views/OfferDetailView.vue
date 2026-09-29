@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSeo } from '@/composables/useSeo'
+import { useWaveCanvas } from '@/composables/useWaveCanvas'
 
 const route = useRoute()
 
@@ -132,6 +133,9 @@ const offer = computed(
 
 const similarOffers = computed(() => OFFERS.filter((o) => o.id !== offer.value.id).slice(0, 3))
 
+const waveCanvas = ref<HTMLCanvasElement | null>(null)
+useWaveCanvas(waveCanvas)
+
 useSeo({
   title: 'Data Engineer (H/F) – Faceel-IT',
   description:
@@ -140,7 +144,9 @@ useSeo({
 </script>
 
 <template>
-  <!-- Pas de <main> ici : App.vue le fournit déjà. -->
+  <!-- Pas de <main> ici : App.vue le fournit déjà.
+       fullPageScroll → <main> est `contents` : ces sections sont des enfants
+       directs du conteneur snap-y d'App.vue, TheFooter compris. -->
 
   <!-- ==================================================================
        SECTION 1 — HERO (Thème Sombre — plein écran strict)
@@ -148,8 +154,15 @@ useSeo({
   <section
     id="hero"
     data-theme="dark"
-    class="relative h-full w-full snap-start snap-always flex flex-col justify-center bg-[#000066] text-white overflow-hidden"
+    class="relative min-h-screen w-full flex flex-col justify-center bg-[#000066] text-white overflow-hidden"
   >
+    <!-- Canvas vague — fond animé, désactivé si motion-reduce. -->
+    <canvas
+      ref="waveCanvas"
+      aria-hidden="true"
+      class="absolute inset-0 h-full w-full pointer-events-none opacity-60 motion-reduce:hidden"
+    />
+
     <!-- Halo décoratif vert -->
     <div
       aria-hidden="true"
@@ -160,7 +173,7 @@ useSeo({
     <div class="absolute top-20 left-4 sm:left-6 lg:left-8 lg:top-24 z-10">
       <RouterLink
         to="/consulter-nos-offres"
-        class="inline-flex items-center gap-2 text-sm font-medium text-white/50 transition-colors hover:text-white"
+        class="inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-accent-400"
       >
         <svg
           class="h-4 w-4"
@@ -176,10 +189,10 @@ useSeo({
       </RouterLink>
     </div>
 
-    <!-- Contenu centré -->
-    <div class="relative px-4 py-24 sm:px-6 lg:px-8 xl:px-12">
-      <div class="mx-auto w-full max-w-4xl">
-        <p class="mb-4 text-sm text-white/50">
+    <!-- Contenu -->
+    <div class="relative z-10 px-4 py-24 sm:px-6 lg:px-8 xl:px-12">
+      <div class="mr-auto w-full max-w-4xl">
+        <p class="mb-4 text-sm text-white/90">
           Équipe RH Faceel-IT · {{ offer.date }} · 3 min de lecture
         </p>
 
@@ -188,28 +201,19 @@ useSeo({
         </h1>
 
         <div class="mt-6 flex flex-wrap items-center gap-3">
-          <span class="rounded-full bg-orange-400/20 px-3 py-1 text-sm font-medium text-orange-300">
+          <span class="rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-orange-300 backdrop-blur-sm">
             {{ offer.category }}
           </span>
-          <span class="flex items-center gap-1.5 text-sm font-medium text-accent-500">
-            <svg
-              class="h-4 w-4 shrink-0"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"
-                clip-rule="evenodd"
-              />
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-green-300 backdrop-blur-sm">
+            <svg class="h-4 w-4 shrink-0" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
             </svg>
             {{ offer.location }}
           </span>
-          <span class="rounded-full bg-accent-500/20 px-3 py-1 text-sm font-medium text-white">
+          <span class="rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
             {{ offer.contract }}
           </span>
-          <span class="rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-white/70">
+          <span class="rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
             Selon profil
           </span>
         </div>
@@ -230,7 +234,7 @@ useSeo({
   <section
     id="details"
     data-theme="light"
-    class="min-h-screen h-auto snap-start bg-white text-primary-900 pt-32 pb-20 px-4 sm:px-6 lg:px-8"
+    class="h-auto bg-white text-primary-900 py-12 md:py-20 px-4 sm:px-6 lg:px-8"
   >
     <div class="mx-auto max-w-5xl">
       <div class="grid gap-10 lg:grid-cols-[1fr_300px] lg:items-start">
@@ -290,8 +294,8 @@ useSeo({
 
           <!-- CTA -->
           <div class="pt-4 border-t border-gray-200">
-            <a
-              :href="`mailto:contact@faceel-it.com?subject=Candidature – ${offer.title}&body=Bonjour,%0A%0AJe souhaite postuler à l'offre « ${offer.title} » publiée sur le site Faceel-IT.%0A%0A`"
+            <RouterLink
+              :to="{ name: 'offre-postuler', params: { id: offer.id } }"
               class="inline-flex items-center justify-center gap-2 rounded-xl bg-accent-500 px-8 py-4 text-base font-semibold text-primary-900 transition-all duration-200 hover:bg-accent-500/90 hover:shadow-lg hover:shadow-accent-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2"
             >
               Postuler à cette offre
@@ -302,7 +306,7 @@ useSeo({
                   clip-rule="evenodd"
                 />
               </svg>
-            </a>
+            </RouterLink>
           </div>
         </article>
 
@@ -382,15 +386,17 @@ useSeo({
     </div>
   </section>
 
+  <hr class="w-24 h-1 mx-auto my-12 bg-[#000066]/20 border-0 rounded md:my-16" aria-hidden="true" />
+
   <!-- ==================================================================
        SECTION 3 — OFFRES SIMILAIRES (flux naturel, fond gris pour séparer)
        ================================================================== -->
   <section
     id="similaires"
     data-theme="light"
-    class="h-auto snap-start bg-gray-50 py-20 px-4 sm:px-6 lg:px-8"
+    class="flex flex-col justify-center bg-white py-12 px-4 sm:px-6 lg:px-8"
   >
-    <div class="mx-auto max-w-3xl">
+    <div class="mx-auto w-full max-w-4xl">
       <h2 class="font-display text-3xl font-bold text-primary-900 text-center sm:text-4xl">
         Offres similaires
       </h2>

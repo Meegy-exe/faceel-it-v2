@@ -3,6 +3,7 @@ import { ref, computed, watch, useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
 import { useSeo } from '@/composables/useSeo'
+import { useWaveCanvas } from '@/composables/useWaveCanvas'
 
 useSeo({
   title: 'Consulter nos offres',
@@ -15,6 +16,11 @@ const router = useRouter()
 
 const heroEl = useTemplateRef<HTMLElement>('heroEl')
 const heroReveal = useScrollReveal(heroEl)
+
+const waveCanvas = ref<HTMLCanvasElement | null>(null)
+useWaveCanvas(waveCanvas)
+
+const selectedOffer = ref<JobOffer | null>(null)
 
 /* -------------------------------------------------------------------------- */
 /* Données mock — à remplacer par un appel API une fois le back disponible.   */
@@ -111,14 +117,14 @@ const OFFERS: JobOffer[] = [
 /* Filtres                                                                     */
 /* -------------------------------------------------------------------------- */
 
-const LEVELS = ['Etudiants / Jeunes diplômés', 'Expérimentés']
+const LEVELS = ['Expérimentés']
 const METIERS = [
   'Architecture',
   'Business Analyst',
   'Data et intelligence artificielle',
   'Développement',
 ]
-const CONTRACTS = ['CDI', 'CDD', 'Stage']
+const CONTRACTS = ['CDI', 'CDD']
 
 const searchQuery = ref('')
 const showSuggestions = ref(false)
@@ -212,6 +218,13 @@ watch(
     data-theme="dark"
     class="relative h-full w-full snap-start snap-always flex flex-col justify-center overflow-hidden px-4 sm:px-6 lg:px-8 xl:px-12 bg-[#000066] text-white"
   >
+    <!-- Canvas vague — fond animé, désactivé si motion-reduce. -->
+    <canvas
+      ref="waveCanvas"
+      aria-hidden="true"
+      class="absolute inset-0 h-full w-full pointer-events-none opacity-60 motion-reduce:hidden"
+    />
+
     <!-- Cercle décoratif vert — touche d'accent sur fond sombre. -->
     <div
       aria-hidden="true"
@@ -220,7 +233,7 @@ watch(
 
     <div
       ref="heroEl"
-      class="relative mx-auto w-full max-w-4xl transition-all duration-700 ease-out motion-reduce:transition-none"
+      class="relative z-10 mr-auto w-full max-w-3xl transition-all duration-700 ease-out motion-reduce:transition-none"
       :class="scrollRevealClass(heroReveal)"
     >
       <h1 class="font-display text-display text-balance text-white">
@@ -329,7 +342,7 @@ watch(
                 v-for="offer in pagedOffers"
                 :key="offer.id"
                 class="group rounded-2xl bg-white p-5 ring-1 ring-gray-200 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:ring-gray-300 hover:shadow-md cursor-pointer"
-                @click="router.push({ name: 'offre-detail', params: { id: offer.id } })"
+                @click="selectedOffer = offer"
               >
                 <!-- Titre + date -->
                 <div class="flex items-start justify-between gap-4">
@@ -519,4 +532,129 @@ watch(
     </div>
     <!-- fin overflow-y-auto -->
   </section>
+
+  <!-- ==================================================================
+       MODALE — aperçu rapide d'une offre
+       ================================================================== -->
+  <Teleport to="body">
+    <div
+      v-if="selectedOffer"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-md p-4"
+      @click.self="selectedOffer = null"
+    >
+      <div class="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white border border-gray-200 shadow-2xl">
+        <!-- Bandeau en-tête bleu -->
+        <div class="sticky top-0 z-10 flex items-start justify-between gap-4 rounded-t-2xl bg-[#000066] px-6 py-5 md:px-8">
+          <div class="pr-8">
+            <p class="text-xs font-semibold uppercase tracking-widest text-white/50">{{ selectedOffer.category }}</p>
+            <h2 class="mt-1 font-display text-xl font-bold text-white sm:text-2xl">
+              {{ selectedOffer.title }}
+            </h2>
+            <p class="mt-0.5 text-sm text-white/60">Faceel IT · {{ selectedOffer.date }}</p>
+          </div>
+          <button
+            type="button"
+            aria-label="Fermer"
+            class="shrink-0 flex size-8 items-center justify-center rounded-full text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+            @click="selectedOffer = null"
+          >
+            <svg viewBox="0 0 20 20" fill="currentColor" class="size-5" aria-hidden="true">
+              <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Corps -->
+        <div class="px-6 py-6 md:px-8">
+          <!-- Grille de badges -->
+          <div class="flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-accent-500/15 px-3 py-1 text-xs font-semibold text-primary-900">
+              {{ selectedOffer.contract }}
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-primary-900/70">
+              <svg class="size-3.5 shrink-0" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
+              </svg>
+              {{ selectedOffer.location }}
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-primary-900/70">
+              {{ selectedOffer.level }}
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-primary-900/70">
+              <!-- Télétravail : TODO — à récupérer depuis l'API -->
+              Hybride
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-primary-900/70">
+              <!-- Salaire : TODO — à récupérer depuis l'API -->
+              Salaire selon profil
+            </span>
+          </div>
+
+          <!-- Contexte -->
+          <h3 class="mt-6 mb-2 text-lg font-bold text-[#000066]">Le poste</h3>
+          <p class="text-sm leading-relaxed text-primary-900/70">{{ selectedOffer.description }}</p>
+
+          <!-- Missions (TODO : à connecter au champ API dédié) -->
+          <h3 class="mt-6 mb-2 text-lg font-bold text-[#000066]">Vos missions</h3>
+          <ul class="space-y-2 text-sm text-primary-900/70">
+            <li class="flex items-start gap-2">
+              <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
+              Analyser les besoins fonctionnels et techniques en collaboration avec les équipes métier.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
+              Concevoir et implémenter les solutions dans le respect des standards de qualité du client.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
+              Participer aux rituels Agile (sprint planning, daily, retrospective) et aux revues de code.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
+              Assurer la documentation technique et la montée en compétence des équipes.
+            </li>
+          </ul>
+
+          <!-- Profil (TODO : à connecter au champ API dédié) -->
+          <h3 class="mt-6 mb-2 text-lg font-bold text-[#000066]">Votre profil</h3>
+          <ul class="space-y-2 text-sm text-primary-900/70">
+            <li class="flex items-start gap-2">
+              <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
+              Diplômé(e) Bac+5 (école d'ingénieurs, université) avec une spécialisation dans le domaine concerné.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
+              Expérience significative en environnement de conseil ou ESN sur des missions similaires.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
+              Autonomie, rigueur et excellent relationnel client — vous êtes à l'aise en prise de parole.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
+              Maîtrise des outils et méthodologies propres à la BU <strong class="font-semibold text-primary-900">{{ selectedOffer.metier }}</strong>.
+            </li>
+          </ul>
+        </div>
+
+        <!-- Pied fixe avec actions -->
+        <div class="sticky bottom-0 flex flex-col-reverse gap-3 rounded-b-2xl border-t border-gray-100 bg-white px-6 py-4 sm:flex-row sm:justify-end md:px-8">
+          <button
+            type="button"
+            class="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-primary-900 transition-colors hover:bg-gray-50"
+            @click="selectedOffer = null"
+          >
+            Fermer
+          </button>
+          <button
+            type="button"
+            class="rounded-lg bg-[#12D80A] px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:bg-[#0fc009]"
+            @click="router.push({ name: 'offre-detail', params: { id: selectedOffer!.id } }); selectedOffer = null"
+          >
+            Voir l'offre complète
+          </button>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>

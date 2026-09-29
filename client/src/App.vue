@@ -127,7 +127,7 @@ const GLASSDOOR_HREF =
  */
 /** Remplace l'ancien mailto provisoire — page /contact désormais disponible. */
 const CONTACT_TO = '/contact'
-const REJOINDRE_TO = '/nous-rejoindre'
+const REJOINDRE_TO = '/consulter-nos-offres'
 
 /** Flèche du CTA « Nous rejoindre », en composant fonctionnel local plutôt
  * qu'un `<svg>` recopié à chaque emplacement (Header desktop, menu mobile,
@@ -259,8 +259,8 @@ const ArrowRightIcon: FunctionalComponent = () =>
           isClassicScroll
             ? 'flex flex-col'
             : isFullPageScroll
-              ? 'snap-y snap-mandatory'
-              : 'snap-y snap-mandatory flex flex-col'
+              ? 'snap-y snap-proximity'
+              : 'snap-y snap-proximity flex flex-col'
         "
       >
         <main id="contenu" :class="isFullPageScroll ? 'contents' : 'flex-1'">

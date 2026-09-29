@@ -35,6 +35,19 @@ function handleLogout() {
         >
           {{ item.label }}
         </RouterLink>
+
+        <div v-if="auth.isSuperAdmin" class="mt-4 border-t border-white/10 pt-4">
+          <p class="mb-1 px-3 text-xs font-semibold uppercase tracking-widest text-white/30">
+            Super-Admin
+          </p>
+          <RouterLink
+            :to="{ name: 'admin-dashboard' }"
+            class="rounded-lg px-3 py-2 text-sm text-accent-500/80 transition hover:bg-white/5 hover:text-accent-500"
+            active-class="bg-white/10 text-accent-500"
+          >
+            Gestion de l'équipe
+          </RouterLink>
+        </div>
       </nav>
     </aside>
 

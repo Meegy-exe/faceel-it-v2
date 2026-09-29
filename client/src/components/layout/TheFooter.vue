@@ -55,7 +55,7 @@ withDefaults(
                 </svg>
               </a>
               <a
-                href="https://www.youtube.com/@faceelit"
+                href="https://www.youtube.com/@Faceel-it"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Faceel-IT sur YouTube"

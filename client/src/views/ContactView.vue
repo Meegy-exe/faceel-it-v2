@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import contactHeroImg from '@/assets/images/photos/lille.jpg'
 
 const form = ref({
   nom: '',
@@ -20,107 +21,67 @@ function handleSubmit() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-white">
+  <div>
     <!-- ══════════════════════════════════════════════
-         SECTION 1 : HERO SPLIT SCREEN
+         SECTION 1 : HERO SPLIT VERTICAL (Photo / Contenu)
          ══════════════════════════════════════════════ -->
-    <section class="grid md:grid-cols-2">
-      <!-- Colonne gauche : image de couverture -->
-      <div class="h-64 w-full bg-gray-300 md:h-auto md:min-h-[500px]">
-        <div class="flex h-full items-center justify-center text-sm text-gray-500">
-          [Photo équipe / bureaux — À VENIR]
-        </div>
-      </div>
+    <section data-theme="dark" class="w-full flex flex-col">
 
-      <!-- Colonne droite : texte sur fond bleu nuit -->
-      <div class="flex flex-col justify-center bg-[#000066] px-8 py-16 md:px-16 md:py-24">
-        <h1 class="font-display text-4xl font-bold leading-tight text-yellow-400 md:text-5xl">
-          Besoin d'un contact&nbsp;?
-        </h1>
-        <p class="mt-6 border-l-2 border-white pl-4 text-lg leading-relaxed text-white">
-          Que ce soit pour une question, pour nous rejoindre ou tout simplement pour parler de vos
-          projets tech, nous sommes à votre disposition pour discuter.
-        </p>
-        <div class="mt-10 space-y-3 text-sm text-white/70">
-          <a
-            href="tel:+33359617188"
-            class="flex items-center gap-2 transition-opacity hover:text-white"
-          >
-            <svg class="size-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-              <path
-                fill-rule="evenodd"
-                d="M2 3.5A1.5 1.5 0 0 1 3.5 2h1.148a1.5 1.5 0 0 1 1.465 1.175l.716 3.223a1.5 1.5 0 0 1-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 0 0 6.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 0 1 1.767-1.052l3.223.716A1.5 1.5 0 0 1 18 16.352V17.5a1.5 1.5 0 0 1-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 0 1 2.43 8.326 13.019 13.019 0 0 1 2 5V3.5Z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            03 59 61 71 88
-          </a>
-          <a
-            href="mailto:contact@faceel-it.com"
-            class="flex items-center gap-2 transition-opacity hover:text-white"
-          >
-            <svg class="size-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-              <path
-                d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1.25 1.25 0 0 0 1.118 0L19 7.162V6a2 2 0 0 0-2-2H3Z"
-              />
-              <path
-                d="m19 8.839-7.77 3.885a2.75 2.75 0 0 1-2.46 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z"
-              />
-            </svg>
-            contact@faceel-it.com
-          </a>
-          <p class="flex items-start gap-2">
-            <svg class="mt-0.5 size-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-              <path
-                fill-rule="evenodd"
-                d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 15.01 17 12.462 17 9A7 7 0 1 0 3 9c0 3.462 1.698 6.01 3.354 7.584a13.731 13.731 0 0 0 2.75 1.908l.002.001.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            10 allée du Château Blanc, 59290 Wasquehal
+      <!-- Moitié haute : photo nette, sans texte -->
+      <div
+        class="w-full min-h-[45vh] bg-cover bg-center"
+        :style="{ backgroundImage: `url(${contactHeroImg})` }"
+        aria-hidden="true"
+      />
+
+      <!-- Moitié basse : fond bleu + titre + FAQ -->
+      <div class="w-full bg-[#000066] flex flex-col items-center justify-center gap-6 px-4 py-16 md:py-20">
+        <!-- Titre -->
+        <div class="text-center">
+          <h1 class="font-display text-4xl font-bold text-white md:text-5xl">
+            Contactez-nous
+          </h1>
+          <p class="mt-2 text-base text-white/70">
+            Notre équipe vous répond sous 48h ouvrées.
           </p>
         </div>
-      </div>
-    </section>
 
-    <!-- ══════════════════════════════════════════════
-         SECTION 2 : RECHERCHE / FAQ
-         ══════════════════════════════════════════════ -->
-    <section class="bg-gray-50 py-16">
-      <div class="mx-auto max-w-4xl px-4 text-center">
-        <h2 class="font-display text-3xl font-extrabold tracking-tight text-primary-900">
-          Une question rapide&nbsp;?
-        </h2>
-        <p class="mt-3 text-base text-primary-900/60">
-          Vous trouverez peut-être la réponse directement dans notre FAQ.
-        </p>
-
-        <div class="mt-8 flex items-center gap-3">
-          <div class="relative flex-1">
-            <svg
-              class="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-gray-400"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-                clip-rule="evenodd"
+        <!-- Zone FAQ -->
+        <div class="w-full max-w-2xl rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md p-6">
+          <p class="text-xs font-semibold uppercase tracking-widest text-white/50 mb-4 text-center">
+            Une question rapide&nbsp;?
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="relative flex-1">
+              <svg
+                class="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-gray-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z" clip-rule="evenodd" />
+              </svg>
+              <input
+                v-model="searchQuery"
+                type="search"
+                placeholder="Rechercher une question…"
+                class="w-full rounded-xl border border-gray-200 bg-white py-3 pr-4 pl-11 text-sm text-gray-900 placeholder-gray-500 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-white"
               />
-            </svg>
-            <input
-              v-model="searchQuery"
-              type="search"
-              placeholder="Rechercher une question..."
-              class="w-full rounded-xl border border-gray-300 bg-white py-3.5 pr-4 pl-11 text-sm text-primary-900 shadow-sm outline-none transition-colors focus:border-[#000066] focus:ring-1 focus:ring-[#000066]"
-            />
+            </div>
+            <a
+              href="#"
+              class="shrink-0 rounded-xl bg-[#12D80A] px-5 py-3 text-sm font-semibold text-[#000066] transition-colors hover:bg-[#0fc009]"
+            >
+              Voir la FAQ
+            </a>
           </div>
-          <a
-            href="#"
-            class="shrink-0 rounded-xl border border-[#000066] px-5 py-3.5 text-sm font-semibold text-[#000066] transition-colors hover:bg-[#000066] hover:text-white"
-          >
-            Consulter la FAQ
-          </a>
+        </div>
+
+        <!-- Flèche scroll-down -->
+        <div class="motion-reduce:hidden">
+          <svg class="w-5 h-5 text-white/40 animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
         </div>
       </div>
     </section>
@@ -261,6 +222,25 @@ function handleSubmit() {
                   >.
                 </label>
               </div>
+              <!-- Upload CV (optionnel) -->
+              <div>
+                <p class="block text-sm font-medium text-primary-900 mb-1.5">CV (Optionnel)</p>
+                <label
+                  for="cvContact"
+                  class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 px-6 py-6 text-center transition-colors hover:border-gray-400"
+                >
+                  <svg class="w-8 h-8 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                  </svg>
+                  <span class="text-sm text-gray-500">
+                    Glissez votre CV ici ou
+                    <span class="font-semibold text-[#000066]">parcourir</span>
+                  </span>
+                  <span class="text-xs text-gray-400">Format PDF uniquement</span>
+                  <input id="cvContact" type="file" accept=".pdf" class="sr-only" />
+                </label>
+              </div>
+
               <button
                 type="submit"
                 class="rounded-lg bg-[#000066] px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#000088]"
@@ -317,7 +297,45 @@ function handleSubmit() {
     </section>
 
     <!-- ══════════════════════════════════════════════
-         SECTION 4 : AVIS GOOGLE
+         SECTION 4 : COORDONNÉES DE CONTACT
+         ══════════════════════════════════════════════ -->
+    <section data-theme="dark" class="w-full bg-[#000066] text-white py-12 md:py-20">
+      <div class="mx-auto max-w-7xl px-4">
+        <h2 class="text-center font-display text-3xl font-bold text-white mb-10">
+          Besoin d'un contact&nbsp;?
+        </h2>
+        <div class="grid grid-cols-1 gap-8 text-center md:grid-cols-2 md:max-w-2xl md:mx-auto">
+          <!-- Email -->
+          <div class="flex flex-col items-center gap-3">
+            <div class="flex size-12 items-center justify-center rounded-full bg-white/10">
+              <svg class="size-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1.25 1.25 0 0 0 1.118 0L19 7.162V6a2 2 0 0 0-2-2H3Z" />
+                <path d="m19 8.839-7.77 3.885a2.75 2.75 0 0 1-2.46 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z" />
+              </svg>
+            </div>
+            <p class="text-xs font-semibold uppercase tracking-widest text-blue-300">Email</p>
+            <a href="mailto:contact@faceel-it.com" class="text-lg font-semibold text-white transition-opacity hover:opacity-75">
+              contact@faceel-it.com
+            </a>
+          </div>
+          <!-- Adresse -->
+          <div class="flex flex-col items-center gap-3">
+            <div class="flex size-12 items-center justify-center rounded-full bg-white/10">
+              <svg class="size-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 15.01 17 12.462 17 9A7 7 0 1 0 3 9c0 3.462 1.698 6.01 3.354 7.584a13.731 13.731 0 0 0 2.75 1.908l.002.001.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <p class="text-xs font-semibold uppercase tracking-widest text-blue-300">Adresse</p>
+            <p class="text-lg font-semibold text-white leading-snug">
+              10 allée du Château Blanc<br />59290 Wasquehal
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════
+         SECTION 5 : AVIS GOOGLE
          ══════════════════════════════════════════════ -->
     <section class="bg-[#000066] py-16 text-white">
       <div class="mx-auto flex max-w-3xl flex-col items-center px-4 text-center">

@@ -1,27 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRoute } from 'vue-router'
 import AnimatedBackground from '@/components/ui/AnimatedBackground.vue'
 import CookieManagerModal from '@/components/ui/CookieManagerModal.vue'
 import logoSrc from '@/assets/images/2.svg'
 
 const isCookieModalOpen = ref(false)
 
-const route = useRoute()
-
-withDefaults(
-  defineProps<{
-    fullPageScroll?: boolean
-    /** Conservé optionnel pour compatibilité App.vue — contenu désormais codé en dur. */
-    columns?: unknown[]
-    description?: string
-  }>(),
-  { fullPageScroll: false },
-)
+defineProps<{
+  fullPageScroll?: boolean
+  columns?: unknown[]
+  description?: string
+}>()
 </script>
 
 <template>
-  <footer :class="['w-full', route.meta.classicScroll ? 'shrink-0' : 'snap-start snap-always']">
+  <footer class="w-full shrink-0">
     <!-- ═══════════════════════════════════════════════════════════════════════
          SECTION 1 : Fond bleu — marque, réseaux sociaux, notes de satisfaction
          ═══════════════════════════════════════════════════════════════════════ -->

@@ -28,9 +28,9 @@ function refuse() {
     enter-active-class="transition-transform duration-500 ease-out motion-reduce:transition-none"
     enter-from-class="translate-y-full"
     enter-to-class="translate-y-0"
-    leave-active-class="transition-transform duration-300 ease-in motion-reduce:transition-none"
-    leave-from-class="translate-y-0"
-    leave-to-class="translate-y-full"
+    leave-active-class="transition-all duration-300 ease-in motion-reduce:transition-none"
+    leave-from-class="translate-y-0 opacity-100"
+    leave-to-class="translate-y-full opacity-0"
   >
     <div
       v-if="visible"

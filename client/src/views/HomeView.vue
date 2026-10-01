@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
+import TheFooter from '@/components/layout/TheFooter.vue'
 import CardCarousel from '@/components/ui/CardCarousel.vue'
 import CoverCarousel from '@/components/ui/CoverCarousel.vue'
 import CarouselSlideContent from '@/components/ui/CarouselSlideContent.vue'
@@ -324,10 +325,13 @@ onBeforeUnmount(() => {
     <div class="absolute w-4 h-4 bg-green-500 rounded-full animate-splash-drop"></div>
   </div>
 
+  <!-- CONTENEUR SNAP OPT-IN : ce div isole le scroll magnétique de la page
+       d'accueil pour ne pas briser le layout d'App.vue. -->
+  <div class="h-dvh w-full overflow-y-auto snap-y snap-mandatory">
   <section
     id="hero"
     data-theme="dark"
-    class="relative isolate overflow-hidden h-full w-full snap-start snap-always flex flex-col justify-center text-white pt-24 lg:pt-28"
+    class="relative isolate overflow-hidden h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center text-white pt-24 lg:pt-28"
   >
     <div class="absolute inset-0 z-0 bg-gradient-to-br from-[#000080] via-[#000066] to-[#000033]">
       <canvas
@@ -369,7 +373,7 @@ onBeforeUnmount(() => {
   <section
     id="valeurs"
     data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col bg-[#000066] px-4 pt-36 pb-8 text-white sm:px-6 lg:px-8 xl:px-12"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-[#000066] px-4 pt-36 pb-8 text-white sm:px-6 lg:px-8 xl:px-12"
   >
     <header
       ref="valeursEl"
@@ -425,7 +429,7 @@ onBeforeUnmount(() => {
   <section
     id="chiffres-cles"
     data-theme="light"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center bg-light px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
+    class="h-dvh shrink-0 w-full snap-start snap-always overflow-hidden flex flex-col justify-center bg-light px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
   >
     <div
       ref="chiffresEl"
@@ -470,7 +474,7 @@ onBeforeUnmount(() => {
       </ul>
     </div>
   </section>
-  <section id="references" data-theme="light" class="h-full w-full snap-start snap-always">
+  <section id="references" data-theme="light" class="h-dvh shrink-0 w-full snap-start snap-always overflow-hidden">
     <ReferencesSection />
   </section>
 
@@ -479,7 +483,7 @@ onBeforeUnmount(() => {
   <section
     id="evenements"
     data-theme="light"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center bg-white px-4 py-16 text-gray-900 sm:px-6 lg:px-8 xl:px-12"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center bg-white px-4 py-16 text-gray-900 sm:px-6 lg:px-8 xl:px-12"
   >
     <header
       ref="evenementsEl"
@@ -547,6 +551,13 @@ onBeforeUnmount(() => {
     </div>
 
   </section>
+  <section
+    data-theme="dark"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
+  >
+    <TheFooter />
+  </section>
+  </div><!-- /conteneur snap -->
 </template>
 
 <style scoped>

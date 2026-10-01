@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, h, ref, useTemplateRef, watch, type FunctionalComponent } from 'vue'
+import { h, ref, useTemplateRef, watch, type FunctionalComponent } from 'vue'
 import { useRoute } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
@@ -24,22 +24,12 @@ import { footerColumns, footerDescription } from '@/features/navigation/footerNa
  * collé en bas même sur une page courte (une 404, typiquement), sans recourir
  * à un `position: fixed` qui le superposerait au contenu long.
  *
- * SCROLL SNAPPING PLEINE PAGE — CONTENEUR REMONTÉ ICI EN V0.1.22 (cf. ADR 26,
- * override client explicite des limites d'ADR 24/25, qui gardaient
- * volontairement `MegaMenu`/`TheFooter` hors du conteneur de scroll-snap de
- * `HomeView.vue` parce que ce sont des éléments de coquille PARTAGÉS par
- * toutes les routes). `isFullPageScroll` (ci-dessous) enveloppe `<main>` ET
- * `<TheFooter>` dans `h-dvh overflow-y-auto snap-y snap-mandatory`
- * UNIQUEMENT quand la route active le déclare (`meta.fullPageScroll`, pour
- * l'instant seule `/`) — Styleguide et la 404 gardent leur flux document
- * normal (`flex-1` sur `<main>`, pied de page « collé en bas »), elles n'ont
- * jamais été conçues pour un défilement en diapositives et rien ne demande
- * de les y forcer. `MegaMenu` reste hors de ce conteneur, au-dessus, sticky,
- * inchangé — seuls `<main>` et `<TheFooter>` remontent d'un niveau de scroll.
+ * Le scroll snap de l'accueil est géré par `HomeView.vue` lui-même via un
+ * conteneur interne `h-dvh overflow-y-auto snap-y snap-mandatory`. App.vue
+ * n'a plus de logique conditionnelle : `<main>` est toujours `flex-1` et le
+ * document défile naturellement via le navigateur.
  */
 const route = useRoute()
-const isFullPageScroll = computed(() => route.meta.fullPageScroll === true)
-const isClassicScroll = computed(() => route.meta.classicScroll === true)
 
 /**
  * NAVBAR EN SUPERPOSITION (V0.3) — deux états possédés ici.
@@ -78,7 +68,7 @@ watch(
   () => route.fullPath,
   () => {
     menuOpen.value = false
-    scrollRootEl.value?.scrollTo({ top: 0, behavior: 'instant' })
+    window.scrollTo({ top: 0, behavior: 'instant' })
   },
 )
 
@@ -145,7 +135,7 @@ const ArrowRightIcon: FunctionalComponent = () =>
 </script>
 
 <template>
-  <div class="flex h-dvh flex-col bg-light">
+  <div ref="scrollRoot" class="flex min-h-dvh flex-col bg-light">
     <!-- Premier élément focusable du document : permet d'enjamber la
          vingtaine de liens de l'en-tête. Invisible tant qu'il n'a pas le
          focus, d'où le couple `sr-only` / `focus:not-sr-only`. -->
@@ -226,186 +216,117 @@ const ArrowRightIcon: FunctionalComponent = () =>
       </template>
     </MegaMenu>
 
-    <!-- `h-dvh` sur la racine + `flex-1 overflow-hidden` ICI (au lieu d'un
-         ancien `min-h-dvh` sans plafond) : ce wrapper ne dépasse JAMAIS la
-         hauteur de l'écran, quelle que soit la hauteur réelle de la page.
-         C'est lui qui borne le conteneur de défilement ci-dessous, au lieu de
-         laisser le DOCUMENT défiler.
-         Le `flex-row` d'origine servait à poser la Sidebar en frère de
-         `<main>` ; le menu se superposant désormais (V0.4), il ne reste qu'un
-         seul enfant. -->
-    <div class="flex flex-1 overflow-hidden">
-      <!-- Conteneur de scroll — `overflow-y-auto` toujours présent (permanent,
-           plus seulement sur la branche `fullPageScroll`) : la racine étant
-           désormais `h-dvh` (plafonnée) et ce wrapper `overflow-hidden`, plus
-           rien ne peut faire défiler le DOCUMENT lui-même — c'est CE `<div>`
-           qui devient le conteneur de scroll, sur les deux branches.
-           `flex-1` (grandit dans la ligne du wrapper aside+contenu) reste
-           permanent. Deux comportements pour les ENFANTS seulement :
-             — `fullPageScroll` (`/`, ADR 26) : `snap-y snap-mandatory`,
-               `<main>` et `<TheFooter>` s'y enclenchent en diapositives ;
-             — sinon (Styleguide, 404) : `flex flex-col`, `flex-1` sur
-               `<main>` plaque le pied de page en bas sur une page courte,
-               le scroll de CE conteneur prend le relais sur une page longue. -->
-      <!-- `ref="scrollRoot"` (V0.3) : cet élément est le conteneur de
-           défilement du site. Il est passé tel quel à `MegaMenu`, qui s'en
-           sert comme `root` de son `IntersectionObserver` — c'est la seule
-           façon de détecter quelle section passe sous la barre, le document
-           lui-même ne défilant pas. -->
-      <div
-        ref="scrollRoot"
-        class="h-full flex-1 overflow-y-auto transition-all duration-300"
-        :class="
-          isClassicScroll
-            ? 'flex flex-col'
-            : isFullPageScroll
-              ? 'snap-y snap-proximity'
-              : 'snap-y snap-proximity flex flex-col'
-        "
-      >
-        <main id="contenu" :class="isFullPageScroll ? 'contents' : 'flex-1'">
-          <RouterView />
-        </main>
+    <!-- CRITICAL — LAISSER FLUIDE : aucune contrainte de hauteur ni overflow ici.
+         Le scroll-snap est strictement géré localement dans les vues (ex: HomeView). -->
+    <main id="contenu" class="flex-1">
+      <RouterView />
+    </main>
 
-        <TheFooter
-          :full-page-scroll="isFullPageScroll"
-          :columns="footerColumns"
-          :description="footerDescription"
+    <!-- Footer masqué sur l'accueil : TheFooter y est intégré dans le
+         conteneur snap de HomeView.vue pour s'aimanter avec les sections. -->
+    <TheFooter
+      v-if="route.path !== '/'"
+      :full-page-scroll="false"
+      :columns="footerColumns"
+      :description="footerDescription"
+    >
+      <template #social>
+        <a
+          :href="LINKEDIN_HREF"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Faceel-IT sur LinkedIn"
+          class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
         >
-          <!-- Réseaux sociaux : repris ici depuis le Header (V0.1.12, ticket #14),
-           quatre réseaux au lieu d'un seul (V0.1.13, ticket #15) — un pied de
-           page est l'endroit conventionnel où les retrouver une fois qu'ils
-           ne concurrencent plus les CTA de conversion du Header. Chaque lien
-           quitte le site (`target="_blank"`) : `rel="noopener noreferrer"`
-           systématique, la nouvelle page ne doit ni piloter l'onglet
-           d'origine (`opener`) ni recevoir le `Referer` de ce site. -->
-          <template #social>
+          <svg viewBox="0 0 24 24" fill="currentColor" class="size-5">
+            <path
+              d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.1 1.43-2.1 2.9V21h-4V9Z"
+            />
+          </svg>
+        </a>
+        <a
+          :href="YOUTUBE_HREF"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Faceel-IT sur YouTube"
+          class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" class="size-5">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M3 5h18v14H3V5Zm7 4 6 3-6 3V9Z" />
+          </svg>
+        </a>
+        <a
+          :href="INSTAGRAM_HREF"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Faceel-IT sur Instagram"
+          class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
+        >
+          <svg viewBox="0 0 24 24" fill="none" class="size-5">
+            <rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" stroke-width="1.8" />
+            <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8" />
+            <circle cx="17" cy="7" r="1" fill="currentColor" />
+          </svg>
+        </a>
+        <a
+          :href="GLASSDOOR_HREF"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Faceel-IT sur Glassdoor"
+          class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
+        >
+          <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
+            <path d="M10 1.5l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.2-5.4 3.2 1.3-6-4.6-4.1 6.1-.6L10 1.5Z" />
+          </svg>
+        </a>
+      </template>
+
+      <template #contact>
+        <address class="space-y-3 text-base not-italic text-white/70">
+          <p>{{ ADDRESS_LINE_1 }}<br />{{ ADDRESS_LINE_2 }}</p>
+          <p>
             <a
-              :href="LINKEDIN_HREF"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Faceel-IT sur LinkedIn"
-              class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
+              :href="PHONE_HREF"
+              class="rounded-md transition-colors duration-200 hover:text-accent-500 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
             >
-              <svg viewBox="0 0 24 24" fill="currentColor" class="size-5">
-                <path
-                  d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.1 1.43-2.1 2.9V21h-4V9Z"
-                />
-              </svg>
+              {{ PHONE_DISPLAY }}
             </a>
+          </p>
+          <p>
             <a
-              :href="YOUTUBE_HREF"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Faceel-IT sur YouTube"
-              class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
+              :href="`mailto:${EMAIL}`"
+              class="rounded-md transition-colors duration-200 hover:text-accent-500 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
             >
-              <svg viewBox="0 0 24 24" fill="currentColor" class="size-5">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M3 5h18v14H3V5Zm7 4 6 3-6 3V9Z" />
-              </svg>
+              {{ EMAIL }}
             </a>
-            <a
-              :href="INSTAGRAM_HREF"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Faceel-IT sur Instagram"
-              class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
-            >
-              <svg viewBox="0 0 24 24" fill="none" class="size-5">
-                <rect
-                  x="3.5"
-                  y="3.5"
-                  width="17"
-                  height="17"
-                  rx="5"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                />
-                <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8" />
-                <circle cx="17" cy="7" r="1" fill="currentColor" />
-              </svg>
-            </a>
-            <a
-              :href="GLASSDOOR_HREF"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Faceel-IT sur Glassdoor"
-              class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
-            >
-              <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
-                <path
-                  d="M10 1.5l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.2-5.4 3.2 1.3-6-4.6-4.1 6.1-.6L10 1.5Z"
-                />
-              </svg>
-            </a>
-          </template>
+          </p>
+        </address>
+      </template>
 
-          <!-- Coordonnées officielles (V0.1.13, ticket #15) : adresse, téléphone,
-           courriel — plus de baseline régionale générique (« Wasquehal,
-           Hauts-de-France »), la vraie adresse postale du client. -->
-          <template #contact>
-            <address class="space-y-3 text-base not-italic text-white/70">
-              <p>{{ ADDRESS_LINE_1 }}<br />{{ ADDRESS_LINE_2 }}</p>
-
-              <p>
-                <a
-                  :href="PHONE_HREF"
-                  class="rounded-md transition-colors duration-200 hover:text-accent-500 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
-                >
-                  {{ PHONE_DISPLAY }}
-                </a>
-              </p>
-
-              <p>
-                <a
-                  :href="`mailto:${EMAIL}`"
-                  class="rounded-md transition-colors duration-200 hover:text-accent-500 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
-                >
-                  {{ EMAIL }}
-                </a>
-              </p>
-            </address>
-          </template>
-
-          <!-- Mêmes deux CTA que le Header, repris « de manière visible » en fin
-           de navigation (V0.1.12, ticket #14) — taille `lg`, même disposition
-           (`flex-col`/`sm:flex-row`, `block` + `sm:w-auto`) que l'ancien duo
-           de la section Contact d'`HomeView`, retirée en V0.1.13 (ADR 17) :
-           ce gabarit reste la référence de CTA « pleine taille » du site,
-           même si la section qui l'a introduit a disparu. -->
-          <template #ctas>
-            <BaseButton
-              variant="outline"
-              size="lg"
-              surface="dark"
-              block
-              class="sm:w-auto"
-              :to="CONTACT_TO"
-            >
-              Nous contacter
-            </BaseButton>
-            <BaseButton
-              variant="accent"
-              size="lg"
-              surface="dark"
-              block
-              class="sm:w-auto"
-              :to="REJOINDRE_TO"
-            >
-              Nous rejoindre
-              <template #iconRight><ArrowRightIcon /></template>
-            </BaseButton>
-          </template>
-
-          <!-- MENTIONS LÉGALES — À BRANCHER
-           Obligatoires en France (art. 6 III LCEN) pour un site professionnel,
-           au même titre que la politique de confidentialité (RGPD art. 13).
-           Aucune route ne les porte encore : plutôt que de poser deux liens
-           morts, on laisse le créneau vide. À remplir dès que
-           `/mentions-legales` et `/confidentialite` existent. -->
-        </TheFooter>
-      </div>
-    </div>
+      <template #ctas>
+        <BaseButton
+          variant="outline"
+          size="lg"
+          surface="dark"
+          block
+          class="sm:w-auto"
+          :to="CONTACT_TO"
+        >
+          Nous contacter
+        </BaseButton>
+        <BaseButton
+          variant="accent"
+          size="lg"
+          surface="dark"
+          block
+          class="sm:w-auto"
+          :to="REJOINDRE_TO"
+        >
+          Nous rejoindre
+          <template #iconRight><ArrowRightIcon /></template>
+        </BaseButton>
+      </template>
+    </TheFooter>
     <CookieBanner />
   </div>
 </template>

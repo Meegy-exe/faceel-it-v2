@@ -422,47 +422,35 @@ onBeforeUnmount(() => {
       </template>
     </CoverCarousel>
   </section>
-  <!-- CHIFFRES CLÉS — preuve sociale, fond clair (alternance stricte, V0.6).
-       Même gabarit que `#partenaires` (hauteur pleine, contenu centré
-       verticalement) : c'est un bloc de conviction courte, pas un contenu
-       qui a besoin de tout l'espace vertical. -->
+  <section id="references" data-theme="light" class="h-dvh shrink-0 w-full snap-start snap-always overflow-hidden">
+    <ReferencesSection />
+  </section>
+
   <section
     id="chiffres-cles"
-    data-theme="light"
-    class="h-dvh shrink-0 w-full snap-start snap-always overflow-hidden flex flex-col justify-center bg-light px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
+    data-theme="dark"
+    class="h-dvh shrink-0 w-full snap-start snap-always overflow-hidden flex flex-col justify-center bg-[#000066] px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
   >
     <div
       ref="chiffresEl"
       class="mx-auto flex w-full max-w-5xl flex-col items-center text-center"
       :class="scrollRevealClass(chiffresReveal)"
     >
-      <!-- Pas de `<h2>` distinct : même parti que `#confiance` juste au-dessus
-           (surtitre seul, sans titre séparé) — la citation ci-dessous EST le
-           message de la section, un second niveau de titre le dupliquerait. -->
-      <p class="text-eyebrow uppercase text-accent-700">Nos chiffres clés</p>
+      <p class="text-eyebrow uppercase text-accent-500">Nos chiffres clés</p>
 
-      <!-- `accent-700`, pas `accent-500` : ce texte est sur fond clair
-           (`bg-light`), où l'accent vif ne tient que 1,9:1 — `accent-700`
-           est le seul des trois paliers d'accent validé AA sur blanc (4,9:1,
-           cf. l'en-tête de `main.css`). Même raison pour le survol des
-           chiffres plus bas. -->
       <blockquote
-        class="mt-6 max-w-3xl font-display text-2xl leading-snug font-bold tracking-tight text-balance text-primary-900 sm:text-3xl lg:text-4xl"
+        class="mt-6 max-w-3xl font-display text-2xl leading-snug font-bold tracking-tight text-balance text-white sm:text-3xl lg:text-4xl"
       >
         « Chez Faceel-it, nous ne nous contentons pas de vous délivrer une prestation&nbsp;: nous
         co-construisons des solutions durables, agiles et sur-mesure. Votre satisfaction est notre
         plus grande fête. »
       </blockquote>
 
-      <!-- Grille de 3 blocs. `group` sur chaque `<li>` : c'est lui qui pilote
-           le `group-hover:` du chiffre à l'intérieur — l'élévation et le
-           changement de couleur doivent se déclencher ensemble, au survol de
-           TOUTE la carte, pas seulement du chiffre. -->
       <ul class="mt-12 grid w-full grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8">
         <li
           v-for="stat in KEY_STATS"
           :key="stat.label"
-          class="group rounded-card bg-white p-8 ring-1 ring-primary-900/8 shadow-soft transition-all duration-300 ease-snap hover:-translate-y-2 hover:shadow-lift hover:ring-accent-500/60 motion-reduce:transition-none motion-reduce:transform-none"
+          class="group rounded-card bg-white p-8 ring-1 ring-white/20 shadow-soft transition-all duration-300 ease-snap hover:-translate-y-2 hover:shadow-lift hover:ring-accent-500/60 motion-reduce:transition-none motion-reduce:transform-none"
         >
           <p
             class="font-display text-5xl font-extrabold tracking-tight text-primary-900 transition-colors duration-300 ease-snap group-hover:text-accent-700 sm:text-6xl"
@@ -474,11 +462,6 @@ onBeforeUnmount(() => {
       </ul>
     </div>
   </section>
-  <section id="references" data-theme="light" class="h-dvh shrink-0 w-full snap-start snap-always overflow-hidden">
-    <ReferencesSection />
-  </section>
-
-  <LocationMapSection />
 
   <section
     id="evenements"
@@ -539,7 +522,6 @@ onBeforeUnmount(() => {
           class="absolute inset-0 h-full w-full object-cover"
         />
       </TransitionGroup>
-      <!-- Indicateurs de position -->
       <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5" aria-hidden="true">
         <span
           v-for="(_, i) in EVENT_PHOTOS"
@@ -549,8 +531,9 @@ onBeforeUnmount(() => {
         />
       </div>
     </div>
-
   </section>
+
+  <LocationMapSection />
   <section
     data-theme="dark"
     class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"

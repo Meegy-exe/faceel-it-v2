@@ -197,7 +197,7 @@ defineProps<{
               </li>
               <li>
                 <RouterLink
-                  to="/nous-rejoindre"
+                  to="/consulter-nos-offres"
                   class="text-gray-700 transition-colors duration-200 hover:text-[#000066]"
                 >
                   Nous rejoindre
@@ -291,7 +291,7 @@ defineProps<{
               Nous contacter
             </RouterLink>
             <RouterLink
-              to="/nous-rejoindre"
+              to="/consulter-nos-offres"
               class="inline-flex w-full items-center justify-center rounded-lg bg-green-500 px-6 py-3 text-sm font-semibold text-gray-900 transition-colors duration-200 hover:bg-green-400 sm:w-auto"
             >
               Nous rejoindre

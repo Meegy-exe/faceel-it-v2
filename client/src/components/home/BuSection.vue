@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 
-type BuSlug = 'digital' | 'product' | 'data-ia' | 'cyber'
+type BuSlug = 'digital' | 'cloud-devops' | 'data-ia' | 'transverse'
 
 interface Member {
   id: string
@@ -10,21 +10,43 @@ interface Member {
   pending?: boolean
 }
 
-const TABS: { slug: BuSlug; label: string; description: string }[] = [
-  { slug: 'digital', label: 'Digital', description: 'Développement applicatif, conseil et pilotage de projets tech.' },
-  { slug: 'product', label: 'Product', description: 'Product management, conception UX et delivery produit.' },
-  { slug: 'data-ia', label: 'Data & IA', description: 'Architecture data, modélisation et intelligence artificielle.' },
-  { slug: 'cyber', label: 'Cyber', description: 'Audit, conseil et accompagnement en cybersécurité.' },
+const TABS: { slug: BuSlug; label: string; description: string; buttonText: string }[] = [
+  {
+    slug: 'digital',
+    label: 'Digital',
+    description:
+      "Produits web, mobile et applications métier. Architecture, revue de code, tests : la vitesse d'aujourd'hui ne doit pas devenir le problème de demain.",
+    buttonText: 'Voir nos projets digitaux',
+  },
+  {
+    slug: 'cloud-devops',
+    label: 'Cloud & DevOps',
+    description:
+      "Infrastructure décrite en code, déploiements reproductibles, supervision. Ce qui part en production doit pouvoir être rejoué à l'identique.",
+    buttonText: 'Voir nos projets Cloud & DevOps',
+  },
+  {
+    slug: 'data-ia',
+    label: 'Data & IA',
+    description:
+      "Collecte, qualité, modélisation, restitution — puis les modèles et les agents qui s'appuient dessus. La chaîne complète, ou rien de fiable.",
+    buttonText: 'Voir nos projets data',
+  },
+  {
+    slug: 'transverse',
+    label: 'Transverse',
+    description:
+      'Coordination inter-BU, pilotage de projets transverses et animation du collectif.',
+    buttonText: 'Voir nos projets transverse',
+  },
 ]
 
 const MEMBERS: Record<BuSlug, Member[]> = {
   digital: [
     { id: 'd1', name: 'Stéphanie Demarez', role: 'Direction' },
     { id: 'd2', name: 'Noémie Vannoye', role: 'Responsable RH' },
-    { id: 'd3', name: 'Business Manager', role: 'En cours de recrutement', pending: true },
-    { id: 'd4', name: 'Alternance RH', role: 'En cours de recrutement', pending: true },
   ],
-  product: [
+  'cloud-devops': [
     { id: 'p1', name: 'Laetitia Lesaffre', role: 'Direction' },
     { id: 'p2', name: 'Victoire Machowiak', role: 'Responsable RH' },
   ],
@@ -32,16 +54,16 @@ const MEMBERS: Record<BuSlug, Member[]> = {
     { id: 'di1', name: 'Robin Rins', role: 'Direction' },
     { id: 'di2', name: 'Lena Lebecq', role: 'Responsable RH' },
   ],
-  cyber: [
-    { id: 'c1', name: 'Laurent Descleves', role: 'Direction' },
-    { id: 'c2', name: 'Responsable RH', role: 'En cours de recrutement', pending: true },
-  ],
+  transverse: [{ id: 't1', name: 'Laurent Descleves', role: 'Direction' }],
 }
 
 const activeTab = ref<BuSlug>('digital')
 const visibleMembers = computed(() => MEMBERS[activeTab.value])
-const activeTabDescription = computed(() => TABS.find((t) => t.slug === activeTab.value)!.description)
+const activeTabDescription = computed(
+  () => TABS.find((t) => t.slug === activeTab.value)!.description,
+)
 const activeTabLabel = computed(() => TABS.find((t) => t.slug === activeTab.value)!.label)
+const activeTabButtonText = computed(() => TABS.find((t) => t.slug === activeTab.value)!.buttonText)
 
 // Dictionnaire d'état retourné : clé = member.id. Les cartes en attente ne sont pas cliquables.
 const flippedCards = reactive<Record<string, boolean>>({})
@@ -67,16 +89,19 @@ function initials(name: string): string {
     class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-light px-4 pt-36 pb-8 sm:px-6 lg:px-8 xl:px-12"
   >
     <header class="max-w-5xl px-4 md:px-24 lg:px-28">
-      <p class="text-eyebrow uppercase text-accent-700">Notre Organisation</p>
-      <h2 class="mt-4 font-display text-display text-balance text-primary-900">
-        Nos Business Units
+      <p class="text-eyebrow uppercase text-accent-700">Tech &amp; Data</p>
+      <h2 class="mt-4 font-display text-display whitespace-nowrap text-primary-900">
+        Quatre expertises, une seule façon de travailler.
       </h2>
-      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-primary-900/60">
-        Une organisation par métier, pas par portefeuille commercial
+      <p class="mt-4 whitespace-nowrap text-lg leading-relaxed text-primary-900/60">
+        Du code lisible, des plateformes solides et des données fiables. Nos quatre expertises
+        avancent ensemble, du produit jusqu'à la sécurité.
       </p>
     </header>
 
-    <div class="flex-1 w-full max-w-7xl mt-10 overflow-hidden flex flex-col gap-8 items-start px-4 md:px-24 lg:px-28">
+    <div
+      class="flex-1 w-full max-w-7xl mt-10 overflow-hidden flex flex-col gap-8 items-start px-4 md:px-24 lg:px-28"
+    >
       <div
         role="tablist"
         aria-label="Naviguer par BU"
@@ -107,10 +132,7 @@ function initials(name: string): string {
         leave-to-class="-translate-y-2 opacity-0"
         mode="out-in"
       >
-        <div
-          :key="activeTab"
-          class="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
-        >
+        <div :key="activeTab" class="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <!-- Conteneur de perspective : dimensionne la carte et fournit le point de fuite 3D. -->
           <div
             v-for="member in visibleMembers"
@@ -125,15 +147,12 @@ function initials(name: string): string {
               :class="flippedCards[member.id] ? 'rotate-y-180' : ''"
               @click="!member.pending && toggleFlip(member.id)"
             >
-
               <!-- ═══════════════════════════════════════════════════════════
                    FACE AVANT : zone navy + bloc blanc avec hover slide
                    ══════════════════════════════════════════════════════════ -->
               <article
                 class="group absolute inset-0 flex flex-col overflow-hidden rounded-panel bg-primary-900 shadow-soft ring-1 [backface-visibility:hidden] transition-[box-shadow] duration-300 hover:shadow-lift motion-reduce:transition-none"
-                :class="[
-                  member.pending ? 'ring-white/5' : 'ring-white/10 cursor-pointer',
-                ]"
+                :class="[member.pending ? 'ring-white/5' : 'ring-white/10 cursor-pointer']"
               >
                 <!-- Zone navy : gradient + initiales / description au survol -->
                 <div class="relative flex-1">
@@ -148,12 +167,16 @@ function initials(name: string): string {
                     class="absolute inset-0 flex items-center justify-center bg-primary-900/95 p-5 opacity-0 transition-opacity duration-300 group-hover:opacity-100 motion-reduce:transition-none"
                     aria-hidden="true"
                   >
-                    <p class="text-center text-sm leading-relaxed text-white/80">{{ activeTabDescription }}</p>
+                    <p class="text-center text-sm leading-relaxed text-white/80">
+                      {{ activeTabDescription }}
+                    </p>
                   </div>
                 </div>
 
                 <!-- Vague + bloc blanc solidaires : glissent ensemble au survol -->
-                <div class="shrink-0 transition-transform duration-500 ease-out group-hover:translate-y-6 motion-reduce:transition-none">
+                <div
+                  class="shrink-0 transition-transform duration-500 ease-out group-hover:translate-y-6 motion-reduce:transition-none"
+                >
                   <svg
                     class="h-8 w-full text-white"
                     viewBox="0 0 320 32"
@@ -164,12 +187,19 @@ function initials(name: string): string {
                     <path d="M0 16c53-21 107 11 160 4s107-25 160-4v16H0z" fill="currentColor" />
                   </svg>
                   <div class="bg-white px-5 pt-2 pb-5">
-                    <h3 class="font-display text-base font-bold text-primary-900">{{ member.name }}</h3>
+                    <h3 class="font-display text-base font-bold text-primary-900">
+                      {{ member.name }}
+                    </h3>
                     <p
                       class="mt-1 text-sm font-semibold"
                       :class="member.pending ? 'italic text-primary-900/35' : 'text-accent-700'"
-                    >{{ member.role }}</p>
-                    <span aria-hidden="true" class="mt-3 block h-0.5 w-8 rounded-full bg-accent-500" />
+                    >
+                      {{ member.role }}
+                    </p>
+                    <span
+                      aria-hidden="true"
+                      class="mt-3 block h-0.5 w-8 rounded-full bg-accent-500"
+                    />
                   </div>
                 </div>
               </article>
@@ -184,8 +214,13 @@ function initials(name: string): string {
               >
                 <div>
                   <p class="text-eyebrow uppercase text-accent-500">BU {{ activeTabLabel }}</p>
-                  <span aria-hidden="true" class="mt-2 block h-0.5 w-8 rounded-full bg-accent-500" />
-                  <p class="mt-4 text-sm leading-relaxed text-white/75">{{ activeTabDescription }}</p>
+                  <span
+                    aria-hidden="true"
+                    class="mt-2 block h-0.5 w-8 rounded-full bg-accent-500"
+                  />
+                  <p class="mt-4 text-sm leading-relaxed text-white/75">
+                    {{ activeTabDescription }}
+                  </p>
                 </div>
 
                 <button
@@ -193,10 +228,9 @@ function initials(name: string): string {
                   class="mt-6 w-full rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-primary-900 transition-colors duration-200 hover:bg-accent-500 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none"
                   @click.stop
                 >
-                  Voir la BU &amp; ses consultants
+                  {{ activeTabButtonText }}
                 </button>
               </div>
-
             </div>
           </div>
         </div>

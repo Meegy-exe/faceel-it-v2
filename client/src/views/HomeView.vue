@@ -322,7 +322,7 @@ onBeforeUnmount(() => {
     <div
       class="absolute w-0 h-0 rounded-full shadow-[0_0_0_150vmax_#ffffff] animate-splash-hole"
     ></div>
-    <div class="absolute w-4 h-4 bg-green-500 rounded-full animate-splash-drop"></div>
+    <div class="absolute w-4 h-4 bg-[#000066] rounded-full animate-splash-drop"></div>
   </div>
 
   <!-- CONTENEUR SNAP OPT-IN : ce div isole le scroll magnétique de la page
@@ -576,7 +576,7 @@ onBeforeUnmount(() => {
       opacity: 1;
       box-shadow:
         0 0 0 150vmax #ffffff,
-        inset 0 0 0px 0px rgba(34, 197, 94, 0);
+        inset 0 0 0px 0px rgba(0, 0, 102, 0);
     }
     30% {
       width: 0;
@@ -584,7 +584,7 @@ onBeforeUnmount(() => {
       opacity: 1;
       box-shadow:
         0 0 0 150vmax #ffffff,
-        inset 0 0 40px 10px rgba(34, 197, 94, 0.7);
+        inset 0 0 40px 10px rgba(0, 0, 102, 0.7);
     }
     99% {
       width: 300vmax;
@@ -592,7 +592,7 @@ onBeforeUnmount(() => {
       opacity: 1;
       box-shadow:
         0 0 0 150vmax #ffffff,
-        inset 0 0 150px 20px rgba(34, 197, 94, 0);
+        inset 0 0 150px 20px rgba(0, 0, 102, 0);
     }
     100% {
       width: 300vmax;

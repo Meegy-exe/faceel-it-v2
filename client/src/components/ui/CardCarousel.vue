@@ -121,7 +121,7 @@ const props = withDefaults(
      */
     tone?: CardTone
   }>(),
-  { autoplayMs: 5_000, tone: 'light' },
+  { autoplayMs: 3_500, tone: 'light' },
 )
 
 defineSlots<{

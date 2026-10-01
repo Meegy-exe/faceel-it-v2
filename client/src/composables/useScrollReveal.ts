@@ -23,11 +23,9 @@ import { useIntersectionObserver } from '@vueuse/core'
  *     premier rapport de l'observateur (cf. ci-dessous) — c'est l'état
  *     « avant apparition » que l'appelant traduit en `opacity-0` ;
  *   - `visible` : posé au moment où l'élément intersecte réellement le
- *     viewport — l'appelant y déclenche l'animation (`animate-fade-up`, jeton
- *     déjà utilisé par le Hero, cf. `main.css`), état final, plus jamais
- *     réévalué ensuite (l'observateur est arrêté, l'effet ne se rejoue pas à
- *     la sortie du viewport — un rejeu à chaque passage serait un
- *     clignotement, pas une apparition).
+ *     viewport — l'appelant y déclenche l'animation. L'observateur n'est
+ *     jamais arrêté : l'état repasse à `hidden` à la sortie du viewport
+ *     et l'animation se rejoue à chaque entrée (UX V0.3).
  *
  * PREMIER RAPPORT DE L'OBSERVATEUR = DÉCISION, PAS UN SIGNAL IGNORÉ — un
  * `IntersectionObserver` fraîchement attaché rapporte toujours l'état courant
@@ -71,15 +69,15 @@ export function useScrollReveal(target: Ref<HTMLElement | null>): Ref<ScrollReve
     if (import.meta.env.SSR) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-    const { stop } = useIntersectionObserver(
+    useIntersectionObserver(
       target,
       ([entry]) => {
         if (!entry) return
         if (state.value === 'idle') {
           // Premier rapport : décide si l'élément part masqué ou reste
-          // visible d'emblée (cf. commentaire d'en-tête).
+          // visible d'emblée. Pas de stop() — l'observateur continue pour
+          // rejouer l'animation à chaque passage dans le viewport.
           state.value = entry.isIntersecting ? 'visible' : 'hidden'
-          if (entry.isIntersecting) stop()
           return
         }
         state.value = entry.isIntersecting ? 'visible' : 'hidden'

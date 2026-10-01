@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+
 interface Logo {
   name: string
   src: string
@@ -28,12 +30,93 @@ const ROW_2: Logo[] = [
   { name: 'Chronodrive', src: '/images/references/chronodrive.svg', href: 'https://www.chronodrive.com/' },
   { name: 'Mondial Relay', src: '/images/references/mondial_relay.svg', href: 'https://www.mondialrelay.fr/' },
 ]
+
+const SECTORS = [
+  'Retail & e-commerce',
+  'Industrie & Logistique',
+  'Banque, Finance & Assurance',
+  'Cloud',
+]
+
+const sectorIndex = ref(0)
+let sectorInterval: ReturnType<typeof setInterval> | undefined
+
+const track1 = ref<HTMLElement | null>(null)
+const track2 = ref<HTMLElement | null>(null)
+
+interface DragSession {
+  el: HTMLElement
+  startX: number
+  initialTx: number
+  halfWidth: number
+  duration: number
+  reverse: boolean
+}
+
+let dragSession: DragSession | null = null
+
+function getTranslateX(el: HTMLElement): number {
+  return new DOMMatrix(getComputedStyle(el).transform).m41
+}
+
+function startDrag(e: MouseEvent, trackEl: HTMLElement | null, reverse: boolean) {
+  if (!trackEl || dragSession) return
+  const inner = trackEl.firstElementChild as HTMLElement | null
+  if (!inner) return
+
+  const tx = getTranslateX(inner)
+  const duration = parseFloat(getComputedStyle(inner).animationDuration) || 80
+
+  inner.style.animation = 'none'
+  inner.style.transform = `translateX(${tx}px)`
+
+  dragSession = { el: inner, startX: e.clientX, initialTx: tx, halfWidth: inner.scrollWidth / 2, duration, reverse }
+
+  window.addEventListener('mousemove', moveDrag)
+  window.addEventListener('mouseup', endDrag)
+}
+
+function moveDrag(e: MouseEvent) {
+  if (!dragSession) return
+  e.preventDefault()
+  const delta = e.clientX - dragSession.startX
+  dragSession.el.style.transform = `translateX(${dragSession.initialTx + delta}px)`
+}
+
+function endDrag() {
+  if (!dragSession) return
+  const { el, halfWidth, duration, reverse } = dragSession
+  const currentTx = getTranslateX(el)
+  const absTx = Math.abs(currentTx) % halfWidth
+  const progress = reverse ? 1 - absTx / halfWidth : absTx / halfWidth
+  const delay = -(progress * duration)
+
+  el.style.transform = ''
+  el.style.animation = ''
+  el.style.animationDelay = `${delay}s`
+
+  dragSession = null
+  window.removeEventListener('mousemove', moveDrag)
+  window.removeEventListener('mouseup', endDrag)
+}
+
+onMounted(() => {
+  sectorInterval = setInterval(() => {
+    sectorIndex.value = (sectorIndex.value + 1) % SECTORS.length
+  }, 3000)
+})
+
+onBeforeUnmount(() => {
+  clearInterval(sectorInterval)
+  window.removeEventListener('mousemove', moveDrag)
+  window.removeEventListener('mouseup', endDrag)
+})
 </script>
 
 <template>
   <div class="flex h-full w-full flex-col justify-center py-8 md:py-12">
     <!-- BLOC 1 : Marquee ligne 1 → gauche -->
-    <div class="marquee-track">
+    <div ref="track1" class="marquee-track" @mousedown="startDrag($event, track1, false)">
       <div class="marquee-left">
         <template v-for="pass in 2" :key="pass">
           <component
@@ -43,14 +126,16 @@ const ROW_2: Logo[] = [
             :href="logo.href"
             :target="logo.href ? '_blank' : undefined"
             :rel="logo.href ? 'noopener noreferrer' : undefined"
-            class="mx-4 flex h-24 w-48 shrink-0 cursor-pointer items-center justify-center transition-transform duration-300 hover:scale-105 md:h-32 md:w-64"
+            class="shrink-0 transition-transform duration-300 hover:scale-105"
           >
-            <img
-              :src="logo.src"
-              :alt="logo.name"
-              class="h-full w-full object-contain"
-              :class="{ invert: logo.needsInvert }"
-            />
+            <div class="flex h-20 w-48 items-center justify-center md:h-24 md:w-56 xl:h-28 xl:w-64">
+              <img
+                :src="logo.src"
+                :alt="logo.name"
+                class="max-h-full max-w-full object-contain"
+                :class="{ invert: logo.needsInvert }"
+              />
+            </div>
           </component>
         </template>
       </div>
@@ -61,15 +146,23 @@ const ROW_2: Logo[] = [
       <p class="text-base font-semibold uppercase tracking-widest text-blue-500">
         Ils nous font confiance
       </p>
-      <h2
-        class="mt-2 text-balance font-display text-4xl font-extrabold tracking-tight text-gray-900 md:text-5xl"
-      >
-        Nos références,<br />notre fierté.
+      <h2 class="mt-2 overflow-hidden pb-2 font-display text-4xl font-extrabold tracking-tight text-gray-900 md:text-5xl">
+        <Transition
+          enter-active-class="transition-all duration-500 ease-out"
+          enter-from-class="opacity-0 translate-y-4"
+          enter-to-class="opacity-100 translate-y-0"
+          leave-active-class="transition-all duration-300 ease-in"
+          leave-from-class="opacity-100 translate-y-0"
+          leave-to-class="opacity-0 -translate-y-4"
+          mode="out-in"
+        >
+          <span :key="sectorIndex" class="block">{{ SECTORS[sectorIndex] }}</span>
+        </Transition>
       </h2>
     </div>
 
     <!-- BLOC 3 : Marquee ligne 2 → droite -->
-    <div class="marquee-track">
+    <div ref="track2" class="marquee-track" @mousedown="startDrag($event, track2, true)">
       <div class="marquee-right">
         <template v-for="pass in 2" :key="pass">
           <component
@@ -79,14 +172,16 @@ const ROW_2: Logo[] = [
             :href="logo.href"
             :target="logo.href ? '_blank' : undefined"
             :rel="logo.href ? 'noopener noreferrer' : undefined"
-            class="mx-4 flex h-24 w-48 shrink-0 cursor-pointer items-center justify-center transition-transform duration-300 hover:scale-105 md:h-32 md:w-64"
+            class="shrink-0 transition-transform duration-300 hover:scale-105"
           >
-            <img
-              :src="logo.src"
-              :alt="logo.name"
-              class="h-full w-full object-contain"
-              :class="{ invert: logo.needsInvert }"
-            />
+            <div class="flex h-20 w-48 items-center justify-center md:h-24 md:w-56 xl:h-28 xl:w-64">
+              <img
+                :src="logo.src"
+                :alt="logo.name"
+                class="max-h-full max-w-full object-contain"
+                :class="{ invert: logo.needsInvert }"
+              />
+            </div>
           </component>
         </template>
       </div>
@@ -117,17 +212,25 @@ const ROW_2: Logo[] = [
   position: relative;
   width: 100%;
   overflow: hidden;
+  cursor: grab;
+  user-select: none;
+}
+
+.marquee-track:active {
+  cursor: grabbing;
 }
 
 .marquee-left {
   display: flex;
   width: max-content;
+  gap: 3rem;
   animation: scroll-left 80s linear infinite;
 }
 
 .marquee-right {
   display: flex;
   width: max-content;
+  gap: 3rem;
   animation: scroll-right 80s linear infinite;
 }
 

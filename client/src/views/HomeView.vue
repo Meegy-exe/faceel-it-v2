@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
+import { onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import CardCarousel from '@/components/ui/CardCarousel.vue'
 import CoverCarousel from '@/components/ui/CoverCarousel.vue'
@@ -20,6 +20,9 @@ import eventPaintball from '@/assets/images/photos/paintball.jpg'
 import eventCourseGroupe from '@/assets/images/photos/course-groupe.jpg'
 import eventCourseSolo from '@/assets/images/photos/course-solo.jpg'
 import eventPadelEquipe from '@/assets/images/padel-equipe.jpg'
+import sportImg1 from '@/assets/images/photos/f-it-01.jpg'
+import sportImg2 from '@/assets/images/photos/f-it-02.jpg'
+import sportImg3 from '@/assets/images/photos/f-it-03.jpg'
 import { useSeo } from '@/composables/useSeo'
 
 useSeo({
@@ -56,8 +59,84 @@ const KEY_STATS: KeyStat[] = [
   { value: '65', label: 'Collaborateurs' },
   { value: '170+', label: 'Projets réalisés' },
   { value: '30', label: 'Clients satisfaits' },
+  { value: '2021', label: 'indépendante depuis' },
 ]
 
+interface ParsedStat {
+  target: number
+  suffix: string
+  label: string
+}
+
+const PARSED_STATS: ParsedStat[] = KEY_STATS.map((s) => ({
+  target: parseInt(s.value, 10),
+  suffix: s.value.replace(/\d/g, ''),
+  label: s.label,
+}))
+
+const animatedValues = ref<number[]>(PARSED_STATS.map(() => 0))
+const countUpStarted = ref(false)
+let countUpRaf: number | undefined
+
+function runCountUp() {
+  if (countUpRaf !== undefined) cancelAnimationFrame(countUpRaf)
+  const duration = 2000
+  const start = performance.now()
+  const targets = PARSED_STATS.map((s) => s.target)
+  animatedValues.value = targets.map(() => 0)
+
+  function step(now: number) {
+    const progress = Math.min((now - start) / duration, 1)
+    const eased = 1 - (1 - progress) ** 2
+    animatedValues.value = targets.map((t) => Math.round(t * eased))
+    if (progress < 1) countUpRaf = requestAnimationFrame(step)
+  }
+  countUpRaf = requestAnimationFrame(step)
+}
+
+watch(chiffresReveal, (state) => {
+  if (import.meta.env.SSR) return
+  if (state === 'visible') {
+    countUpStarted.value = true
+    runCountUp()
+  }
+  if (state === 'hidden') {
+    if (countUpRaf !== undefined) cancelAnimationFrame(countUpRaf)
+    animatedValues.value = PARSED_STATS.map(() => 0)
+  }
+})
+
+/* -------------------------------------------------------------------------- */
+/* Nos événements — bascule design sport                                      */
+/* -------------------------------------------------------------------------- */
+
+const showSportDesign = ref(false)
+let sportInterval: ReturnType<typeof setInterval> | undefined
+
+function clearSportInterval() {
+  if (sportInterval !== undefined) {
+    clearInterval(sportInterval)
+    sportInterval = undefined
+  }
+}
+
+/** Lance (ou relance) la boucle de 5 s. Appelé au clic manuel pour éviter un
+ *  basculement automatique immédiat juste après l'action de l'utilisateur. */
+function resetSportTimer() {
+  clearSportInterval()
+  sportInterval = setInterval(() => {
+    showSportDesign.value = !showSportDesign.value
+  }, 5_000)
+}
+
+watch(evenementsReveal, (state) => {
+  if (import.meta.env.SSR) return
+  if (state === 'visible') resetSportTimer()
+  if (state === 'hidden') {
+    clearSportInterval()
+    showSportDesign.value = false
+  }
+})
 
 /* -------------------------------------------------------------------------- */
 /* Nos événements — galerie photo                                             */
@@ -95,6 +174,8 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   if (mobilePhotoInterval !== undefined) clearInterval(mobilePhotoInterval)
+  if (countUpRaf !== undefined) cancelAnimationFrame(countUpRaf)
+  clearSportInterval()
 })
 
 
@@ -381,22 +462,22 @@ onBeforeUnmount(() => {
       :class="scrollRevealClass(valeursReveal)"
     >
       <h2 class="font-display text-display text-balance text-white">Nos valeurs</h2>
-      <p class="mt-4 text-lg leading-relaxed text-white/70">
+      <p class="mt-4 text-lg leading-relaxed text-white">
         Chez Faceel, nos collaborateurs possèdent une double culture : une solide
         <span
-          class="bg-linear-to-t from-accent-500/30 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
+          class="bg-linear-to-t from-accent-500/70 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
         >
           expertise technique
         </span>
         et une compréhension fine des
         <span
-          class="bg-linear-to-t from-accent-500/30 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
+          class="bg-linear-to-t from-accent-500/70 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
         >
           réalités métier
         </span>
         . C'est cette combinaison qui fait
         <span
-          class="bg-linear-to-t from-accent-500/30 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
+          class="bg-linear-to-t from-accent-500/70 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
         >
           notre différence
         </span>
@@ -446,18 +527,16 @@ onBeforeUnmount(() => {
         plus grande fête. »
       </blockquote>
 
-      <ul class="mt-12 grid w-full grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8">
+      <ul class="mt-12 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 sm:gap-8">
         <li
-          v-for="stat in KEY_STATS"
+          v-for="(stat, i) in PARSED_STATS"
           :key="stat.label"
-          class="group rounded-card bg-white p-8 ring-1 ring-white/20 shadow-soft transition-all duration-300 ease-snap hover:-translate-y-2 hover:shadow-lift hover:ring-accent-500/60 motion-reduce:transition-none motion-reduce:transform-none"
+          class="py-4 transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none"
         >
-          <p
-            class="font-display text-5xl font-extrabold tracking-tight text-primary-900 transition-colors duration-300 ease-snap group-hover:text-accent-700 sm:text-6xl"
-          >
-            {{ stat.value }}
+          <p class="font-display text-5xl font-extrabold tracking-tight text-accent-500 sm:text-6xl">
+            {{ countUpStarted ? animatedValues[i] : stat.target }}{{ stat.suffix }}
           </p>
-          <p class="mt-3 text-eyebrow uppercase text-primary-900/60">{{ stat.label }}</p>
+          <p class="mt-3 text-eyebrow uppercase text-white/70">{{ stat.label }}</p>
         </li>
       </ul>
     </div>
@@ -465,72 +544,176 @@ onBeforeUnmount(() => {
 
   <section
     id="evenements"
+    ref="evenementsEl"
     data-theme="light"
-    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center bg-white px-4 py-16 text-gray-900 sm:px-6 lg:px-8 xl:px-12"
+    class="relative h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center overflow-hidden bg-white px-4 py-8 text-gray-900 sm:px-6 lg:px-8 xl:px-12"
   >
-    <header
-      ref="evenementsEl"
-      class="mx-auto max-w-3xl text-center transition-all duration-700 ease-out motion-reduce:transition-none"
-      :class="scrollRevealClass(evenementsReveal)"
+    <Transition
+      enter-active-class="transition-all duration-500 ease-out motion-reduce:transition-none"
+      enter-from-class="opacity-0 translate-y-4"
+      enter-to-class="opacity-100 translate-y-0"
+      leave-active-class="transition-all duration-300 ease-in motion-reduce:transition-none"
+      leave-from-class="opacity-100 translate-y-0"
+      leave-to-class="opacity-0 -translate-y-4"
+      mode="out-in"
     >
-      <p class="text-eyebrow uppercase text-accent-700">La vie d'équipe</p>
-      <h2 class="mt-4 font-display text-display text-balance text-primary-900">Nos événements</h2>
-      <p class="mt-4 text-lg leading-relaxed text-primary-900/60">
-        La cohésion ne s'arrête pas à la porte des bureaux&nbsp;: after-works, événements sportifs
-        et repas partagés rythment aussi la vie de nos équipes.
-      </p>
-    </header>
+      <!-- DESIGN INITIAL : galerie événements équipe -->
+      <div v-if="!showSportDesign" key="events" class="w-full">
+        <header
+          class="mx-auto max-w-3xl text-center transition-all duration-700 ease-out motion-reduce:transition-none"
+          :class="scrollRevealClass(evenementsReveal)"
+        >
+          <p class="text-eyebrow uppercase text-accent-700">La vie d'équipe</p>
+          <h2 class="mt-4 font-display text-display text-balance text-primary-900">Nos événements</h2>
+          <p class="mt-4 text-lg leading-relaxed text-primary-900/60">
+            La cohésion ne s'arrête pas à la porte des bureaux&nbsp;: after-works, événements sportifs
+            et repas partagés rythment aussi la vie de nos équipes.
+          </p>
+        </header>
 
-    <!-- Grille bento — masquée sur mobile, visible à partir de sm: -->
-    <ul
-      class="mx-auto mt-12 hidden w-full max-w-6xl grid-cols-2 auto-rows-[9rem] gap-4 sm:grid sm:grid-cols-4 sm:auto-rows-[10rem] lg:auto-rows-[12rem]"
-    >
-      <li
-        v-for="(photo, index) in EVENT_PHOTOS"
-        :key="photo.src"
-        class="group relative overflow-hidden rounded-card"
-        :class="index === 0 ? 'col-span-2 row-span-2' : ''"
-      >
-        <img
-          :src="photo.src"
-          :alt="photo.alt"
-          loading="lazy"
-          decoding="async"
-          class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-        />
-      </li>
-    </ul>
+        <!-- Grille bento — masquée sur mobile, visible à partir de sm: -->
+        <ul
+          class="mx-auto mt-12 hidden w-full max-w-6xl grid-cols-2 auto-rows-[9rem] gap-4 sm:grid sm:grid-cols-4 sm:auto-rows-[10rem] lg:auto-rows-[12rem]"
+        >
+          <li
+            v-for="(photo, index) in EVENT_PHOTOS"
+            :key="photo.src"
+            class="group relative overflow-hidden rounded-card"
+            :class="index === 0 ? 'col-span-2 row-span-2' : ''"
+          >
+            <img
+              :src="photo.src"
+              :alt="photo.alt"
+              loading="lazy"
+              decoding="async"
+              class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+            />
+          </li>
+        </ul>
 
-    <!-- Slider automatique — visible sur mobile uniquement -->
-    <div class="relative mx-auto mt-10 h-72 w-full overflow-hidden rounded-xl sm:hidden">
-      <TransitionGroup
-        enter-active-class="transition-opacity duration-700 ease-in-out motion-reduce:transition-none"
-        enter-from-class="opacity-0"
-        enter-to-class="opacity-100"
-        leave-active-class="transition-opacity duration-700 ease-in-out motion-reduce:transition-none absolute inset-0"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
-      >
-        <img
-          v-for="(photo, index) in EVENT_PHOTOS"
-          v-show="index === mobilePhotoIndex"
-          :key="photo.src"
-          :src="photo.src"
-          :alt="photo.alt"
-          loading="lazy"
-          decoding="async"
-          class="absolute inset-0 h-full w-full object-cover"
-        />
-      </TransitionGroup>
-      <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5" aria-hidden="true">
-        <span
-          v-for="(_, i) in EVENT_PHOTOS"
-          :key="i"
-          class="block h-1.5 rounded-full transition-all duration-300"
-          :class="i === mobilePhotoIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/40'"
-        />
+        <!-- Slider automatique — visible sur mobile uniquement -->
+        <div class="relative mx-auto mt-10 h-72 w-full overflow-hidden rounded-xl sm:hidden">
+          <TransitionGroup
+            enter-active-class="transition-opacity duration-700 ease-in-out motion-reduce:transition-none"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition-opacity duration-700 ease-in-out motion-reduce:transition-none absolute inset-0"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+          >
+            <img
+              v-for="(photo, index) in EVENT_PHOTOS"
+              v-show="index === mobilePhotoIndex"
+              :key="photo.src"
+              :src="photo.src"
+              :alt="photo.alt"
+              loading="lazy"
+              decoding="async"
+              class="absolute inset-0 h-full w-full object-cover"
+            />
+          </TransitionGroup>
+          <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5" aria-hidden="true">
+            <span
+              v-for="(_, i) in EVENT_PHOTOS"
+              :key="i"
+              class="block h-1.5 rounded-full transition-all duration-300"
+              :class="i === mobilePhotoIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/40'"
+            />
+          </div>
+        </div>
       </div>
-    </div>
+
+      <!-- DESIGN SPORT -->
+      <div v-else key="sport" class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center">
+        <!-- Colonne gauche : texte -->
+        <div>
+          <p class="mb-4 text-sm font-bold uppercase tracking-widest text-accent-500">Le sport, notre méthode</p>
+          <h2 class="mb-6 text-4xl font-extrabold leading-tight text-primary-900 sm:text-5xl">
+            Le sport nous sert<br class="hidden sm:block" /> à travailler.
+          </h2>
+          <p class="leading-relaxed text-gray-600">
+            Sur un terrain, on voit tout de suite comment quelqu'un communique, encaisse la pression
+            et joue avec les autres. C'est pour ça qu'une partie de padel s'invite souvent dans nos
+            recrutements, et que le sport structure ensuite la vie de l'équipe&nbsp;: rendez-vous
+            mensuel, séminaire annuel, clubs partenaires dans la région.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <span
+              v-for="badge in ['Padel', 'Vélo', 'Running', 'Séminaire annuel']"
+              :key="badge"
+              class="rounded-full border border-primary-900/20 px-4 py-1 text-sm text-primary-900/70"
+            >{{ badge }}</span>
+          </div>
+        </div>
+
+        <!-- Colonne droite : grille d'images -->
+        <div class="grid grid-cols-2 grid-rows-2 gap-3 h-[250px] md:h-[360px] lg:h-[420px]">
+          <div class="col-span-1 row-span-2 h-full w-full overflow-hidden rounded-xl">
+            <img
+              :src="sportImg1"
+              alt="Équipe Faceel IT lors d'une activité sportive"
+              loading="lazy"
+              decoding="async"
+              class="h-full w-full object-cover transition-transform duration-500 hover:scale-110 motion-reduce:transition-none cursor-pointer"
+            />
+          </div>
+          <div class="col-span-1 row-span-1 h-full w-full overflow-hidden rounded-xl">
+            <img
+              :src="sportImg2"
+              alt="Équipe Faceel IT lors d'une activité sportive"
+              loading="lazy"
+              decoding="async"
+              class="h-full w-full object-cover transition-transform duration-500 hover:scale-110 motion-reduce:transition-none cursor-pointer"
+            />
+          </div>
+          <div class="col-span-1 row-span-1 h-full w-full overflow-hidden rounded-xl">
+            <img
+              :src="sportImg3"
+              alt="Équipe Faceel IT lors d'une activité sportive"
+              loading="lazy"
+              decoding="async"
+              class="h-full w-full object-cover transition-transform duration-500 hover:scale-110 motion-reduce:transition-none cursor-pointer"
+            />
+          </div>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- Flèches de navigation : bascule manuelle entre les deux designs -->
+    <button
+      v-if="!showSportDesign"
+      type="button"
+      aria-label="Découvrir le sport chez Faceel IT"
+      class="absolute bottom-8 right-4 z-10 inline-flex size-11 items-center justify-center text-primary-950 transition-colors duration-200 hover:text-accent-500 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-900 md:right-8 lg:right-12"
+      @click="showSportDesign = true; resetSportTimer()"
+    >
+      <svg class="size-8" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M4 12h16M14 6l6 6-6 6"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+    <button
+      v-else
+      type="button"
+      aria-label="Revenir aux événements"
+      class="absolute bottom-8 right-4 z-10 inline-flex size-11 items-center justify-center text-primary-950 transition-colors duration-200 hover:text-accent-500 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-900 md:right-8 lg:right-12"
+      @click="showSportDesign = false; resetSportTimer()"
+    >
+      <svg class="size-8" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M20 12H4M10 18l-6-6 6-6"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
   </section>
 
   <LocationMapSection />

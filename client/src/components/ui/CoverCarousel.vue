@@ -19,7 +19,7 @@ const props = withDefaults(
      */
     tone?: CardTone
   }>(),
-  { autoplayMs: 5_000, tone: 'light' },
+  { autoplayMs: 3_500, tone: 'light' },
 )
 
 /** Ratios repris tels quels de `CardCarousel.vue` (skill `a11y-color-check`) :
@@ -109,6 +109,35 @@ function handleFocusOut(event: FocusEvent) {
   if (!event.currentTarget.contains(next)) paused.value = false
 }
 
+const DRAG_THRESHOLD = 50
+let dragStartX = 0
+let isDragging = false
+
+function handleMouseDown(e: MouseEvent) {
+  dragStartX = e.clientX
+  isDragging = true
+}
+
+function handleMouseUp(e: MouseEvent) {
+  if (!isDragging) return
+  isDragging = false
+  const delta = e.clientX - dragStartX
+  if (Math.abs(delta) >= DRAG_THRESHOLD) {
+    navigateTo(delta < 0 ? activeIndex.value + 1 : activeIndex.value - 1)
+  }
+}
+
+function handleMouseLeave(e: MouseEvent) {
+  if (isDragging) {
+    const delta = e.clientX - dragStartX
+    isDragging = false
+    if (Math.abs(delta) >= DRAG_THRESHOLD) {
+      navigateTo(delta < 0 ? activeIndex.value + 1 : activeIndex.value - 1)
+    }
+  }
+  paused.value = false
+}
+
 onMounted(() => {
   if (import.meta.env.SSR) return
 
@@ -128,9 +157,11 @@ onBeforeUnmount(() => {
     role="region"
     aria-roledescription="carrousel"
     :aria-label="label"
-    class="relative flex flex-col justify-between h-full w-full"
+    class="relative flex flex-col justify-between h-full w-full cursor-grab active:cursor-grabbing select-none"
+    @mousedown="handleMouseDown"
+    @mouseup="handleMouseUp"
     @mouseenter="paused = true"
-    @mouseleave="paused = false"
+    @mouseleave="handleMouseLeave"
     @focusin="paused = true"
     @focusout="handleFocusOut"
   >

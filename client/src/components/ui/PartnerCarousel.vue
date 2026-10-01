@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onBeforeUnmount, ref } from 'vue'
 import type { BackgroundTone } from './types'
 
 /**
@@ -206,12 +207,77 @@ const CHIP_CLASS: Record<BackgroundTone, string> = {
   light: '',
   dark: 'rounded-md bg-white/90 px-2 py-1.5 shadow-soft',
 }
+
+const marqueeList = ref<HTMLElement | null>(null)
+
+interface DragSession {
+  startX: number
+  initialTx: number
+  halfWidth: number
+  duration: number
+}
+
+let dragSession: DragSession | null = null
+
+function getTranslateX(el: HTMLElement): number {
+  return new DOMMatrix(getComputedStyle(el).transform).m41
+}
+
+function startDrag(e: MouseEvent) {
+  const el = marqueeList.value
+  if (!el || dragSession) return
+
+  const tx = getTranslateX(el)
+  const duration = parseFloat(getComputedStyle(el).animationDuration) || 80
+
+  el.style.animation = 'none'
+  el.style.transform = `translateX(${tx}px)`
+
+  dragSession = { startX: e.clientX, initialTx: tx, halfWidth: el.scrollWidth / 2, duration }
+
+  window.addEventListener('mousemove', moveDrag)
+  window.addEventListener('mouseup', endDrag)
+}
+
+function moveDrag(e: MouseEvent) {
+  if (!dragSession || !marqueeList.value) return
+  e.preventDefault()
+  const delta = e.clientX - dragSession.startX
+  marqueeList.value.style.transform = `translateX(${dragSession.initialTx + delta}px)`
+}
+
+function endDrag() {
+  const el = marqueeList.value
+  if (!dragSession || !el) return
+
+  const currentTx = getTranslateX(el)
+  const absTx = Math.abs(currentTx) % dragSession.halfWidth
+  const progress = absTx / dragSession.halfWidth
+  const delay = -(progress * dragSession.duration)
+
+  el.style.transform = ''
+  el.style.animation = ''
+  el.style.animationDelay = `${delay}s`
+
+  dragSession = null
+  window.removeEventListener('mousemove', moveDrag)
+  window.removeEventListener('mouseup', endDrag)
+}
+
+onBeforeUnmount(() => {
+  window.removeEventListener('mousemove', moveDrag)
+  window.removeEventListener('mouseup', endDrag)
+})
 </script>
 
 <template>
-  <div class="group/marquee overflow-hidden motion-reduce:overflow-visible">
+  <div
+    class="group/marquee overflow-hidden motion-reduce:overflow-visible cursor-grab active:cursor-grabbing select-none"
+    @mousedown="startDrag"
+  >
     <ul
-      class="flex w-max shrink-0 items-center gap-12 animate-marquee will-change-transform group-hover/marquee:[animation-play-state:paused] group-focus-within/marquee:[animation-play-state:paused] motion-reduce:w-full motion-reduce:animate-none motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:gap-y-6"
+      ref="marqueeList"
+      class="flex w-max shrink-0 items-center gap-16 animate-marquee will-change-transform group-hover/marquee:[animation-play-state:paused] group-focus-within/marquee:[animation-play-state:paused] motion-reduce:w-full motion-reduce:animate-none motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:gap-y-8"
     >
       <li v-for="partner in partners" :key="partner.name" class="shrink-0">
         <a
@@ -222,12 +288,14 @@ const CHIP_CLASS: Record<BackgroundTone, string> = {
           class="group block rounded-md p-1 outline-offset-4 focus-visible:outline-3"
           :class="[FOCUS_RING[tone], CHIP_CLASS[tone]]"
         >
-          <img
-            :src="partner.logoUrl"
-            :alt="partner.name"
-            class="h-8 w-auto shrink-0 object-contain grayscale transition-all duration-300 group-hover:grayscale-0 group-focus-visible:grayscale-0 sm:h-9"
-            :class="MONOCHROME_FILTER[tone]"
-          />
+          <div class="flex h-20 w-48 items-center justify-center sm:h-24 sm:w-56">
+            <img
+              :src="partner.logoUrl"
+              :alt="partner.name"
+              class="max-h-full max-w-full object-contain grayscale transition-all duration-300 group-hover:grayscale-0 group-focus-visible:grayscale-0"
+              :class="MONOCHROME_FILTER[tone]"
+            />
+          </div>
         </a>
       </li>
 
@@ -241,12 +309,14 @@ const CHIP_CLASS: Record<BackgroundTone, string> = {
         class="shrink-0 motion-reduce:hidden"
       >
         <a :href="partner.url" tabindex="-1" class="block rounded-md p-1" :class="CHIP_CLASS[tone]">
-          <img
-            :src="partner.logoUrl"
-            alt=""
-            class="h-8 w-auto shrink-0 object-contain grayscale sm:h-9"
-            :class="MONOCHROME_FILTER[tone]"
-          />
+          <div class="flex h-20 w-48 items-center justify-center sm:h-24 sm:w-56">
+            <img
+              :src="partner.logoUrl"
+              alt=""
+              class="max-h-full max-w-full object-contain grayscale"
+              :class="MONOCHROME_FILTER[tone]"
+            />
+          </div>
         </a>
       </li>
     </ul>

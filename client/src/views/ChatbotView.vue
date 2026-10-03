@@ -2,6 +2,7 @@
 import { ref, computed, nextTick, watch } from 'vue'
 import { chatFlow } from '@/data/chatbotFlow_2'
 import { useSeo } from '@/composables/useSeo'
+import TheFooter from '@/components/layout/TheFooter.vue'
 import teamPhoto from '@/assets/images/padel-equipe.jpg'
 
 useSeo({
@@ -140,11 +141,15 @@ function resetConversation() {
 </script>
 
 <template>
-  <div class="flex w-full flex-col md:grid md:grid-cols-2">
+  <!-- CONTENEUR SNAP OPT-IN : isole le scroll magnétique de cette vue sans
+       dépendre de la hauteur flexée de <main> (cf. HomeView.vue). -->
+  <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
+  <!-- Section 50/50 : présentation + chatbot, un seul accroche snap -->
+  <section class="grid h-dvh w-full shrink-0 snap-start snap-always grid-cols-1 md:grid-cols-2">
     <!-- Colonne gauche : image & branding -->
     <section
       data-theme="dark"
-      class="relative flex h-dvh snap-start flex-col justify-end overflow-hidden bg-primary-950 bg-cover bg-center p-8 pt-24 md:p-16 md:pt-28"
+      class="relative flex h-full flex-col justify-end overflow-hidden bg-primary-950 bg-cover bg-center p-8 pt-24 md:p-16 md:pt-28"
       :style="{ backgroundImage: `url(${teamPhoto})` }"
     >
       <div class="absolute inset-0 bg-blue-950/70" aria-hidden="true" />
@@ -167,7 +172,7 @@ function resetConversation() {
 
     <!-- Colonne droite : bot conversationnel -->
     <section
-      class="flex h-svh md:h-dvh snap-start flex-col overflow-hidden bg-blue-950 pt-24 md:pt-28"
+      class="flex h-full flex-col overflow-hidden bg-blue-950 pt-24 md:pt-28"
     >
       <div class="p-8 pb-0 md:p-16 md:pb-0">
         <div class="flex items-center gap-3">
@@ -333,5 +338,16 @@ function resetConversation() {
         </div>
       </div>
     </section>
+  </section>
+
+  <!-- Footer repris dans le flux snap local (cf. HomeView.vue) ; App.vue
+       masque son footer global pour cette route pour éviter le doublon. -->
+  <section
+    data-theme="dark"
+    class="h-dvh w-full shrink-0 snap-start snap-always flex flex-col justify-end bg-[#000066]"
+  >
+    <TheFooter />
+  </section>
   </div>
+  <!-- /conteneur snap -->
 </template>

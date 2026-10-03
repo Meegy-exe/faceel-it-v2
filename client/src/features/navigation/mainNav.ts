@@ -170,20 +170,13 @@ export const mainNavEntries: NavItem[] = [
     ],
   },
   {
-    id: 'ia',
-    label: 'Discutons IA',
-    title: 'Discutons IA',
+    id: 'sport',
+    label: 'Sport & sponsoring',
+    title: 'Sport & sponsoring',
     description:
-      "L'intelligence artificielle au service de votre transformation. Cas d'usage concrets et accompagnement sur mesure.",
-    ctaLabel: 'Explorer nos approches IA',
-    ctaTo: { name: 'ia' },
-    to: { name: 'ia' },
-    subItems: [
-      {
-        label: 'Nos approches IA',
-        description: "Cas d'usage et accompagnement sur mesure",
-        to: { name: 'ia' },
-      },
-    ],
+      'Padel, vélo, course, tennis : le sport façonne notre collectif, notre recrutement et nos partenariats avec la région.',
+    ctaLabel: 'Découvrir',
+    ctaTo: { name: 'sport' },
+    to: { name: 'sport' },
   },
 ]

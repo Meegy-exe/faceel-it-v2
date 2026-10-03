@@ -59,7 +59,7 @@ const KEY_STATS: KeyStat[] = [
   { value: '65', label: 'Collaborateurs' },
   { value: '170+', label: 'Projets réalisés' },
   { value: '30', label: 'Clients satisfaits' },
-  { value: '2021', label: 'indépendante depuis' },
+  { value: '2021', label: 'Indépendante depuis' },
 ]
 
 interface ParsedStat {
@@ -536,7 +536,7 @@ onBeforeUnmount(() => {
           <p class="font-display text-5xl font-extrabold tracking-tight text-accent-500 sm:text-6xl">
             {{ countUpStarted ? animatedValues[i] : stat.target }}{{ stat.suffix }}
           </p>
-          <p class="mt-3 text-eyebrow uppercase text-white/70">{{ stat.label }}</p>
+          <p class="mt-3 text-eyebrow text-white/70">{{ stat.label }}</p>
         </li>
       </ul>
     </div>

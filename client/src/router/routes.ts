@@ -51,14 +51,14 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/CandidateView.vue'),
   },
   {
-    path: '/discutons-ia',
-    name: 'ia',
-    component: () => import('@/views/IaView.vue'),
-  },
-  {
     path: '/consulter-nos-offres',
     name: 'offres',
     component: () => import('@/views/OffersView.vue'),
+  },
+  {
+    path: '/sport-sponsoring',
+    name: 'sport',
+    component: () => import('@/views/SportView.vue'),
   },
   {
     path: '/offres/:id',

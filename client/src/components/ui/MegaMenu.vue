@@ -73,17 +73,6 @@ function closeMenu() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Icônes par entrée                                                          */
-/* -------------------------------------------------------------------------- */
-
-type EntryIconKind = 'entreprise' | 'references' | 'collectif' | 'default'
-function entryIconKind(id: string): EntryIconKind {
-  if (id === 'entreprise' || id === 'references') return id
-  if (id === 'qui-sommes-nous') return 'collectif'
-  return 'default'
-}
-
-/* -------------------------------------------------------------------------- */
 /* Détection du thème de la section survolée par la barre                     */
 /* -------------------------------------------------------------------------- */
 
@@ -320,50 +309,7 @@ const focusRingClass = computed(() =>
                     @mouseenter="activeItem = entry"
                     @click="drillDown(entry.id)"
                   >
-                    <span
-                      aria-hidden="true"
-                      class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-900/5 text-primary-900"
-                    >
-                      <svg
-                        v-if="entryIconKind(entry.id) === 'references'"
-                        class="size-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <path
-                          d="M4 21V9.5L12 4l8 5.5V21M9 21v-6h6v6M4 21h16"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                      <svg
-                        v-else-if="entryIconKind(entry.id) === 'collectif'"
-                        class="size-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <circle cx="9" cy="8" r="3.5" stroke="currentColor" stroke-width="2" />
-                        <path
-                          d="M2.5 19.5v-1.2c0-2.4 2.9-4.3 6.5-4.3s6.5 1.9 6.5 4.3v1.2M16 5.2a3.5 3.5 0 0 1 0 5.6M18 14.2c2.1.6 3.5 2.1 3.5 3.9v1.4"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                      <svg v-else class="size-4" viewBox="0 0 24 24" fill="none">
-                        <path
-                          d="M9 6l6 6-6 6"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                    </span>
-                    <span class="flex-1 text-base">{{ entry.label }}</span>
+                    <span class="flex-1 text-base text-left">{{ entry.label }}</span>
                     <svg
                       class="size-4 shrink-0 text-primary-900/30 lg:hidden"
                       viewBox="0 0 20 20"
@@ -394,43 +340,7 @@ const focusRingClass = computed(() =>
                     @mouseenter="activeItem = entry"
                     @click="closeMenu()"
                   >
-                    <span
-                      aria-hidden="true"
-                      class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-900/5 text-primary-900"
-                    >
-                      <svg
-                        v-if="entryIconKind(entry.id) === 'entreprise'"
-                        class="size-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <rect
-                          x="4"
-                          y="7.5"
-                          width="16"
-                          height="11"
-                          rx="1.5"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        />
-                        <path
-                          d="M9 7.5V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v1.5M4 12h16"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                        />
-                      </svg>
-                      <svg v-else class="size-4" viewBox="0 0 24 24" fill="none">
-                        <path
-                          d="M9 6l6 6-6 6"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                    </span>
-                    <span class="flex-1 text-base">{{ entry.label }}</span>
+                    <span class="flex-1 text-base text-left">{{ entry.label }}</span>
                   </RouterLink>
                 </li>
               </ul>

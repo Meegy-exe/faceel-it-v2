@@ -3,6 +3,7 @@ import { computed, ref, useTemplateRef } from 'vue'
 import ProfileCard from '@/components/ui/ProfileCard.vue'
 import AnimatedBackground from '@/components/ui/AnimatedBackground.vue'
 import HighlightCard from '@/components/ui/HighlightCard.vue'
+import TheFooter from '@/components/layout/TheFooter.vue'
 import { useSeo } from '@/composables/useSeo'
 
 /**
@@ -30,32 +31,9 @@ useSeo({
 })
 
 /* -------------------------------------------------------------------------- */
-/* Hero — les rôles                                                           */
+/* Nos valeurs                                                                */
 /* -------------------------------------------------------------------------- */
 
-interface Role {
-  label: string
-  hint: string
-}
-
-/** Rôles du collectif — libellés de la maquette. */
-const ROLES: Role[] = [
-  { label: 'Mentor', hint: "Transmettre, relire, débloquer — jamais laisser quelqu'un seul." },
-  { label: 'Strategist', hint: 'Cadrer avant de coder : le bon problème, dans le bon ordre.' },
-  { label: 'Trainer', hint: 'Entretenir le niveau collectif, session après session.' },
-  { label: 'Booster', hint: "Accélérer un projet qui cale, sans casser l'existant." },
-  { label: 'Builder', hint: 'Livrer, mesurer, itérer — du prototype à la production.' },
-  { label: 'Connector', hint: 'Relier les expertises entre BU quand un sujet déborde.' },
-]
-
-/**
- * Habillage « destructuré » des vignettes de rôle : rotation, décalage
- * vertical et respiration appliqués par POSITION dans la liste, pas tirés au
- * sort. Déterminisme obligatoire (cf. CLAUDE.md) — un `Math.random()` ici
- * produirait un HTML pré-rendu au build différent du rendu client et casserait
- * l'hydratation. L'index est une graine stable : même désordre apparent, même
- * résultat à chaque rendu.
- */
 /**
  * Les trois valeurs (contenu de l'ancien site, repris tel que transmis), en
  * données plutôt qu'en balisage répété : les cartes sont strictement
@@ -76,16 +54,6 @@ const VALUES = [
     text: "La formation est un levier essentiel de progression. Curiosité, partage et évolution guident nos parcours professionnels. Former, c'est développer les talents, anticiper les transformations du monde IT et construire des équipes prêtes à relever les défis technologiques de demain.",
   },
 ]
-
-const ROLE_LAYOUTS = [
-  '-rotate-3 sm:translate-y-4',
-  'rotate-2 sm:-translate-y-6',
-  '-rotate-1 sm:translate-y-10',
-  'rotate-3 sm:-translate-y-2',
-  '-rotate-2 sm:translate-y-6',
-  'rotate-1 sm:-translate-y-8',
-]
-const roleLayout = (index: number) => ROLE_LAYOUTS[index % ROLE_LAYOUTS.length]
 
 /* -------------------------------------------------------------------------- */
 /* Annuaire — catégories et membres                                           */
@@ -200,13 +168,17 @@ function toggleProfile(id: string) {
 
 <template>
   <!-- Pas de `<main>` ici : la coquille (`App.vue`) le fournit déjà. -->
-  <div>
+
+  <!-- CONTENEUR SNAP OPT-IN : isole le scroll magnétique de cette vue sans
+       dépendre de la hauteur flexée de <main> (cf. HomeView.vue). -->
+  <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
     <!-- ================================================================== -->
-    <!-- HERO — NOS RÔLES                                                   -->
+    <!-- 1. HERO — titre et description, cartes de rôles retirées (rendu    -->
+    <!-- minimaliste).                                                      -->
     <!-- ================================================================== -->
     <section
       data-theme="dark"
-      class="relative isolate overflow-hidden bg-primary-900 px-6 pt-40 pb-24 sm:pt-44 sm:pb-32"
+      class="relative isolate overflow-hidden bg-primary-900 h-dvh w-full shrink-0 snap-start snap-always flex flex-col justify-center px-6 py-16"
     >
       <AnimatedBackground variant="grid" tone="dark" />
 
@@ -220,34 +192,16 @@ function toggleProfile(id: string) {
           Chez Faceel-IT, chacun porte plusieurs casquettes selon le moment du projet. Voici celles
           qui circulent le plus.
         </p>
-
-        <!-- Disposition destructurée : `flex-wrap` plutôt qu'une grille — une
-             grille réaligne tout sur ses colonnes et annule justement l'effet
-             recherché. Les rotations/décalages ne s'appliquent qu'à partir de
-             `sm:` : sur une colonne étroite, des cartes décalées verticalement
-             se chevaucheraient au lieu de respirer. -->
-        <ul class="mt-16 flex flex-wrap justify-center gap-4 sm:gap-6">
-          <li
-            v-for="(role, index) in ROLES"
-            :key="role.label"
-            class="group relative max-w-[16rem] flex-1 basis-56 rounded-card border border-white/12 bg-white/5 p-6 shadow-hairline backdrop-blur-md transition-all duration-500 ease-out hover:-translate-y-2 hover:scale-105 hover:border-accent-500/50 hover:bg-white/10 hover:shadow-glow motion-reduce:transform-none motion-reduce:transition-none"
-            :class="roleLayout(index)"
-          >
-            <span
-              aria-hidden="true"
-              class="block size-2 rounded-full bg-accent-500 transition-transform duration-500 ease-out group-hover:scale-150 motion-reduce:transition-none"
-            />
-            <p class="mt-5 font-display text-title text-white">{{ role.label }}</p>
-            <p class="mt-2 text-sm leading-relaxed text-white/60">{{ role.hint }}</p>
-          </li>
-        </ul>
       </div>
     </section>
 
     <!-- ================================================================== -->
-    <!-- NOS VALEURS                                                        -->
+    <!-- 2. PRINCIPES — « trois principes qui tiennent le collectif ».      -->
     <!-- ================================================================== -->
-    <section data-theme="light" class="bg-white px-6 py-24 sm:py-32">
+    <section
+      data-theme="light"
+      class="bg-white h-dvh w-full shrink-0 snap-start snap-always flex flex-col justify-center px-6 py-16"
+    >
       <div class="mx-auto max-w-6xl">
         <p class="text-eyebrow uppercase text-accent-700">Nos valeurs</p>
         <h2 class="mt-4 max-w-2xl font-display text-display text-balance text-primary-900">
@@ -274,9 +228,13 @@ function toggleProfile(id: string) {
     </section>
 
     <!-- ================================================================== -->
-    <!-- ANNUAIRE — LE COLLECTIF                                            -->
+    <!-- 3. ÉQUIPES — « le collectif par équipe ». `min-h-dvh` : tabs +      -->
+    <!-- piste de cartes peuvent déborder sur mobile.                       -->
     <!-- ================================================================== -->
-    <section data-theme="light" class="bg-light px-6 py-24 sm:py-32">
+    <section
+      data-theme="light"
+      class="bg-light min-h-dvh w-full shrink-0 snap-start snap-always flex flex-col justify-center px-6 py-16"
+    >
       <div class="mx-auto max-w-6xl">
         <h2 class="font-display text-display text-balance text-primary-900">
           Le collectif, par équipe
@@ -347,5 +305,18 @@ function toggleProfile(id: string) {
         </Transition>
       </div>
     </section>
+
+    <!-- ================================================================== -->
+    <!-- 4. FOOTER — repris dans le flux snap local (cf. HomeView.vue) ;     -->
+    <!-- App.vue masque son footer global pour cette route pour éviter le   -->
+    <!-- doublon.                                                           -->
+    <!-- ================================================================== -->
+    <section
+      data-theme="dark"
+      class="h-dvh w-full shrink-0 snap-start snap-always flex flex-col justify-end bg-[#000066]"
+    >
+      <TheFooter />
+    </section>
   </div>
+  <!-- /conteneur snap -->
 </template>

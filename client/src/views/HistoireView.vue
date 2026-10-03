@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useTemplateRef } from 'vue'
+import TheFooter from '@/components/layout/TheFooter.vue'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
 import { useSeo } from '@/composables/useSeo'
-import photoFondateurs from '@/assets/images/photos/fondateurs.jpg'
 import photoPaintball from '@/assets/images/photos/paintball.jpg'
 import photoAfterwork from '@/assets/images/photos/afterwork.jpg'
 import photoLille from '@/assets/images/photos/lille.jpg'
@@ -59,13 +59,22 @@ const learnProgressReveal = useScrollReveal(learnProgressEl)
 <template>
   <!-- Pas de `<main>` ici : la coquille (`App.vue`) le fournit déjà. -->
 
+  <!-- CONTENEUR SNAP OPT-IN : isole le scroll magnétique de cette vue sans
+       dépendre de la hauteur flexée de <main> (cf. HomeView.vue) — le
+       `meta.fullPageScroll` évoqué plus haut n'existe nulle part ailleurs
+       dans le dépôt (routes.ts / App.vue), ce conteneur local est donc le
+       seul mécanisme réel de snap sur cette page. -->
+  <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
   <!-- ==================================================================
-       1. ORIGINES — clair, image gauche / texte droite.
+       1. HERO (ORIGINES) — clair, fond uni, texte centré.
+       Ancienne photo (fondateurs) retirée : obsolète, en attente d'un
+       nouvel asset. Fond uni `bg-light` déjà en place, pas de remplacement
+       nécessaire.
        ================================================================== -->
   <section
     id="origines"
     data-theme="light"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center bg-light px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
+    class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col items-center justify-center bg-light px-4 py-16 text-center sm:px-6 lg:px-8 xl:px-12"
   >
     <!-- `<h1>` visuellement masqué : le brief fait de « Il était une fois »
          un simple surtitre (pas de grand titre distinct pour cette
@@ -76,33 +85,16 @@ const learnProgressReveal = useScrollReveal(learnProgressEl)
 
     <div
       ref="originesEl"
-      class="mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16"
+      class="mx-auto max-w-3xl transition-all duration-700 ease-out motion-reduce:transition-none"
+      :class="scrollRevealClass(originesReveal)"
     >
-      <div
-        class="transition-all duration-700 ease-out motion-reduce:transition-none"
-        :class="scrollRevealClass(originesReveal, 'left')"
-      >
-        <img
-          :src="photoFondateurs"
-          alt=""
-          loading="lazy"
-          decoding="async"
-          class="aspect-[4/5] w-full rounded-3xl object-cover shadow-lift"
-        />
-      </div>
-
-      <div
-        class="transition-all duration-700 ease-out motion-reduce:transition-none"
-        :class="scrollRevealClass(originesReveal, 'right')"
-      >
-        <p class="text-eyebrow uppercase text-accent-700">Il était une fois</p>
-        <p class="mt-6 text-lg leading-relaxed text-primary-900/80 sm:text-xl">
-          Notre histoire débute en 2020 avec une ambition commune&nbsp;: accompagner les entreprises
-          de la région lilloise dans la réussite de leurs projets informatiques, en garantissant un
-          haut niveau d’exigence. Nous avons combiné nos expériences entrepreneuriales, techniques
-          et managériales pour créer une ESN qui nous ressemble.
-        </p>
-      </div>
+      <p class="text-eyebrow uppercase text-accent-700">Il était une fois</p>
+      <p class="mt-6 text-lg leading-relaxed text-primary-900/80 sm:text-xl">
+        Notre histoire débute en 2020 avec une ambition commune&nbsp;: accompagner les entreprises
+        de la région lilloise dans la réussite de leurs projets informatiques, en garantissant un
+        haut niveau d’exigence. Nous avons combiné nos expériences entrepreneuriales, techniques
+        et managériales pour créer une ESN qui nous ressemble.
+      </p>
     </div>
   </section>
 
@@ -112,7 +104,7 @@ const learnProgressReveal = useScrollReveal(learnProgressEl)
   <section
     id="independance"
     data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col items-center justify-center bg-[#000066] px-4 py-16 text-center text-white sm:px-6 lg:px-8 xl:px-12"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col items-center justify-center bg-[#000066] px-4 py-16 text-center text-white sm:px-6 lg:px-8 xl:px-12"
   >
     <div
       ref="independanceEl"
@@ -134,7 +126,7 @@ const learnProgressReveal = useScrollReveal(learnProgressEl)
   <section
     id="code-and-play"
     data-theme="light"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center bg-light px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
+    class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center bg-light px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
   >
     <div
       ref="codePlayEl"
@@ -173,7 +165,7 @@ const learnProgressReveal = useScrollReveal(learnProgressEl)
   <section
     id="explore-and-grow"
     data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center bg-[#000066] px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12"
+    class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center bg-[#000066] px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12"
   >
     <div
       ref="exploreGrowEl"
@@ -213,7 +205,7 @@ const learnProgressReveal = useScrollReveal(learnProgressEl)
   <section
     id="learn-and-progress"
     data-theme="light"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center bg-light px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
+    class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center bg-light px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
   >
     <div
       ref="learnProgressEl"
@@ -246,4 +238,18 @@ const learnProgressReveal = useScrollReveal(learnProgressEl)
       </div>
     </div>
   </section>
+
+  <!-- ==================================================================
+       6. FOOTER — repris dans le flux snap local (cf. HomeView.vue) ;
+       App.vue masque son footer global pour cette route pour éviter le
+       doublon.
+       ================================================================== -->
+  <section
+    data-theme="dark"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
+  >
+    <TheFooter />
+  </section>
+  </div>
+  <!-- /conteneur snap -->
 </template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
+import TheFooter from '@/components/layout/TheFooter.vue'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
 import { useSeo } from '@/composables/useSeo'
 
@@ -211,13 +212,19 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
 <template>
   <!-- Pas de `<main>` ici : la coquille (`App.vue`) le fournit déjà. -->
 
+  <!-- CONTENEUR SNAP OPT-IN : isole le scroll magnétique de cette vue sans
+       dépendre de la hauteur flexée de <main> (cf. HomeView.vue) — le
+       `meta.fullPageScroll` évoqué plus haut n'existe nulle part ailleurs
+       dans le dépôt (routes.ts / App.vue), ce conteneur local est donc le
+       seul mécanisme réel de snap sur cette page. -->
+  <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
   <!-- ==================================================================
        1. HERO — sombre.
        ================================================================== -->
   <section
     id="hero"
     data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
   >
     <div
       ref="heroEl"
@@ -252,7 +259,7 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
   <section
     id="offres"
     data-theme="light"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
   >
     <div ref="offresEl" class="mx-auto w-full max-w-6xl">
       <h2
@@ -296,7 +303,7 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
   <section
     id="atouts"
     data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
   >
     <div ref="atoutsEl" class="mx-auto w-full max-w-6xl">
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8">
@@ -339,7 +346,7 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
   <section
     id="methode"
     data-theme="light"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
+    class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-12 sm:px-6 lg:px-8 xl:px-12 bg-light"
   >
     <div
       ref="methodeEl"
@@ -399,7 +406,7 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
   <section
     id="rag-mcp"
     data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
+    class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-12 text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
   >
     <div
       ref="techEl"
@@ -469,7 +476,7 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
   <section
     id="cta"
     data-theme="light"
-    class="h-full w-full snap-start snap-always flex flex-col items-center justify-center px-4 py-16 text-center sm:px-6 lg:px-8 xl:px-12 bg-light-100"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col items-center justify-center px-4 py-16 text-center sm:px-6 lg:px-8 xl:px-12 bg-light-100"
   >
     <div
       ref="ctaEl"
@@ -484,4 +491,18 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
       </div>
     </div>
   </section>
+
+  <!-- ==================================================================
+       7. FOOTER — repris dans le flux snap local (cf. HomeView.vue) ;
+       App.vue masque son footer global pour cette route pour éviter le
+       doublon.
+       ================================================================== -->
+  <section
+    data-theme="dark"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
+  >
+    <TheFooter />
+  </section>
+  </div>
+  <!-- /conteneur snap -->
 </template>

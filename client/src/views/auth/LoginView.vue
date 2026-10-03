@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import TheFooter from '@/components/layout/TheFooter.vue'
 import photoAfterwork from '@/assets/images/photos/afterwork.jpg'
 
 const email = ref('')
@@ -36,9 +37,12 @@ function handleSubmit() {
 </script>
 
 <template>
+  <!-- CONTENEUR SNAP OPT-IN : isole le scroll magnétique de cette vue sans
+       dépendre de la hauteur flexée de <main> (cf. HomeView.vue). -->
+  <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
   <section
     data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col lg:flex-row bg-[#000066]"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col lg:flex-row bg-[#000066]"
   >
     <!-- Colonne gauche — branding -->
     <div class="relative hidden lg:flex lg:w-1/2 items-center justify-center overflow-hidden">
@@ -155,6 +159,17 @@ function handleSubmit() {
       </div>
     </div>
   </section>
+
+  <!-- Footer repris dans le flux snap local (cf. HomeView.vue) ; App.vue
+       masque son footer global pour cette route pour éviter le doublon. -->
+  <section
+    data-theme="dark"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
+  >
+    <TheFooter />
+  </section>
+  </div>
+  <!-- /conteneur snap -->
 </template>
 
 <style scoped>

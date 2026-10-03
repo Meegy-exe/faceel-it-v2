@@ -2,6 +2,7 @@
 import { useTemplateRef } from 'vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import CoverCarousel from '@/components/ui/CoverCarousel.vue'
+import TheFooter from '@/components/layout/TheFooter.vue'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
 import { useSeo } from '@/composables/useSeo'
 import photoVeloEquipe from '@/assets/images/photos/velo-equipe.jpg'
@@ -181,6 +182,12 @@ const TESTIMONIALS: Testimonial[] = [
 <template>
   <!-- Pas de `<main>` ici : la coquille (`App.vue`) le fournit déjà. -->
 
+  <!-- CONTENEUR SNAP OPT-IN : isole le scroll magnétique de cette vue sans
+       dépendre de la hauteur flexée de <main> (cf. HomeView.vue) — le
+       `meta.fullPageScroll` évoqué plus haut n'existe nulle part ailleurs
+       dans le dépôt (routes.ts / App.vue), ce conteneur local est donc le
+       seul mécanisme réel de snap sur cette page. -->
+  <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
   <!-- ==================================================================
        1. SAVOIR-ÊTRE — sombre, image « mask » à gauche / texte à droite.
 
@@ -193,7 +200,7 @@ const TESTIMONIALS: Testimonial[] = [
   <section
     id="savoir-etre"
     data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
+    class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
   >
     <!-- `<h1>` de la page : premier titre significatif rencontré, résume le
          sujet pour l'a11y/le SEO (même parti que `HistoireView.vue`). -->
@@ -256,7 +263,7 @@ const TESTIMONIALS: Testimonial[] = [
   <section
     id="savoir-faire"
     data-theme="light"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
+    class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
   >
     <div
       ref="savoirFaireEl"
@@ -305,7 +312,7 @@ const TESTIMONIALS: Testimonial[] = [
   <section
     id="collectif"
     data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
   >
     <div ref="collectifEl" class="mx-auto w-full max-w-6xl">
       <h2
@@ -356,7 +363,7 @@ const TESTIMONIALS: Testimonial[] = [
   <section
     id="process"
     data-theme="light"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
+    class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
   >
     <div ref="processEl" class="mx-auto w-full max-w-4xl">
       <h2
@@ -395,7 +402,7 @@ const TESTIMONIALS: Testimonial[] = [
   <section
     id="events"
     data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center py-16 text-white bg-[#000066]"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center py-16 text-white bg-[#000066]"
   >
     <div ref="eventsEl" class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 xl:px-12">
       <h2
@@ -448,7 +455,7 @@ const TESTIMONIALS: Testimonial[] = [
   <section
     id="temoignages"
     data-theme="light"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
   >
     <div
       ref="temoignagesEl"
@@ -492,7 +499,7 @@ const TESTIMONIALS: Testimonial[] = [
   <section
     id="cta"
     data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col items-center justify-center px-4 py-16 text-center text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col items-center justify-center px-4 py-16 text-center text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
   >
     <div
       ref="ctaEl"
@@ -511,4 +518,18 @@ const TESTIMONIALS: Testimonial[] = [
       </div>
     </div>
   </section>
+
+  <!-- ==================================================================
+       8. FOOTER — repris dans le flux snap local (cf. HomeView.vue) ;
+       App.vue masque son footer global pour cette route pour éviter le
+       doublon.
+       ================================================================== -->
+  <section
+    data-theme="dark"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
+  >
+    <TheFooter />
+  </section>
+  </div>
+  <!-- /conteneur snap -->
 </template>

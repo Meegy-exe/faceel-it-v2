@@ -119,6 +119,21 @@ const GLASSDOOR_HREF =
 const CONTACT_TO = '/contact'
 const REJOINDRE_TO = '/consulter-nos-offres'
 
+/** Routes dont la vue gère elle-même son conteneur snap local (HomeView.vue
+ *  et consorts) et y intègre son propre `<TheFooter>` — le footer global
+ *  rendu ci-dessous doit s'effacer sur ces routes pour éviter le doublon. */
+const LOCAL_SNAP_FOOTER_ROUTES = new Set([
+  '/',
+  '/consulter-nos-offres',
+  '/login',
+  '/chat',
+  '/je-suis-une-entreprise',
+  '/je-suis-candidat',
+  '/qui-sommes-nous/notre-histoire',
+  '/qui-sommes-nous/notre-collectif',
+  '/sport-sponsoring',
+])
+
 /** Flèche du CTA « Nous rejoindre », en composant fonctionnel local plutôt
  * qu'un `<svg>` recopié à chaque emplacement (Header desktop, menu mobile,
  * Footer). */
@@ -222,10 +237,12 @@ const ArrowRightIcon: FunctionalComponent = () =>
       <RouterView />
     </main>
 
-    <!-- Footer masqué sur l'accueil : TheFooter y est intégré dans le
-         conteneur snap de HomeView.vue pour s'aimanter avec les sections. -->
+    <!-- Footer masqué sur les routes à snap local : TheFooter y est intégré
+         dans le conteneur snap de la vue elle-même (HomeView.vue,
+         OffersView.vue, LoginView.vue, ChatbotView.vue, EnterpriseView.vue)
+         pour s'aimanter avec les sections. -->
     <TheFooter
-      v-if="route.path !== '/'"
+      v-if="!LOCAL_SNAP_FOOTER_ROUTES.has(route.path)"
       :full-page-scroll="false"
       :columns="footerColumns"
       :description="footerDescription"

@@ -22,6 +22,6 @@ export const staticPrerenderRoutes = [
   '/qui-sommes-nous/notre-collectif',
   '/je-suis-une-entreprise',
   '/je-suis-candidat',
-  '/discutons-ia',
+  '/sport-sponsoring',
   '/consulter-nos-offres',
 ]

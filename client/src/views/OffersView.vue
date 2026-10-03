@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'
+import TheFooter from '@/components/layout/TheFooter.vue'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
 import { useSeo } from '@/composables/useSeo'
 import { useWaveCanvas } from '@/composables/useWaveCanvas'
@@ -210,13 +211,16 @@ watch(
 <template>
   <!-- Pas de <main> ici : App.vue le fournit déjà. -->
 
+  <!-- CONTENEUR SNAP OPT-IN : isole le scroll magnétique de cette vue sans
+       dépendre de la hauteur flexée de <main> (cf. HomeView.vue). -->
+  <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
   <!-- ==================================================================
        1. HERO — sombre
        ================================================================== -->
   <section
     id="hero"
     data-theme="dark"
-    class="relative h-full w-full snap-start snap-always flex flex-col justify-center overflow-hidden px-4 sm:px-6 lg:px-8 xl:px-12 bg-[#000066] text-white"
+    class="relative h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center overflow-hidden px-4 sm:px-6 lg:px-8 xl:px-12 bg-[#000066] text-white"
   >
     <!-- Canvas vague — fond animé, désactivé si motion-reduce. -->
     <canvas
@@ -274,7 +278,7 @@ watch(
   <section
     id="job-board"
     data-theme="light"
-    class="h-full w-full snap-start snap-always flex flex-col bg-light overflow-hidden"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-light overflow-hidden"
   >
     <div class="flex-1 overflow-y-auto px-4 pt-28 pb-8 sm:px-6 lg:px-8 xl:px-12">
       <div class="mx-auto max-w-6xl">
@@ -532,6 +536,19 @@ watch(
     </div>
     <!-- fin overflow-y-auto -->
   </section>
+
+  <!-- ==================================================================
+       3. FOOTER — repris dans le flux snap local (cf. HomeView.vue) ;
+       App.vue masque son footer global pour cette route pour éviter le doublon.
+       ================================================================== -->
+  <section
+    data-theme="dark"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
+  >
+    <TheFooter />
+  </section>
+  </div>
+  <!-- /conteneur snap -->
 
   <!-- ==================================================================
        MODALE — aperçu rapide d'une offre

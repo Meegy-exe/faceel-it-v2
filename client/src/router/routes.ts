@@ -61,6 +61,26 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/SportView.vue'),
   },
   {
+    path: '/partenaires',
+    name: 'partenaires',
+    component: () => import('@/views/PartenairesView.vue'),
+  },
+  {
+    path: '/politique-rse',
+    name: 'politique-rse',
+    component: () => import('@/views/PolitiqueRseView.vue'),
+  },
+  {
+    path: '/references/boulanger',
+    name: 'reference-boulanger',
+    component: () => import('@/views/references/BoulangerView.vue'),
+  },
+  {
+    path: '/references/adeo',
+    name: 'reference-adeo',
+    component: () => import('@/views/references/AdeoView.vue'),
+  },
+  {
     path: '/offres/:id',
     name: 'offre-detail',
     component: () => import('@/views/OfferDetailView.vue'),
@@ -91,7 +111,7 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/legal/AccessibilityView.vue'),
   },
   {
-    path: '/contact',
+    path: '/contact-entreprise',
     name: 'contact',
     component: () => import('@/views/ContactView.vue'),
   },

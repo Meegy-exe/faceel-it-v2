@@ -156,7 +156,7 @@ export const mainNavEntries: NavItem[] = [
   },
   {
     id: 'references',
-    label: 'Secteurs',
+    label: 'Nos BU',
     title: 'Nos secteurs',
     description:
       'Retail, industrie, logistique, banque et assurance — nous intervenons là où la donnée et le digital font la différence.',
@@ -167,6 +167,7 @@ export const mainNavEntries: NavItem[] = [
       { label: 'Industrie', to: { path: '/', hash: '#secteurs' } },
       { label: 'Logistique', to: { path: '/', hash: '#secteurs' } },
       { label: 'Banque & Assurance', to: { path: '/', hash: '#secteurs' } },
+      { label: 'Politique RSE', to: { name: 'politique-rse' } },
     ],
   },
   {
@@ -178,5 +179,28 @@ export const mainNavEntries: NavItem[] = [
     ctaLabel: 'Découvrir',
     ctaTo: { name: 'sport' },
     to: { name: 'sport' },
+  },
+  {
+    id: 'partenaires',
+    label: 'Partenaires',
+    title: 'Partenaires',
+    description:
+      'Nous nous entourons des meilleurs acteurs technologiques pour construire des plateformes solides, fiables et innovantes.',
+    ctaLabel: 'Découvrir',
+    ctaTo: { name: 'partenaires' },
+    to: { name: 'partenaires' },
+  },
+  {
+    id: 'nos-references',
+    label: 'Nos références',
+    title: 'Nos références',
+    description:
+      'Découvrez comment nous accompagnons nos clients dans la transformation de leurs plateformes digitales.',
+    ctaLabel: 'Découvrir',
+    ctaTo: { name: 'reference-boulanger' },
+    subItems: [
+      { label: 'Boulanger', to: { name: 'reference-boulanger' } },
+      { label: 'Adeo', to: { name: 'reference-adeo' } },
+    ],
   },
 ]

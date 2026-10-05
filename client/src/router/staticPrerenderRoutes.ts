@@ -23,5 +23,9 @@ export const staticPrerenderRoutes = [
   '/je-suis-une-entreprise',
   '/je-suis-candidat',
   '/sport-sponsoring',
+  '/partenaires',
+  '/politique-rse',
+  '/references/boulanger',
+  '/references/adeo',
   '/consulter-nos-offres',
 ]

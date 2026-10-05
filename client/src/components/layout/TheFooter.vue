@@ -189,7 +189,7 @@ defineProps<{
             <ul class="mt-5 space-y-3 text-sm">
               <li>
                 <RouterLink
-                  to="/#rse"
+                  to="/politique-rse"
                   class="text-gray-700 transition-colors duration-200 hover:text-[#000066]"
                 >
                   Politique RSE
@@ -285,10 +285,10 @@ defineProps<{
         <div class="mt-12 border-t border-gray-200 pt-10">
           <div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <RouterLink
-              to="/contact"
+              to="/contact-entreprise"
               class="inline-flex w-full items-center justify-center rounded-lg border-2 border-[#000066] px-6 py-3 text-sm font-semibold text-[#000066] transition-colors duration-200 hover:bg-[#000066] hover:text-white sm:w-auto"
             >
-              Nous contacter
+              Un projet ?
             </RouterLink>
             <RouterLink
               to="/consulter-nos-offres"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import TheFooter from '@/components/layout/TheFooter.vue'
 import contactHeroImg from '@/assets/images/photos/lille.jpg'
 
 const form = ref({
@@ -8,12 +9,11 @@ const form = ref({
   societe: '',
   email: '',
   telephone: '',
-  sujet: '',
+  sujet: 'projet',
   message: '',
   rgpd: false,
 })
 const submitted = ref(false)
-const searchQuery = ref('')
 
 function handleSubmit() {
   submitted.value = true
@@ -21,75 +21,60 @@ function handleSubmit() {
 </script>
 
 <template>
-  <div>
+  <div class="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth">
     <!-- ══════════════════════════════════════════════
-         SECTION 1 : HERO SPLIT VERTICAL (Photo / Contenu)
+         SECTION 1 : HERO IMMERSIF (image + overlay + grille 2 colonnes)
          ══════════════════════════════════════════════ -->
-    <section data-theme="dark" class="w-full flex flex-col">
-
-      <!-- Moitié haute : photo nette, sans texte -->
+    <section
+      data-theme="dark"
+      class="relative min-h-screen w-full snap-start snap-always flex items-center justify-center bg-cover bg-center"
+      :style="{ backgroundImage: `url(${contactHeroImg})` }"
+    >
       <div
-        class="w-full min-h-[45vh] bg-cover bg-center"
-        :style="{ backgroundImage: `url(${contactHeroImg})` }"
         aria-hidden="true"
+        class="absolute inset-0 bg-primary-950/80 bg-gradient-to-b from-primary-950/60 to-primary-950"
       />
 
-      <!-- Moitié basse : fond bleu + titre + FAQ -->
-      <div class="w-full bg-[#000066] flex flex-col items-center justify-center gap-6 px-4 py-16 md:py-20">
-        <!-- Titre -->
-        <div class="text-center">
-          <h1 class="font-display text-4xl font-bold text-white md:text-5xl">
-            Contactez-nous
+      <div
+        class="relative z-10 mx-auto w-full max-w-7xl grid grid-cols-1 items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8"
+      >
+        <!-- Colonne gauche : textes -->
+        <div>
+          <p class="mb-2 font-bold uppercase tracking-wider text-accent-500">Contactez-nous</p>
+          <h1 class="mb-6 text-5xl font-extrabold leading-tight text-white lg:text-6xl">
+            Vous êtes une entreprise et vous avez un projet ?
           </h1>
-          <p class="mt-2 text-base text-white/70">
-            Notre équipe vous répond sous 48h ouvrées.
+          <p class="text-xl text-white/80">
+            Contactez-nous via le formulaire ci-dessous ou échangez avec notre chatBot.
           </p>
         </div>
 
-        <!-- Zone FAQ -->
-        <div class="w-full max-w-2xl rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md p-6">
-          <p class="text-xs font-semibold uppercase tracking-widest text-white/50 mb-4 text-center">
-            Une question rapide&nbsp;?
-          </p>
-          <div class="flex items-center gap-3">
-            <div class="relative flex-1">
-              <svg
-                class="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-gray-400"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z" clip-rule="evenodd" />
-              </svg>
-              <input
-                v-model="searchQuery"
-                type="search"
-                placeholder="Rechercher une question…"
-                class="w-full rounded-xl border border-gray-200 bg-white py-3 pr-4 pl-11 text-sm text-gray-900 placeholder-gray-500 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-white"
-              />
-            </div>
-            <a
-              href="#"
-              class="shrink-0 rounded-xl bg-[#12D80A] px-5 py-3 text-sm font-semibold text-[#000066] transition-colors hover:bg-[#0fc009]"
-            >
-              Voir la FAQ
-            </a>
-          </div>
+        <!-- Colonne droite : carte Chatbot -->
+        <div
+          class="flex flex-col items-center justify-center rounded-2xl border border-white/10 bg-primary-900/60 p-8 text-center shadow-2xl backdrop-blur-md"
+        >
+          <h3 class="mb-6 text-2xl font-bold text-white">Une question ?</h3>
+          <RouterLink
+            to="/chat"
+            class="rounded-full bg-accent-500 px-6 py-3 font-bold text-primary-950 transition hover:bg-accent-400"
+          >
+            Demandez à notre chatbot
+          </RouterLink>
         </div>
+      </div>
 
-        <!-- Flèche scroll-down -->
-        <div class="motion-reduce:hidden">
-          <svg class="w-5 h-5 text-white/40 animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
+      <!-- Flèche scroll-down -->
+      <div class="absolute inset-x-0 bottom-8 flex justify-center motion-reduce:hidden">
+        <svg class="w-5 h-5 text-white/40 animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
       </div>
     </section>
 
     <!-- ══════════════════════════════════════════════
          SECTION 3 : FORMULAIRE & ENCART LINKEDIN
          ══════════════════════════════════════════════ -->
-    <section class="bg-white py-16">
+    <section class="min-h-screen w-full snap-start snap-always flex flex-col justify-center bg-white py-16">
       <div class="mx-auto max-w-6xl px-4">
         <div class="grid grid-cols-1 gap-12 md:grid-cols-3">
           <!-- Formulaire (col-span-2) -->
@@ -97,7 +82,9 @@ function handleSubmit() {
             <h2 class="font-display text-3xl font-extrabold tracking-tight text-primary-900">
               Écrivez-nous
             </h2>
-            <p class="mt-2 text-sm text-primary-900/50">Nous vous répondrons sous 48h ouvrées.</p>
+            <p class="mt-2 text-sm text-primary-900/50">
+              Notre équipe étudiera votre demande et reviendra vers vous dans les plus brefs délais.
+            </p>
 
             <div
               v-if="submitted"
@@ -184,11 +171,10 @@ function handleSubmit() {
                   required
                   class="mt-1.5 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-primary-900 outline-none transition-colors focus:border-[#000066] focus:ring-1 focus:ring-[#000066]"
                 >
-                  <option value="" disabled>Choisissez un sujet</option>
-                  <option value="projet">Un projet Data / IA / Digital</option>
-                  <option value="candidature">Une candidature</option>
-                  <option value="partenariat">Un partenariat</option>
-                  <option value="autre">Autre</option>
+                  <option value="projet">J'ai un projet à vous proposer</option>
+                  <option value="expertise">J'ai un besoin d'expertise Tech &amp; Data</option>
+                  <option value="partenariat">Je souhaite discuter d'un partenariat</option>
+                  <option value="autre">Autre demande professionnelle</option>
                 </select>
               </div>
               <div>
@@ -222,25 +208,6 @@ function handleSubmit() {
                   >.
                 </label>
               </div>
-              <!-- Upload CV (optionnel) -->
-              <div>
-                <p class="block text-sm font-medium text-primary-900 mb-1.5">CV (Optionnel)</p>
-                <label
-                  for="cvContact"
-                  class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 px-6 py-6 text-center transition-colors hover:border-gray-400"
-                >
-                  <svg class="w-8 h-8 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                  </svg>
-                  <span class="text-sm text-gray-500">
-                    Glissez votre CV ici ou
-                    <span class="font-semibold text-[#000066]">parcourir</span>
-                  </span>
-                  <span class="text-xs text-gray-400">Format PDF uniquement</span>
-                  <input id="cvContact" type="file" accept=".pdf" class="sr-only" />
-                </label>
-              </div>
-
               <button
                 type="submit"
                 class="rounded-lg bg-[#000066] px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#000088]"
@@ -283,104 +250,104 @@ function handleSubmit() {
                 Suivre Faceel-IT
               </a>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-              <p class="text-xs font-semibold uppercase tracking-widest text-gray-400">
-                Réponse garantie
+    <!-- ══════════════════════════════════════════════
+         SECTION 4 : CONTACT & AVIS CLIENTS (fusionnées)
+         ══════════════════════════════════════════════ -->
+    <section
+      data-theme="dark"
+      class="relative min-h-screen w-full snap-start snap-always flex items-center justify-center bg-primary-950 px-4 py-20"
+    >
+      <div
+        class="mx-auto w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-8 items-center divide-y md:divide-y-0 md:divide-x divide-white/10"
+      >
+        <!-- Colonne Gauche : Infos de contact -->
+        <div class="flex flex-col items-center text-center pt-8 md:pt-0">
+          <h2 class="font-display text-3xl font-bold text-white mb-10">
+            Besoin d'un contact&nbsp;?
+          </h2>
+          <div class="grid grid-cols-1 gap-8 text-center sm:grid-cols-2">
+            <!-- Email -->
+            <div class="flex flex-col items-center gap-3">
+              <div class="flex size-12 items-center justify-center rounded-full bg-white/10">
+                <svg class="size-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1.25 1.25 0 0 0 1.118 0L19 7.162V6a2 2 0 0 0-2-2H3Z" />
+                  <path d="m19 8.839-7.77 3.885a2.75 2.75 0 0 1-2.46 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z" />
+                </svg>
+              </div>
+              <p class="text-xs font-semibold uppercase tracking-widest text-blue-300">Email</p>
+              <a href="mailto:contact@faceel-it.com" class="text-lg font-semibold text-white transition-opacity hover:opacity-75">
+                contact@faceel-it.com
+              </a>
+            </div>
+            <!-- Adresse -->
+            <div class="flex flex-col items-center gap-3">
+              <div class="flex size-12 items-center justify-center rounded-full bg-white/10">
+                <svg class="size-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 15.01 17 12.462 17 9A7 7 0 1 0 3 9c0 3.462 1.698 6.01 3.354 7.584a13.731 13.731 0 0 0 2.75 1.908l.002.001.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <p class="text-xs font-semibold uppercase tracking-widest text-blue-300">Adresse</p>
+              <p class="text-lg font-semibold text-white leading-snug">
+                10 allée du Château Blanc<br />59290 Wasquehal
               </p>
-              <p class="mt-2 text-3xl font-extrabold text-primary-900">48h</p>
-              <p class="mt-1 text-sm text-primary-900/60">ouvrées maximum après réception</p>
             </div>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- ══════════════════════════════════════════════
-         SECTION 4 : COORDONNÉES DE CONTACT
-         ══════════════════════════════════════════════ -->
-    <section data-theme="dark" class="w-full bg-[#000066] text-white py-12 md:py-20">
-      <div class="mx-auto max-w-7xl px-4">
-        <h2 class="text-center font-display text-3xl font-bold text-white mb-10">
-          Besoin d'un contact&nbsp;?
-        </h2>
-        <div class="grid grid-cols-1 gap-8 text-center md:grid-cols-2 md:max-w-2xl md:mx-auto">
-          <!-- Email -->
-          <div class="flex flex-col items-center gap-3">
-            <div class="flex size-12 items-center justify-center rounded-full bg-white/10">
-              <svg class="size-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1.25 1.25 0 0 0 1.118 0L19 7.162V6a2 2 0 0 0-2-2H3Z" />
-                <path d="m19 8.839-7.77 3.885a2.75 2.75 0 0 1-2.46 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z" />
-              </svg>
-            </div>
-            <p class="text-xs font-semibold uppercase tracking-widest text-blue-300">Email</p>
-            <a href="mailto:contact@faceel-it.com" class="text-lg font-semibold text-white transition-opacity hover:opacity-75">
-              contact@faceel-it.com
-            </a>
-          </div>
-          <!-- Adresse -->
-          <div class="flex flex-col items-center gap-3">
-            <div class="flex size-12 items-center justify-center rounded-full bg-white/10">
-              <svg class="size-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 15.01 17 12.462 17 9A7 7 0 1 0 3 9c0 3.462 1.698 6.01 3.354 7.584a13.731 13.731 0 0 0 2.75 1.908l.002.001.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z" clip-rule="evenodd" />
-              </svg>
-            </div>
-            <p class="text-xs font-semibold uppercase tracking-widest text-blue-300">Adresse</p>
-            <p class="text-lg font-semibold text-white leading-snug">
-              10 allée du Château Blanc<br />59290 Wasquehal
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══════════════════════════════════════════════
-         SECTION 5 : AVIS GOOGLE
-         ══════════════════════════════════════════════ -->
-    <section class="bg-[#000066] py-16 text-white">
-      <div class="mx-auto flex max-w-3xl flex-col items-center px-4 text-center">
-        <p class="text-sm font-semibold uppercase tracking-widest text-yellow-300">Avis clients</p>
-        <h2 class="mt-4 font-display text-3xl font-extrabold tracking-tight md:text-4xl">
-          Votre avis compte pour nous
-        </h2>
-        <p class="mt-4 max-w-xl text-base leading-relaxed text-white/70">
-          Vos retours nous aident à progresser et permettent à d'autres entreprises et candidats de
-          mieux nous connaître.
-        </p>
-
-        <!-- Note Google stylisée -->
-        <div class="mt-10 flex flex-col items-center gap-2">
-          <p class="text-lg font-semibold">
-            <span class="text-[#4285F4]">G</span><span class="text-[#EA4335]">o</span
-            ><span class="text-[#FBBC05]">o</span><span class="text-[#4285F4]">g</span
-            ><span class="text-[#34A853]">l</span><span class="text-[#EA4335]">e</span>
+        <!-- Colonne Droite : Avis Google -->
+        <div class="flex flex-col items-center text-center pt-12 md:pt-0">
+          <p class="text-sm font-semibold uppercase tracking-widest text-yellow-300">Avis clients</p>
+          <h2 class="mt-4 font-display text-3xl font-extrabold tracking-tight text-white md:text-4xl">
+            Votre avis compte pour nous
+          </h2>
+          <p class="mt-4 max-w-xl text-base leading-relaxed text-white/70">
+            Vos retours nous aident à progresser et permettent à d'autres entreprises et candidats de
+            mieux nous connaître.
           </p>
-          <div class="flex gap-1 text-yellow-400" aria-label="5 étoiles sur 5">
-            <svg v-for="i in 5" :key="i" class="size-8" viewBox="0 0 20 20" fill="currentColor">
+
+          <!-- Note Google stylisée -->
+          <div class="mt-10 flex flex-col items-center gap-2">
+            <p class="text-lg font-semibold">
+              <span class="text-[#4285F4]">G</span><span class="text-[#EA4335]">o</span
+              ><span class="text-[#FBBC05]">o</span><span class="text-[#4285F4]">g</span
+              ><span class="text-[#34A853]">l</span><span class="text-[#EA4335]">e</span>
+            </p>
+            <div class="flex gap-1 text-yellow-400" aria-label="5 étoiles sur 5">
+              <svg v-for="i in 5" :key="i" class="size-8" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292Z"
+                />
+              </svg>
+            </div>
+            <p class="text-5xl font-extrabold text-white">5 / 5</p>
+          </div>
+
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-10 inline-flex items-center gap-2 rounded-xl border-2 border-white px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white hover:text-[#000066]"
+          >
+            Laissez-nous un avis sur Google
+            <svg class="size-4" viewBox="0 0 20 20" fill="currentColor">
               <path
-                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292Z"
+                fill-rule="evenodd"
+                d="M5.22 14.78a.75.75 0 0 0 1.06 0l7.22-7.22v5.69a.75.75 0 0 0 1.5 0v-7.5a.75.75 0 0 0-.75-.75h-7.5a.75.75 0 0 0 0 1.5h5.69l-7.22 7.22a.75.75 0 0 0 0 1.06Z"
+                clip-rule="evenodd"
               />
             </svg>
-          </div>
-          <p class="text-5xl font-extrabold">5 / 5</p>
+          </a>
         </div>
-
-        <a
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="mt-10 inline-flex items-center gap-2 rounded-xl border-2 border-white px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white hover:text-[#000066]"
-        >
-          Laissez-nous un avis sur Google
-          <svg class="size-4" viewBox="0 0 20 20" fill="currentColor">
-            <path
-              fill-rule="evenodd"
-              d="M5.22 14.78a.75.75 0 0 0 1.06 0l7.22-7.22v5.69a.75.75 0 0 0 1.5 0v-7.5a.75.75 0 0 0-.75-.75h-7.5a.75.75 0 0 0 0 1.5h5.69l-7.22 7.22a.75.75 0 0 0 0 1.06Z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </a>
       </div>
+    </section>
+
+    <section class="w-full snap-start snap-always">
+      <TheFooter />
     </section>
   </div>
 </template>

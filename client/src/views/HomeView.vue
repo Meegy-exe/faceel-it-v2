@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
-import CardCarousel from '@/components/ui/CardCarousel.vue'
 import CoverCarousel from '@/components/ui/CoverCarousel.vue'
 import CarouselSlideContent from '@/components/ui/CarouselSlideContent.vue'
 import ReferencesSection from '@/components/ui/ReferencesSection.vue'
@@ -425,11 +424,11 @@ onBeforeUnmount(() => {
       :class="isFirstVisit ? 'animate-hero-text-delayed' : 'animate-hero-text'"
     >
       <div>
-        <p
-          class="animate-fade-up motion-reduce:animate-none text-eyebrow uppercase text-accent-500 drop-shadow-md"
-        >
-          ESN · Data × IA × Transformation digitale
-        </p>
+<!--        <p-->
+<!--          class="animate-fade-up motion-reduce:animate-none text-eyebrow uppercase text-accent-500 drop-shadow-md"-->
+<!--        >-->
+<!--          ESN · Data × IA × Transformation digitale-->
+<!--        </p>-->
 
         <h1
           class="mt-6 flex max-w-7xl flex-col items-start gap-y-2 animate-fade-up motion-reduce:animate-none font-display text-5xl leading-[1.1] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl [animation-delay:80ms] drop-shadow-xl"

@@ -201,8 +201,8 @@ const ArrowRightIcon: FunctionalComponent = () =>
             class="transition-colors"
             :class="
               surface === 'dark'
-                ? 'text-white/70 hover:text-accent-500'
-                : 'text-primary-900/60 hover:text-accent-700'
+                ? 'text-white hover:text-accent-500'
+                : 'text-primary-900 hover:text-accent-700'
             "
             aria-label="LinkedIn"
           >
@@ -218,8 +218,8 @@ const ArrowRightIcon: FunctionalComponent = () =>
             class="transition-colors"
             :class="
               surface === 'dark'
-                ? 'text-white/70 hover:text-accent-500'
-                : 'text-primary-900/60 hover:text-accent-700'
+                ? 'text-white hover:text-accent-500'
+                : 'text-primary-900 hover:text-accent-700'
             "
             aria-label="Instagram"
           >
@@ -235,8 +235,8 @@ const ArrowRightIcon: FunctionalComponent = () =>
             class="transition-colors"
             :class="
               surface === 'dark'
-                ? 'text-white/70 hover:text-accent-500'
-                : 'text-primary-900/60 hover:text-accent-700'
+                ? 'text-white hover:text-accent-500'
+                : 'text-primary-900 hover:text-accent-700'
             "
             aria-label="YouTube"
           >

@@ -27,7 +27,7 @@ defineProps<{
           <div class="flex-1">
             <img :src="logoSrc" alt="Faceel-IT" class="h-16 w-auto object-contain" />
 
-            <p class="mt-5 max-w-lg text-base leading-relaxed text-white/70 md:text-lg">
+            <p class="mt-5 max-w-lg text-base leading-relaxed text-white/80 md:text-lg">
               Cabinet de conseil expert en Data, Intelligence Artificielle et Transformation
               digitale. Au-delà du code, c'est l'engagement de notre collectif qui fait aboutir vos
               projets.
@@ -39,7 +39,7 @@ defineProps<{
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Faceel-IT sur LinkedIn"
-                class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+                class="inline-flex size-9 items-center justify-center rounded-full text-white transition-colors duration-200 hover:bg-white/10 hover:text-white"
               >
                 <svg viewBox="0 0 24 24" fill="currentColor" class="size-5">
                   <path
@@ -52,7 +52,7 @@ defineProps<{
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Faceel-IT sur YouTube"
-                class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+                class="inline-flex size-9 items-center justify-center rounded-full text-white transition-colors duration-200 hover:bg-white/10 hover:text-white"
               >
                 <svg viewBox="0 0 24 24" fill="currentColor" class="size-5">
                   <path
@@ -67,7 +67,7 @@ defineProps<{
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Faceel-IT sur Instagram"
-                class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+                class="inline-flex size-9 items-center justify-center rounded-full text-white transition-colors duration-200 hover:bg-white/10 hover:text-white"
               >
                 <svg viewBox="0 0 24 24" fill="none" class="size-5">
                   <rect
@@ -88,7 +88,7 @@ defineProps<{
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Faceel-IT sur Glassdoor"
-                class="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+                class="inline-flex size-9 items-center justify-center rounded-full text-white transition-colors duration-200 hover:bg-white/10 hover:text-white"
               >
                 <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
                   <path

@@ -333,7 +333,7 @@ useSeo({
 
     <!-- 6. Section Témoignage -->
     <section
-      data-theme="dark"
+      data-theme="light"
       class="relative min-h-screen w-full snap-start snap-always flex items-center justify-center bg-[#ff6200] px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
       <!-- Carte blanche centrale -->

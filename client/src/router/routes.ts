@@ -81,6 +81,11 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/references/AdeoView.vue'),
   },
   {
+    path: '/evenements-tech',
+    name: 'evenements-tech',
+    component: () => import('@/views/TechEventsView.vue'),
+  },
+  {
     path: '/offres/:id',
     name: 'offre-detail',
     component: () => import('@/views/OfferDetailView.vue'),
@@ -88,6 +93,16 @@ export const routes: RouteRecordRaw[] = [
   {
     path: '/offres/:id/postuler',
     name: 'offre-postuler',
+    component: () => import('@/views/ApplicationView.vue'),
+  },
+  {
+    /**
+     * Pas de `:id` : contrairement à `offre-postuler`, cette candidature n'est
+     * rattachée à aucune offre existante. `ApplicationView.vue` détecte ce
+     * mode via l'absence de `route.params.id`.
+     */
+    path: '/candidature-spontanee',
+    name: 'candidature-spontanee',
     component: () => import('@/views/ApplicationView.vue'),
   },
   {

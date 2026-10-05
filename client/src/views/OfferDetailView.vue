@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSeo } from '@/composables/useSeo'
 import { useWaveCanvas } from '@/composables/useWaveCanvas'
+import photoDataIa from '@/assets/images/photos/f-it-01.jpg'
+import photoDigital from '@/assets/images/photos/f-it-02.jpg'
+import photoProduct from '@/assets/images/photos/f-it-03.jpg'
+import photoCloudDevops from '@/assets/images/photos/afterwork.jpg'
 
 const route = useRoute()
 
@@ -132,6 +136,86 @@ const offer = computed(
 )
 
 const similarOffers = computed(() => OFFERS.filter((o) => o.id !== offer.value.id).slice(0, 3))
+
+/* -------------------------------------------------------------------------- */
+/* Widget vidéo témoignage — BU correspondant à la catégorie de l'offre.      */
+/* Noms/rôles réels repris de `BuSection.vue` (page d'accueil). Aucune URL de */
+/* vidéo ni citation fictive : cf. CLAUDE.md, intégrité du contenu — le       */
+/* tournage de ces témoignages n'a pas encore eu lieu, d'où le `videoUrl` nul.*/
+/* -------------------------------------------------------------------------- */
+
+type BuSlug = 'data-ia' | 'digital' | 'product' | 'cloud-devops'
+
+interface BuTestimonial {
+  label: string
+  name: string
+  role: string
+  thumbnail: string
+  videoUrl: string | null
+}
+
+const BU_TESTIMONIALS: Record<BuSlug, BuTestimonial> = {
+  'data-ia': {
+    label: 'Data & IA',
+    name: 'Robin Rins',
+    role: 'Direction',
+    thumbnail: photoDataIa,
+    videoUrl: null,
+  },
+  digital: {
+    label: 'Digital',
+    name: 'Stéphanie Demarez',
+    role: 'Direction',
+    thumbnail: photoDigital,
+    videoUrl: null,
+  },
+  product: {
+    label: 'Product',
+    name: 'Laetitia Lesaffre',
+    role: 'Direction',
+    thumbnail: photoProduct,
+    videoUrl: null,
+  },
+  'cloud-devops': {
+    label: 'Cloud & DevOps',
+    name: 'Robin Rins',
+    role: 'Direction',
+    thumbnail: photoCloudDevops,
+    videoUrl: null,
+  },
+}
+
+/** Catégorie d'offre → BU. 'Solutions SaaS' (conseil fonctionnel SAP) rattaché
+ *  à Product, cohérent avec son positionnement cadrage/fonctionnel. */
+const BU_BY_CATEGORY: Record<string, BuSlug> = {
+  Data: 'data-ia',
+  'Data & IA': 'data-ia',
+  Développement: 'digital',
+  'Solutions SaaS': 'product',
+  Conseil: 'product',
+  'Cloud & Infrastructure': 'cloud-devops',
+}
+
+const buTestimonial = computed(
+  () => BU_TESTIMONIALS[BU_BY_CATEGORY[offer.value.category] ?? 'digital'],
+)
+
+const isVideoModalOpen = ref(false)
+
+function onEscKey(e: KeyboardEvent) {
+  if (e.key === 'Escape') isVideoModalOpen.value = false
+}
+
+watch(isVideoModalOpen, (open) => {
+  if (import.meta.env.SSR) return
+  document.body.style.overflow = open ? 'hidden' : ''
+})
+
+onMounted(() => window.addEventListener('keydown', onEscKey))
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onEscKey)
+  if (!import.meta.env.SSR) document.body.style.overflow = ''
+})
 
 const waveCanvas = ref<HTMLCanvasElement | null>(null)
 useWaveCanvas(waveCanvas)
@@ -381,6 +465,76 @@ useSeo({
               </a>
             </div>
           </div>
+
+          <!-- Encart LinkedIn — repris tel quel de ContactView.vue (/contact-entreprise) -->
+          <div class="mt-6 rounded-xl bg-blue-50 p-8">
+            <div class="flex size-12 items-center justify-center rounded-xl bg-[#0A66C2] text-white">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                <path
+                  d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.1 1.43-2.1 2.9V21h-4V9Z"
+                />
+              </svg>
+            </div>
+            <h3 class="mt-5 font-display text-xl font-bold text-primary-900">
+              Retrouvez-nous sur LinkedIn
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-primary-900/70">
+              Notre équipe est très réactive sur LinkedIn. Offres d'emploi, actualités, événements
+              et coulisses de l'agence — suivez-nous pour ne rien manquer.
+            </p>
+            <a
+              href="https://www.linkedin.com/company/faceel-it/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#0A66C2] px-5 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" class="size-4">
+                <path
+                  d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.1 1.43-2.1 2.9V21h-4V9Z"
+                />
+              </svg>
+              Suivre Faceel-IT
+            </a>
+          </div>
+
+          <!-- Widget témoignage vidéo — BU correspondant à l'offre -->
+          <button
+            type="button"
+            class="group mt-6 block w-full overflow-hidden rounded-2xl bg-primary-950 text-left ring-1 ring-primary-900/10 transition-transform hover:-translate-y-0.5"
+            @click="isVideoModalOpen = true"
+          >
+            <div class="relative aspect-video w-full overflow-hidden">
+              <img
+                :src="buTestimonial.thumbnail"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              <div class="absolute inset-0 bg-primary-950/40" aria-hidden="true" />
+              <span
+                class="absolute inset-0 flex items-center justify-center"
+                aria-hidden="true"
+              >
+                <span
+                  class="flex size-14 items-center justify-center rounded-full bg-white/90 text-primary-950 shadow-lg transition-transform group-hover:scale-110"
+                >
+                  <svg class="ml-0.5 size-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M8 5v14l11-7L8 5z" />
+                  </svg>
+                </span>
+              </span>
+            </div>
+            <div class="p-5">
+              <p class="text-xs font-semibold uppercase tracking-widest text-accent-500">
+                Témoignage {{ buTestimonial.label }}
+              </p>
+              <p class="mt-2 font-display text-base font-bold text-white">
+                La vie d'équipe vue de l'intérieur
+              </p>
+              <p class="mt-1 text-sm text-white/60">{{ buTestimonial.name }} · {{ buTestimonial.role }}</p>
+            </div>
+          </button>
         </aside>
       </div>
     </div>
@@ -451,4 +605,53 @@ useSeo({
       </div>
     </div>
   </section>
+
+  <!-- ==================================================================
+       MODALE VIDÉO TÉMOIGNAGE
+       ================================================================== -->
+  <Teleport to="body">
+    <div
+      v-if="isVideoModalOpen"
+      class="fixed inset-0 z-[60] flex items-center justify-center bg-primary-950/90 p-4 backdrop-blur-sm"
+      @click.self="isVideoModalOpen = false"
+    >
+      <div class="relative w-full max-w-3xl">
+        <button
+          type="button"
+          class="absolute -top-12 right-0 inline-flex size-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
+          aria-label="Fermer la vidéo"
+          @click="isVideoModalOpen = false"
+        >
+          <svg class="size-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="m6 6 12 12M18 6 6 18"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+
+        <div class="overflow-hidden rounded-2xl bg-black shadow-2xl">
+          <div v-if="buTestimonial.videoUrl" class="aspect-video w-full">
+            <iframe
+              :src="buTestimonial.videoUrl"
+              title="Témoignage vidéo"
+              class="h-full w-full"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowfullscreen
+            />
+          </div>
+          <!-- TODO : vidéo à tourner pour cette BU — pas de contenu fictif en attendant. -->
+          <div v-else class="flex aspect-video w-full flex-col items-center justify-center gap-3 p-8 text-center">
+            <p class="font-display text-lg font-bold text-white">Vidéo à venir</p>
+            <p class="max-w-sm text-sm text-white/60">
+              Le témoignage vidéo {{ buTestimonial.label }} de {{ buTestimonial.name }} est en cours
+              de tournage.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>

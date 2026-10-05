@@ -122,12 +122,19 @@ const OFFERS: JobOffer[] = [
   },
 ]
 
-const offer = computed(
-  () => OFFERS.find((o) => String(o.id) === String(route.params.id)) ?? OFFERS[0]!,
+/** Route `candidature-spontanee` : pas de `:id`, donc aucune offre à afficher. */
+const isSpontaneous = computed(() => !route.params.id)
+
+const offer = computed(() =>
+  isSpontaneous.value
+    ? undefined
+    : (OFFERS.find((o) => String(o.id) === String(route.params.id)) ?? OFFERS[0]!),
 )
 
 useSeo({
-  title: computed(() => `Postuler – ${offer.value.title} – Faceel-IT`),
+  title: computed(() =>
+    isSpontaneous.value ? 'Candidature spontanée – Faceel-IT' : `Postuler – ${offer.value!.title} – Faceel-IT`,
+  ),
   description:
     "Déposez votre candidature en quelques minutes. CV, lettre de motivation et coordonnées — nous reviendrons vers vous rapidement.",
 })
@@ -163,73 +170,101 @@ function handleSubmit() {
   <div class="min-h-screen flex flex-col lg:flex-row pt-20 lg:pt-0">
 
     <!-- ============================================================
-         COLONNE GAUCHE — Résumé de l'offre
+         COLONNE GAUCHE — Résumé de l'offre (ou message spontané)
          ============================================================ -->
     <div
       data-theme="dark"
       class="w-full lg:w-1/2 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] bg-[#000066] text-white p-8 md:p-12 flex flex-col justify-center overflow-y-auto"
     >
-      <!-- Retour -->
-      <RouterLink
-        :to="{ name: 'offre-detail', params: { id: offer.id } }"
-        class="mb-10 inline-flex items-center gap-2 text-sm font-medium text-white transition-all hover:text-gray-200 hover:underline self-start"
-      >
-        <svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M10 3L5 8l5 5" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-        Retour à l'offre
-      </RouterLink>
-
-      <!-- Surtitre -->
-      <p class="text-xs font-semibold uppercase tracking-widest text-blue-300 mb-3">
-        Candidature pour
-      </p>
-
-      <!-- Titre -->
-      <h1 class="font-display text-3xl font-bold text-white leading-tight mb-6 lg:text-4xl">
-        {{ offer.title }}
-      </h1>
-
-      <!-- Badges -->
-      <div class="flex flex-wrap gap-2 mb-8">
-        <span class="rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-orange-300">
-          {{ offer.category }}
-        </span>
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-green-300">
-          <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
+      <template v-if="isSpontaneous">
+        <!-- Retour -->
+        <RouterLink
+          :to="{ name: 'offres' }"
+          class="mb-10 inline-flex items-center gap-2 text-sm font-medium text-white transition-all hover:text-gray-200 hover:underline self-start"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M10 3L5 8l5 5" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
-          {{ offer.location }}
-        </span>
-        <span class="rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-white">
-          {{ offer.contract }}
-        </span>
-        <span class="rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-white">
-          {{ offer.level }}
-        </span>
-      </div>
+          Retour aux offres
+        </RouterLink>
 
-      <!-- Résumé -->
-      <p class="text-base leading-relaxed text-white/75 mb-8">
-        {{ offer.description }}
-      </p>
-
-      <!-- Points clés -->
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-widest text-blue-300 mb-4">
-          Prérequis clés
+        <p class="text-xs font-semibold uppercase tracking-widest text-blue-300 mb-3">
+          Candidature spontanée
         </p>
-        <ul class="space-y-3">
-          <li
-            v-for="point in offer.keyPoints"
-            :key="point"
-            class="flex items-start gap-3"
-          >
-            <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
-            <span class="text-sm leading-relaxed text-white/80">{{ point }}</span>
-          </li>
-        </ul>
-      </div>
+
+        <h1 class="font-display text-3xl font-bold text-white leading-tight mb-6 lg:text-4xl">
+          Un profil, pas encore une offre ?
+        </h1>
+
+        <p class="text-base leading-relaxed text-white/75">
+          Aucune de nos offres actuelles ne correspond à votre profil ? Envoyez-nous votre
+          candidature : nous la gardons en tête pour nos prochains recrutements.
+        </p>
+      </template>
+
+      <template v-else>
+        <!-- Retour -->
+        <RouterLink
+          :to="{ name: 'offre-detail', params: { id: offer!.id } }"
+          class="mb-10 inline-flex items-center gap-2 text-sm font-medium text-white transition-all hover:text-gray-200 hover:underline self-start"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M10 3L5 8l5 5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Retour à l'offre
+        </RouterLink>
+
+        <!-- Surtitre -->
+        <p class="text-xs font-semibold uppercase tracking-widest text-blue-300 mb-3">
+          Candidature pour
+        </p>
+
+        <!-- Titre -->
+        <h1 class="font-display text-3xl font-bold text-white leading-tight mb-6 lg:text-4xl">
+          {{ offer!.title }}
+        </h1>
+
+        <!-- Badges -->
+        <div class="flex flex-wrap gap-2 mb-8">
+          <span class="rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-orange-300">
+            {{ offer!.category }}
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-green-300">
+            <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
+            </svg>
+            {{ offer!.location }}
+          </span>
+          <span class="rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-white">
+            {{ offer!.contract }}
+          </span>
+          <span class="rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-white">
+            {{ offer!.level }}
+          </span>
+        </div>
+
+        <!-- Résumé -->
+        <p class="text-base leading-relaxed text-white/75 mb-8">
+          {{ offer!.description }}
+        </p>
+
+        <!-- Points clés -->
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-widest text-blue-300 mb-4">
+            Prérequis clés
+          </p>
+          <ul class="space-y-3">
+            <li
+              v-for="point in offer!.keyPoints"
+              :key="point"
+              class="flex items-start gap-3"
+            >
+              <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
+              <span class="text-sm leading-relaxed text-white/80">{{ point }}</span>
+            </li>
+          </ul>
+        </div>
+      </template>
     </div>
 
     <!-- ============================================================
@@ -248,15 +283,17 @@ function handleSubmit() {
         <h2 class="text-xl font-bold text-green-800">Candidature envoyée !</h2>
         <p class="mt-2 text-sm text-green-700">Notre équipe RH vous contactera dans les meilleurs délais.</p>
         <RouterLink
-          :to="{ name: 'offre-detail', params: { id: offer.id } }"
+          :to="isSpontaneous ? { name: 'offres' } : { name: 'offre-detail', params: { id: offer!.id } }"
           class="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#000066] hover:underline"
         >
-          Retour à l'offre
+          {{ isSpontaneous ? 'Voir nos offres' : "Retour à l'offre" }}
         </RouterLink>
       </div>
 
       <template v-else>
-        <h2 class="text-2xl font-bold text-[#000066] mb-8">Postuler à cette offre</h2>
+        <h2 class="text-2xl font-bold text-[#000066] mb-8">
+          {{ isSpontaneous ? 'Candidature spontanée' : 'Postuler à cette offre' }}
+        </h2>
 
         <form class="space-y-5" novalidate @submit.prevent="handleSubmit">
           <!-- Prénom / Nom -->
@@ -313,7 +350,11 @@ function handleSubmit() {
               id="message"
               v-model="message"
               rows="4"
-              placeholder="Présentez-vous et expliquez pourquoi ce poste vous intéresse…"
+              :placeholder="
+                isSpontaneous
+                  ? 'Présentez-vous et le type de poste que vous recherchez…'
+                  : 'Présentez-vous et expliquez pourquoi ce poste vous intéresse…'
+              "
               class="w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
             />
           </div>

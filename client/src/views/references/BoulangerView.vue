@@ -8,42 +8,6 @@ useSeo({
     "Refonte complète de l'application Boulanger pour moderniser l'interface et accompagner le lancement des projets stratégiques.",
 })
 
-interface TechItem {
-  name: string
-  description: string
-}
-
-const TECHS: TechItem[] = [
-  {
-    name: 'Kotlin Multiplatform',
-    description:
-      'Permet de mutualiser la logique métier entre iOS et Android tout en conservant des performances et des interfaces natives.',
-  },
-  {
-    name: 'Swift UI',
-    description:
-      "L'outil d'Apple pour concevoir des interfaces iOS modernes, déclaratives et parfaitement intégrées à l'écosystème.",
-  },
-  {
-    name: 'Jetpack Compose',
-    description:
-      'Le framework moderne de Google pour créer des interfaces Android fluides et réactives avec moins de code.',
-  },
-  {
-    name: 'Java SpringBoot',
-    description:
-      'La solution de référence pour bâtir des architectures backend puissantes, sécurisées et évolutives.',
-  },
-  {
-    name: 'Jira',
-    description: 'Outil de pilotage de projet transparent et réactif pour un suivi agile.',
-  },
-  {
-    name: 'GraphQL',
-    description:
-      "Langage de requête qui permet aux applications de demander les données dont elles ont besoin, améliorant ainsi l'efficacité.",
-  },
-]
 </script>
 
 <template>
@@ -145,45 +109,59 @@ const TECHS: TechItem[] = [
     <!-- 3. Section Contenu : Valeur ajoutée -->
     <section
       data-theme="light"
-      class="relative min-h-screen w-full snap-start snap-always flex items-center justify-center bg-primary-50 px-4 py-20"
+      class="relative min-h-screen w-full snap-start snap-always flex items-center bg-[#ff6200] overflow-visible"
     >
-      <div class="max-w-5xl mx-auto">
-        <h2 class="text-4xl font-bold text-primary-950 mb-8 text-center">
-          Un projet à forte valeur ajoutée
-        </h2>
-        <p class="text-lg text-primary-900/80 mb-10 text-center max-w-3xl mx-auto">
-          Pour ce projet, chaque rôle est essentiel. <strong>Thibaut L.</strong> a assuré le lien
-          entre les équipe métiers et les équipes developpeurs. Côté technique,
-          <strong>Ali</strong> a porté la double casquette de Tech Lead/Architect et de
-          développeur IOS. Il a collaboré étroitement avec <strong>Aurélien</strong> sur cette
-          partie, pendant que <strong>Quentin C. et Quentin D.</strong> étaient sur le
-          développement Android.
-        </p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div class="bg-white p-6 rounded-2xl shadow-sm border border-primary-100">
-            <h3 class="text-xl font-bold text-[#d14600] mb-4">Architecture KMM &amp; Scalabilité</h3>
-            <p class="text-primary-900/70">
-              Création d'un SDK en utilisant <strong>Kotlin Multiplatform</strong> pour une
-              structure technique robuste, évolutive et une maintenance optimisée de vos apps
-              mobiles.
-            </p>
-          </div>
-          <div class="bg-white p-6 rounded-2xl shadow-sm border border-primary-100">
-            <h3 class="text-xl font-bold text-[#d14600] mb-4">Performance Native</h3>
-            <p class="text-primary-900/70">
-              Développement intégral du <strong>front-end mobile</strong> natif (Jetpack &amp;
-              SwiftUI) pour garantir une navigation fluide, une interface moderne et une
-              expérience (UX) haut de gamme.
-            </p>
-          </div>
-          <div class="bg-white p-6 rounded-2xl shadow-sm border border-primary-100">
-            <h3 class="text-xl font-bold text-[#d14600] mb-4">Innovation IA &amp; Agilité</h3>
-            <p class="text-primary-900/70">
-              Intégration d'une <strong>IA conversationnelle</strong> personnalisée pour booster
-              l'engagement, avec un pilotage de projet transparent et réactif via
-              <strong>Jira</strong>.
-            </p>
-          </div>
+      <!-- Wrapper pleine largeur avec paddings latéraux -->
+      <div
+        class="relative z-10 w-full px-6 md:px-16 lg:px-24 xl:px-32 flex flex-col-reverse lg:flex-row items-center justify-between gap-12 xl:gap-20"
+      >
+        <!-- Colonne gauche : Visuel parfaitement centré -->
+        <div class="w-full lg:w-1/2 flex justify-center items-center relative h-[450px] sm:h-[550px] lg:h-[650px] mt-16 lg:mt-0 shrink-0">
+          <!-- Fond blanc (Plus large, moins haut pour un effet paysage/carré) -->
+          <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[280px] sm:w-[400px] sm:h-[340px] lg:w-[480px] lg:h-[400px] xl:w-[560px] xl:h-[460px] bg-white rounded-2xl shadow-xl"
+          ></div>
+
+          <!-- Téléphone beaucoup plus grand pour un dépassement massif -->
+          <img
+            src="/images/partners/boulanger/tel-front.png"
+            alt="Application Boulanger Assistant IA"
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-full max-w-[260px] sm:max-w-[320px] lg:max-w-[380px] xl:max-w-[460px] object-contain drop-shadow-2xl animate-float motion-reduce:animate-none scale-[1.25] lg:scale-[1.3] xl:scale-[1.35]"
+          />
+        </div>
+
+        <!-- Colonne droite : Texte contraint en largeur et sans icône -->
+        <div class="w-full lg:w-1/2 max-w-[600px] flex flex-col items-start text-left text-white shrink-0">
+          <h2 class="font-display text-4xl lg:text-[44px] xl:text-[50px] font-medium mb-8 leading-[1.2]">
+            Un projet à forte valeur ajoutée
+          </h2>
+
+          <p class="text-[17px] lg:text-[19px] text-white/90 mb-8 leading-relaxed">
+            Pour ce projet, chaque rôle est essentiel. <strong>Thibaut L.</strong> a assuré le lien
+            entre les équipe métiers et les équipes developpeurs. Côté technique,
+            <strong>Ali</strong> a porté la double casquette de Tech Lead/Architect et de
+            développeur IOS. Il a collaboré étroitement avec <strong>Aurélien</strong> sur cette
+            partie, pendant que <strong>Quentin C.</strong> et <strong>Quentin D.</strong> étaient
+            sur le développement Android.
+          </p>
+
+          <ul class="space-y-6 text-[17px] lg:text-[19px] text-white/90 list-disc list-inside marker:text-white">
+            <li class="leading-relaxed">
+              <strong>Architecture KMM &amp; Scalabilité :</strong> Création d'un SDK en utilisant
+              Kotlin Multiplatform pour une structure technique robuste, évolutive et une
+              maintenance optimisée de vos apps mobiles.
+            </li>
+            <li class="leading-relaxed">
+              <strong>Performance Native (Jetpack &amp; SwiftUI) :</strong> Développement intégral
+              du front-end mobile natif pour garantir une navigation fluide, une interface moderne
+              et une expérience utilisateur (UX) haut de gamme.
+            </li>
+            <li class="leading-relaxed">
+              <strong>Innovation IA &amp; Agilité :</strong> Intégration d'une IA conversationnelle
+              personnalisée pour booster l'engagement, avec un pilotage de projet transparent et
+              réactif via Jira.
+            </li>
+          </ul>
         </div>
       </div>
     </section>
@@ -191,45 +169,163 @@ const TECHS: TechItem[] = [
     <!-- 4. Section Contenu : Résultats -->
     <section
       data-theme="light"
-      class="relative min-h-screen w-full snap-start snap-always flex items-center justify-center bg-white px-4 py-20"
+      class="relative min-h-screen w-full snap-start snap-always flex items-center bg-white overflow-visible"
     >
-      <div class="max-w-4xl mx-auto">
-        <h2 class="text-4xl font-bold text-[#d14600] mb-8 text-center">
-          Des résultats plus que satisfaisants
-        </h2>
-        <p class="text-lg text-primary-900/80 mb-8 text-center">
-          Dans un contexte de haute intensité marqué par le <strong>Black Friday</strong>, nos
-          équipes ont relevé le défi de la refonte globale de l'application Boulanger. Ce projet
-          a abouti à une solution performante, qui s'illustre par des résultats marquants :
-        </p>
-        <ul class="space-y-4 text-lg text-primary-900/80 list-disc list-inside bg-primary-50 p-8 rounded-2xl">
-          <li>
-            L'application s'est hissée, pour la première fois, dans le
-            <strong>TOP 7 de l'App Store</strong>.
-          </li>
-          <li>Un parcours plus fluide et intuitif, largement plébiscité par les retours clients.</li>
-          <li>Une stabilité et des performances solides, même durant les pics d'activité majeurs.</li>
-        </ul>
+      <!-- Wrapper panoramique (strictement identique à la Section 2) -->
+      <div
+        class="relative z-10 w-full px-6 md:px-16 lg:px-24 xl:px-32 flex flex-col lg:flex-row items-center justify-between gap-12 xl:gap-20"
+      >
+        <!-- Colonne gauche : Texte contraint -->
+        <div class="w-full lg:w-1/2 flex flex-col items-start text-left shrink-0">
+          <div class="max-w-[560px]">
+            <!-- Icône circulaire (Graphique) -->
+            <div class="mb-6 flex items-center justify-center w-12 h-12 bg-[#ff6200] rounded-full shadow-md">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+            </div>
+
+            <h2 class="font-display text-4xl lg:text-[44px] xl:text-[50px] font-medium text-[#d14600] mb-8 leading-[1.2]">
+              Des résultats plus que satisfaisants
+            </h2>
+
+            <p class="text-[17px] lg:text-[19px] text-primary-950/80 mb-6 leading-relaxed">
+              Dans un contexte de haute intensité marqué par le <strong>Black Friday</strong>, nos
+              équipes ont relevé le défi de la refonte globale de l'application Boulanger. Ce
+              projet, a abouti à une solution performante, qui s'illustre par des résultats
+              marquants :
+            </p>
+
+            <ul class="space-y-4 text-[17px] lg:text-[19px] text-primary-950/80 list-square list-inside marker:text-primary-950">
+              <li class="leading-relaxed flex items-start">
+                <span class="mr-3 mt-2 block w-1.5 h-1.5 bg-primary-950 shrink-0"></span>
+                <span>
+                  L'application s'est hissée, pour la première fois, dans le
+                  <strong>TOP 7 de l'App Store</strong>.
+                </span>
+              </li>
+              <li class="leading-relaxed flex items-start">
+                <span class="mr-3 mt-2 block w-1.5 h-1.5 bg-primary-950 shrink-0"></span>
+                <span>Un parcours plus fluide et intuitif, largement plébiscité par les retours clients.</span>
+              </li>
+              <li class="leading-relaxed flex items-start">
+                <span class="mr-3 mt-2 block w-1.5 h-1.5 bg-primary-950 shrink-0"></span>
+                <span>Une stabilité et des performances solides, même durant les pics d'activité majeurs.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Colonne droite : Forcée à droite pour coller au bord -->
+        <div class="w-full lg:w-1/2 flex justify-end mt-16 lg:mt-0">
+          <!-- Conteneur de la composition décalée -->
+          <div class="relative w-[300px] h-[300px] sm:w-[450px] sm:h-[400px] lg:w-[500px] lg:h-[450px] xl:w-[560px] xl:h-[500px]">
+            <!-- Fond orange (Ancré en haut à droite) -->
+            <div class="absolute top-0 right-0 w-[80%] h-[80%] bg-[#ff6200] shadow-lg"></div>
+
+            <!-- Image (Ancrée en bas à gauche, superposée) -->
+            <img
+              src="/images/partners/boulanger/people-b.jpg"
+              alt="Équipe travaillant sur le projet Boulanger"
+              class="absolute bottom-0 left-0 z-10 w-[85%] h-[85%] object-cover shadow-2xl transition-transform hover:scale-[1.02] duration-500"
+            />
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- 5. Section Technologies -->
+    <!-- 5. Section Contenu : Technologies (Partie 1) -->
     <section
       data-theme="light"
-      class="relative min-h-screen w-full snap-start snap-always flex items-center justify-center bg-primary-950 px-4 py-20 text-white"
+      class="relative min-h-screen w-full flex flex-col justify-center py-24 lg:py-32 bg-[#faf9f6] snap-start snap-always"
     >
-      <div class="max-w-7xl mx-auto w-full">
-        <h2 class="text-4xl font-bold text-center mb-16">Les technos que nous avons utilisées</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-12 text-center">
-          <div v-for="tech in TECHS" :key="tech.name" class="flex flex-col items-center">
-            <span
-              aria-hidden="true"
-              class="flex size-24 items-center justify-center mb-6 rounded-2xl bg-white font-display text-3xl font-black text-primary-950"
-            >
-              {{ tech.name.charAt(0) }}
-            </span>
-            <h4 class="text-2xl font-bold mb-4 text-accent-500">{{ tech.name }}</h4>
-            <p class="text-white/70">{{ tech.description }}</p>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <!-- En-tête de section -->
+        <div class="flex flex-col items-center mb-16 lg:mb-24">
+          <h2 class="font-display text-4xl lg:text-5xl font-medium text-[#0b0c10] mb-4 text-center">
+            Les technos que nous avons utilisées
+          </h2>
+          <!-- Ligne verte de soulignement du titre -->
+          <div class="w-48 h-1 bg-green-500"></div>
+        </div>
+
+        <!-- Grille des technologies (Ligne 1) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-16">
+          <!-- Item 1 : Kotlin -->
+          <div class="flex flex-col items-center text-center">
+            <img src="/images/partners/boulanger/techs/kotlin.png" alt="Kotlin Multiplatform" class="h-32 lg:h-44 object-contain mb-8 drop-shadow-sm" />
+            <h3 class="text-xl lg:text-2xl font-bold text-[#0b0c10] mb-2">Kotlin Multiplatform</h3>
+            <div class="w-12 h-[3px] bg-green-500 mb-4"></div>
+            <p class="text-[16px] lg:text-[17px] text-primary-950/80 leading-relaxed">
+              Permet de mutualiser la logique métier entre iOS et Android tout en conservant des performances et des interfaces natives.
+            </p>
+          </div>
+
+          <!-- Item 2 : Swift UI -->
+          <div class="flex flex-col items-center text-center">
+            <img src="/images/partners/boulanger/techs/swift.png" alt="Swift UI" class="h-32 lg:h-44 object-contain mb-8 drop-shadow-sm" />
+            <h3 class="text-xl lg:text-2xl font-bold text-[#0b0c10] mb-2">Swift UI</h3>
+            <div class="w-12 h-[3px] bg-green-500 mb-4"></div>
+            <p class="text-[16px] lg:text-[17px] text-primary-950/80 leading-relaxed">
+              L'outil d'Apple pour concevoir des interfaces iOS modernes, déclaratives et parfaitement intégrées à l'écosystème.
+            </p>
+          </div>
+
+          <!-- Item 3 : Jetpack Compose -->
+          <div class="flex flex-col items-center text-center">
+            <img src="/images/partners/boulanger/techs/jetpack.png" alt="Jetpack Compose" class="h-32 lg:h-44 object-contain mb-8 drop-shadow-sm" />
+            <h3 class="text-xl lg:text-2xl font-bold text-[#0b0c10] mb-2">Jetpack compose</h3>
+            <div class="w-12 h-[3px] bg-green-500 mb-4"></div>
+            <p class="text-[16px] lg:text-[17px] text-primary-950/80 leading-relaxed">
+              Le framework moderne de Google pour créer des interfaces Android fluides et réactives avec moins de code.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Section Contenu : Technologies (Partie 2) -->
+    <section
+      data-theme="light"
+      class="relative min-h-screen w-full flex flex-col justify-center py-24 lg:py-32 bg-[#faf9f6] snap-start snap-always"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <!-- En-tête de section (répété) -->
+        <div class="flex flex-col items-center mb-16 lg:mb-24">
+          <h2 class="font-display text-4xl lg:text-5xl font-medium text-[#0b0c10] mb-4 text-center">
+            Les technos que nous avons utilisées
+          </h2>
+          <div class="w-48 h-1 bg-green-500"></div>
+        </div>
+
+        <!-- Grille des technologies (Ligne 2) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-16">
+          <!-- Item 4 : SpringBoot -->
+          <div class="flex flex-col items-center text-center">
+            <img src="/images/partners/boulanger/techs/spring.png" alt="Java SpringBoot" class="h-32 lg:h-44 object-contain mb-8 drop-shadow-sm" />
+            <h3 class="text-xl lg:text-2xl font-bold text-[#0b0c10] mb-2">Java SpringBoot</h3>
+            <div class="w-12 h-[3px] bg-green-500 mb-4"></div>
+            <p class="text-[16px] lg:text-[17px] text-primary-950/80 leading-relaxed">
+              La solution de référence pour bâtir des architectures backend puissantes, sécurisées et évolutives.
+            </p>
+          </div>
+
+          <!-- Item 5 : Jira -->
+          <div class="flex flex-col items-center text-center">
+            <img src="/images/partners/boulanger/techs/jira.png" alt="Jira" class="h-32 lg:h-44 object-contain mb-8 drop-shadow-sm" />
+            <h3 class="text-xl lg:text-2xl font-bold text-[#0b0c10] mb-2">Jira</h3>
+            <div class="w-12 h-[3px] bg-green-500 mb-4"></div>
+            <p class="text-[16px] lg:text-[17px] text-primary-950/80 leading-relaxed">
+              L'outil incontournable pour le pilotage de projet agile, garantissant un suivi transparent et une collaboration efficace de l'équipe.
+            </p>
+          </div>
+
+          <!-- Item 6 : GraphQL -->
+          <div class="flex flex-col items-center text-center">
+            <img src="/images/partners/boulanger/techs/graphql.png" alt="GraphQL" class="h-32 lg:h-44 object-contain mb-8 drop-shadow-sm" />
+            <h3 class="text-xl lg:text-2xl font-bold text-[#0b0c10] mb-2">GraphQL</h3>
+            <div class="w-12 h-[3px] bg-green-500 mb-4"></div>
+            <p class="text-[16px] lg:text-[17px] text-primary-950/80 leading-relaxed">
+              Langage de requête qui permet aux applications de demander les données dont elles ont besoin, améliorant ainsi l'efficacité et la rapidité des échanges.
+            </p>
           </div>
         </div>
       </div>
@@ -237,45 +333,32 @@ const TECHS: TechItem[] = [
 
     <!-- 6. Section Témoignage -->
     <section
-      data-theme="light"
-      class="relative min-h-screen w-full snap-start snap-always flex items-center justify-center bg-[#ff6200] px-4 py-20"
+      data-theme="dark"
+      class="relative min-h-screen w-full snap-start snap-always flex items-center justify-center bg-[#ff6200] px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
-      <div class="max-w-4xl mx-auto text-center">
-        <blockquote class="text-3xl md:text-4xl font-bold text-white leading-tight mb-8">
-          "Travailler sur ce projet a été une belle expérience, aussi challengeante que
-          valorisante. Cela m'a permis une réelle montée en compétences dans un environnement
-          bienveillant et stimulant."
-        </blockquote>
-        <div class="flex flex-col items-center">
-          <span
-            aria-hidden="true"
-            class="flex size-20 items-center justify-center rounded-full bg-white/20 mb-4 font-display text-2xl font-bold text-white"
-          >
-            QC
-          </span>
-          <cite class="text-xl font-bold text-white not-italic">Quentin C.</cite>
-          <span class="text-white/80">Développeur Android</span>
+      <!-- Carte blanche centrale -->
+      <div class="relative z-10 w-full max-w-3xl bg-white rounded-3xl p-8 sm:p-12 lg:p-16 shadow-2xl flex flex-col items-start">
+        <!-- En-tête de la carte : Avatar + Nom / Rôle -->
+        <div class="flex items-center gap-4 mb-8">
+          <img
+            src="/images/partners/boulanger/quentin.jpeg"
+            alt="Quentin C."
+            class="w-16 h-16 rounded-full object-cover shadow-md"
+          />
+          <div class="flex flex-col text-left">
+            <h3 class="text-xl font-bold text-primary-950">Quentin C.</h3>
+            <p class="text-sm lg:text-base text-primary-950/60 font-medium">Développeur Android</p>
+          </div>
         </div>
+
+        <!-- Citation -->
+        <blockquote class="text-lg sm:text-xl lg:text-2xl text-primary-950/90 font-normal leading-relaxed text-left">
+          "Travailler sur ce projet a été une belle expérience, aussi challengeante que valorisante. Cela m'a permis une réelle montée en compétences dans un environnement bienveillant et stimulant."
+        </blockquote>
       </div>
     </section>
 
-    <!-- 7. Section CTA -->
-    <section
-      data-theme="light"
-      class="relative min-h-screen w-full snap-start snap-always flex flex-col items-center justify-center bg-primary-950 px-4 py-20 text-center"
-    >
-      <h2 class="text-5xl font-bold text-white mb-8">Besoin d'un accompagnement ?</h2>
-      <a
-        href="https://13hmfhd3s9d.typeform.com/to/Zt4txO6V"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="rounded-full bg-accent-500 px-8 py-4 text-lg font-bold text-primary-950 transition hover:bg-accent-400"
-      >
-        Contactez-nous
-      </a>
-    </section>
-
-    <!-- 8. Footer -->
+    <!-- 7. Footer -->
     <section data-theme="dark" class="w-full snap-start snap-always">
       <TheFooter />
     </section>

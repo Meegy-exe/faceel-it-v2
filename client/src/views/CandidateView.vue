@@ -373,6 +373,14 @@ const TESTIMONIALS: Testimonial[] = [
         Notre process d’entrée
       </h2>
 
+      <!-- Reprise verbatim de la section #independance de HistoireView.vue :
+           même fait, pas une reformulation — cf. CLAUDE.md, intégrité du
+           contenu. -->
+      <p class="mt-4 font-display text-xl font-bold text-primary-900 sm:text-2xl">
+        <span class="text-accent-700">100&nbsp;%</span> indépendante ·
+        <span class="text-accent-700">100&nbsp;%</span> de croissance organique
+      </p>
+
       <!-- `<ol>`, pas `<ul>` : c'est un ORDRE, une entrée n'a de sens qu'après
            la précédente — un lecteur d'écran doit l'entendre comme tel. -->
       <ol class="mt-12 space-y-8">

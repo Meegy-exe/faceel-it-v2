@@ -4,7 +4,7 @@ import { RouterLink, useRoute } from 'vue-router'
 import { onClickOutside } from '@vueuse/core'
 import logoDark from '@/assets/images/logo-bleu.png'
 import logoWhite from '@/assets/images/logo-blanc.png'
-import { NAV_DEFAULT, type NavItem } from '@/features/navigation/mainNav'
+import { BUSINESS_UNITS, NAV_DEFAULT, type NavItem } from '@/features/navigation/mainNav'
 
 const open = defineModel<boolean>('open', { default: false })
 const isDarkTheme = defineModel<boolean>('dark', { default: true })
@@ -353,8 +353,10 @@ const focusRingClass = computed(() =>
               </div>
             </div>
 
-            <!-- ZONE 3 : Sous-liens de l'entrée survolée (desktop uniquement) -->
-            <div class="hidden lg:flex flex-1 flex-col justify-start py-10 px-8">
+            <!-- ZONE 3 : Sous-liens de l'entrée survolée (desktop uniquement)
+                 — bandes verticales côte à côte, une colonne par entrée,
+                 séparées par un trait vertical (cf. maquette). -->
+            <div class="hidden lg:flex flex-1 items-stretch justify-start overflow-x-auto">
               <Transition
                 enter-active-class="transition-opacity duration-200 ease-out"
                 enter-from-class="opacity-0"
@@ -367,50 +369,42 @@ const focusRingClass = computed(() =>
                 <ul
                   v-if="activeItem.subItems?.length"
                   :key="activeItem.id"
-                  class="flex flex-col gap-2"
+                  class="flex h-full w-full divide-x divide-primary-900/10"
                 >
-                  <li v-for="sub in activeItem.subItems" :key="sub.label">
+                  <li v-for="sub in activeItem.subItems" :key="sub.label" class="flex-1 min-w-[160px]">
                     <component
                       :is="sub.to !== undefined ? 'RouterLink' : 'a'"
                       v-bind="sub.to !== undefined ? { to: sub.to } : { href: sub.href ?? '#' }"
-                      class="group flex items-center gap-3 rounded-xl p-4 transition-colors duration-200 hover:bg-gray-50 focus-visible:outline-primary-900 motion-reduce:transition-none"
+                      class="group flex h-full flex-col justify-center gap-2 p-6 lg:p-8 transition-colors duration-200 hover:bg-gray-50 focus-visible:outline-primary-900 motion-reduce:transition-none"
                       :tabindex="open ? undefined : -1"
                       @click="closeMenu()"
                     >
-                      <div>
-                        <p class="text-base font-semibold text-primary-900">{{ sub.label }}</p>
-                        <p v-if="sub.description" class="mt-0.5 text-sm text-primary-900/55">
-                          {{ sub.description }}
-                        </p>
-                      </div>
-                      <svg
-                        class="size-4 shrink-0 text-primary-900/25 transition-colors duration-200 group-hover:text-accent-500 motion-reduce:transition-none"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M3 8h10M9 4l4 4-4 4"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
+                      <p class="font-display text-lg font-bold text-primary-900 transition-colors duration-200 group-hover:text-accent-700 motion-reduce:transition-none">
+                        {{ sub.label }}
+                      </p>
+                      <p v-if="sub.description" class="text-sm leading-relaxed text-primary-900/55">
+                        {{ sub.description }}
+                      </p>
                     </component>
                   </li>
                 </ul>
 
-                <!-- État vide (NAV_DEFAULT ou entrée sans subItems) -->
-                <div
-                  v-else
-                  key="empty"
-                  class="flex h-full min-h-[200px] flex-col items-center justify-center gap-3 text-center"
-                >
-                  <p class="text-sm text-primary-900/30">
-                    Survolez un onglet pour découvrir les liens.
-                  </p>
-                </div>
+                <!-- État vide (NAV_DEFAULT ou entrée sans subItems) : même
+                     disposition en bandes, pour les 4 practices internes. -->
+                <ul v-else key="empty" class="flex h-full w-full divide-x divide-primary-900/10">
+                  <li v-for="bu in BUSINESS_UNITS" :key="bu.label" class="flex-1 min-w-[160px]">
+                    <RouterLink
+                      :to="bu.to"
+                      class="group flex h-full flex-col justify-center gap-2 p-6 lg:p-8 transition-colors duration-200 hover:bg-gray-50 focus-visible:outline-primary-900 motion-reduce:transition-none"
+                      :tabindex="open ? undefined : -1"
+                      @click="closeMenu()"
+                    >
+                      <p class="font-display text-lg font-bold text-primary-900 transition-colors duration-200 group-hover:text-accent-700 motion-reduce:transition-none">
+                        {{ bu.label }}
+                      </p>
+                    </RouterLink>
+                  </li>
+                </ul>
               </Transition>
             </div>
           </div>

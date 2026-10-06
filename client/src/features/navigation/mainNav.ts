@@ -105,14 +105,14 @@ export const mainNavEntries: NavItem[] = [
         to: { name: 'offres' },
       },
       {
-        label: 'Processus de recrutement',
-        description: 'Simple, humain et rapide',
-        to: { name: 'candidat' },
+        label: "La vie d'un consultant",
+        description: 'Culture, avantages, collectif',
+        to: { name: 'candidat', hash: '#collectif' },
       },
       {
-        label: 'La vie chez Faceel-IT',
-        description: 'Culture, avantages, collectif',
-        to: { name: 'candidat' },
+        label: 'Processus de recrutement',
+        description: 'Simple, humain et rapide',
+        to: { name: 'candidat', hash: '#process' },
       },
     ],
   },
@@ -144,13 +144,28 @@ export const mainNavEntries: NavItem[] = [
     subItems: [
       {
         label: 'Notre histoire',
-        description: 'Nos origines et notre vision',
+        description: 'Nos origines',
         to: { name: 'histoire' },
       },
       {
-        label: 'Notre collectif',
-        description: "L'équipe et les valeurs Faceel-IT",
-        to: { name: 'collectif' },
+        label: 'Notre vision',
+        description: 'Ce qui nous porte',
+        to: { name: 'notre-organisation', hash: '#vision' },
+      },
+      {
+        label: 'Nos valeurs',
+        description: 'Ce qui nous définit',
+        to: { path: '/', hash: '#valeurs' },
+      },
+      {
+        label: 'Notre organisation',
+        description: "L'équipe et le collectif Faceel-IT",
+        to: { name: 'notre-organisation', hash: '#organisation' },
+      },
+      {
+        label: 'Politique RSE',
+        description: 'Nos engagements responsables',
+        to: { name: 'politique-rse' },
       },
     ],
   },
@@ -203,4 +218,16 @@ export const mainNavEntries: NavItem[] = [
       { label: 'Adeo', to: { name: 'reference-adeo' } },
     ],
   },
+]
+
+/**
+ * Nos 4 practices internes (cf. `BuSection.vue`, section `#business-units`
+ * de l'accueil). Affichées en bande verticale dans la zone droite du
+ * mega-menu quand aucun onglet n'est survolé (cf. `MegaMenu.vue`).
+ */
+export const BUSINESS_UNITS: { label: string; to: RouteLocationRaw }[] = [
+  { label: 'Data & IA', to: { path: '/', hash: '#business-units' } },
+  { label: 'Digital', to: { path: '/', hash: '#business-units' } },
+  { label: 'Product', to: { path: '/', hash: '#business-units' } },
+  { label: 'Cloud & DevOps', to: { path: '/', hash: '#business-units' } },
 ]

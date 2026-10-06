@@ -41,6 +41,11 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/HistoireView.vue'),
   },
   {
+    path: '/qui-sommes-nous/notre-organisation',
+    name: 'notre-organisation',
+    component: () => import('@/views/NotreOrganisationView.vue'),
+  },
+  {
     path: '/je-suis-une-entreprise',
     name: 'entreprise',
     component: () => import('@/views/EnterpriseView.vue'),

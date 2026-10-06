@@ -142,22 +142,47 @@ useSeo({
 const firstName = ref('')
 const lastName = ref('')
 const email = ref('')
-const message = ref('')
+const linkedinUrl = ref('')
+const motivation = ref('')
+const moreInfo = ref('')
 const cvFile = ref<File | null>(null)
-const dragOver = ref(false)
+const cvDragOver = ref(false)
+const coverLetterFile = ref<File | null>(null)
+const coverLetterDragOver = ref(false)
+const certifiesCdi = ref(false)
+const certifiesLocation = ref(false)
 const submitted = ref(false)
 
-function handleFile(file: File | undefined) {
+/** Ville de l'offre → case à cocher de résidence obligatoire. Pas de ville
+ *  reconnue (ex. candidature spontanée, offre remote) : pas de case. */
+const requiredCity = computed<'Lille' | 'Lyon' | null>(() => {
+  const location = offer.value?.location
+  if (!location) return null
+  if (location.includes('Lille')) return 'Lille'
+  if (location.includes('Lyon')) return 'Lyon'
+  return null
+})
+
+function onCvFileInput(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
   if (file && file.type === 'application/pdf') cvFile.value = file
 }
 
-function onFileInput(e: Event) {
-  handleFile((e.target as HTMLInputElement).files?.[0])
+function onCvDrop(e: DragEvent) {
+  cvDragOver.value = false
+  const file = e.dataTransfer?.files[0]
+  if (file && file.type === 'application/pdf') cvFile.value = file
 }
 
-function onDrop(e: DragEvent) {
-  dragOver.value = false
-  handleFile(e.dataTransfer?.files[0])
+function onCoverLetterFileInput(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (file && file.type === 'application/pdf') coverLetterFile.value = file
+}
+
+function onCoverLetterDrop(e: DragEvent) {
+  coverLetterDragOver.value = false
+  const file = e.dataTransfer?.files[0]
+  if (file && file.type === 'application/pdf') coverLetterFile.value = file
 }
 
 function handleSubmit() {
@@ -341,20 +366,45 @@ function handleSubmit() {
             />
           </div>
 
-          <!-- Lettre de motivation -->
+          <!-- LinkedIn -->
           <div>
-            <label for="message" class="mb-1.5 block text-sm font-medium text-primary-900">
-              Lettre de motivation
+            <label for="linkedinUrl" class="mb-1.5 block text-sm font-medium text-primary-900">
+              Profil LinkedIn
+            </label>
+            <input
+              id="linkedinUrl"
+              v-model="linkedinUrl"
+              type="url"
+              autocomplete="url"
+              placeholder="https://www.linkedin.com/in/votre-profil"
+              class="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
+            />
+          </div>
+
+          <!-- Motivation -->
+          <div>
+            <label for="motivation" class="mb-1.5 block text-sm font-medium text-primary-900">
+              Qu'est-ce qui vous motive dans ce poste ? <span class="text-red-500">*</span>
             </label>
             <textarea
-              id="message"
-              v-model="message"
-              rows="4"
-              :placeholder="
-                isSpontaneous
-                  ? 'Présentez-vous et le type de poste que vous recherchez…'
-                  : 'Présentez-vous et expliquez pourquoi ce poste vous intéresse…'
-              "
+              id="motivation"
+              v-model="motivation"
+              rows="3"
+              required
+              class="w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
+            />
+          </div>
+
+          <!-- Questions -->
+          <div>
+            <label for="moreInfo" class="mb-1.5 block text-sm font-medium text-primary-900">
+              Que voudriez-vous savoir de plus ? <span class="text-red-500">*</span>
+            </label>
+            <textarea
+              id="moreInfo"
+              v-model="moreInfo"
+              rows="3"
+              required
               class="w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
             />
           </div>
@@ -367,10 +417,10 @@ function handleSubmit() {
             <label
               for="cvFile"
               class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 px-6 py-8 text-center transition-colors"
-              :class="dragOver ? 'border-[#000066] bg-blue-50' : 'border-gray-200 hover:border-gray-300'"
-              @dragover.prevent="dragOver = true"
-              @dragleave="dragOver = false"
-              @drop.prevent="onDrop"
+              :class="cvDragOver ? 'border-[#000066] bg-blue-50' : 'border-gray-200 hover:border-gray-300'"
+              @dragover.prevent="cvDragOver = true"
+              @dragleave="cvDragOver = false"
+              @drop.prevent="onCvDrop"
             >
               <svg class="w-10 h-10 mx-auto mb-3 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
@@ -381,7 +431,56 @@ function handleSubmit() {
                 <span class="font-semibold text-[#000066]">parcourir</span>
               </span>
               <span class="text-xs text-gray-400">Format PDF uniquement</span>
-              <input id="cvFile" type="file" accept=".pdf" class="sr-only" @change="onFileInput" />
+              <input id="cvFile" type="file" accept=".pdf" class="sr-only" required @change="onCvFileInput" />
+            </label>
+          </div>
+
+          <!-- Upload Lettre de motivation (facultatif) -->
+          <div>
+            <p class="mb-1.5 text-sm font-medium text-primary-900">Lettre de motivation</p>
+            <label
+              for="coverLetterFile"
+              class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 px-6 py-8 text-center transition-colors"
+              :class="coverLetterDragOver ? 'border-[#000066] bg-blue-50' : 'border-gray-200 hover:border-gray-300'"
+              @dragover.prevent="coverLetterDragOver = true"
+              @dragleave="coverLetterDragOver = false"
+              @drop.prevent="onCoverLetterDrop"
+            >
+              <svg class="w-10 h-10 mx-auto mb-3 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+              </svg>
+              <span v-if="coverLetterFile" class="text-sm font-medium text-[#000066]">{{ coverLetterFile.name }}</span>
+              <span v-else class="text-sm text-gray-500">
+                Glissez votre lettre ici ou
+                <span class="font-semibold text-[#000066]">parcourir</span>
+              </span>
+              <span class="text-xs text-gray-400">Format PDF, facultatif</span>
+              <input id="coverLetterFile" type="file" accept=".pdf" class="sr-only" @change="onCoverLetterFileInput" />
+            </label>
+          </div>
+
+          <!-- Certifications -->
+          <div class="space-y-3 border-t border-gray-100 pt-5">
+            <label v-if="requiredCity" class="flex cursor-pointer items-start gap-3 text-sm text-primary-900">
+              <input
+                v-model="certifiesLocation"
+                type="checkbox"
+                required
+                class="mt-0.5 h-4 w-4 shrink-0 rounded accent-[#000066]"
+              />
+              Je certifie habiter à {{ requiredCity }} ou être prêt à emménager à {{ requiredCity }}
+              <span class="text-red-500">*</span>
+            </label>
+
+            <label class="flex cursor-pointer items-start gap-3 text-sm text-primary-900">
+              <input
+                v-model="certifiesCdi"
+                type="checkbox"
+                required
+                class="mt-0.5 h-4 w-4 shrink-0 rounded accent-[#000066]"
+              />
+              Je certifie rechercher un CDI
+              <span class="text-red-500">*</span>
             </label>
           </div>
 

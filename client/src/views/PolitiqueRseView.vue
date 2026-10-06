@@ -49,6 +49,9 @@ const RSE_CARDS: RseCard[] = [
     description:
       "Nous participons activement à la structuration de la filière numérique française. Ce partenariat nous permet d'être au cœur des enjeux du secteur.",
   },
+  // TODO : cartes Opquast et Gifteo — titre + description réels à fournir
+  // avant publication ; aucun contenu fictif sur ces engagements, cf.
+  // CLAUDE.md, intégrité du contenu.
 ]
 
 function activeRse(index: number): RseCard {

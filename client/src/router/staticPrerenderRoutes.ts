@@ -19,6 +19,7 @@
 export const staticPrerenderRoutes = [
   '/',
   '/qui-sommes-nous/notre-histoire',
+  '/qui-sommes-nous/notre-organisation',
   '/qui-sommes-nous/notre-collectif',
   '/je-suis-une-entreprise',
   '/je-suis-candidat',

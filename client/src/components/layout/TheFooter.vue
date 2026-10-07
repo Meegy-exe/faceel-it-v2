@@ -18,7 +18,7 @@ defineProps<{
     <!-- ═══════════════════════════════════════════════════════════════════════
          SECTION 1 : Fond bleu — marque, réseaux sociaux, notes de satisfaction
          ═══════════════════════════════════════════════════════════════════════ -->
-    <section class="relative isolate w-full overflow-hidden bg-[#000066] text-white">
+    <section class="relative isolate w-full overflow-hidden bg-gradient-to-b from-[#000066] via-[#000066] via-65% to-blue-800 text-white">
       <AnimatedBackground variant="aurora" tone="dark" />
 
       <div class="relative z-10 mx-auto max-w-7xl px-4 pt-24 pb-16 md:pt-40 md:pb-20">

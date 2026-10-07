@@ -4,31 +4,35 @@ import { onBeforeUnmount, onMounted, ref } from 'vue'
 interface Logo {
   name: string
   src: string
-  href?: string
   needsInvert?: boolean
 }
 
+/**
+ * Logos uniquement — les liens externes ont été retirés : ils s'ouvraient
+ * accidentellement au moindre clic pendant une tentative de drag sur le
+ * marquee (cf. correctif drag/momentum ci-dessous).
+ */
 const ROW_1: Logo[] = [
-  { name: 'Adéo', src: '/images/references/adeo.svg', href: 'https://www.adeo.com/' },
-  { name: 'Leroy Merlin', src: '/images/references/leroy_merlin.svg', href: 'https://www.leroymerlin.fr/' },
-  { name: 'Kiabi', src: '/images/references/kiabi.svg', href: 'https://www.kiabi.com/' },
-  { name: 'Decathlon', src: '/images/references/decathlon.svg', href: 'https://www.decathlon.fr/' },
-  { name: 'Boulanger', src: '/images/references/boulanger.svg', href: 'https://www.boulanger.com/' },
-  { name: "Tape à l'Œil", src: '/images/references/tape_a_loeil.svg', href: 'https://www.taokids.com/' },
-  { name: 'Midas', src: '/images/references/midas.svg', href: 'https://www.midas.fr/' },
-  { name: 'Keolis', src: '/images/references/keolis.svg', href: 'https://www.keolis.com/' },
-  { name: 'OVH', src: '/images/references/ovh.svg', href: 'https://www.ovhcloud.com/fr/' },
+  { name: 'Adéo', src: '/images/references/adeo.svg' },
+  { name: 'Leroy Merlin', src: '/images/references/leroy_merlin.svg' },
+  { name: 'Kiabi', src: '/images/references/kiabi.svg' },
+  { name: 'Decathlon', src: '/images/references/decathlon.svg' },
+  { name: 'Boulanger', src: '/images/references/boulanger.svg' },
+  { name: "Tape à l'Œil", src: '/images/references/tape_a_loeil.svg' },
+  { name: 'Midas', src: '/images/references/midas.svg' },
+  { name: 'Keolis', src: '/images/references/keolis.svg' },
+  { name: 'OVH', src: '/images/references/ovh.svg' },
 ]
 
 const ROW_2: Logo[] = [
-  { name: 'Verspieren', src: '/images/references/verspieren.svg', href: 'https://www.verspiren.com/', needsInvert: true },
-  { name: 'AXA', src: '/images/references/axa.svg', href: 'https://www.axa.fr/' },
-  { name: 'Oney', src: '/images/references/oney.svg', href: 'https://www.oney.fr/' },
-  { name: 'Supermarché Match', src: '/images/references/supermarche_match.svg', href: 'https://www.supermarchesmatch.fr/fr' },
-  { name: 'Kiloutou', src: '/images/references/kiloutou.svg', href: 'https://www.kiloutou.fr/' },
-  { name: 'IRCEM', src: '/images/references/ircem.svg', href: 'https://www.ircem.com/' },
-  { name: 'Chronodrive', src: '/images/references/chronodrive.svg', href: 'https://www.chronodrive.com/' },
-  { name: 'Mondial Relay', src: '/images/references/mondial_relay.svg', href: 'https://www.mondialrelay.fr/' },
+  { name: 'Verspieren', src: '/images/references/verspieren.svg', needsInvert: true },
+  { name: 'AXA', src: '/images/references/axa.svg' },
+  { name: 'Oney', src: '/images/references/oney.svg' },
+  { name: 'Supermarché Match', src: '/images/references/supermarche_match.svg' },
+  { name: 'Kiloutou', src: '/images/references/kiloutou.svg' },
+  { name: 'IRCEM', src: '/images/references/ircem.svg' },
+  { name: 'Chronodrive', src: '/images/references/chronodrive.svg' },
+  { name: 'Mondial Relay', src: '/images/references/mondial_relay.svg' },
 ]
 
 const SECTORS = [
@@ -51,12 +55,36 @@ interface DragSession {
   halfWidth: number
   duration: number
   reverse: boolean
+  lastX: number
+  lastT: number
+  velocity: number
+  didDrag: boolean
 }
 
+/** Coefficient de friction appliqué à la vélocité à chaque frame d'inertie. */
+const FRICTION = 0.95
+/** En dessous de ce seuil (px/ms), l'inertie s'arrête et on ressynchronise
+ *  l'animation CSS du marquee. */
+const VELOCITY_EPSILON = 0.02
+
 let dragSession: DragSession | null = null
+let momentumFrame: number | null = null
+
+const isDragging = ref(false)
 
 function getTranslateX(el: HTMLElement): number {
   return new DOMMatrix(getComputedStyle(el).transform).m41
+}
+
+/**
+ * Ramène `tx` dans `(-halfWidth, 0]` — chaque piste contient le jeu de logos
+ * en double (cf. `v-for="pass in 2"`), donc décaler d'exactement `halfWidth`
+ * retombe sur un visuel identique. Appliqué à chaque frame de drag/inertie
+ * pour empêcher de sortir du contenu dupliqué (espace blanc en bout de piste).
+ */
+function wrapTranslateX(tx: number, halfWidth: number): number {
+  const wrapped = tx % halfWidth
+  return wrapped > 0 ? wrapped - halfWidth : wrapped
 }
 
 function startDrag(e: MouseEvent, trackEl: HTMLElement | null, reverse: boolean) {
@@ -64,13 +92,30 @@ function startDrag(e: MouseEvent, trackEl: HTMLElement | null, reverse: boolean)
   const inner = trackEl.firstElementChild as HTMLElement | null
   if (!inner) return
 
+  if (momentumFrame !== null) {
+    cancelAnimationFrame(momentumFrame)
+    momentumFrame = null
+  }
+
   const tx = getTranslateX(inner)
   const duration = parseFloat(getComputedStyle(inner).animationDuration) || 80
 
   inner.style.animation = 'none'
   inner.style.transform = `translateX(${tx}px)`
 
-  dragSession = { el: inner, startX: e.clientX, initialTx: tx, halfWidth: inner.scrollWidth / 2, duration, reverse }
+  dragSession = {
+    el: inner,
+    startX: e.clientX,
+    initialTx: tx,
+    halfWidth: inner.scrollWidth / 2,
+    duration,
+    reverse,
+    lastX: e.clientX,
+    lastT: performance.now(),
+    velocity: 0,
+    didDrag: false,
+  }
+  isDragging.value = true
 
   window.addEventListener('mousemove', moveDrag)
   window.addEventListener('mouseup', endDrag)
@@ -79,13 +124,29 @@ function startDrag(e: MouseEvent, trackEl: HTMLElement | null, reverse: boolean)
 function moveDrag(e: MouseEvent) {
   if (!dragSession) return
   e.preventDefault()
+
+  const now = performance.now()
+  const dt = now - dragSession.lastT
+  const dx = e.clientX - dragSession.lastX
+
+  if (Math.abs(dx) > 2) dragSession.didDrag = true
+
+  // Vélocité instantanée lissée (évite les à-coups entre deux `mousemove`).
+  if (dt > 0) {
+    const instant = dx / dt
+    dragSession.velocity = dragSession.velocity * 0.7 + instant * 0.3
+  }
+  dragSession.lastX = e.clientX
+  dragSession.lastT = now
+
   const delta = e.clientX - dragSession.startX
-  dragSession.el.style.transform = `translateX(${dragSession.initialTx + delta}px)`
+  const tx = wrapTranslateX(dragSession.initialTx + delta, dragSession.halfWidth)
+  dragSession.el.style.transform = `translateX(${tx}px)`
 }
 
-function endDrag() {
-  if (!dragSession) return
-  const { el, halfWidth, duration, reverse } = dragSession
+/** Ressynchronise l'animation CSS infinie du marquee sur la position actuelle. */
+function resumeMarqueeAnimation(session: DragSession) {
+  const { el, halfWidth, duration, reverse } = session
   const currentTx = getTranslateX(el)
   const absTx = Math.abs(currentTx) % halfWidth
   const progress = reverse ? 1 - absTx / halfWidth : absTx / halfWidth
@@ -94,10 +155,47 @@ function endDrag() {
   el.style.transform = ''
   el.style.animation = ''
   el.style.animationDelay = `${delay}s`
+}
 
+function runMomentum(session: DragSession) {
+  let lastFrameT = performance.now()
+
+  function step() {
+    const now = performance.now()
+    const dt = now - lastFrameT
+    lastFrameT = now
+
+    session.velocity *= FRICTION
+
+    if (Math.abs(session.velocity) < VELOCITY_EPSILON) {
+      momentumFrame = null
+      resumeMarqueeAnimation(session)
+      return
+    }
+
+    const currentTx = getTranslateX(session.el)
+    const nextTx = wrapTranslateX(currentTx + session.velocity * dt, session.halfWidth)
+    session.el.style.transform = `translateX(${nextTx}px)`
+    momentumFrame = requestAnimationFrame(step)
+  }
+
+  momentumFrame = requestAnimationFrame(step)
+}
+
+function endDrag() {
+  if (!dragSession) return
+  const session = dragSession
   dragSession = null
+  isDragging.value = false
+
   window.removeEventListener('mousemove', moveDrag)
   window.removeEventListener('mouseup', endDrag)
+
+  if (session.didDrag && Math.abs(session.velocity) >= VELOCITY_EPSILON) {
+    runMomentum(session)
+  } else {
+    resumeMarqueeAnimation(session)
+  }
 }
 
 onMounted(() => {
@@ -108,6 +206,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   clearInterval(sectorInterval)
+  if (momentumFrame !== null) cancelAnimationFrame(momentumFrame)
   window.removeEventListener('mousemove', moveDrag)
   window.removeEventListener('mouseup', endDrag)
 })
@@ -116,27 +215,28 @@ onBeforeUnmount(() => {
 <template>
   <div class="flex h-full w-full flex-col justify-center py-8 md:py-12">
     <!-- BLOC 1 : Marquee ligne 1 → gauche -->
-    <div ref="track1" class="marquee-track" @mousedown="startDrag($event, track1, false)">
+    <div
+      ref="track1"
+      class="marquee-track"
+      :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'"
+      @mousedown="startDrag($event, track1, false)"
+    >
       <div class="marquee-left">
         <template v-for="pass in 2" :key="pass">
-          <component
-            :is="logo.href ? 'a' : 'div'"
+          <div
             v-for="logo in ROW_1"
             :key="`${pass}-${logo.name}`"
-            :href="logo.href"
-            :target="logo.href ? '_blank' : undefined"
-            :rel="logo.href ? 'noopener noreferrer' : undefined"
             class="shrink-0 transition-transform duration-300 hover:scale-105"
           >
             <div class="flex h-20 w-48 items-center justify-center md:h-24 md:w-56 xl:h-28 xl:w-64">
               <img
                 :src="logo.src"
                 :alt="logo.name"
-                class="max-h-full max-w-full object-contain"
+                class="pointer-events-none max-h-full max-w-full object-contain"
                 :class="{ invert: logo.needsInvert }"
               />
             </div>
-          </component>
+          </div>
         </template>
       </div>
     </div>
@@ -162,27 +262,28 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- BLOC 3 : Marquee ligne 2 → droite -->
-    <div ref="track2" class="marquee-track" @mousedown="startDrag($event, track2, true)">
+    <div
+      ref="track2"
+      class="marquee-track"
+      :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'"
+      @mousedown="startDrag($event, track2, true)"
+    >
       <div class="marquee-right">
         <template v-for="pass in 2" :key="pass">
-          <component
-            :is="logo.href ? 'a' : 'div'"
+          <div
             v-for="logo in ROW_2"
             :key="`${pass}-${logo.name}`"
-            :href="logo.href"
-            :target="logo.href ? '_blank' : undefined"
-            :rel="logo.href ? 'noopener noreferrer' : undefined"
             class="shrink-0 transition-transform duration-300 hover:scale-105"
           >
             <div class="flex h-20 w-48 items-center justify-center md:h-24 md:w-56 xl:h-28 xl:w-64">
               <img
                 :src="logo.src"
                 :alt="logo.name"
-                class="max-h-full max-w-full object-contain"
+                class="pointer-events-none max-h-full max-w-full object-contain"
                 :class="{ invert: logo.needsInvert }"
               />
             </div>
-          </component>
+          </div>
         </template>
       </div>
     </div>
@@ -212,12 +313,7 @@ onBeforeUnmount(() => {
   position: relative;
   width: 100%;
   overflow: hidden;
-  cursor: grab;
   user-select: none;
-}
-
-.marquee-track:active {
-  cursor: grabbing;
 }
 
 .marquee-left {

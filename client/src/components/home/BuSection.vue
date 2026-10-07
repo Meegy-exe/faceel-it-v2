@@ -48,20 +48,20 @@ const TABS: { slug: BuSlug; label: string; description: string; buttonText: stri
 
 const MEMBERS: Record<BuSlug, [Member, Member]> = {
   'data-ia': [
-    { id: 'di1', name: 'Robin Rins', role: 'Direction', quote: 'TODO — citation à fournir par Robin Rins.' },
+    { id: 'di1', name: 'Robin Rins', role: 'Direction', quote: 'Citation par Robin Rins.' },
     { id: 'di2', name: 'Lena Lebecq', role: 'Responsable RH', quote: 'TODO — citation à fournir par Lena Lebecq.' },
   ],
   digital: [
-    { id: 'd1', name: 'Stéphanie Demarez', role: 'Direction', quote: 'TODO — citation à fournir par Stéphanie Demarez.' },
-    { id: 'd2', name: 'Noémie Vannoye', role: 'Responsable RH', quote: 'TODO — citation à fournir par Noémie Vannoye.' },
+    { id: 'd1', name: 'Stéphanie Demarez', role: 'Direction', quote: 'Citation par Stéphanie Demarez.' },
+    { id: 'd2', name: 'Noémie Vannoye', role: 'Responsable RH', quote: 'Citation par Noémie Vannoye.' },
   ],
   product: [
-    { id: 'pr1', name: 'Laetitia Lesaffre', role: 'Direction', quote: 'TODO — citation à fournir par Laetitia Lesaffre.' },
-    { id: 'pr2', name: 'Victoire Machowiak', role: 'Responsable RH', quote: 'TODO — citation à fournir par Victoire Machowiak.' },
+    { id: 'pr1', name: 'Laetitia Lesaffre', role: 'Direction', quote: 'Citation par Laetitia Lesaffre.' },
+    { id: 'pr2', name: 'Victoire Machowiak', role: 'Responsable RH', quote: 'Citation par Victoire Machowiak.' },
   ],
   'cloud-devops': [
-    { id: 'cd1', name: 'Laetitia Lesaffre', role: 'Direction', quote: 'TODO — citation à fournir par Laetitia Lesaffre.' },
-    { id: 'cd2', name: 'Victoire Machowiak', role: 'Responsable RH', quote: 'TODO — citation à fournir par Victoire Machowiak.' },
+    { id: 'cd1', name: 'Laetitia Lesaffre', role: 'Direction', quote: 'Citation par Laetitia Lesaffre.' },
+    { id: 'cd2', name: 'Victoire Machowiak', role: 'Responsable RH', quote: 'Citation par Victoire Machowiak.' },
   ],
 }
 

@@ -6,6 +6,7 @@ import CarouselSlideContent from '@/components/ui/CarouselSlideContent.vue'
 import ReferencesSection from '@/components/ui/ReferencesSection.vue'
 import BuSection from '@/components/home/BuSection.vue'
 import LocationMapSection from '@/components/home/LocationMapSection.vue'
+import TestGlowSection from '@/components/home/TestGlowSection.vue'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
 // PHOTOS « NOS ÉVÉNEMENTS » — déjà présentes dans `assets/images/` (dépôt
 // client, dossier `Animate the header/assets/photos/`), aucune n'est encore
@@ -413,7 +414,7 @@ onBeforeUnmount(() => {
     data-theme="dark"
     class="relative isolate overflow-hidden h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center text-white pt-24 lg:pt-28"
   >
-    <div class="absolute inset-0 z-0 bg-gradient-to-br from-[#000080] via-[#000066] to-[#000033]">
+    <div class="absolute inset-0 z-0 bg-gradient-to-b from-[#000066] via-[#000066] via-65% to-blue-800">
       <canvas
         ref="waveCanvas"
         class="absolute inset-0 h-full w-full pointer-events-none opacity-80"
@@ -453,54 +454,62 @@ onBeforeUnmount(() => {
   <section
     id="valeurs"
     data-theme="dark"
-    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-[#000066] px-4 pt-36 pb-8 text-white sm:px-6 lg:px-8 xl:px-12"
+    class="relative overflow-hidden h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-[#000066] px-4 pt-36 pb-8 text-white sm:px-6 lg:px-8 xl:px-12"
   >
-    <header
-      ref="valeursEl"
-      class="max-w-5xl px-4 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
-      :class="scrollRevealClass(valeursReveal)"
-    >
-      <h2 class="font-display text-display text-balance text-white">Nos valeurs</h2>
-      <p class="mt-4 text-lg leading-relaxed text-white">
-        Chez Faceel, nos collaborateurs possèdent une double culture : une solide
-        <span
-          class="bg-linear-to-t from-accent-500/70 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
-        >
-          expertise technique
-        </span>
-        et une compréhension fine des
-        <span
-          class="bg-linear-to-t from-accent-500/70 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
-        >
-          réalités métier
-        </span>
-        . C'est cette combinaison qui fait
-        <span
-          class="bg-linear-to-t from-accent-500/70 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
-        >
-          notre différence
-        </span>
-        .
-      </p>
-    </header>
+    <!-- Core Glow — halo lumineux central, décoratif. -->
+    <div
+      class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl aspect-square bg-blue-600/30 rounded-full blur-[120px] z-0"
+      aria-hidden="true"
+    />
 
-    <CoverCarousel
-      :count="VALUE_CARDS.length"
-      label="Nos valeurs"
-      tone="dark"
-      class="flex-1 w-full mt-8"
-    >
-      <template #slide="{ index }">
-        <CarouselSlideContent
-          tone="dark"
-          :title="activeValue(index).title"
-          :heading-level="3"
-          class="max-w-xl"
-        >
-          {{ activeValue(index).description }}
-        </CarouselSlideContent>
-      </template>
-    </CoverCarousel>
+    <div class="relative z-10 flex flex-1 flex-col w-full">
+      <header
+        ref="valeursEl"
+        class="max-w-5xl px-4 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
+        :class="scrollRevealClass(valeursReveal)"
+      >
+        <h2 class="font-display text-display text-balance text-white">Nos valeurs</h2>
+        <p class="mt-4 text-lg leading-relaxed text-white">
+          Chez Faceel, nos collaborateurs possèdent une double culture : une solide
+          <span
+            class="bg-linear-to-t from-accent-500/70 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
+          >
+            expertise technique
+          </span>
+          et une compréhension fine des
+          <span
+            class="bg-linear-to-t from-accent-500/70 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
+          >
+            réalités métier
+          </span>
+          . C'est cette combinaison qui fait
+          <span
+            class="bg-linear-to-t from-accent-500/70 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
+          >
+            notre différence
+          </span>
+          .
+        </p>
+      </header>
+
+      <CoverCarousel
+        :count="VALUE_CARDS.length"
+        label="Nos valeurs"
+        tone="dark"
+        class="flex-1 w-full mt-8"
+      >
+        <template #slide="{ index }">
+          <CarouselSlideContent
+            tone="dark"
+            :title="activeValue(index).title"
+            :heading-level="3"
+            class="max-w-xl"
+          >
+            {{ activeValue(index).description }}
+          </CarouselSlideContent>
+        </template>
+      </CoverCarousel>
+    </div>
   </section>
   <section id="references" data-theme="light" class="h-dvh shrink-0 w-full snap-start snap-always overflow-hidden">
     <ReferencesSection />
@@ -509,11 +518,17 @@ onBeforeUnmount(() => {
   <section
     id="chiffres-cles"
     data-theme="dark"
-    class="h-dvh shrink-0 w-full snap-start snap-always overflow-hidden flex flex-col justify-center bg-[#000066] px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
+    class="relative h-dvh shrink-0 w-full snap-start snap-always overflow-hidden flex flex-col justify-center bg-[#000066] px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
   >
+    <!-- Halo lumineux central — décoratif. -->
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl aspect-square bg-blue-600/30 rounded-full blur-[120px] z-0"
+    />
+
     <div
       ref="chiffresEl"
-      class="mx-auto flex w-full max-w-5xl flex-col items-center text-center"
+      class="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center text-center"
       :class="scrollRevealClass(chiffresReveal)"
     >
       <p class="text-eyebrow uppercase text-accent-500">Nos chiffres clés</p>
@@ -716,6 +731,7 @@ onBeforeUnmount(() => {
   </section>
 
   <LocationMapSection />
+  <TestGlowSection />
   <section
     data-theme="dark"
     class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"

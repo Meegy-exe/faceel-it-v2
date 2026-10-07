@@ -2,22 +2,22 @@
   <section
     id="localisation"
     data-theme="dark"
-    class="h-full w-full snap-start snap-always flex flex-col justify-center bg-[#000066] px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
+    class="h-full w-full snap-start snap-always flex flex-col justify-center bg-gradient-to-b from-[#000066] via-[#000066] via-65% to-blue-800 px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
   >
-    <div class="mx-auto w-full max-w-7xl">
+    <div class="w-full max-w-none px-4 lg:pl-8 lg:pr-24">
       <div class="mb-12 text-center">
         <p class="text-eyebrow uppercase text-accent-500">Présence locale</p>
         <h2 class="mt-4 font-display text-display text-balance text-white">Où nous trouver</h2>
       </div>
 
-      <div class="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-32">
+      <div class="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-24">
 
         <!-- Hologramme Hauts-de-France — tracé réel extrait de /hdf.svg,
              encadré dans un halo circulaire, style blueprint/outline. -->
         <div class="relative flex shrink-0 items-center justify-center">
           <svg
             viewBox="0 0 554 554"
-            class="h-64 w-auto lg:h-[28rem]"
+            class="h-64 w-auto lg:h-[40rem]"
             aria-hidden="true"
           >
             <defs>
@@ -85,52 +85,52 @@
         </div>
 
         <!-- Informations d'adresse -->
-        <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-8">
           <div>
-            <h3 class="font-display text-xl font-bold text-white">Faceel IT — Siège social</h3>
-            <p class="mt-1 text-sm text-white/50">Hauts-de-France · Métropole Lilloise</p>
+            <h3 class="font-display text-3xl lg:text-4xl font-bold text-white">Faceel IT — Siège social</h3>
+            <p class="mt-2 text-lg text-white/50">Hauts-de-France · Métropole Lilloise</p>
           </div>
 
-          <div class="flex flex-col gap-4">
-            <div class="flex items-start gap-3">
-              <svg viewBox="0 0 20 20" fill="none" class="mt-0.5 size-5 shrink-0 text-[#12D80A]" aria-hidden="true">
+          <div class="flex flex-col gap-6 lg:gap-8">
+            <div class="flex items-start gap-4">
+              <svg viewBox="0 0 20 20" fill="none" class="mt-0.5 size-7 shrink-0 text-[#12D80A]" aria-hidden="true">
                 <path d="M10 2a6 6 0 016 6c0 4-6 10-6 10S4 12 4 8a6 6 0 016-6z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                 <circle cx="10" cy="8" r="2" stroke="currentColor" stroke-width="1.5" />
               </svg>
               <div>
-                <p class="text-sm font-semibold text-white">Adresse</p>
-                <p class="text-sm text-white/60">Métropole Lilloise, 59000 Lille</p>
+                <p class="text-lg lg:text-xl font-semibold text-white">Adresse</p>
+                <p class="text-lg lg:text-xl text-white/60">Métropole Lilloise, 59000 Lille</p>
               </div>
             </div>
 
-            <div class="flex items-start gap-3">
-              <svg viewBox="0 0 20 20" fill="none" class="mt-0.5 size-5 shrink-0 text-[#12D80A]" aria-hidden="true">
+            <div class="flex items-start gap-4">
+              <svg viewBox="0 0 20 20" fill="none" class="mt-0.5 size-7 shrink-0 text-[#12D80A]" aria-hidden="true">
                 <path d="M2 5a2 2 0 012-2h4l2 4-2.5 1.5a11 11 0 005 5L14 11l4 2v4a2 2 0 01-2 2A16 16 0 012 5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
               <div>
-                <p class="text-sm font-semibold text-white">Contact</p>
-                <p class="text-sm text-white/60">contact@faceel-it.com</p>
+                <p class="text-lg lg:text-xl font-semibold text-white">Contact</p>
+                <p class="text-lg lg:text-xl text-white/60">contact@faceel-it.com</p>
               </div>
             </div>
 
-            <div class="flex items-start gap-3">
-              <svg viewBox="0 0 20 20" fill="none" class="mt-0.5 size-5 shrink-0 text-[#12D80A]" aria-hidden="true">
+            <div class="flex items-start gap-4">
+              <svg viewBox="0 0 20 20" fill="none" class="mt-0.5 size-7 shrink-0 text-[#12D80A]" aria-hidden="true">
                 <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-12v4l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
               <div>
-                <p class="text-sm font-semibold text-white">Horaires</p>
-                <p class="text-sm text-white/60">Lun–Ven, 9h–18h</p>
+                <p class="text-lg lg:text-xl font-semibold text-white">Horaires</p>
+                <p class="text-lg lg:text-xl text-white/60">Lun–Ven, 9h–18h</p>
               </div>
             </div>
           </div>
 
           <!-- Pastille statut -->
-          <div class="flex items-center gap-2 pt-2">
-            <span class="relative flex size-2.5">
+          <div class="flex items-center gap-3 pt-2">
+            <span class="relative flex size-3">
               <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#12D80A] opacity-75 motion-reduce:animate-none" />
-              <span class="relative inline-flex size-2.5 rounded-full bg-[#12D80A]" />
+              <span class="relative inline-flex size-3 rounded-full bg-[#12D80A]" />
             </span>
-            <span class="text-xs text-white/50">Équipe disponible en régie ou au bureau</span>
+            <span class="text-base text-white/50">Équipe disponible en régie ou au bureau</span>
           </div>
         </div>
       </div>

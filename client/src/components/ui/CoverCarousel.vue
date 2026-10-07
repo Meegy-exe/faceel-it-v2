@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { CardTone } from './types'
 
 const props = withDefaults(
@@ -41,8 +41,15 @@ defineSlots<{
   slide(props: { index: number; active: boolean }): unknown
 }>()
 
+/** Permet à un parent de synchroniser un effet décoratif (ex. pulsation d'un
+ *  halo lumineux en arrière-plan) sur le changement de diapositive, sans lui
+ *  exposer l'intégralité de l'état interne du carrousel. */
+const emit = defineEmits<{ 'update:activeIndex': [index: number] }>()
+
 const activeIndex = ref(0)
 const paused = ref(false)
+
+watch(activeIndex, (index) => emit('update:activeIndex', index))
 
 function wrap(index: number) {
   return ((index % props.count) + props.count) % props.count
@@ -57,15 +64,15 @@ function getSlideStyle(index: number, activeIndex: number) {
 
   // ACTIVE (Centrée parfaitement)
   if (diff === 0) {
-    return 'z-30 left-1/2 -translate-x-1/2 scale-100 opacity-100 origin-center'
+    return 'z-30 left-1/2 -translate-x-1/2 scale-125 opacity-100 origin-center'
   }
   // PREV (Ancrée exactement sur la ligne du padding gauche)
   if (diff === -1) {
-    return 'z-10 left-0 translate-x-0 scale-75 opacity-30 origin-left pointer-events-none max-md:opacity-0 max-md:invisible'
+    return 'z-10 left-0 translate-x-0 scale-90 opacity-40 origin-left pointer-events-none max-md:opacity-0 max-md:invisible'
   }
   // NEXT (Ancrée exactement sur la ligne du padding droit)
   if (diff === 1) {
-    return 'z-10 left-full -translate-x-full scale-75 opacity-30 origin-right pointer-events-none max-md:opacity-0 max-md:invisible'
+    return 'z-10 left-full -translate-x-full scale-90 opacity-40 origin-right pointer-events-none max-md:opacity-0 max-md:invisible'
   }
   // CARTES LOINTAINES GAUCHE
   if (diff < -1) {
@@ -173,7 +180,7 @@ onBeforeUnmount(() => {
           <div
             v-for="(_, index) in count"
             :key="index"
-            class="absolute top-1/2 w-full max-w-md -translate-y-1/2 transition-all duration-700 ease-out will-change-transform motion-reduce:transition-none lg:max-w-lg"
+            class="absolute top-1/2 w-full max-w-md -translate-y-1/2 transition-all duration-1000 ease-in-out will-change-transform motion-reduce:transition-none lg:max-w-lg"
             :class="getSlideStyle(index, activeIndex)"
           >
             <slot name="slide" :index="index" :active="index === activeIndex" />

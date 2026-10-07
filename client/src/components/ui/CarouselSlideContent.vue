@@ -48,12 +48,17 @@ interface Props {
    * l'accueille (même raisonnement que `HighlightCard.headingLevel`).
    */
   headingLevel?: 2 | 3 | 4 | 5
+  /** Classes additionnelles sur le paragraphe descriptif — échappatoire pour
+   *  un besoin ponctuel (ex. `line-clamp-2`) sans changer `size` partout où
+   *  ce composant est déjà utilisé (Services, Secteurs, RSE…). */
+  bodyClass?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   tone: 'light',
   size: 'md',
   headingLevel: 3,
+  bodyClass: '',
 })
 
 defineSlots<{
@@ -118,7 +123,7 @@ const size = computed(() => SIZES[props.size])
     <div
       v-if="$slots.default"
       class="mt-4 max-w-prose leading-relaxed text-center sm:text-left"
-      :class="[tone.body, size.body]"
+      :class="[tone.body, size.body, bodyClass]"
     >
       <slot />
     </div>

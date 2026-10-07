@@ -6,7 +6,6 @@ import CarouselSlideContent from '@/components/ui/CarouselSlideContent.vue'
 import ReferencesSection from '@/components/ui/ReferencesSection.vue'
 import BuSection from '@/components/home/BuSection.vue'
 import LocationMapSection from '@/components/home/LocationMapSection.vue'
-import TestGlowSection from '@/components/home/TestGlowSection.vue'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
 // PHOTOS « NOS ÉVÉNEMENTS » — déjà présentes dans `assets/images/` (dépôt
 // client, dossier `Animate the header/assets/photos/`), aucune n'est encore
@@ -210,6 +209,10 @@ const VALUE_CARDS: ValueCard[] = [
 function activeValue(index: number): ValueCard {
   return VALUE_CARDS[index]!
 }
+
+/** Diapositive active du carrousel "Nos valeurs" — pilote la pulsation du
+ *  halo lumineux (cf. template, `Transition name="halo-pulse"`). */
+const valeursActiveSlide = ref(0)
 
 
 /* -------------------------------------------------------------------------- */
@@ -456,20 +459,14 @@ onBeforeUnmount(() => {
     data-theme="dark"
     class="relative overflow-hidden h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-[#000066] px-4 pt-36 pb-8 text-white sm:px-6 lg:px-8 xl:px-12"
   >
-    <!-- Core Glow — halo lumineux central, décoratif. -->
-    <div
-      class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl aspect-square bg-blue-600/30 rounded-full blur-[120px] z-0"
-      aria-hidden="true"
-    />
-
     <div class="relative z-10 flex flex-1 flex-col w-full">
       <header
         ref="valeursEl"
-        class="max-w-5xl px-4 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
+        class="max-w-6xl px-4 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
         :class="scrollRevealClass(valeursReveal)"
       >
         <h2 class="font-display text-display text-balance text-white">Nos valeurs</h2>
-        <p class="mt-4 text-lg leading-relaxed text-white">
+        <p class="mt-4 w-full text-lg leading-relaxed text-white">
           Chez Faceel, nos collaborateurs possèdent une double culture : une solide
           <span
             class="bg-linear-to-t from-accent-500/70 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
@@ -492,23 +489,41 @@ onBeforeUnmount(() => {
         </p>
       </header>
 
-      <CoverCarousel
-        :count="VALUE_CARDS.length"
-        label="Nos valeurs"
-        tone="dark"
-        class="flex-1 w-full mt-8"
-      >
-        <template #slide="{ index }">
-          <CarouselSlideContent
-            tone="dark"
-            :title="activeValue(index).title"
-            :heading-level="3"
-            class="max-w-xl"
-          >
-            {{ activeValue(index).description }}
-          </CarouselSlideContent>
-        </template>
-      </CoverCarousel>
+      <div class="relative flex-1 w-full mt-8">
+        <!-- Core Glow — halo lumineux centré derrière la slide active, donc
+             relatif au carrousel lui-même (et non à toute la section, sous
+             peine d'être décalé par le <header> au-dessus). Pulsation
+             synchronisée au changement de diapositive via `@update:active-
+             index` (cf. CoverCarousel.vue). -->
+        <Transition name="halo-pulse" mode="out-in">
+          <div
+            :key="valeursActiveSlide"
+            class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl aspect-square bg-blue-600/30 rounded-full blur-[120px] z-0"
+            aria-hidden="true"
+          />
+        </Transition>
+
+        <CoverCarousel
+          :count="VALUE_CARDS.length"
+          :autoplay-ms="4000"
+          label="Nos valeurs"
+          tone="dark"
+          class="relative z-10 h-full w-full"
+          @update:active-index="valeursActiveSlide = $event"
+        >
+          <template #slide="{ index }">
+            <CarouselSlideContent
+              tone="dark"
+              :title="activeValue(index).title"
+              :heading-level="3"
+              body-class="text-base lg:text-lg line-clamp-2"
+              class="max-w-xl"
+            >
+              {{ activeValue(index).description }}
+            </CarouselSlideContent>
+          </template>
+        </CoverCarousel>
+      </div>
     </div>
   </section>
   <section id="references" data-theme="light" class="h-dvh shrink-0 w-full snap-start snap-always overflow-hidden">
@@ -731,7 +746,6 @@ onBeforeUnmount(() => {
   </section>
 
   <LocationMapSection />
-  <TestGlowSection />
   <section
     data-theme="dark"
     class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
@@ -743,6 +757,15 @@ onBeforeUnmount(() => {
 
 <style scoped>
 @media (prefers-reduced-motion: no-preference) {
+  .halo-pulse-enter-active,
+  .halo-pulse-leave-active {
+    transition: opacity 1000ms ease-in-out;
+  }
+  .halo-pulse-enter-from,
+  .halo-pulse-leave-to {
+    opacity: 0.6;
+  }
+
   @keyframes splash-drop {
     0% {
       transform: translateY(-100vh) scaleY(1.5);

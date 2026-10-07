@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
-type BuSlug = 'data-ia' | 'digital' | 'product' | 'cloud-devops'
+type BuSlug = 'data-ia' | 'digital' | 'product'
 
 interface Member {
   id: string
@@ -13,43 +13,31 @@ interface Member {
   quote: string
 }
 
-/** Description + libellé du bouton au dos de chaque carte — restaurés tels
- *  quels depuis `views/archive/TechDataSectionOld.vue`, pas reformulés. */
-const TABS: { slug: BuSlug; label: string; description: string; buttonText: string }[] = [
+const TABS: { slug: BuSlug; label: string; description: string }[] = [
   {
     slug: 'data-ia',
     label: 'Data & IA',
     description:
       "Collecte, qualité, modélisation, restitution — puis les modèles et les agents qui s'appuient dessus. La chaîne complète, ou rien de fiable.",
-    buttonText: 'Voir nos projets data',
   },
   {
     slug: 'digital',
     label: 'Digital',
     description:
       "Produits web, mobile et applications métier. Architecture, revue de code, tests : la vitesse d'aujourd'hui ne doit pas devenir le problème de demain.",
-    buttonText: 'Voir nos projets digitaux',
   },
   {
     slug: 'product',
     label: 'Product',
     description:
       "Cadrage, priorisation et cohérence fonctionnelle du portefeuille produit, du besoin client jusqu'à la mise en production.",
-    buttonText: 'Voir nos projets Product',
-  },
-  {
-    slug: 'cloud-devops',
-    label: 'Cloud & DevOps',
-    description:
-      "Infrastructure décrite en code, déploiements reproductibles, supervision. Ce qui part en production doit pouvoir être rejoué à l'identique.",
-    buttonText: 'Voir nos projets Cloud & DevOps',
   },
 ]
 
 const MEMBERS: Record<BuSlug, [Member, Member]> = {
   'data-ia': [
     { id: 'di1', name: 'Robin Rins', role: 'Direction', quote: 'Citation par Robin Rins.' },
-    { id: 'di2', name: 'Lena Lebecq', role: 'Responsable RH', quote: 'TODO — citation à fournir par Lena Lebecq.' },
+    { id: 'di2', name: 'Lena Lebecq', role: 'Responsable RH', quote: 'Citation par Lena Lebecq.' },
   ],
   digital: [
     { id: 'd1', name: 'Stéphanie Demarez', role: 'Direction', quote: 'Citation par Stéphanie Demarez.' },
@@ -59,14 +47,9 @@ const MEMBERS: Record<BuSlug, [Member, Member]> = {
     { id: 'pr1', name: 'Laetitia Lesaffre', role: 'Direction', quote: 'Citation par Laetitia Lesaffre.' },
     { id: 'pr2', name: 'Victoire Machowiak', role: 'Responsable RH', quote: 'Citation par Victoire Machowiak.' },
   ],
-  'cloud-devops': [
-    { id: 'cd1', name: 'Laetitia Lesaffre', role: 'Direction', quote: 'Citation par Laetitia Lesaffre.' },
-    { id: 'cd2', name: 'Victoire Machowiak', role: 'Responsable RH', quote: 'Citation par Victoire Machowiak.' },
-  ],
 }
 
 const activeBUIndex = ref(0)
-const activeSpeaker = ref(0)
 const flippedLeft = ref(false)
 const flippedRight = ref(false)
 
@@ -94,14 +77,7 @@ let slideInterval: ReturnType<typeof setInterval> | undefined
 
 function startAutoSlide() {
   if (import.meta.env.SSR || slideInterval !== undefined) return
-  slideInterval = setInterval(() => {
-    if (activeSpeaker.value === 0) {
-      activeSpeaker.value = 1
-    } else {
-      activeSpeaker.value = 0
-      nextBU()
-    }
-  }, 5000)
+  slideInterval = setInterval(nextBU, 4500)
 }
 
 function stopAutoSlide() {
@@ -110,8 +86,64 @@ function stopAutoSlide() {
   slideInterval = undefined
 }
 
+/* -------------------------------------------------------------------------- */
+/* Effet machine à écrire sur les deux citations — réécrit à chaque           */
+/* changement de BU. Pas d'animation côté SSR : le texte complet est posé     */
+/* directement pour que le HTML pré-rendu reste déterministe (cf. CLAUDE.md). */
+/* -------------------------------------------------------------------------- */
+
+const displayedLeftQuote = ref('')
+const displayedRightQuote = ref('')
+
+interface TypewriterHandle {
+  id: ReturnType<typeof setInterval> | undefined
+}
+
+const leftTypewriter: TypewriterHandle = { id: undefined }
+const rightTypewriter: TypewriterHandle = { id: undefined }
+
+function typeText(text: string, target: ReturnType<typeof ref<string>>, handle: TypewriterHandle) {
+  if (handle.id !== undefined) {
+    clearInterval(handle.id)
+    handle.id = undefined
+  }
+
+  if (import.meta.env.SSR) {
+    target.value = text
+    return
+  }
+
+  target.value = ''
+  let i = 0
+  handle.id = setInterval(() => {
+    i += 1
+    target.value = text.slice(0, i)
+    if (i >= text.length) {
+      clearInterval(handle.id)
+      handle.id = undefined
+    }
+  }, 60)
+}
+
+watch(
+  [leftMember, rightMember],
+  ([left, right]) => {
+    typeText(left.quote, displayedLeftQuote, leftTypewriter)
+    typeText(right.quote, displayedRightQuote, rightTypewriter)
+  },
+  { immediate: true },
+)
+
+function stopTypewriters() {
+  if (leftTypewriter.id !== undefined) clearInterval(leftTypewriter.id)
+  if (rightTypewriter.id !== undefined) clearInterval(rightTypewriter.id)
+}
+
 onMounted(startAutoSlide)
-onBeforeUnmount(stopAutoSlide)
+onBeforeUnmount(() => {
+  stopAutoSlide()
+  stopTypewriters()
+})
 </script>
 
 <template>
@@ -123,10 +155,10 @@ onBeforeUnmount(stopAutoSlide)
     <header class="max-w-5xl px-4 md:px-24 lg:px-28">
       <p class="text-eyebrow uppercase text-accent-700">Tech &amp; Data</p>
       <h2 class="mt-4 font-display text-display whitespace-nowrap text-primary-900">
-        Quatre expertises, une seule façon de travailler.
+        Trois expertises, une seule façon de travailler.
       </h2>
       <p class="mt-4 whitespace-nowrap text-lg leading-relaxed text-primary-900/60">
-        Du code lisible, des plateformes solides et des données fiables. Nos quatre expertises
+        Du code lisible, des plateformes solides et des données fiables. Nos trois expertises
         avancent ensemble, du produit jusqu'à la sécurité.
       </p>
     </header>
@@ -174,8 +206,6 @@ onBeforeUnmount(stopAutoSlide)
          alterné occupe le centre. -->
     <div
       class="relative flex w-full flex-1 items-center justify-between gap-8 px-4 md:px-24 lg:px-28"
-      @mouseenter="stopAutoSlide"
-      @mouseleave="startAutoSlide"
     >
       <!-- Combattant gauche -->
       <div class="w-1/4">
@@ -190,8 +220,9 @@ onBeforeUnmount(stopAutoSlide)
         >
           <div :key="activeBUIndex" class="flex flex-col items-center">
             <div
-              class="w-[260px] lg:w-[300px] h-[440px] lg:h-[480px] [perspective:1000px] cursor-pointer"
-              @click="flippedLeft = !flippedLeft"
+              class="w-[260px] lg:w-[300px] h-[440px] lg:h-[480px] [perspective:1000px]"
+              @mouseenter="flippedLeft = true; stopAutoSlide()"
+              @mouseleave="flippedLeft = false; startAutoSlide()"
             >
               <div
                 class="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] rounded-2xl shadow-[-40px_20px_50px_-15px_rgba(0,0,50,0.4)]"
@@ -206,54 +237,34 @@ onBeforeUnmount(stopAutoSlide)
                   }}</span>
                 </div>
 
-                <!-- Face arrière -->
+                <!-- Face arrière — description de la BU uniquement, pas de
+                     nom ni de citation (cf. zone centrale ci-dessous). -->
                 <div
-                  class="absolute inset-0 [backface-visibility:hidden] bg-primary-950/80 backdrop-blur-md rounded-2xl p-6 flex flex-col items-center justify-center text-center [transform:rotateY(180deg)]"
+                  class="absolute inset-0 [backface-visibility:hidden] bg-primary-950 rounded-2xl [transform:rotateY(180deg)] flex flex-col justify-center items-center p-8 text-center text-base lg:text-lg leading-relaxed text-white/90"
                 >
-                  <p class="text-eyebrow uppercase text-accent-500">BU {{ activeBU.label }}</p>
-                  <span
-                    aria-hidden="true"
-                    class="mt-2 block h-0.5 w-8 rounded-full bg-accent-500"
-                  />
-                  <p class="mt-4 font-display text-lg font-bold text-white">
-                    {{ leftMember.name }}
-                  </p>
-                  <p class="mt-1 text-sm font-semibold text-accent-500">{{ leftMember.role }}</p>
-                  <p class="mt-4 text-sm leading-relaxed text-white/80">
-                    {{ activeBU.description }}
-                  </p>
-
-                  <button
-                    type="button"
-                    class="mt-6 w-full rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-primary-900 transition-colors duration-200 hover:bg-accent-500 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none"
-                    @click.stop
-                  >
-                    {{ activeBU.buttonText }}
-                  </button>
+                  {{ activeBU.description }}
                 </div>
               </div>
             </div>
-            <p class="mt-6 text-xl font-bold text-primary-950 text-center">
-              {{ leftMember.name }}
-            </p>
           </div>
         </Transition>
       </div>
 
-      <!-- Témoignage central -->
-      <div class="w-1/2 text-center">
-        <Transition mode="out-in" name="fade">
-          <p
-            v-if="activeSpeaker === 0"
-            :key="`${activeBU.slug}-left`"
-            class="text-3xl italic text-gray-800"
-          >
-            {{ leftMember.quote }}
+      <!-- Citations centrales — permanentes, en diagonale franche, effet
+           machine à écrire (cf. <script setup>). -->
+      <div class="flex-1 flex flex-col justify-center gap-20 lg:gap-32 px-4">
+        <div class="self-start text-left max-w-sm">
+          <p class="text-xl lg:text-2xl font-bold text-primary-950 mb-2">{{ leftMember.name }}</p>
+          <p class="text-base lg:text-lg italic text-primary-900/80 leading-relaxed">
+            <span>{{ displayedLeftQuote }}</span><span class="opacity-0">{{ leftMember.quote.slice(displayedLeftQuote.length) }}</span>
           </p>
-          <p v-else :key="`${activeBU.slug}-right`" class="text-3xl italic text-gray-800">
-            {{ rightMember.quote }}
+        </div>
+        <div class="self-end text-right max-w-sm">
+          <p class="text-xl lg:text-2xl font-bold text-primary-950 mb-2">{{ rightMember.name }}</p>
+          <p class="text-base lg:text-lg italic text-primary-900/80 leading-relaxed">
+            <span>{{ displayedRightQuote }}</span><span class="opacity-0">{{ rightMember.quote.slice(displayedRightQuote.length) }}</span>
           </p>
-        </Transition>
+        </div>
       </div>
 
       <!-- Combattant droit -->
@@ -269,8 +280,9 @@ onBeforeUnmount(stopAutoSlide)
         >
           <div :key="activeBUIndex" class="flex flex-col items-center">
             <div
-              class="w-[260px] lg:w-[300px] h-[440px] lg:h-[480px] [perspective:1000px] cursor-pointer"
-              @click="flippedRight = !flippedRight"
+              class="w-[260px] lg:w-[300px] h-[440px] lg:h-[480px] [perspective:1000px]"
+              @mouseenter="flippedRight = true; stopAutoSlide()"
+              @mouseleave="flippedRight = false; startAutoSlide()"
             >
               <div
                 class="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] rounded-2xl shadow-[40px_20px_50px_-15px_rgba(0,0,50,0.4)]"
@@ -285,50 +297,18 @@ onBeforeUnmount(stopAutoSlide)
                   }}</span>
                 </div>
 
-                <!-- Face arrière -->
+                <!-- Face arrière — description de la BU uniquement, pas de
+                     nom ni de citation (cf. zone centrale ci-dessus). -->
                 <div
-                  class="absolute inset-0 [backface-visibility:hidden] bg-primary-950/80 backdrop-blur-md rounded-2xl p-6 flex flex-col items-center justify-center text-center [transform:rotateY(180deg)]"
+                  class="absolute inset-0 [backface-visibility:hidden] bg-primary-950 rounded-2xl [transform:rotateY(180deg)] flex flex-col justify-center items-center p-8 text-center text-base lg:text-lg leading-relaxed text-white/90"
                 >
-                  <p class="text-eyebrow uppercase text-accent-500">BU {{ activeBU.label }}</p>
-                  <span
-                    aria-hidden="true"
-                    class="mt-2 block h-0.5 w-8 rounded-full bg-accent-500"
-                  />
-                  <p class="mt-4 font-display text-lg font-bold text-white">
-                    {{ rightMember.name }}
-                  </p>
-                  <p class="mt-1 text-sm font-semibold text-accent-500">{{ rightMember.role }}</p>
-                  <p class="mt-4 text-sm leading-relaxed text-white/80">
-                    {{ activeBU.description }}
-                  </p>
-
-                  <button
-                    type="button"
-                    class="mt-6 w-full rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-primary-900 transition-colors duration-200 hover:bg-accent-500 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none"
-                    @click.stop
-                  >
-                    {{ activeBU.buttonText }}
-                  </button>
+                  {{ activeBU.description }}
                 </div>
               </div>
             </div>
-            <p class="mt-6 text-xl font-bold text-primary-950 text-center">
-              {{ rightMember.name }}
-            </p>
           </div>
         </Transition>
       </div>
     </div>
   </section>
 </template>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.4s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

@@ -276,7 +276,7 @@ useSeo({
     <!-- Contenu -->
     <div class="relative z-10 px-4 py-24 sm:px-6 lg:px-8 xl:px-12">
       <div class="mr-auto w-full max-w-4xl">
-        <p class="mb-4 text-sm text-white/90">
+        <p class="mb-4 text-sm text-white">
           Équipe RH Faceel-IT · {{ offer.date }} · 3 min de lecture
         </p>
 
@@ -285,25 +285,25 @@ useSeo({
         </h1>
 
         <div class="mt-6 flex flex-wrap items-center gap-3">
-          <span class="rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-orange-300 backdrop-blur-sm">
+          <span class="rounded-full border-none pr-3 pl-0 py-1 text-sm font-semibold text-accent-400">
             {{ offer.category }}
           </span>
-          <span class="inline-flex items-center gap-1.5 rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-green-300 backdrop-blur-sm">
+          <span class="inline-flex items-center gap-1.5 rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
             <svg class="h-4 w-4 shrink-0" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd" d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
             </svg>
             {{ offer.location }}
           </span>
-          <span class="rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
+          <span class="rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
             {{ offer.contract }}
           </span>
-          <span class="rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
+          <span class="rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
             Selon profil
           </span>
         </div>
 
-        <div class="mt-8 rounded-xl border border-white/20 bg-white/10 p-6">
-          <p class="text-base leading-relaxed text-white/80">{{ offer.description }}</p>
+        <div class="mt-8 rounded-xl bg-blue-950/90 p-6">
+          <p class="text-base leading-relaxed text-white">{{ offer.description }}</p>
         </div>
       </div>
     </div>

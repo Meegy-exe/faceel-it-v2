@@ -139,6 +139,11 @@ const LOCAL_SNAP_FOOTER_ROUTES = new Set([
   '/references/adeo',
 ])
 
+/** Même logique que `LOCAL_SNAP_FOOTER_ROUTES`, mais par nom de route : pour
+ *  `offre-postuler` (`/offres/:id/postuler`), un chemin dynamique ne peut pas
+ *  figurer dans un `Set` de chemins exacts. */
+const LOCAL_SNAP_FOOTER_ROUTE_NAMES = new Set(['offre-postuler', 'candidature-spontanee'])
+
 /** Flèche du CTA « Nous rejoindre », en composant fonctionnel local plutôt
  * qu'un `<svg>` recopié à chaque emplacement (Header desktop, menu mobile,
  * Footer). */
@@ -308,7 +313,7 @@ const ArrowRightIcon: FunctionalComponent = () =>
          OffersView.vue, LoginView.vue, ChatbotView.vue, EnterpriseView.vue)
          pour s'aimanter avec les sections. -->
     <TheFooter
-      v-if="!LOCAL_SNAP_FOOTER_ROUTES.has(route.path)"
+      v-if="!LOCAL_SNAP_FOOTER_ROUTES.has(route.path) && !LOCAL_SNAP_FOOTER_ROUTE_NAMES.has(String(route.name))"
       :full-page-scroll="false"
       :columns="footerColumns"
       :description="footerDescription"

@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSeo } from '@/composables/useSeo'
+import TheFooter from '@/components/layout/TheFooter.vue'
 
 const route = useRoute()
 
@@ -185,21 +186,42 @@ function onCoverLetterDrop(e: DragEvent) {
   if (file && file.type === 'application/pdf') coverLetterFile.value = file
 }
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+const isFormValid = computed(() => {
+  if (!firstName.value.trim()) return false
+  if (!lastName.value.trim()) return false
+  if (!EMAIL_PATTERN.test(email.value.trim())) return false
+  if (!motivation.value.trim()) return false
+  if (!moreInfo.value.trim()) return false
+  if (!cvFile.value) return false
+  if (!certifiesCdi.value) return false
+  if (requiredCity.value && !certifiesLocation.value) return false
+  return true
+})
+
 function handleSubmit() {
+  if (!isFormValid.value) return
+
   /* TODO : connecter à l'API de candidature */
   submitted.value = true
 }
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col lg:flex-row pt-20 lg:pt-0">
+  <!-- Pas de <main> ici : App.vue le fournit déjà. Scroll-snap local : cette
+       route n'est pas dans `LOCAL_SNAP_FOOTER_ROUTES` (chemin dynamique
+       `/offres/:id/postuler`, pas compatible avec le `Set` de chemins exacts
+       d'App.vue) — exclue via les noms de route à la place, cf. App.vue. -->
+  <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth">
+    <div class="h-dvh w-full shrink-0 snap-start snap-always flex flex-col lg:flex-row pt-20 lg:pt-0">
 
     <!-- ============================================================
          COLONNE GAUCHE — Résumé de l'offre (ou message spontané)
          ============================================================ -->
     <div
       data-theme="dark"
-      class="w-full lg:w-1/2 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] bg-[#000066] text-white p-8 md:p-12 flex flex-col justify-center overflow-y-auto"
+      class="w-full lg:w-1/2 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] bg-gradient-to-b from-[#000066] via-[#000066] via-65% to-blue-800 text-white p-8 md:p-12 flex flex-col justify-center overflow-y-auto"
     >
       <template v-if="isSpontaneous">
         <!-- Retour -->
@@ -251,19 +273,19 @@ function handleSubmit() {
 
         <!-- Badges -->
         <div class="flex flex-wrap gap-2 mb-8">
-          <span class="rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-orange-300">
+          <span class="rounded-full border-none pr-3 pl-0 py-1 text-sm font-semibold text-accent-400">
             {{ offer!.category }}
           </span>
-          <span class="inline-flex items-center gap-1.5 rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-green-300">
+          <span class="inline-flex items-center gap-1.5 rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
             <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd" d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
             </svg>
             {{ offer!.location }}
           </span>
-          <span class="rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-white">
+          <span class="rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
             {{ offer!.contract }}
           </span>
-          <span class="rounded-full bg-white/20 border border-white/30 px-4 py-1.5 text-sm font-medium text-white">
+          <span class="rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
             {{ offer!.level }}
           </span>
         </div>
@@ -297,7 +319,7 @@ function handleSubmit() {
          ============================================================ -->
     <div
       data-theme="light"
-      class="w-full lg:w-1/2 bg-white p-8 md:p-12 flex flex-col justify-center overflow-y-auto"
+      class="w-full lg:w-1/2 max-h-screen bg-white p-8 md:p-12 flex flex-col justify-center overflow-y-auto pb-4"
     >
 
       <!-- Confirmation envoi -->
@@ -316,11 +338,11 @@ function handleSubmit() {
       </div>
 
       <template v-else>
-        <h2 class="text-2xl font-bold text-[#000066] mb-8">
+        <h2 class="text-2xl font-bold text-[#000066] mb-4">
           {{ isSpontaneous ? 'Candidature spontanée' : 'Postuler à cette offre' }}
         </h2>
 
-        <form class="space-y-5" novalidate @submit.prevent="handleSubmit">
+        <form class="space-y-3" novalidate @submit.prevent="handleSubmit">
           <!-- Prénom / Nom -->
           <div class="grid gap-4 sm:grid-cols-2">
             <div>
@@ -389,7 +411,7 @@ function handleSubmit() {
             <textarea
               id="motivation"
               v-model="motivation"
-              rows="3"
+              rows="2"
               required
               class="w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
             />
@@ -403,7 +425,7 @@ function handleSubmit() {
             <textarea
               id="moreInfo"
               v-model="moreInfo"
-              rows="3"
+              rows="2"
               required
               class="w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
             />
@@ -416,21 +438,22 @@ function handleSubmit() {
             </p>
             <label
               for="cvFile"
-              class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 px-6 py-8 text-center transition-colors"
+              class="flex cursor-pointer items-center gap-3 rounded-lg border-2 border-dashed border-gray-300 px-4 py-3 text-left transition-colors"
               :class="cvDragOver ? 'border-[#000066] bg-blue-50' : 'border-gray-200 hover:border-gray-300'"
               @dragover.prevent="cvDragOver = true"
               @dragleave="cvDragOver = false"
               @drop.prevent="onCvDrop"
             >
-              <svg class="w-10 h-10 mx-auto mb-3 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <svg class="size-6 shrink-0 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
               </svg>
-              <span v-if="cvFile" class="text-sm font-medium text-[#000066]">{{ cvFile.name }}</span>
-              <span v-else class="text-sm text-gray-500">
-                Glissez votre CV ici ou
-                <span class="font-semibold text-[#000066]">parcourir</span>
+              <span class="flex flex-col">
+                <span v-if="cvFile" class="text-sm font-medium text-[#000066]">{{ cvFile.name }}</span>
+                <span v-else class="text-sm text-gray-500">
+                  Glissez votre CV ici ou <span class="font-semibold text-[#000066]">parcourir</span>
+                </span>
+                <span class="text-xs text-gray-400">Format PDF uniquement</span>
               </span>
-              <span class="text-xs text-gray-400">Format PDF uniquement</span>
               <input id="cvFile" type="file" accept=".pdf" class="sr-only" required @change="onCvFileInput" />
             </label>
           </div>
@@ -440,27 +463,28 @@ function handleSubmit() {
             <p class="mb-1.5 text-sm font-medium text-primary-900">Lettre de motivation</p>
             <label
               for="coverLetterFile"
-              class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 px-6 py-8 text-center transition-colors"
+              class="flex cursor-pointer items-center gap-3 rounded-lg border-2 border-dashed border-gray-300 px-4 py-3 text-left transition-colors"
               :class="coverLetterDragOver ? 'border-[#000066] bg-blue-50' : 'border-gray-200 hover:border-gray-300'"
               @dragover.prevent="coverLetterDragOver = true"
               @dragleave="coverLetterDragOver = false"
               @drop.prevent="onCoverLetterDrop"
             >
-              <svg class="w-10 h-10 mx-auto mb-3 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <svg class="size-6 shrink-0 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
               </svg>
-              <span v-if="coverLetterFile" class="text-sm font-medium text-[#000066]">{{ coverLetterFile.name }}</span>
-              <span v-else class="text-sm text-gray-500">
-                Glissez votre lettre ici ou
-                <span class="font-semibold text-[#000066]">parcourir</span>
+              <span class="flex flex-col">
+                <span v-if="coverLetterFile" class="text-sm font-medium text-[#000066]">{{ coverLetterFile.name }}</span>
+                <span v-else class="text-sm text-gray-500">
+                  Glissez votre lettre ici ou <span class="font-semibold text-[#000066]">parcourir</span>
+                </span>
+                <span class="text-xs text-gray-400">Format PDF, facultatif</span>
               </span>
-              <span class="text-xs text-gray-400">Format PDF, facultatif</span>
               <input id="coverLetterFile" type="file" accept=".pdf" class="sr-only" @change="onCoverLetterFileInput" />
             </label>
           </div>
 
           <!-- Certifications -->
-          <div class="space-y-3 border-t border-gray-100 pt-5">
+          <div class="space-y-2 border-t border-gray-100 pt-3">
             <label v-if="requiredCity" class="flex cursor-pointer items-start gap-3 text-sm text-primary-900">
               <input
                 v-model="certifiesLocation"
@@ -487,7 +511,8 @@ function handleSubmit() {
           <!-- Submit -->
           <button
             type="submit"
-            class="w-full rounded-xl bg-[#12D80A] px-6 py-4 text-base font-semibold text-gray-900 transition-colors hover:bg-[#0fc009] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12D80A] focus-visible:ring-offset-2"
+            :disabled="!isFormValid"
+            class="w-full rounded-xl bg-[#12D80A] px-6 py-4 text-base font-semibold text-gray-900 transition-colors hover:bg-[#0fc009] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12D80A] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#12D80A]"
           >
             Envoyer ma candidature
           </button>
@@ -501,9 +526,10 @@ function handleSubmit() {
         </form>
       </template>
     </div>
-  </div>
+    </div>
 
-  <div class="w-full bg-white pt-12 pb-8">
-    <hr class="border-t border-gray-200 mx-auto w-11/12 max-w-7xl" />
+    <section class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]">
+      <TheFooter />
+    </section>
   </div>
 </template>

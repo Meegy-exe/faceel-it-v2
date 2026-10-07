@@ -113,14 +113,34 @@ const HIDDEN_OFFSET: Record<ScrollRevealDirection, string> = {
  * instancié sous cette préférence. La classe permanente `transition-all
  * duration-700 ease-out motion-reduce:transition-none` vit sur l'élément
  * côté appelant (cf. `HomeView.vue`), pas ici : elle ne dépend d'aucun état.
+ *
+ * `modifiers` — échappatoire scoped pour un appelant précis (ex. le bloc
+ * texte de `#chiffres-cles`, qui veut une amplitude et un tempo différents
+ * du reste des sections) sans changer le comportement par défaut de tous
+ * les autres appels existants, qui omettent ce 3e argument.
  */
 export function scrollRevealClass(
   state: ScrollRevealState,
   direction: ScrollRevealDirection = 'up',
+  modifiers?: {
+    offsetClass?: string
+    durationClass?: string
+    delayClass?: string
+    /** Échelle de départ avant l'entrée (ex. `scale-95`) — la cible visible
+     *  revient toujours à `scale-100`. */
+    scaleClass?: string
+  },
 ): string {
+  const offsetClass = modifiers?.offsetClass ?? HIDDEN_OFFSET[direction]
+  const hiddenScaleClass = modifiers?.scaleClass ? ` ${modifiers.scaleClass}` : ''
+
   if (state === 'hidden') {
     // transition-none : reset instantané — pas de fondu lent vers l'état invisible.
-    return `opacity-0 ${HIDDEN_OFFSET[direction]} transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0 motion-reduce:translate-x-0`
+    return `opacity-0 ${offsetClass}${hiddenScaleClass} transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0 motion-reduce:translate-x-0 motion-reduce:scale-100`
   }
-  return 'opacity-100 translate-y-0 translate-x-0 transition-all duration-700 ease-out motion-reduce:transition-none'
+
+  const durationClass = modifiers?.durationClass ?? 'duration-700'
+  const delayClass = modifiers?.delayClass ?? ''
+  const visibleScaleClass = modifiers?.scaleClass ? ' scale-100' : ''
+  return `opacity-100 translate-y-0 translate-x-0${visibleScaleClass} transition-all ${durationClass} ease-out motion-reduce:transition-none ${delayClass}`.trim()
 }

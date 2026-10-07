@@ -38,6 +38,13 @@ useSeo({
 
 const chiffresEl = useTemplateRef<HTMLElement>('chiffresEl')
 const chiffresReveal = useScrollReveal(chiffresEl)
+/** Séquencement volontairement inversé : les chiffres comptent D'ABORD, dès
+ *  l'entrée dans le viewport (`chiffresReveal`) ; le bloc texte n'est révélé
+ *  qu'ensuite, piloté par minuterie (et non sa propre visibilité au scroll)
+ *  dans le `watch(chiffresReveal, ...)` ci-dessous. `'idle'` par défaut :
+ *  reste visible pour le SSR/no-JS, même garantie que `ScrollRevealState`
+ *  (cf. `useScrollReveal.ts`). */
+const textRevealState = ref<'idle' | 'hidden' | 'visible'>('idle')
 const evenementsEl = useTemplateRef<HTMLElement>('evenementsEl')
 const evenementsReveal = useScrollReveal(evenementsEl)
 const valeursEl = useTemplateRef<HTMLElement>('valeursEl')
@@ -76,16 +83,19 @@ const PARSED_STATS: ParsedStat[] = KEY_STATS.map((s) => ({
 const animatedValues = ref<number[]>(PARSED_STATS.map(() => 0))
 const countUpStarted = ref(false)
 let countUpRaf: number | undefined
+/** Durée du count-up (`runCountUp`) — reprise telle quelle comme durée de la
+ *  transition CSS du bloc texte (cf. template) pour que les deux animations,
+ *  démarrées ensemble, se terminent au même instant. */
+const COUNT_UP_DURATION_MS = 2000
 
 function runCountUp() {
   if (countUpRaf !== undefined) cancelAnimationFrame(countUpRaf)
-  const duration = 2000
   const start = performance.now()
   const targets = PARSED_STATS.map((s) => s.target)
   animatedValues.value = targets.map(() => 0)
 
   function step(now: number) {
-    const progress = Math.min((now - start) / duration, 1)
+    const progress = Math.min((now - start) / COUNT_UP_DURATION_MS, 1)
     const eased = 1 - (1 - progress) ** 2
     animatedValues.value = targets.map((t) => Math.round(t * eased))
     if (progress < 1) countUpRaf = requestAnimationFrame(step)
@@ -96,12 +106,17 @@ function runCountUp() {
 watch(chiffresReveal, (state) => {
   if (import.meta.env.SSR) return
   if (state === 'visible') {
+    // Chiffres et texte démarrent ensemble (cf. `duration-2000` du texte
+    // dans le template, calée sur `COUNT_UP_DURATION_MS`, pour une fin
+    // synchrone).
     countUpStarted.value = true
     runCountUp()
+    textRevealState.value = 'visible'
   }
   if (state === 'hidden') {
     if (countUpRaf !== undefined) cancelAnimationFrame(countUpRaf)
     animatedValues.value = PARSED_STATS.map(() => 0)
+    textRevealState.value = 'hidden'
   }
 })
 
@@ -544,17 +559,26 @@ onBeforeUnmount(() => {
     <div
       ref="chiffresEl"
       class="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center text-center"
-      :class="scrollRevealClass(chiffresReveal)"
     >
-      <p class="text-eyebrow uppercase text-accent-500">Nos chiffres clés</p>
-
-      <blockquote
-        class="mt-6 max-w-3xl font-display text-2xl leading-snug font-bold tracking-tight text-balance text-white sm:text-3xl lg:text-4xl"
+      <div
+        :class="
+          scrollRevealClass(textRevealState, 'up', {
+            offsetClass: 'translate-y-28',
+            durationClass: 'duration-2000',
+            scaleClass: 'scale-95',
+          })
+        "
       >
-        « Chez Faceel-it, nous ne nous contentons pas de vous délivrer une prestation&nbsp;: nous
-        co-construisons des solutions durables, agiles et sur-mesure. Votre satisfaction est notre
-        plus grande fête. »
-      </blockquote>
+        <p class="text-lg sm:text-xl md:text-2xl font-bold tracking-wide uppercase text-accent-500">Nos chiffres clés</p>
+
+        <blockquote
+          class="mt-6 max-w-3xl font-display text-2xl leading-snug font-bold tracking-tight text-balance text-white sm:text-3xl lg:text-4xl"
+        >
+          « Chez Faceel-it, nous ne nous contentons pas de vous délivrer une prestation&nbsp;: nous
+          co-construisons des solutions durables, agiles et sur-mesure. Votre satisfaction est notre
+          plus grande fête. »
+        </blockquote>
+      </div>
 
       <ul class="mt-12 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 sm:gap-8">
         <li
@@ -565,7 +589,7 @@ onBeforeUnmount(() => {
           <p class="font-display text-5xl font-extrabold tracking-tight text-accent-500 sm:text-6xl">
             {{ countUpStarted ? animatedValues[i] : stat.target }}{{ stat.suffix }}
           </p>
-          <p class="mt-3 text-eyebrow text-white/70">{{ stat.label }}</p>
+          <p class="mt-3 text-eyebrow text-white">{{ stat.label }}</p>
         </li>
       </ul>
     </div>

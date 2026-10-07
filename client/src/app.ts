@@ -45,6 +45,17 @@ export const createApp = ViteSSG(
   ({ app, router }) => {
     app.use(createPinia())
 
+    /**
+     * MVP V1 — le backend n'est pas déployé : on bloque entièrement l'accès
+     * à `/login` et `/admin` (+ sous-routes) côté client plutôt que de
+     * laisser ces interfaces inachevées exposées sans API derrière.
+     */
+    router.beforeEach((to: RouteLocationNormalized) => {
+      if (to.path === '/login' || to.path.startsWith('/admin')) {
+        return { path: '/' }
+      }
+    })
+
     router.beforeEach((to: RouteLocationNormalized) => {
       if (!to.meta.requiresAuth && !to.meta.requiresAdmin) return true
       const auth = useAuthStore()

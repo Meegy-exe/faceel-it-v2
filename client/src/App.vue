@@ -250,47 +250,16 @@ const ArrowRightIcon: FunctionalComponent = () =>
             </svg>
           </a>
         </div>
-
-        <router-link
-          :to="{ name: 'evenements-tech' }"
-          class="inline-flex size-9 shrink-0 items-center justify-center rounded-full transition-colors duration-200 focus-visible:outline-3 focus-visible:outline-offset-2 motion-reduce:transition-none"
-          :class="
-            surface === 'dark'
-              ? 'text-white hover:bg-white/10 focus-visible:outline-accent-500'
-              : 'text-primary-900 hover:bg-primary-900/5 focus-visible:outline-primary-900'
-          "
-          aria-label="Événements tech"
-          @click="menuOpen = false"
-        >
-          <svg viewBox="0 0 24 24" fill="none" class="size-5" aria-hidden="true">
-            <path
-              d="M8 2v3M16 2v3M3.5 9h17M5 4h14a1.5 1.5 0 0 1 1.5 1.5v14A1.5 1.5 0 0 1 19 21H5a1.5 1.5 0 0 1-1.5-1.5v-14A1.5 1.5 0 0 1 5 4Z"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </router-link>
-        <router-link
-          to="/chat"
-          class="inline-flex size-9 shrink-0 items-center justify-center rounded-full transition-colors duration-200 focus-visible:outline-3 focus-visible:outline-offset-2 motion-reduce:transition-none"
-          :class="
-            surface === 'dark'
-              ? 'text-white hover:bg-white/10 focus-visible:outline-accent-500'
-              : 'text-primary-900 hover:bg-primary-900/5 focus-visible:outline-primary-900'
-          "
-          aria-label="Discuter avec Faceelbot"
-          @click="menuOpen = false"
-        >
-          <svg viewBox="0 0 24 24" fill="currentColor" class="size-5" aria-hidden="true">
-            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
-          </svg>
-        </router-link>
       </template>
 
       <template #actions="{ surface }">
         <div class="flex items-center gap-3">
+          <BaseButton variant="outline" size="sm" :surface="surface" :to="{ name: 'evenements-tech' }">
+            Événements
+          </BaseButton>
+          <BaseButton variant="accent" size="sm" :surface="surface" to="/chat">
+            ChatBot
+          </BaseButton>
           <BaseButton variant="outline" size="sm" :surface="surface" :to="CONTACT_TO">
             Un projet ?
           </BaseButton>

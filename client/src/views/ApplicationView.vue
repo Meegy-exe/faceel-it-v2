@@ -290,15 +290,10 @@ function handleSubmit() {
           </span>
         </div>
 
-        <!-- Résumé -->
-        <p class="text-base leading-relaxed text-white/75 mb-8">
-          {{ offer!.description }}
-        </p>
-
         <!-- Points clés -->
         <div>
           <p class="text-xs font-semibold uppercase tracking-widest text-blue-300 mb-4">
-            Prérequis clés
+            Prérequis
           </p>
           <ul class="space-y-3">
             <li

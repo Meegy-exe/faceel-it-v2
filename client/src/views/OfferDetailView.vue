@@ -2,7 +2,6 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSeo } from '@/composables/useSeo'
-import { useWaveCanvas } from '@/composables/useWaveCanvas'
 import photoDataIa from '@/assets/images/photos/f-it-01.jpg'
 import photoDigital from '@/assets/images/photos/f-it-02.jpg'
 import photoProduct from '@/assets/images/photos/f-it-03.jpg'
@@ -131,6 +130,13 @@ const PROFIL = [
   'Goût pour le travail en équipe et les environnements Agile',
 ]
 
+/** Sépare le libellé (avant " : ") du reste pour le mettre en gras dans le
+ *  template — seul TECH_STACK suit ce format "Libellé : valeurs". */
+function splitTechLabel(entry: string) {
+  const [label, ...rest] = entry.split(' : ')
+  return { label, rest: rest.join(' : ') }
+}
+
 const offer = computed(
   () => OFFERS.find((o) => String(o.id) === String(route.params.id)) ?? OFFERS[0]!,
 )
@@ -217,8 +223,15 @@ onBeforeUnmount(() => {
   if (!import.meta.env.SSR) document.body.style.overflow = ''
 })
 
-const waveCanvas = ref<HTMLCanvasElement | null>(null)
-useWaveCanvas(waveCanvas)
+/** Flèche de l'intro blanche — cible `#details` (section "Description de
+ *  l'entreprise" et suivantes), déjà identifiée plus bas dans ce template. */
+function scrollToContent() {
+  const el = document.getElementById('details')
+  if (!el) return
+  const yOffset = -80
+  const y = el.getBoundingClientRect().top + window.scrollY + yOffset
+  window.scrollTo({ top: y, behavior: 'smooth' })
+}
 
 useSeo({
   title: 'Data Engineer (H/F) – Faceel-IT',
@@ -233,81 +246,103 @@ useSeo({
        directs du conteneur snap-y d'App.vue, TheFooter compris. -->
 
   <!-- ==================================================================
-       SECTION 1 — HERO (Thème Sombre — plein écran strict)
+       SECTION 1 — HERO (bandeau bleu + intro blanche). min-h-[50vh] +
+       flex-1 sur CHAQUE section (pas juste un conteneur parent dimensionné) :
+       garantit que le blanc ne peut jamais dépasser visuellement le bleu même
+       si son contenu est plus court, tout en se répartissant à égalité au-delà
+       de ce plancher si le contenu déborde (ex. petit écran).
        ================================================================== -->
-  <section
-    id="hero"
-    data-theme="dark"
-    class="relative min-h-screen w-full flex flex-col justify-center bg-[#000066] text-white overflow-hidden"
-  >
-    <!-- Canvas vague — fond animé, désactivé si motion-reduce. -->
-    <canvas
-      ref="waveCanvas"
-      aria-hidden="true"
-      class="absolute inset-0 h-full w-full pointer-events-none opacity-60 motion-reduce:hidden"
-    />
+  <div class="flex w-full flex-col">
+    <section
+      id="hero"
+      data-theme="dark"
+      class="relative flex min-h-[50vh] w-full flex-1 flex-col bg-[#000066] text-white"
+    >
+      <!-- Bouton Retour -->
+      <div class="absolute top-20 left-4 sm:left-6 lg:left-8 lg:top-24 z-10">
+        <RouterLink
+          to="/consulter-nos-offres"
+          class="inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-accent-400"
+        >
+          <svg
+            class="h-4 w-4"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M10 3L5 8l5 5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Retour aux offres
+        </RouterLink>
+      </div>
 
-    <!-- Halo décoratif vert -->
-    <div
-      aria-hidden="true"
-      class="pointer-events-none absolute -right-40 top-1/2 h-[500px] w-[500px] -translate-y-1/2 rounded-full bg-accent-500/10 blur-3xl"
-    />
+      <!-- pt-28 : descend le contenu dans sa moitié au lieu d'un centrage
+           géométrique strict qui le remonte visuellement trop haut. -->
+      <div class="flex flex-1 flex-col items-center justify-center px-4 pt-28 sm:px-6 lg:px-8 xl:px-12">
+        <div class="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
+          <p class="mb-4 text-sm text-white">
+            Équipe RH Faceel-IT · {{ offer.date }} · 3 min de lecture
+          </p>
 
-    <!-- Bouton Retour -->
-    <div class="absolute top-20 left-4 sm:left-6 lg:left-8 lg:top-24 z-10">
-      <RouterLink
-        to="/consulter-nos-offres"
-        class="inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-accent-400"
+          <h1 class="font-display text-display text-balance text-white">
+            {{ offer.title }}
+          </h1>
+
+          <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <span class="rounded-full border-none pr-3 pl-0 py-1 text-sm font-semibold text-accent-400">
+              {{ offer.category }}
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
+              <svg class="h-4 w-4 shrink-0" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
+              </svg>
+              {{ offer.location }}
+            </span>
+            <span class="rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
+              {{ offer.contract }}
+            </span>
+            <span class="rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
+              Selon profil
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1bis — INTRODUCTION (Thème Clair — titre + paragraphe + flèche) -->
+    <section
+      data-theme="light"
+      class="flex min-h-[50vh] w-full flex-1 flex-col items-center justify-center bg-white px-4 pt-20 sm:px-6 lg:px-8"
+    >
+      <h2 class="mb-6 text-center font-display text-2xl font-bold text-primary-900 lg:text-3xl">
+        Description de l'offre
+      </h2>
+
+      <p class="mx-auto max-w-4xl text-center text-lg leading-relaxed text-primary-900/70">
+        {{ offer.description }}
+      </p>
+
+      <button
+        type="button"
+        aria-label="Voir la description de l'offre"
+        class="mx-auto mt-12 flex size-10 items-center justify-center rounded-full text-accent-500 transition-colors duration-200 hover:text-accent-600 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-900"
+        @click="scrollToContent"
       >
         <svg
-          class="h-4 w-4"
-          viewBox="0 0 16 16"
+          class="size-10 animate-bounce motion-reduce:animate-none"
+          viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
           aria-hidden="true"
         >
-          <path d="M10 3L5 8l5 5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M12 4v16m0 0l-6-6m6 6l6-6" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
-        Retour aux offres
-      </RouterLink>
-    </div>
-
-    <!-- Contenu -->
-    <div class="relative z-10 px-4 py-24 sm:px-6 lg:px-8 xl:px-12">
-      <div class="mr-auto w-full max-w-4xl">
-        <p class="mb-4 text-sm text-white">
-          Équipe RH Faceel-IT · {{ offer.date }} · 3 min de lecture
-        </p>
-
-        <h1 class="font-display text-display text-balance text-white">
-          {{ offer.title }}
-        </h1>
-
-        <div class="mt-6 flex flex-wrap items-center gap-3">
-          <span class="rounded-full border-none pr-3 pl-0 py-1 text-sm font-semibold text-accent-400">
-            {{ offer.category }}
-          </span>
-          <span class="inline-flex items-center gap-1.5 rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
-            <svg class="h-4 w-4 shrink-0" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-              <path fill-rule="evenodd" d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
-            </svg>
-            {{ offer.location }}
-          </span>
-          <span class="rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
-            {{ offer.contract }}
-          </span>
-          <span class="rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
-            Selon profil
-          </span>
-        </div>
-
-        <div class="mt-8 rounded-xl bg-blue-950/90 p-6">
-          <p class="text-base leading-relaxed text-white">{{ offer.description }}</p>
-        </div>
-      </div>
-    </div>
-  </section>
+      </button>
+    </section>
+  </div>
 
   <!-- ==================================================================
        SECTION 2 — DÉTAILS & PARTAGE (Thème Clair — scroll libre)
@@ -358,7 +393,10 @@ useSeo({
                   class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-500"
                   aria-hidden="true"
                 />
-                <span class="text-base leading-relaxed text-primary-900/70">{{ tech }}</span>
+                <span class="text-base leading-relaxed text-primary-900/70">
+                  <strong class="font-semibold text-primary-900">{{ splitTechLabel(tech).label }}</strong
+                  >{{ ' : ' + splitTechLabel(tech).rest }}
+                </span>
               </li>
             </ul>
           </section>
@@ -540,8 +578,6 @@ useSeo({
     </div>
   </section>
 
-  <hr class="w-24 h-1 mx-auto my-12 bg-[#000066]/20 border-0 rounded md:my-16" aria-hidden="true" />
-
   <!-- ==================================================================
        SECTION 3 — OFFRES SIMILAIRES (flux naturel, fond gris pour séparer)
        ================================================================== -->
@@ -612,7 +648,7 @@ useSeo({
   <Teleport to="body">
     <div
       v-if="isVideoModalOpen"
-      class="fixed inset-0 z-[60] flex items-center justify-center bg-primary-950/90 p-4 backdrop-blur-sm"
+      class="fixed inset-0 z-[60] flex items-center justify-center bg-primary-950/40 p-4 backdrop-blur-sm"
       @click.self="isVideoModalOpen = false"
     >
       <div class="relative w-full max-w-3xl">

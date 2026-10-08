@@ -1,23 +1,33 @@
+<script setup lang="ts">
+import { useTemplateRef } from 'vue'
+import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
+
+const infoEl = useTemplateRef<HTMLElement>('infoEl')
+const infoReveal = useScrollReveal(infoEl)
+</script>
+
 <template>
   <section
     id="localisation"
     data-theme="dark"
     class="h-full w-full snap-start snap-always flex flex-col justify-center bg-gradient-to-b from-[#000066] via-[#000066] via-65% to-blue-800 px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
   >
-    <div class="w-full max-w-none px-4 lg:pl-8 lg:pr-24">
+    <div class="mx-auto w-full max-w-6xl px-4 lg:px-8">
       <div class="mb-12 text-center">
         <p class="text-eyebrow uppercase text-accent-500">Présence locale</p>
         <h2 class="mt-4 font-display text-display text-balance text-white">Où nous trouver</h2>
       </div>
 
-      <div class="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-24">
-
+      <div
+        class="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-16"
+      >
         <!-- Hologramme Hauts-de-France — tracé réel extrait de /hdf.svg,
              encadré dans un halo circulaire, style blueprint/outline. -->
         <div class="relative flex shrink-0 items-center justify-center">
+          <div class="absolute inset-10 rounded-full bg-[#5EC6FF]/15 blur-3xl" />
           <svg
             viewBox="0 0 554 554"
-            class="h-64 w-auto lg:h-[40rem]"
+            class="relative z-10 h-64 w-auto lg:h-[40rem]"
             aria-hidden="true"
           >
             <defs>
@@ -30,7 +40,15 @@
 
             <!-- Halo circulaire de fond -->
             <circle cx="277" cy="277" r="260" fill="url(#mapHalo)" />
-            <circle cx="277" cy="277" r="245" fill="none" stroke="white" stroke-opacity="0.08" stroke-width="1" />
+            <circle
+              cx="277"
+              cy="277"
+              r="245"
+              fill="none"
+              stroke="white"
+              stroke-opacity="0.08"
+              stroke-width="1"
+            />
 
             <!-- Contour région (tracé réel /hdf.svg) — outline uniquement, flux lumineux animé -->
             <path
@@ -55,7 +73,18 @@
             />
 
             <!-- Label région -->
-            <text x="277" y="60" text-anchor="middle" fill="white" fill-opacity="0.3" font-size="16" font-family="sans-serif" font-weight="bold" letter-spacing="2">HAUTS-DE-FRANCE</text>
+            <text
+              x="277"
+              y="60"
+              text-anchor="middle"
+              fill="white"
+              font-size="16"
+              font-family="sans-serif"
+              font-weight="bold"
+              letter-spacing="2"
+            >
+              HAUTS-DE-FRANCE
+            </text>
 
             <!-- Repère Lille — centre-droite du lobe supérieur, juste
                  au-dessus de la convergence des lignes internes. Cliquable :
@@ -64,10 +93,16 @@
               href="https://www.google.com/maps/dir/?api=1&destination=Faceel-it,+59290+Wasquehal"
               target="_blank"
               rel="noopener noreferrer"
-              class="group cursor-pointer hover:opacity-80"
+              class="group cursor-pointer"
             >
-              <circle cx="300" cy="183" r="16" fill="#12D80A" fill-opacity="0.15" class="ping-ring" />
-              <circle cx="300" cy="183" r="9" fill="#12D80A" fill-opacity="0.25" />
+              <circle
+                cx="300"
+                cy="183"
+                r="20"
+                fill="#12D80A"
+                fill-opacity="0.3"
+                class="ping-ring"
+              />
               <circle cx="300" cy="183" r="5" fill="#12D80A" />
               <text
                 x="332"
@@ -76,7 +111,7 @@
                 font-size="30"
                 font-family="sans-serif"
                 font-weight="800"
-                class="group-hover:underline"
+                class="animate-swell cursor-pointer"
               >
                 Lille
               </text>
@@ -84,17 +119,40 @@
           </svg>
         </div>
 
-        <!-- Informations d'adresse -->
-        <div class="flex flex-col gap-8">
+        <!-- Informations d'adresse — entrée depuis la droite au scroll -->
+        <div
+          ref="infoEl"
+          class="flex flex-col gap-8 transition-all duration-700 ease-out motion-reduce:transition-none"
+          :class="
+            scrollRevealClass(infoReveal, 'right', {
+              offsetClass: 'translate-x-16',
+              delayClass: 'delay-[200ms]',
+              durationClass: 'duration-1200',
+            })
+          "
+        >
           <div>
-            <h3 class="font-display text-3xl lg:text-4xl font-bold text-white">Faceel IT — Siège social</h3>
+            <h3 class="font-display text-3xl lg:text-4xl font-bold text-white">
+              Faceel IT — Siège social
+            </h3>
             <p class="mt-2 text-lg text-white/50">Hauts-de-France · Métropole Lilloise</p>
           </div>
 
           <div class="flex flex-col gap-6 lg:gap-8">
             <div class="flex items-start gap-4">
-              <svg viewBox="0 0 20 20" fill="none" class="mt-0.5 size-7 shrink-0 text-[#12D80A]" aria-hidden="true">
-                <path d="M10 2a6 6 0 016 6c0 4-6 10-6 10S4 12 4 8a6 6 0 016-6z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                class="mt-0.5 size-7 shrink-0 text-[#12D80A]"
+                aria-hidden="true"
+              >
+                <path
+                  d="M10 2a6 6 0 016 6c0 4-6 10-6 10S4 12 4 8a6 6 0 016-6z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
                 <circle cx="10" cy="8" r="2" stroke="currentColor" stroke-width="1.5" />
               </svg>
               <div>
@@ -104,8 +162,19 @@
             </div>
 
             <div class="flex items-start gap-4">
-              <svg viewBox="0 0 20 20" fill="none" class="mt-0.5 size-7 shrink-0 text-[#12D80A]" aria-hidden="true">
-                <path d="M2 5a2 2 0 012-2h4l2 4-2.5 1.5a11 11 0 005 5L14 11l4 2v4a2 2 0 01-2 2A16 16 0 012 5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                class="mt-0.5 size-7 shrink-0 text-[#12D80A]"
+                aria-hidden="true"
+              >
+                <path
+                  d="M2 5a2 2 0 012-2h4l2 4-2.5 1.5a11 11 0 005 5L14 11l4 2v4a2 2 0 01-2 2A16 16 0 012 5z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
               <div>
                 <p class="text-lg lg:text-xl font-semibold text-white">Contact</p>
@@ -114,8 +183,19 @@
             </div>
 
             <div class="flex items-start gap-4">
-              <svg viewBox="0 0 20 20" fill="none" class="mt-0.5 size-7 shrink-0 text-[#12D80A]" aria-hidden="true">
-                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-12v4l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                class="mt-0.5 size-7 shrink-0 text-[#12D80A]"
+                aria-hidden="true"
+              >
+                <path
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-12v4l3 3"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
               <div>
                 <p class="text-lg lg:text-xl font-semibold text-white">Horaires</p>
@@ -127,7 +207,9 @@
           <!-- Pastille statut -->
           <div class="flex items-center gap-3 pt-2">
             <span class="relative flex size-3">
-              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#12D80A] opacity-75 motion-reduce:animate-none" />
+              <span
+                class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#12D80A] opacity-75 motion-reduce:animate-none"
+              />
               <span class="relative inline-flex size-3 rounded-full bg-[#12D80A]" />
             </span>
             <span class="text-base text-white/50">Équipe disponible en régie ou au bureau</span>
@@ -145,19 +227,49 @@
     transform-origin: 300px 183px;
   }
   @keyframes map-ping {
-    0%, 100% { transform: scale(1); opacity: 0.15; }
-    50% { transform: scale(1.8); opacity: 0; }
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.15;
+    }
+    50% {
+      transform: scale(1.8);
+      opacity: 0;
+    }
+  }
+
+  /* Respiration continue du libellé "Lille" — signale l'interactivité sans
+     attendre le survol. transform-box: fill-box ramène l'origine au centre
+     de la boîte du <text> lui-même (pas du viewport SVG), condition requise
+     pour que le mot grossisse sur place au lieu de dériver. */
+  .animate-swell {
+    animation: swell 2s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @keyframes swell {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.15);
+    }
   }
 
   /* Flux lumineux qui court le long du contour réel (tracé /hdf.svg, bien
      plus long que l'ancien tracé simplifié) — dasharray/offset agrandis en
-     conséquence. */
+     conséquence. Segment visible élargi (80 15, au lieu de 30 20) pour que le
+     tracé reste lisible même quand l'animation masque une portion. */
   .map-outline {
-    stroke-dasharray: 30 20;
+    stroke-dasharray: 80 15;
+    filter: drop-shadow(0 0 4px rgba(94, 198, 255, 0.6));
     animation: map-flow 14s linear infinite;
   }
   @keyframes map-flow {
-    to { stroke-dashoffset: -1000; }
+    to {
+      stroke-dashoffset: -1000;
+    }
   }
 }
 </style>

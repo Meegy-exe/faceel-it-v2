@@ -124,8 +124,23 @@ watch(chiffresReveal, (state) => {
 /* Nos événements — bascule design sport                                      */
 /* -------------------------------------------------------------------------- */
 
-const showSportDesign = ref(false)
+/** 3 diapositives au sein de la même section `#evenements` (pas 3 sections
+ *  snap distinctes) : galerie de cohésion, événements tech, design sport. */
+type EventsSlide = 'events' | 'tech' | 'sport'
+const EVENTS_SLIDES: EventsSlide[] = ['events', 'sport', 'tech']
+const activeEventsSlide = ref<EventsSlide>('events')
+
+function nextEventsSlide() {
+  const currentIndex = EVENTS_SLIDES.indexOf(activeEventsSlide.value)
+  activeEventsSlide.value = EVENTS_SLIDES[(currentIndex + 1) % EVENTS_SLIDES.length]!
+}
+
 let sportInterval: ReturnType<typeof setInterval> | undefined
+
+/** Survol du bloc : coupe la bascule automatique sans arrêter le
+ *  `setInterval` lui-même (évite de dé-synchroniser `resetSportTimer`, déjà
+ *  appelé au clic manuel) — même garde que `paused` dans `CoverCarousel.vue`. */
+const eventsCarouselPaused = ref(false)
 
 function clearSportInterval() {
   if (sportInterval !== undefined) {
@@ -139,7 +154,7 @@ function clearSportInterval() {
 function resetSportTimer() {
   clearSportInterval()
   sportInterval = setInterval(() => {
-    showSportDesign.value = !showSportDesign.value
+    if (!eventsCarouselPaused.value) nextEventsSlide()
   }, 5_000)
 }
 
@@ -148,7 +163,7 @@ watch(evenementsReveal, (state) => {
   if (state === 'visible') resetSportTimer()
   if (state === 'hidden') {
     clearSportInterval()
-    showSportDesign.value = false
+    activeEventsSlide.value = 'events'
   }
 })
 
@@ -179,15 +194,23 @@ const EVENT_PHOTOS: EventPhoto[] = [
 const mobilePhotoIndex = ref(0)
 let mobilePhotoInterval: ReturnType<typeof setInterval> | undefined
 
-onMounted(() => {
-  if (import.meta.env.SSR) return
+function startMobilePhotoAutoplay() {
+  if (import.meta.env.SSR || mobilePhotoInterval !== undefined) return
   mobilePhotoInterval = setInterval(() => {
     mobilePhotoIndex.value = (mobilePhotoIndex.value + 1) % EVENT_PHOTOS.length
   }, 3_000)
-})
+}
+
+function stopMobilePhotoAutoplay() {
+  if (mobilePhotoInterval === undefined) return
+  clearInterval(mobilePhotoInterval)
+  mobilePhotoInterval = undefined
+}
+
+onMounted(startMobilePhotoAutoplay)
 
 onBeforeUnmount(() => {
-  if (mobilePhotoInterval !== undefined) clearInterval(mobilePhotoInterval)
+  stopMobilePhotoAutoplay()
   if (countUpRaf !== undefined) cancelAnimationFrame(countUpRaf)
   clearSportInterval()
 })
@@ -600,6 +623,8 @@ onBeforeUnmount(() => {
     ref="evenementsEl"
     data-theme="light"
     class="relative h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center overflow-hidden bg-white px-4 py-8 text-gray-900 sm:px-6 lg:px-8 xl:px-12"
+    @mouseenter="eventsCarouselPaused = true"
+    @mouseleave="eventsCarouselPaused = false"
   >
     <Transition
       enter-active-class="transition-all duration-500 ease-out motion-reduce:transition-none"
@@ -610,13 +635,12 @@ onBeforeUnmount(() => {
       leave-to-class="opacity-0 -translate-y-4"
       mode="out-in"
     >
-      <!-- DESIGN INITIAL : galerie événements équipe -->
-      <div v-if="!showSportDesign" key="events" class="w-full">
+      <!-- SLIDE 1 : galerie événements équipe -->
+      <div v-if="activeEventsSlide === 'events'" key="events" class="w-full">
         <header
           class="mx-auto max-w-3xl text-center transition-all duration-700 ease-out motion-reduce:transition-none"
           :class="scrollRevealClass(evenementsReveal)"
         >
-          <p class="text-eyebrow uppercase text-accent-700">La vie d'équipe</p>
           <h2 class="mt-4 font-display text-display text-balance text-primary-900">Nos événements</h2>
           <p class="mt-4 text-lg leading-relaxed text-primary-900/60">
             La cohésion ne s'arrête pas à la porte des bureaux&nbsp;: after-works, événements sportifs
@@ -645,7 +669,11 @@ onBeforeUnmount(() => {
         </ul>
 
         <!-- Slider automatique — visible sur mobile uniquement -->
-        <div class="relative mx-auto mt-10 h-72 w-full overflow-hidden rounded-xl sm:hidden">
+        <div
+          class="relative mx-auto mt-10 h-72 w-full overflow-hidden rounded-xl sm:hidden"
+          @mouseenter="stopMobilePhotoAutoplay"
+          @mouseleave="startMobilePhotoAutoplay"
+        >
           <TransitionGroup
             enter-active-class="transition-opacity duration-700 ease-in-out motion-reduce:transition-none"
             enter-from-class="opacity-0"
@@ -676,7 +704,22 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <!-- DESIGN SPORT -->
+      <!-- SLIDE 2 : événements tech -->
+      <div v-else-if="activeEventsSlide === 'tech'" key="tech" class="mx-auto flex max-w-2xl flex-col items-center text-center">
+        <h2 class="font-display text-display text-balance text-primary-900">Événements tech</h2>
+        <p class="mt-4 text-lg leading-relaxed text-primary-900/60">
+          Meetups, conférences, hackathons&nbsp;: retrouvez les rendez-vous auxquels participe
+          Faceel-IT.
+        </p>
+        <RouterLink
+          :to="{ name: 'evenements-tech' }"
+          class="mt-8 inline-flex items-center gap-2 rounded-full bg-accent-500 px-6 py-3 text-sm font-bold text-primary-950 transition-colors duration-200 hover:bg-accent-400 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-900"
+        >
+          Voir l'agenda
+        </RouterLink>
+      </div>
+
+      <!-- SLIDE 3 : design sport -->
       <div v-else key="sport" class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center">
         <!-- Colonne gauche : texte -->
         <div>
@@ -732,34 +775,16 @@ onBeforeUnmount(() => {
       </div>
     </Transition>
 
-    <!-- Flèches de navigation : bascule manuelle entre les deux designs -->
+    <!-- Flèche de navigation : fait défiler les 3 diapositives, toujours vers l'avant -->
     <button
-      v-if="!showSportDesign"
       type="button"
-      aria-label="Découvrir le sport chez Faceel IT"
-      class="absolute bottom-8 right-4 z-10 inline-flex size-11 items-center justify-center text-primary-950 transition-colors duration-200 hover:text-accent-500 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-900 md:right-8 lg:right-12"
-      @click="showSportDesign = true; resetSportTimer()"
+      aria-label="Diapositive suivante"
+      class="absolute bottom-8 right-4 z-10 inline-flex size-11 items-center justify-center text-accent-500 transition-colors duration-200 hover:text-accent-600 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-900 md:right-8 lg:right-12"
+      @click="nextEventsSlide(); resetSportTimer()"
     >
       <svg class="size-8" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
           d="M4 12h16M14 6l6 6-6 6"
-          stroke="currentColor"
-          stroke-width="3"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </button>
-    <button
-      v-else
-      type="button"
-      aria-label="Revenir aux événements"
-      class="absolute bottom-8 right-4 z-10 inline-flex size-11 items-center justify-center text-primary-950 transition-colors duration-200 hover:text-accent-500 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-900 md:right-8 lg:right-12"
-      @click="showSportDesign = false; resetSportTimer()"
-    >
-      <svg class="size-8" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path
-          d="M20 12H4M10 18l-6-6 6-6"
           stroke="currentColor"
           stroke-width="3"
           stroke-linecap="round"

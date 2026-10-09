@@ -36,16 +36,16 @@ const TABS: { slug: BuSlug; label: string; description: string }[] = [
 
 const MEMBERS: Record<BuSlug, [Member, Member]> = {
   'data-ia': [
-    { id: 'di1', name: 'Robin Rins', role: 'Direction', quote: 'Citation par Robin Rins.' },
-    { id: 'di2', name: 'Lena Lebecq', role: 'Responsable RH', quote: 'Citation par Lena Lebecq.' },
+    { id: 'di1', name: 'Robin Rins', role: 'Directeur BU Data & IA', quote: '[Citation à fournir]' },
+    { id: 'di2', name: 'Lena Lebecq', role: 'Responsable RH', quote: '[Citation à fournir]' },
   ],
   digital: [
-    { id: 'd1', name: 'Stéphanie Demarez', role: 'Direction', quote: 'Citation par Stéphanie Demarez.' },
-    { id: 'd2', name: 'Noémie Vannoye', role: 'Responsable RH', quote: 'Citation par Noémie Vannoye.' },
+    { id: 'd1', name: 'Stéphanie Demarez', role: 'Directrice BU Digital', quote: '[Citation à fournir]' },
+    { id: 'd2', name: 'Noémie Vannoye', role: 'Responsable RH', quote: '[Citation à fournir]' },
   ],
   product: [
-    { id: 'pr1', name: 'Laetitia Lesaffre', role: 'Direction', quote: 'Citation par Laetitia Lesaffre.' },
-    { id: 'pr2', name: 'Victoire Machowiak', role: 'Responsable RH', quote: 'Citation par Victoire Machowiak.' },
+    { id: 'pr1', name: 'Laetitia Lesaffre', role: 'Directrice BU Product', quote: '[Citation à fournir]' },
+    { id: 'pr2', name: 'Victoire Machowiak', role: 'Responsable RH', quote: '[Citation à fournir]' },
   ],
 }
 
@@ -153,13 +153,11 @@ onBeforeUnmount(() => {
     class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-light px-4 pt-36 pb-8 sm:px-6 lg:px-8 xl:px-12"
   >
     <header class="max-w-5xl px-4 md:px-24 lg:px-28">
-      <p class="text-eyebrow uppercase text-accent-700">Tech &amp; Data</p>
       <h2 class="mt-4 font-display text-display whitespace-nowrap text-primary-900">
-        Trois expertises, une seule façon de travailler.
+        Nos BUs, Experte de vos besoins.
       </h2>
       <p class="mt-4 whitespace-nowrap text-lg leading-relaxed text-primary-900/60">
-        Du code lisible, des plateformes solides et des données fiables. Nos trois expertises
-        avancent ensemble, du produit jusqu'à la sécurité.
+        Une organisation interne adaptée au marché pour une réponse sur-mesure à nos clients
       </p>
     </header>
 
@@ -254,13 +252,15 @@ onBeforeUnmount(() => {
            machine à écrire (cf. <script setup>). -->
       <div class="flex-1 flex flex-col justify-center gap-20 lg:gap-32 px-4">
         <div class="self-start text-left max-w-sm">
-          <p class="text-xl lg:text-2xl font-bold text-primary-950 mb-2">{{ leftMember.name }}</p>
+          <p class="text-xl lg:text-2xl font-bold text-primary-950 mb-1">{{ leftMember.name }}</p>
+          <p class="text-sm font-medium text-primary-900/50 mb-2">{{ leftMember.role }}</p>
           <p class="text-base lg:text-lg italic text-primary-900/80 leading-relaxed">
             <span>{{ displayedLeftQuote }}</span><span class="opacity-0">{{ leftMember.quote.slice(displayedLeftQuote.length) }}</span>
           </p>
         </div>
         <div class="self-end text-right max-w-sm">
-          <p class="text-xl lg:text-2xl font-bold text-primary-950 mb-2">{{ rightMember.name }}</p>
+          <p class="text-xl lg:text-2xl font-bold text-primary-950 mb-1">{{ rightMember.name }}</p>
+          <p class="text-sm font-medium text-primary-900/50 mb-2">{{ rightMember.role }}</p>
           <p class="text-base lg:text-lg italic text-primary-900/80 leading-relaxed">
             <span>{{ displayedRightQuote }}</span><span class="opacity-0">{{ rightMember.quote.slice(displayedRightQuote.length) }}</span>
           </p>

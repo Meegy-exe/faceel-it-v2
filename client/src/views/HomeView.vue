@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import TickerBand from '@/components/layout/TickerBand.vue'
 import CoverCarousel from '@/components/ui/CoverCarousel.vue'
@@ -228,19 +228,15 @@ interface ValueCard {
 
 const VALUE_CARDS: ValueCard[] = [
   {
-    title: 'Vision métier',
-    description: 'Adaptation rapide aux besoins concrets de chaque secteur.',
+    title: 'Collectif',
+    description: '[Texte à fournir]',
   },
   {
-    title: 'Adaptation rapide à votre contexte métier',
-    description: 'Retail, industrie, ecommerce, assurance… Nos profils naviguent avec aisance.',
-  },
-  {
-    title: 'Approche agile',
+    title: 'Engagement',
     description: 'Capacité à intervenir sur des projets courts ou de transformation profonde.',
   },
   {
-    title: 'Rigueur technique',
+    title: 'Accompagnement',
     description: 'Une solide maîtrise des technologies modernes et des méthodologies IT.',
   },
 ]
@@ -258,12 +254,31 @@ const valeursActiveSlide = ref(0)
 /* Hero — effet machine à écrire                                              */
 /* -------------------------------------------------------------------------- */
 
-const HERO_TYPED_TEXT = 'On rejoint une équipe.'
-const typedText = ref(HERO_TYPED_TEXT)
+/** Reprend tel quel le texte réel de l'ancien effet machine à écrire pour la
+ *  1ère phrase — aucun texte n'est inventé ici, cf. CLAUDE.md « Intégrité du
+ *  contenu ». */
+const heroPhrases = [
+  { main: 'On ne rejoint pas une ESN.', highlight: 'On rejoint une équipe.' },
+  { main: 'Faceel-it,', highlight: 'Faceelitez votre passion.' },
+]
+const currentPhraseIndex = ref(0)
+const typedMain = ref('')
+const typedHighlight = ref('')
+/** Quelle ligne affiche le curseur clignotant — suit la ligne réellement en
+ *  cours de frappe/effacement plutôt que de rester fixé sur "highlight". */
+const cursorPosition = ref<'main' | 'highlight'>('main')
+
+/** Texte complet de la phrase active, pour la version lue aux lecteurs
+ *  d'écran (span `sr-only` dans le template) — l'animation caractère par
+ *  caractère n'a de sens que visuellement. */
+const heroFullText = computed(
+  () => `${heroPhrases[currentPhraseIndex.value]!.main} ${heroPhrases[currentPhraseIndex.value]!.highlight}`,
+)
 
 const HERO_TYPEWRITER_ERASE_MS = 45
 const HERO_TYPEWRITER_TYPE_MS = 70
 const HERO_TYPEWRITER_START_DELAY_MS = 1_500
+const HERO_TYPEWRITER_PAUSE_MS = 3_000
 
 let heroEraseTimeout: ReturnType<typeof setTimeout> | undefined
 let heroTypeTimeout: ReturnType<typeof setTimeout> | undefined
@@ -281,34 +296,77 @@ function clearHeroTypewriterTimeouts() {
   }
 }
 
-function eraseHeroText(onDone: () => void) {
-  function step() {
-    if (typedText.value.length === 0) {
-      onDone()
-      return
-    }
-    typedText.value = typedText.value.slice(0, -1)
-    heroEraseTimeout = setTimeout(step, HERO_TYPEWRITER_ERASE_MS)
-  }
-  step()
-}
-
-function typeHeroText(onDone: () => void) {
+function typeMain(onDone: () => void) {
+  cursorPosition.value = 'main'
   let count = 0
+  const target = heroPhrases[currentPhraseIndex.value]!.main
   function step() {
-    count += 1
-    typedText.value = HERO_TYPED_TEXT.slice(0, count)
-    if (count >= HERO_TYPED_TEXT.length) {
+    if (count >= target.length) {
       onDone()
       return
     }
+    count += 1
+    typedMain.value = target.slice(0, count)
     heroTypeTimeout = setTimeout(step, HERO_TYPEWRITER_TYPE_MS)
   }
   step()
 }
 
+function typeHighlight(onDone: () => void) {
+  cursorPosition.value = 'highlight'
+  let count = 0
+  const target = heroPhrases[currentPhraseIndex.value]!.highlight
+  function step() {
+    if (count >= target.length) {
+      onDone()
+      return
+    }
+    count += 1
+    typedHighlight.value = target.slice(0, count)
+    heroTypeTimeout = setTimeout(step, HERO_TYPEWRITER_TYPE_MS)
+  }
+  step()
+}
+
+function eraseHighlight(onDone: () => void) {
+  cursorPosition.value = 'highlight'
+  function step() {
+    if (typedHighlight.value.length === 0) {
+      onDone()
+      return
+    }
+    typedHighlight.value = typedHighlight.value.slice(0, -1)
+    heroEraseTimeout = setTimeout(step, HERO_TYPEWRITER_ERASE_MS)
+  }
+  step()
+}
+
+function eraseMain(onDone: () => void) {
+  cursorPosition.value = 'main'
+  function step() {
+    if (typedMain.value.length === 0) {
+      onDone()
+      return
+    }
+    typedMain.value = typedMain.value.slice(0, -1)
+    heroEraseTimeout = setTimeout(step, HERO_TYPEWRITER_ERASE_MS)
+  }
+  step()
+}
+
 function playHeroTypewriterCycle() {
-  eraseHeroText(() => typeHeroText(() => {}))
+  typeMain(() => {
+    typeHighlight(() => {
+      heroStartTimeout = setTimeout(() => {
+        eraseHighlight(() => {
+          eraseMain(() => {
+            currentPhraseIndex.value = (currentPhraseIndex.value + 1) % heroPhrases.length
+            playHeroTypewriterCycle()
+          })
+        })
+      }, HERO_TYPEWRITER_PAUSE_MS)
+    })
+  })
 }
 
 function startHeroTypewriterLoop() {
@@ -329,7 +387,9 @@ function stopHeroTypewriterLoop() {
 function handleHeroReduceMotionChange() {
   stopHeroTypewriterLoop()
   if (heroReduceMotionQuery?.matches) {
-    typedText.value = HERO_TYPED_TEXT
+    typedMain.value = heroPhrases[0]!.main
+    typedHighlight.value = heroPhrases[0]!.highlight
+    cursorPosition.value = 'highlight'
   } else {
     startHeroTypewriterLoop()
   }
@@ -341,7 +401,13 @@ onMounted(() => {
   heroReduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
   heroReduceMotionQuery.addEventListener('change', handleHeroReduceMotionChange)
 
-  if (!heroReduceMotionQuery.matches) startHeroTypewriterLoop()
+  if (heroReduceMotionQuery.matches) {
+    typedMain.value = heroPhrases[0]!.main
+    typedHighlight.value = heroPhrases[0]!.highlight
+    cursorPosition.value = 'highlight'
+  } else {
+    startHeroTypewriterLoop()
+  }
 })
 
 onBeforeUnmount(() => {
@@ -483,20 +549,29 @@ onBeforeUnmount(() => {
 <!--          ESN · Data × IA × Transformation digitale-->
 <!--        </p>-->
 
-        <h1
-          class="mt-6 flex max-w-7xl flex-col items-start gap-y-2 animate-fade-up motion-reduce:animate-none font-display text-5xl leading-[1.1] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl [animation-delay:80ms] drop-shadow-xl"
-        >
-          <span class="block text-white">On ne rejoint pas <br class="lg:hidden" />une ESN.</span>
-          <span class="text-accent-500">
-            <span class="sr-only">{{ HERO_TYPED_TEXT }}</span
-            ><span aria-hidden="true"
-              >{{ typedText || '\u200B'
+        <div class="mt-6 min-h-[140px] md:min-h-[180px] lg:min-h-[220px] flex items-center">
+          <h1
+            class="flex max-w-7xl flex-col items-start gap-y-2 animate-fade-up motion-reduce:animate-none font-display text-5xl leading-[1.1] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl drop-shadow-xl"
+          >
+            <span class="sr-only">{{ heroFullText }}</span>
+            <span class="block text-white" aria-hidden="true">
+              {{ typedMain || '\u200B'
               }}<span
+                v-show="cursorPosition === 'main'"
+                class="ml-1 inline-block h-[0.9em] w-[4px] md:w-[6px] translate-y-[0.05em] animate-blink bg-white motion-reduce:animate-none"
                 aria-hidden="true"
-                class="ml-0.5 inline-block h-[0.7em] w-[0.09em] translate-y-[0.05em] animate-blink bg-accent-500 motion-reduce:animate-none"
-            /></span>
-          </span>
-        </h1>
+              ></span>
+            </span>
+            <span class="text-accent-500" aria-hidden="true">
+              {{ typedHighlight || '\u200B'
+              }}<span
+                v-show="cursorPosition === 'highlight'"
+                class="ml-1 inline-block h-[0.9em] w-[4px] md:w-[6px] translate-y-[0.05em] animate-blink bg-[#12D80A] motion-reduce:animate-none"
+                aria-hidden="true"
+              ></span>
+            </span>
+          </h1>
+        </div>
       </div>
     </div>
   </section>
@@ -516,25 +591,8 @@ onBeforeUnmount(() => {
       >
         <h2 class="font-display text-display text-balance text-white">Nos valeurs</h2>
         <p class="mt-4 w-full text-lg leading-relaxed text-white">
-          Chez Faceel, nos collaborateurs possèdent une double culture : une solide
-          <span
-            class="bg-linear-to-t from-accent-500/70 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
-          >
-            expertise technique
-          </span>
-          et une compréhension fine des
-          <span
-            class="bg-linear-to-t from-accent-500/70 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
-          >
-            réalités métier
-          </span>
-          . C'est cette combinaison qui fait
-          <span
-            class="bg-linear-to-t from-accent-500/70 to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat"
-          >
-            notre différence
-          </span>
-          .
+          Faceel-it est plus qu'une ESN française et indépendante, c'est une équipe qui se
+          construit autour des valeurs du sport qui nous permet d'avancer ensemble.
         </p>
       </header>
 

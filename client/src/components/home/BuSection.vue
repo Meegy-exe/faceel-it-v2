@@ -64,6 +64,24 @@ function nextBU() {
   flippedRight.value = false
 }
 
+interface FlatProfile extends Member {
+  buLabel: string
+}
+
+/** Carrousel mobile (<460px) : les 6 profils à plat, toutes BUs confondues,
+ *  dans l'ordre réel de `TABS` (Data & IA, Digital, Product) — pas l'ordre
+ *  donné en exemple, qui ne correspond pas à l'ordre existant du composant. */
+const ALL_PROFILES: FlatProfile[] = TABS.flatMap((tab) =>
+  MEMBERS[tab.slug].map((member) => ({ ...member, buLabel: tab.label })),
+)
+
+const mobileCardIndex = ref(0)
+const currentMobileProfile = computed(() => ALL_PROFILES[mobileCardIndex.value]!)
+
+function nextMobileCard() {
+  mobileCardIndex.value = (mobileCardIndex.value + 1) % ALL_PROFILES.length
+}
+
 function initials(name: string): string {
   return name
     .split(' ')
@@ -153,10 +171,10 @@ onBeforeUnmount(() => {
     class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-light px-4 pt-36 pb-8 sm:px-6 lg:px-8 xl:px-12"
   >
     <header class="max-w-5xl px-4 md:px-24 lg:px-28">
-      <h2 class="mt-4 font-display text-display whitespace-nowrap text-primary-900">
+      <h2 class="mt-4 font-display text-display min-[1030px]:whitespace-nowrap text-primary-900">
         Nos BUs, Experte de vos besoins.
       </h2>
-      <p class="mt-4 whitespace-nowrap text-lg leading-relaxed text-primary-900/60">
+      <p class="mt-4 min-[1030px]:whitespace-nowrap text-sm md:text-base min-[1030px]:text-lg leading-relaxed text-primary-900/60">
         Une organisation interne adaptée au marché pour une réponse sur-mesure à nos clients
       </p>
     </header>
@@ -165,7 +183,7 @@ onBeforeUnmount(() => {
          pas accent-500 — sur fond clair, accent-500 ne tient que 1,9:1 même
          en grand gras (seuil large-text 3:1), accent-700 tient 4,9:1
          (cf. main.css). -->
-    <div class="flex w-full items-center justify-center mt-8 mb-8">
+    <div class="flex w-full items-center justify-center mt-8 mb-8 max-[459px]:hidden">
       <Transition
         enter-active-class="transition-all duration-700 ease-out"
         enter-from-class="opacity-0 translate-x-12"
@@ -203,10 +221,21 @@ onBeforeUnmount(() => {
     <!-- Arène « Street Fighter » : deux cartes se font face, le témoignage
          alterné occupe le centre. -->
     <div
-      class="relative flex w-full flex-1 items-center justify-between gap-8 px-4 md:px-24 lg:px-28"
+      class="relative flex w-full flex-1 items-center max-[572px]:justify-center min-[573px]:justify-between gap-8 px-4 md:px-24 lg:px-28 max-[459px]:hidden"
     >
       <!-- Combattant gauche -->
-      <div class="w-1/4">
+      <div class="flex w-1/4 flex-col items-center">
+        <!-- Nom/poste/citation : copie compacte, visible uniquement sous
+             573px, où le texte se retrouvait coincé entre les deux cartes
+             (cf. zone centrale ci-dessous, cachée à cette largeur). -->
+        <div class="mb-4 max-w-32 text-center min-[573px]:hidden">
+          <p class="text-sm font-bold text-primary-950">{{ leftMember.name }}</p>
+          <p class="text-[11px] font-medium text-primary-900/50">{{ leftMember.role }}</p>
+          <p class="mt-1 text-xs italic leading-snug text-primary-900/80">
+            <span>{{ displayedLeftQuote }}</span
+            ><span class="opacity-0">{{ leftMember.quote.slice(displayedLeftQuote.length) }}</span>
+          </p>
+        </div>
         <Transition
           mode="out-in"
           enter-active-class="transition-all duration-700 ease-out"
@@ -249,8 +278,10 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- Citations centrales — permanentes, en diagonale franche, effet
-           machine à écrire (cf. <script setup>). -->
-      <div class="flex-1 flex flex-col justify-center gap-20 lg:gap-32 px-4">
+           machine à écrire (cf. <script setup>). Masquées sous 573px : le
+           texte y est remplacé par les copies compactes attachées à chaque
+           carte (cf. ci-dessus/dessous). -->
+      <div class="hidden min-[573px]:flex flex-1 flex-col justify-center gap-20 lg:gap-32 px-4">
         <div class="self-start text-left max-w-sm">
           <p class="text-xl lg:text-2xl font-bold text-primary-950 mb-1">{{ leftMember.name }}</p>
           <p class="text-sm font-medium text-primary-900/50 mb-2">{{ leftMember.role }}</p>
@@ -268,7 +299,7 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- Combattant droit -->
-      <div class="w-1/4">
+      <div class="flex w-1/4 flex-col items-center">
         <Transition
           mode="out-in"
           enter-active-class="transition-all duration-700 ease-out"
@@ -308,6 +339,66 @@ onBeforeUnmount(() => {
             </div>
           </div>
         </Transition>
+        <!-- Nom/poste/citation : copie compacte, sous la carte, sous 573px uniquement. -->
+        <div class="mt-4 max-w-32 text-center min-[573px]:hidden">
+          <p class="text-sm font-bold text-primary-950">{{ rightMember.name }}</p>
+          <p class="text-[11px] font-medium text-primary-900/50">{{ rightMember.role }}</p>
+          <p class="mt-1 text-xs italic leading-snug text-primary-900/80">
+            <span>{{ displayedRightQuote }}</span
+            ><span class="opacity-0">{{ rightMember.quote.slice(displayedRightQuote.length) }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carrousel mobile : sous 460px, l'arène à deux cartes ne tient plus —
+         un seul profil à la fois, les 6 profils de toutes les BUs confondus. -->
+    <div class="hidden max-[459px]:flex w-full flex-1 flex-col items-center justify-center gap-6 px-4">
+      <div class="relative flex flex-col items-center">
+        <!-- accent-700, pas accent-500 : 1,9:1 sur blanc, sous le seuil
+             WCAG même en grand gras (cf. sélecteur desktop ci-dessus). -->
+        <div class="mb-6 flex items-center justify-center gap-2 text-center font-display text-4xl font-black text-accent-700">
+          {{ currentMobileProfile.buLabel }}
+          <svg class="size-6 text-primary-900/30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M9 6l6 6-6 6"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <div class="flex h-72 w-52 items-center justify-center overflow-hidden rounded-2xl bg-primary-950">
+          <span class="font-display text-6xl font-extrabold text-white/10">{{
+            initials(currentMobileProfile.name)
+          }}</span>
+        </div>
+
+        <div class="mt-4 max-w-[18rem] text-center">
+          <p class="text-xl font-bold text-primary-950">{{ currentMobileProfile.name }}</p>
+          <p class="text-sm font-medium text-primary-900/50">{{ currentMobileProfile.role }}</p>
+          <p class="mt-1 text-base italic leading-snug text-primary-900/80">
+            {{ currentMobileProfile.quote }}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          aria-label="Profil suivant"
+          class="absolute top-36 -right-14 -translate-y-1/2 inline-flex size-10 items-center justify-center rounded-full text-primary-900 transition-colors duration-200 hover:bg-primary-900/10 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-900 motion-reduce:transition-none"
+          @click="nextMobileCard"
+        >
+          <svg class="size-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M9 6l6 6-6 6"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
       </div>
     </div>
   </section>

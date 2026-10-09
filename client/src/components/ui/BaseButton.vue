@@ -88,8 +88,14 @@ const attrs = computed(() => {
   return props.to !== undefined ? { to: props.to } : { href: props.href }
 })
 
+/**
+ * `sm` seule est responsive : c'est la taille utilisée dans la navbar
+ * (App.vue, slot `#actions`), toujours visible désormais jusqu'à 500px de
+ * large (cf. MegaMenu.vue — plus de `hidden lg:flex` sur ce slot). `md`/`lg`
+ * ne sont jamais utilisées dans un contexte aussi contraint.
+ */
 const SIZES: Record<ButtonSize, string> = {
-  sm: 'h-9 gap-1.5 px-4 text-sm',
+  sm: 'h-7 gap-1 px-2 text-[11px] sm:h-9 sm:gap-1.5 sm:px-4 sm:text-sm',
   md: 'h-11 gap-2 px-6 text-base',
   lg: 'h-14 gap-2.5 px-8 text-lg',
 }

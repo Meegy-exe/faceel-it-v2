@@ -165,7 +165,7 @@ const focusRingClass = computed(() =>
     @keydown.esc="closeMenu()"
   >
     <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
-      <div class="flex h-16 items-center gap-4 lg:h-20">
+      <div class="flex h-16 items-center gap-2 sm:gap-4 lg:h-20">
         <button
           ref="toggle"
           type="button"
@@ -201,31 +201,36 @@ const focusRingClass = computed(() =>
           :class="focusRingClass"
         >
           <slot name="logo">
-            <span class="relative block h-14">
+            <span class="relative block h-9 sm:h-14">
               <img
                 :src="logoDark"
                 alt=""
-                class="h-14 w-auto object-contain transition-opacity duration-700 ease-in-out motion-reduce:transition-none"
+                class="h-9 w-auto object-contain transition-opacity duration-700 ease-in-out motion-reduce:transition-none sm:h-14"
                 :class="isBarDark ? 'opacity-0' : 'opacity-100'"
               />
               <img
                 :src="logoWhite"
                 alt=""
-                class="absolute inset-0 h-14 w-auto object-contain transition-opacity duration-700 ease-in-out motion-reduce:transition-none"
+                class="absolute inset-0 h-9 w-auto object-contain transition-opacity duration-700 ease-in-out motion-reduce:transition-none sm:h-14"
                 :class="isBarDark ? 'opacity-100' : 'opacity-0'"
               />
             </span>
           </slot>
         </RouterLink>
 
-        <!-- Zone droite de la barre : chatButton (toujours visible) + actions
-             desktop (masquées sur mobile). Le ml-auto pousse tout le groupe
-             contre le bord droit, le chatButton est donc toujours accessible
-             quel que soit l'écran. `surface` suit `isBarDark` (fond réel de
-             la barre, menu ouvert compris, pas le thème brut de la section). -->
-        <div class="ml-auto flex items-center gap-2">
+        <!-- Zone droite de la barre : chatButton (déjà `hidden min-[500px]:
+             flex` dans son propre contenu, cf. App.vue) + actions, visibles
+             dans la barre uniquement à partir de 500px. En dessous, les mêmes
+             boutons réapparaissent dans le panneau mobile (cf. plus bas) —
+             d'où `hidden min-[500px]:flex` posé ICI, sur le wrapper, et non
+             dans le slot lui-même : le même contenu est rendu aux deux
+             endroits, seule la règle de visibilité diffère selon le wrapper.
+             Le ml-auto pousse tout le groupe contre le bord droit. `surface`
+             suit `isBarDark` (fond réel de la barre, menu ouvert compris, pas
+             le thème brut de la section). -->
+        <div class="ml-auto flex items-center gap-1 sm:gap-4">
           <slot name="chatButton" :surface="isBarDark ? 'dark' : 'light'" />
-          <div class="hidden lg:flex lg:items-center">
+          <div class="hidden min-[500px]:flex items-center">
             <slot name="actions" :surface="isBarDark ? 'dark' : 'light'" />
           </div>
         </div>
@@ -243,7 +248,12 @@ const focusRingClass = computed(() =>
       "
       :aria-hidden="!open"
     >
-      <nav aria-label="Navigation principale" class="w-full min-h-[400px]">
+      <!-- max-[1315px]: plein écran (sous la navbar, h-16=4rem) plutôt que la
+           hauteur fixe min-h-[400px] : en dessous de 1316px, le panneau doit
+           occuper toute la page, pas rester une bande courte. Desktop
+           (min-[1316px]:) inchangé — min-h-[400px] reste la hauteur du
+           mega-menu. Seuil aligné sur celui du burger (cf. plus bas). -->
+      <nav aria-label="Navigation principale" class="w-full max-[1315px]:min-h-[calc(100dvh-4rem)] min-[1316px]:min-h-[400px]">
         <Transition
           enter-active-class="transition-opacity duration-300 ease-out"
           enter-from-class="opacity-0"
@@ -257,12 +267,12 @@ const focusRingClass = computed(() =>
           <div
             v-if="!expandedEntry"
             key="main-menu"
-            class="flex min-h-[400px] w-full"
+            class="flex max-[1315px]:min-h-[calc(100dvh-4rem)] min-[1316px]:min-h-[400px] w-full"
             @mouseleave="activeItem = NAV_DEFAULT"
           >
             <!-- ZONE 1 : Panneau gauche (info dynamique, desktop uniquement) -->
             <div
-              class="hidden lg:flex flex-col justify-start w-80 xl:w-96 shrink-0 bg-[#000066] p-8"
+              class="max-[1315px]:hidden min-[1316px]:flex flex-col justify-start w-80 xl:w-96 shrink-0 bg-[#000066] p-8"
             >
               <Transition
                 enter-active-class="transition-opacity duration-200 ease-out"
@@ -288,14 +298,17 @@ const focusRingClass = computed(() =>
             </div>
 
             <!-- ZONE 2 : Liste des entrées principales
-                 - Mobile  : pleine largeur, seule zone visible
-                 - Desktop : colonne étroite (fond gris clair), sépare zone 1 et zone 3 -->
+                 - Mobile/tablette (<1316px) : menu plein écran premium, seule
+                   zone visible — v. bloc dédié ci-dessous.
+                 - Desktop (≥1316px) : colonne étroite (fond gris clair),
+                   sépare zone 1 et zone 3 — présentation compacte inchangée. -->
             <div
-              class="flex-1 lg:flex-none lg:w-64 xl:w-72 lg:shrink-0 lg:bg-gray-50 lg:border-r lg:border-gray-100 py-6 lg:py-8 px-3 lg:px-3"
+              class="flex-1 min-[1316px]:flex-none min-[1316px]:w-64 xl:w-72 min-[1316px]:shrink-0 min-[1316px]:bg-gray-50 min-[1316px]:border-r min-[1316px]:border-gray-100"
             >
-              <ul class="flex flex-col gap-1">
+              <!-- Présentation desktop : liste compacte, logique/handlers inchangés. -->
+              <ul class="hidden min-[1316px]:flex flex-col gap-1 py-6 min-[1316px]:py-8 px-3">
                 <li v-for="entry in entries" :key="entry.id">
-                  <!-- Drill-down mobile (pas de lien direct → sous-pages multiples) -->
+                  <!-- Drill-down desktop : aucune flèche, le survol révèle la zone 3. -->
                   <button
                     v-if="!entry.to"
                     type="button"
@@ -310,20 +323,6 @@ const focusRingClass = computed(() =>
                     @click="drillDown(entry.id)"
                   >
                     <span class="flex-1 text-base text-left">{{ entry.label }}</span>
-                    <svg
-                      class="size-4 shrink-0 text-primary-900/30 lg:hidden"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="m8 5 5 5-5 5"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
                   </button>
 
                   <!-- Lien direct -->
@@ -347,16 +346,71 @@ const focusRingClass = computed(() =>
 
               <!-- `surface="light"` EN DUR : ce rendu vit dans le panneau
                    blanc, pas dans la barre — sa lisibilité ne doit jamais
-                   dépendre du thème de la section survolée. -->
-              <div class="mt-6 border-t border-primary-900/10 pt-4 px-1 lg:hidden">
+                   dépendre du thème de la section survolée.
+                   min-[500px]:hidden : miroir exact du seuil d'affichage des
+                   boutons dans la barre (cf. ci-dessus) — ils ne doivent
+                   jamais être visibles aux deux endroits à la fois. -->
+              <div class="hidden min-[1316px]:block mt-6 border-t border-primary-900/10 pt-4 px-1 min-[500px]:hidden">
                 <slot name="actions" surface="light" />
+              </div>
+
+              <!-- Présentation mobile/tablette (<1316px) : menu plein écran
+                   premium — contenu centré verticalement, typographie massive.
+                   `text-[#060241]`/`#12D80A` de la demande remplacés par les
+                   tokens `primary-900`/`accent-700` du design system : couleur
+                   quasi identique, et `accent-700` est la seule valeur
+                   d'accent lisible en texte sur fond blanc (1,9:1 en
+                   accent-500, cf. tableau de contraste de main.css). -->
+              <div
+                class="hidden max-[1315px]:flex flex-col justify-center h-full min-h-[calc(100dvh-4rem)] px-6 md:px-12 py-10 gap-6 md:gap-8 overflow-y-auto"
+              >
+                <template v-for="entry in entries" :key="entry.id">
+                  <button
+                    v-if="!entry.to"
+                    type="button"
+                    class="flex w-full items-center justify-center gap-4 text-center text-2xl md:text-4xl lg:text-5xl font-black text-primary-900 transition-all duration-300 hover:translate-x-2 hover:text-accent-700 motion-reduce:transition-none motion-reduce:hover:translate-x-0"
+                    :tabindex="open ? undefined : -1"
+                    @click="drillDown(entry.id)"
+                  >
+                    {{ entry.label }}
+                    <svg
+                      class="w-6 h-6 md:w-8 md:h-8 shrink-0 text-primary-900/30"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="m8 5 5 5-5 5"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+
+                  <!-- Lien direct -->
+                  <RouterLink
+                    v-else
+                    :to="entry.to"
+                    class="flex w-full items-center justify-center text-center text-2xl md:text-4xl lg:text-5xl font-black text-primary-900 transition-all duration-300 hover:translate-x-2 hover:text-accent-700 motion-reduce:transition-none motion-reduce:hover:translate-x-0"
+                    :tabindex="open ? undefined : -1"
+                    @click="closeMenu()"
+                  >
+                    {{ entry.label }}
+                  </RouterLink>
+                </template>
+
+                <div class="mt-6 border-t border-primary-900/10 pt-6 min-[500px]:hidden">
+                  <slot name="actions" surface="light" />
+                </div>
               </div>
             </div>
 
             <!-- ZONE 3 : Sous-liens de l'entrée survolée (desktop uniquement)
                  — bandes verticales côte à côte, une colonne par entrée,
                  séparées par un trait vertical (cf. maquette). -->
-            <div class="hidden lg:flex flex-1 items-stretch justify-start overflow-x-auto">
+            <div class="max-[1315px]:hidden min-[1316px]:flex flex-1 items-stretch justify-start overflow-x-auto">
               <Transition
                 enter-active-class="transition-opacity duration-200 ease-out"
                 enter-from-class="opacity-0"

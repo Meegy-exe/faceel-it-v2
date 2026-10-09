@@ -218,7 +218,7 @@ onBeforeUnmount(() => {
         >
           <div :key="activeBUIndex" class="flex flex-col items-center">
             <div
-              class="w-[260px] lg:w-[300px] h-[440px] lg:h-[480px] [perspective:1000px]"
+              class="w-32 h-48 md:w-40 md:h-60 lg:w-48 lg:h-72 min-[1076px]:w-[300px] min-[1076px]:h-[480px] [perspective:1000px]"
               @mouseenter="flippedLeft = true; stopAutoSlide()"
               @mouseleave="flippedLeft = false; startAutoSlide()"
             >
@@ -230,7 +230,7 @@ onBeforeUnmount(() => {
                 <div
                   class="absolute inset-0 [backface-visibility:hidden] bg-primary-950 rounded-2xl flex items-center justify-center overflow-hidden"
                 >
-                  <span class="font-display text-6xl font-extrabold text-white/10">{{
+                  <span class="font-display text-3xl md:text-4xl lg:text-5xl min-[1076px]:text-6xl font-extrabold text-white/10">{{
                     initials(leftMember.name)
                   }}</span>
                 </div>
@@ -280,7 +280,7 @@ onBeforeUnmount(() => {
         >
           <div :key="activeBUIndex" class="flex flex-col items-center">
             <div
-              class="w-[260px] lg:w-[300px] h-[440px] lg:h-[480px] [perspective:1000px]"
+              class="w-32 h-48 md:w-40 md:h-60 lg:w-48 lg:h-72 min-[1076px]:w-[300px] min-[1076px]:h-[480px] [perspective:1000px]"
               @mouseenter="flippedRight = true; stopAutoSlide()"
               @mouseleave="flippedRight = false; startAutoSlide()"
             >
@@ -292,7 +292,7 @@ onBeforeUnmount(() => {
                 <div
                   class="absolute inset-0 [backface-visibility:hidden] bg-primary-950 rounded-2xl flex items-center justify-center overflow-hidden"
                 >
-                  <span class="font-display text-6xl font-extrabold text-white/10">{{
+                  <span class="font-display text-3xl md:text-4xl lg:text-5xl min-[1076px]:text-6xl font-extrabold text-white/10">{{
                     initials(rightMember.name)
                   }}</span>
                 </div>

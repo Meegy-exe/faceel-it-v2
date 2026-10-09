@@ -257,19 +257,10 @@ const infoReveal = useScrollReveal(infoEl)
     }
   }
 
-  /* Flux lumineux qui court le long du contour réel (tracé /hdf.svg, bien
-     plus long que l'ancien tracé simplifié) — dasharray/offset agrandis en
-     conséquence. Segment visible élargi (80 15, au lieu de 30 20) pour que le
-     tracé reste lisible même quand l'animation masque une portion. */
+  /* Contour statique (plus de flux lumineux animé) — trait plein en
+     permanence, seule la lueur douce est conservée. */
   .map-outline {
-    stroke-dasharray: 80 15;
     filter: drop-shadow(0 0 4px rgba(94, 198, 255, 0.6));
-    animation: map-flow 14s linear infinite;
-  }
-  @keyframes map-flow {
-    to {
-      stroke-dashoffset: -1000;
-    }
   }
 }
 </style>

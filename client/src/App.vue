@@ -254,12 +254,6 @@ const ArrowRightIcon: FunctionalComponent = () =>
 
       <template #actions="{ surface }">
         <div class="flex items-center gap-3">
-          <BaseButton variant="outline" size="sm" :surface="surface" :to="{ name: 'evenements-tech' }">
-            Événements
-          </BaseButton>
-          <BaseButton variant="accent" size="sm" :surface="surface" to="/chat">
-            ChatBot
-          </BaseButton>
           <BaseButton variant="outline" size="sm" :surface="surface" :to="CONTACT_TO">
             Un projet ?
           </BaseButton>
@@ -385,5 +379,34 @@ const ArrowRightIcon: FunctionalComponent = () =>
       </template>
     </TheFooter>
     <CookieBanner />
+
+    <!-- Bulle ChatBot flottante — remplace l'ancien bouton "ChatBot" de la
+         navbar, reprend le rond vert/texte "it" du logo pour rester
+         identifiable même retiré de la barre. -->
+    <div v-if="route.path !== '/chat'" class="group fixed bottom-6 right-6 lg:bottom-8 lg:right-8 z-50 flex items-center gap-3">
+      <span class="bg-white/95 backdrop-blur-sm text-gray-800 text-sm md:text-base font-medium py-2.5 px-5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 cursor-default opacity-0 translate-x-2 pointer-events-none transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">Une question ?</span>
+      <router-link
+        to="/chat"
+        aria-label="Ouvrir le ChatBot"
+        class="flex size-14 items-center justify-center rounded-full bg-[#12D80A] shadow-2xl transition-all duration-300 hover:animate-wiggle hover:shadow-[0_10px_40px_-10px_rgba(18,216,10,0.6)] lg:size-16 motion-reduce:transition-none motion-reduce:hover:animate-none"
+      >
+        <span class="text-2xl font-bold leading-none tracking-tight text-white lg:text-3xl">it</span>
+      </router-link>
+    </div>
   </div>
 </template>
+
+<style scoped>
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: scale(1.1) rotate(-6deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(6deg);
+  }
+}
+.hover\:animate-wiggle:hover {
+  animation: wiggle 0.4s ease-in-out infinite;
+}
+</style>

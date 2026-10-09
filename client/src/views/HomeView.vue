@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
+import TickerBand from '@/components/layout/TickerBand.vue'
 import CoverCarousel from '@/components/ui/CoverCarousel.vue'
 import CarouselSlideContent from '@/components/ui/CarouselSlideContent.vue'
 import ReferencesSection from '@/components/ui/ReferencesSection.vue'
@@ -450,11 +451,21 @@ onBeforeUnmount(() => {
   <!-- CONTENEUR SNAP OPT-IN : ce div isole le scroll magnétique de la page
        d'accueil pour ne pas briser le layout d'App.vue. -->
   <div class="h-dvh w-full overflow-y-auto snap-y snap-mandatory">
+  <!-- snap-always retiré ici (seulement ici) : forçait un snap plein écran
+       dès le moindre tick de molette, sans laisser au bandeau d'événements
+       le temps de défiler sous la navbar fixe. snap-start conservé (section
+       reste un point d'ancrage valide, cf. CLAUDE.md "Full Page Snap
+       Scroll"). -->
   <section
     id="hero"
     data-theme="dark"
-    class="relative isolate overflow-hidden h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center text-white pt-24 lg:pt-28"
+    class="relative isolate overflow-hidden h-dvh shrink-0 w-full snap-start flex flex-col justify-center text-white pt-24 lg:pt-28"
   >
+    <!-- TickerBand DANS cette section (pas dans App.vue, ni au-dessus d'elle) :
+         c'est le conteneur `h-dvh overflow-y-auto snap-y` englobant qui capte
+         le scroll — le bandeau doit vivre dans le MÊME bloc snap-start que le
+         Hero pour apparaître à l'écran dès le chargement. -->
+    <TickerBand />
     <div class="absolute inset-0 z-0 bg-gradient-to-b from-[#000066] via-[#000066] via-65% to-blue-800">
       <canvas
         ref="waveCanvas"

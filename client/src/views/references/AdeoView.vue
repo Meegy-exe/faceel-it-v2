@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useTemplateRef } from 'vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
+import TickerBand from '@/components/layout/TickerBand.vue'
 import { useSeo } from '@/composables/useSeo'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
 
@@ -52,11 +53,22 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
     <!-- Section Hero — data-theme="light" force la navbar en surface claire
          (texte sombre) sur tout le bloc teal, jusqu'au footer (data-theme
          "dark" plus bas) qui la bascule en sombre — mécanisme déjà générique
-         de MegaMenu.vue, aucun état custom à ajouter ici. -->
+         de MegaMenu.vue, aucun état custom à ajouter ici.
+         snap-always retiré ici (seulement ici) : forçait un snap plein écran
+         dès le moindre tick de molette, sans laisser au bandeau d'événements
+         le temps de défiler sous la navbar fixe. snap-start conservé
+         (section reste un point d'ancrage valide, cf. CLAUDE.md "Full Page
+         Snap Scroll"). -->
     <section
       data-theme="light"
-      class="relative min-h-screen w-full snap-start snap-always flex items-center bg-[#059dab]"
+      class="relative min-h-screen w-full snap-start flex items-center bg-[#059dab]"
     >
+      <!-- TickerBand DANS cette section (pas dans App.vue, ni au-dessus
+           d'elle) : c'est le conteneur `h-screen overflow-y-auto snap-y`
+           englobant qui capte le scroll — le bandeau doit vivre dans le
+           MÊME bloc snap-start que le Hero pour apparaître dès le
+           chargement. -->
+      <TickerBand />
       <div class="relative z-10 w-full max-w-[1700px] mx-auto grid grid-cols-1 lg:grid-cols-12 items-center gap-12 px-4 sm:px-6 lg:px-24 xl:px-32">
         <!-- Colonne gauche : textes -->
         <div

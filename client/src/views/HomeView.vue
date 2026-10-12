@@ -223,21 +223,29 @@ onBeforeUnmount(() => {
 
 interface ValueCard {
   title: string
-  description: string
+  /** Segments joints par un `<br>` dans le template (cf. `#slide` plus bas) —
+   *  un seul élément dans la plupart des cas ; `Accompagnement` en a deux
+   *  pour forcer un retour à la ligne exact après "modernes" dès 1840px,
+   *  sans dépendre du calcul automatique des largeurs. */
+  description: string[]
 }
 
 const VALUE_CARDS: ValueCard[] = [
   {
     title: 'Collectif',
-    description: '[Texte à fournir]',
+    description: ['Tout ce que nous réalisons,', 'nous le faisons ensemble,', 'grâce et avec nos collaborateurs.'],
   },
   {
     title: 'Engagement',
-    description: 'Capacité à intervenir sur des projets courts ou de transformation profonde.',
+    description: ['Comme l’esprit sportif,', 'on avance en donnant 100%', 'de nos efforts pour atteindre l’objectif.'],
   },
   {
     title: 'Accompagnement',
-    description: 'Une solide maîtrise des technologies modernes et des méthodologies IT.',
+    description: [
+      'Nous sommes toujours à l’écoute',
+      'pour offrir un service sur mesure',
+      'tant à nos clients qu’à nos collaborateurs.',
+    ],
   },
 ]
 
@@ -623,10 +631,12 @@ onBeforeUnmount(() => {
               tone="dark"
               :title="activeValue(index).title"
               :heading-level="3"
-              body-class="text-base lg:text-lg line-clamp-2"
+              body-class="text-base lg:text-lg max-w-[320px]"
               class="max-w-xl"
             >
-              {{ activeValue(index).description }}
+              <template v-for="(line, lineIndex) in activeValue(index).description" :key="lineIndex">
+                <br v-if="lineIndex > 0" />{{ line }}
+              </template>
             </CarouselSlideContent>
           </template>
         </CoverCarousel>
@@ -784,7 +794,7 @@ onBeforeUnmount(() => {
           :to="{ name: 'evenements-tech' }"
           class="mt-8 inline-flex items-center gap-2 rounded-full bg-accent-500 px-6 py-3 text-sm font-bold text-primary-950 transition-colors duration-200 hover:bg-accent-400 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-900"
         >
-          Voir l'agenda
+          Découvrez nos événements
         </RouterLink>
       </div>
 
@@ -848,7 +858,7 @@ onBeforeUnmount(() => {
     <button
       type="button"
       aria-label="Diapositive suivante"
-      class="absolute bottom-8 right-4 z-10 inline-flex size-11 items-center justify-center text-accent-500 transition-colors duration-200 hover:text-accent-600 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-900 md:right-8 lg:right-12"
+      class="absolute top-1/2 right-4 z-10 inline-flex size-11 -translate-y-1/2 items-center justify-center text-accent-500 transition-colors duration-200 hover:text-accent-600 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-900 md:right-8 lg:right-12"
       @click="nextEventsSlide(); resetSportTimer()"
     >
       <svg class="size-8" viewBox="0 0 24 24" fill="none" aria-hidden="true">

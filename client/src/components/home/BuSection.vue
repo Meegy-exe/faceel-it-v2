@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 type BuSlug = 'data-ia' | 'digital' | 'product'
 
@@ -9,8 +9,10 @@ interface Member {
   role: string
   /** TODO — citation réelle à fournir par le membre ; aucun témoignage
    *  fictif attribué à une personne réelle (cf. CLAUDE.md, intégrité du
-   *  contenu). */
-  quote: string
+   *  contenu). Découpée en segments pour un affichage sur un nombre de
+   *  lignes fixe (cf. template, <span class="block"> par segment) — un seul
+   *  segment pour un placeholder, rien à couper en deux. */
+  quote: string[]
 }
 
 const TABS: { slug: BuSlug; label: string; description: string }[] = [
@@ -36,16 +38,45 @@ const TABS: { slug: BuSlug; label: string; description: string }[] = [
 
 const MEMBERS: Record<BuSlug, [Member, Member]> = {
   'data-ia': [
-    { id: 'di1', name: 'Robin Rins', role: 'Directeur BU Data & IA', quote: '[Citation à fournir]' },
-    { id: 'di2', name: 'Lena Lebecq', role: 'Responsable RH', quote: '[Citation à fournir]' },
+    { id: 'di1', name: 'Robin Rins', role: 'Directeur BU Data & IA', quote: ['[Citation à venir]'] },
+    { id: 'di2', name: 'Lena Lebecq', role: 'Responsable RH', quote: ['[Citation à venir]'] },
   ],
   digital: [
-    { id: 'd1', name: 'Stéphanie Demarez', role: 'Directrice BU Digital', quote: '[Citation à fournir]' },
-    { id: 'd2', name: 'Noémie Vannoye', role: 'Responsable RH', quote: '[Citation à fournir]' },
+    {
+      id: 'd1',
+      name: 'Stéphanie Demarez',
+      role: 'Directrice BU Digital',
+      quote: [
+        '« Je ne cherche pas seulement un business',
+        'mais avant tout à créer une relation durable. »',
+      ],
+    },
+    {
+      id: 'd2',
+      name: 'Noémie Vannoye',
+      role: 'Responsable RH',
+      quote: [
+        '« Écouter pour mieux suivre et accompagner',
+        'mes collaborateurs dans leur montée en compétences. »',
+      ],
+    },
   ],
   product: [
-    { id: 'pr1', name: 'Laetitia Lesaffre', role: 'Directrice BU Product', quote: '[Citation à fournir]' },
-    { id: 'pr2', name: 'Victoire Machowiak', role: 'Responsable RH', quote: '[Citation à fournir]' },
+    {
+      id: 'pr1',
+      name: 'Laetitia Lesaffre',
+      role: 'Directrice BU Product',
+      quote: [
+        '« Etre à l’écoute est pour moi le plus important',
+        'pour répondre au mieux au besoin de nos client. »',
+      ],
+    },
+    {
+      id: 'pr2',
+      name: 'Victoire Machowiak',
+      role: 'Responsable RH',
+      quote: ['« Je cherche avant tout des qualités humaines', 'avant des qualités techniques. »'],
+    },
   ],
 }
 
@@ -95,7 +126,7 @@ let slideInterval: ReturnType<typeof setInterval> | undefined
 
 function startAutoSlide() {
   if (import.meta.env.SSR || slideInterval !== undefined) return
-  slideInterval = setInterval(nextBU, 4500)
+  slideInterval = setInterval(nextBU, 10_000)
 }
 
 function stopAutoSlide() {
@@ -104,64 +135,19 @@ function stopAutoSlide() {
   slideInterval = undefined
 }
 
-/* -------------------------------------------------------------------------- */
-/* Effet machine à écrire sur les deux citations — réécrit à chaque           */
-/* changement de BU. Pas d'animation côté SSR : le texte complet est posé     */
-/* directement pour que le HTML pré-rendu reste déterministe (cf. CLAUDE.md). */
-/* -------------------------------------------------------------------------- */
-
-const displayedLeftQuote = ref('')
-const displayedRightQuote = ref('')
-
-interface TypewriterHandle {
-  id: ReturnType<typeof setInterval> | undefined
-}
-
-const leftTypewriter: TypewriterHandle = { id: undefined }
-const rightTypewriter: TypewriterHandle = { id: undefined }
-
-function typeText(text: string, target: ReturnType<typeof ref<string>>, handle: TypewriterHandle) {
-  if (handle.id !== undefined) {
-    clearInterval(handle.id)
-    handle.id = undefined
-  }
-
-  if (import.meta.env.SSR) {
-    target.value = text
-    return
-  }
-
-  target.value = ''
-  let i = 0
-  handle.id = setInterval(() => {
-    i += 1
-    target.value = text.slice(0, i)
-    if (i >= text.length) {
-      clearInterval(handle.id)
-      handle.id = undefined
-    }
-  }, 60)
-}
-
-watch(
-  [leftMember, rightMember],
-  ([left, right]) => {
-    typeText(left.quote, displayedLeftQuote, leftTypewriter)
-    typeText(right.quote, displayedRightQuote, rightTypewriter)
-  },
-  { immediate: true },
-)
-
-function stopTypewriters() {
-  if (leftTypewriter.id !== undefined) clearInterval(leftTypewriter.id)
-  if (rightTypewriter.id !== undefined) clearInterval(rightTypewriter.id)
+/** Sélection manuelle (clic sur un onglet BU) : reboote le timer pour que la
+ *  rotation automatique reparte pour 10 s complètes, au lieu d'enchaîner
+ *  presque aussitôt si le clic tombe juste avant la fin du cycle en cours. */
+function selectBU(index: number) {
+  activeBUIndex.value = index
+  flippedLeft.value = false
+  flippedRight.value = false
+  stopAutoSlide()
+  startAutoSlide()
 }
 
 onMounted(startAutoSlide)
-onBeforeUnmount(() => {
-  stopAutoSlide()
-  stopTypewriters()
-})
+onBeforeUnmount(stopAutoSlide)
 </script>
 
 <template>
@@ -179,62 +165,48 @@ onBeforeUnmount(() => {
       </p>
     </header>
 
-    <!-- Sélecteur de BU compact, centré au-dessus de l'arène : accent-700,
-         pas accent-500 — sur fond clair, accent-500 ne tient que 1,9:1 même
-         en grand gras (seuil large-text 3:1), accent-700 tient 4,9:1
+    <!-- Rangée statique des 3 BUs, surplombant l'arène : gauche/centre/droite
+         pour coïncider avec les cartes gauche/droite et la citation centrale
+         en dessous (même padding horizontal que la rangée de l'arène,
+         cf. ci-dessous, pour un alignement exact). accent-700, pas
+         accent-500 — sur fond clair, accent-500 ne tient que 1,9:1 même en
+         grand gras (seuil large-text 3:1), accent-700 tient 4,9:1
          (cf. main.css). -->
-    <div class="flex w-full items-center justify-center mt-8 mb-8 max-[459px]:hidden">
-      <Transition
-        enter-active-class="transition-all duration-700 ease-out"
-        enter-from-class="opacity-0 translate-x-12"
-        enter-to-class="opacity-100 translate-x-0"
-        leave-active-class="transition-all duration-500 ease-in"
-        leave-from-class="opacity-100 translate-x-0"
-        leave-to-class="opacity-0 -translate-x-12"
-        mode="out-in"
+    <div class="flex w-full justify-between items-end mt-8 mb-8 px-4 md:px-24 lg:px-28 max-[459px]:hidden">
+      <h3
+        v-for="(tab, index) in TABS"
+        :key="tab.slug"
+        class="cursor-pointer font-display transition-all duration-300"
+        :class="[
+          activeBUIndex === index
+            ? 'font-bold text-3xl md:text-4xl text-accent-700'
+            : 'font-normal text-xl md:text-2xl text-accent-700/60',
+          index === 0 ? 'text-left' : index === TABS.length - 1 ? 'text-right' : 'text-center',
+        ]"
+        @click="selectBU(index)"
       >
-        <h3
-          :key="activeBUIndex"
-          class="flex items-center gap-2 font-display text-4xl font-bold text-accent-700"
-        >
-          {{ activeBU.label }}
-          <button
-            type="button"
-            aria-label="Expertise suivante"
-            class="inline-flex size-9 shrink-0 items-center justify-center rounded-full text-accent-700 transition-colors duration-200 hover:bg-accent-700/10 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-700 motion-reduce:transition-none"
-            @click="nextBU"
-          >
-            <svg class="size-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path
-                d="M9 6l6 6-6 6"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </button>
-        </h3>
-      </Transition>
+        {{ tab.label }}
+      </h3>
     </div>
 
     <!-- Arène « Street Fighter » : deux cartes se font face, le témoignage
          alterné occupe le centre. -->
     <div
-      class="relative flex w-full flex-1 items-center max-[572px]:justify-center min-[573px]:justify-between gap-8 px-4 md:px-24 lg:px-28 max-[459px]:hidden"
+      class="relative flex w-full flex-1 items-stretch max-[572px]:justify-center min-[573px]:justify-between gap-8 px-4 md:px-24 lg:px-28 max-[459px]:hidden"
     >
       <!-- Combattant gauche -->
-      <div class="flex w-1/4 flex-col items-center">
+      <div class="flex w-auto shrink-0 flex-col items-center justify-center">
         <!-- Nom/poste/citation : copie compacte, visible uniquement sous
              573px, où le texte se retrouvait coincé entre les deux cartes
              (cf. zone centrale ci-dessous, cachée à cette largeur). -->
         <div class="mb-4 max-w-32 text-center min-[573px]:hidden">
           <p class="text-sm font-bold text-primary-950">{{ leftMember.name }}</p>
           <p class="text-[11px] font-medium text-primary-900/50">{{ leftMember.role }}</p>
-          <p class="mt-1 text-xs italic leading-snug text-primary-900/80">
-            <span>{{ displayedLeftQuote }}</span
-            ><span class="opacity-0">{{ leftMember.quote.slice(displayedLeftQuote.length) }}</span>
-          </p>
+          <Transition name="fade" mode="out-in">
+            <p :key="leftMember.id" class="mt-1 min-h-[72px] text-xs italic leading-snug text-primary-900/80">
+              <span v-for="(line, idx) in leftMember.quote" :key="idx" class="block">{{ line }}</span>
+            </p>
+          </Transition>
         </div>
         <Transition
           mode="out-in"
@@ -247,7 +219,7 @@ onBeforeUnmount(() => {
         >
           <div :key="activeBUIndex" class="flex flex-col items-center">
             <div
-              class="w-32 h-48 md:w-40 md:h-60 lg:w-48 lg:h-72 min-[1076px]:w-[300px] min-[1076px]:h-[480px] [perspective:1000px]"
+              class="w-40 h-60 md:w-48 md:h-72 lg:w-[320px] lg:h-[480px] [perspective:1000px]"
               @mouseenter="flippedLeft = true; stopAutoSlide()"
               @mouseleave="flippedLeft = false; startAutoSlide()"
             >
@@ -259,7 +231,7 @@ onBeforeUnmount(() => {
                 <div
                   class="absolute inset-0 [backface-visibility:hidden] bg-primary-950 rounded-2xl flex items-center justify-center overflow-hidden"
                 >
-                  <span class="font-display text-3xl md:text-4xl lg:text-5xl min-[1076px]:text-6xl font-extrabold text-white/10">{{
+                  <span class="font-display text-4xl md:text-5xl lg:text-7xl font-extrabold text-white/10">{{
                     initials(leftMember.name)
                   }}</span>
                 </div>
@@ -277,29 +249,41 @@ onBeforeUnmount(() => {
         </Transition>
       </div>
 
-      <!-- Citations centrales — permanentes, en diagonale franche, effet
-           machine à écrire (cf. <script setup>). Masquées sous 573px : le
-           texte y est remplacé par les copies compactes attachées à chaque
-           carte (cf. ci-dessus/dessous). -->
-      <div class="hidden min-[573px]:flex flex-1 flex-col justify-center gap-20 lg:gap-32 px-4">
-        <div class="self-start text-left max-w-sm">
-          <p class="text-xl lg:text-2xl font-bold text-primary-950 mb-1">{{ leftMember.name }}</p>
-          <p class="text-sm font-medium text-primary-900/50 mb-2">{{ leftMember.role }}</p>
-          <p class="text-base lg:text-lg italic text-primary-900/80 leading-relaxed">
-            <span>{{ displayedLeftQuote }}</span><span class="opacity-0">{{ leftMember.quote.slice(displayedLeftQuote.length) }}</span>
-          </p>
-        </div>
-        <div class="self-end text-right max-w-sm">
-          <p class="text-xl lg:text-2xl font-bold text-primary-950 mb-1">{{ rightMember.name }}</p>
-          <p class="text-sm font-medium text-primary-900/50 mb-2">{{ rightMember.role }}</p>
-          <p class="text-base lg:text-lg italic text-primary-900/80 leading-relaxed">
-            <span>{{ displayedRightQuote }}</span><span class="opacity-0">{{ rightMember.quote.slice(displayedRightQuote.length) }}</span>
-          </p>
+      <!-- Citations centrales — permanentes, en diagonale franche. Masquées
+           sous 573px : le texte y est remplacé par les copies compactes
+           attachées à chaque carte (cf. ci-dessus/dessous). -->
+      <div class="hidden min-[573px]:flex flex-1 items-center px-4">
+        <!-- Cadre de référence, hauteur calquée sur celle de la carte (pas
+             h-full : la colonne parente reste plus haute — `items-center`
+             ci-dessus centre ce cadre à hauteur fixe dans cet espace plutôt
+             que de l'étirer dessus). Les deux blocs sont ancrés en `absolute`
+             à ses coins plutôt que distribués en flex : élimine toute
+             dépendance aux conteneurs flex environnants. -mt-2/-mb-2 :
+             compensation optique du line-height. -->
+        <div class="relative w-full h-60 md:h-72 lg:h-[480px]">
+          <div class="-mt-2 absolute top-0 left-0 w-full text-left">
+            <p class="text-xl lg:text-2xl font-bold text-primary-950 mb-1">{{ leftMember.name }}</p>
+            <p class="text-sm font-medium text-primary-900/50 mb-2">{{ leftMember.role }}</p>
+            <Transition name="fade" mode="out-in">
+              <p :key="leftMember.id" class="min-h-[100px] lg:min-h-[120px] text-base lg:text-lg italic text-primary-900/80 leading-relaxed">
+                <span v-for="(line, idx) in leftMember.quote" :key="idx" class="block whitespace-nowrap">{{ line }}</span>
+              </p>
+            </Transition>
+          </div>
+          <div class="-mb-2 absolute bottom-0 right-0 w-full text-right">
+            <p class="text-xl lg:text-2xl font-bold text-primary-950 mb-1">{{ rightMember.name }}</p>
+            <p class="text-sm font-medium text-primary-900/50 mb-2">{{ rightMember.role }}</p>
+            <Transition name="fade" mode="out-in">
+              <p :key="rightMember.id" class="min-h-[100px] lg:min-h-[120px] text-base lg:text-lg italic text-primary-900/80 leading-relaxed">
+                <span v-for="(line, idx) in rightMember.quote" :key="idx" class="block whitespace-nowrap">{{ line }}</span>
+              </p>
+            </Transition>
+          </div>
         </div>
       </div>
 
       <!-- Combattant droit -->
-      <div class="flex w-1/4 flex-col items-center">
+      <div class="flex w-auto shrink-0 flex-col items-center justify-center">
         <Transition
           mode="out-in"
           enter-active-class="transition-all duration-700 ease-out"
@@ -311,7 +295,7 @@ onBeforeUnmount(() => {
         >
           <div :key="activeBUIndex" class="flex flex-col items-center">
             <div
-              class="w-32 h-48 md:w-40 md:h-60 lg:w-48 lg:h-72 min-[1076px]:w-[300px] min-[1076px]:h-[480px] [perspective:1000px]"
+              class="w-40 h-60 md:w-48 md:h-72 lg:w-[320px] lg:h-[480px] [perspective:1000px]"
               @mouseenter="flippedRight = true; stopAutoSlide()"
               @mouseleave="flippedRight = false; startAutoSlide()"
             >
@@ -323,7 +307,7 @@ onBeforeUnmount(() => {
                 <div
                   class="absolute inset-0 [backface-visibility:hidden] bg-primary-950 rounded-2xl flex items-center justify-center overflow-hidden"
                 >
-                  <span class="font-display text-3xl md:text-4xl lg:text-5xl min-[1076px]:text-6xl font-extrabold text-white/10">{{
+                  <span class="font-display text-4xl md:text-5xl lg:text-7xl font-extrabold text-white/10">{{
                     initials(rightMember.name)
                   }}</span>
                 </div>
@@ -343,10 +327,11 @@ onBeforeUnmount(() => {
         <div class="mt-4 max-w-32 text-center min-[573px]:hidden">
           <p class="text-sm font-bold text-primary-950">{{ rightMember.name }}</p>
           <p class="text-[11px] font-medium text-primary-900/50">{{ rightMember.role }}</p>
-          <p class="mt-1 text-xs italic leading-snug text-primary-900/80">
-            <span>{{ displayedRightQuote }}</span
-            ><span class="opacity-0">{{ rightMember.quote.slice(displayedRightQuote.length) }}</span>
-          </p>
+          <Transition name="fade" mode="out-in">
+            <p :key="rightMember.id" class="mt-1 min-h-[72px] text-xs italic leading-snug text-primary-900/80">
+              <span v-for="(line, idx) in rightMember.quote" :key="idx" class="block">{{ line }}</span>
+            </p>
+          </Transition>
         </div>
       </div>
     </div>
@@ -379,7 +364,7 @@ onBeforeUnmount(() => {
           <p class="text-xl font-bold text-primary-950">{{ currentMobileProfile.name }}</p>
           <p class="text-sm font-medium text-primary-900/50">{{ currentMobileProfile.role }}</p>
           <p class="mt-1 text-base italic leading-snug text-primary-900/80">
-            {{ currentMobileProfile.quote }}
+            <span v-for="(line, idx) in currentMobileProfile.quote" :key="idx" class="block">{{ line }}</span>
           </p>
         </div>
 
@@ -403,3 +388,21 @@ onBeforeUnmount(() => {
     </div>
   </section>
 </template>
+
+<style scoped>
+/* `prefers-reduced-motion` : sans cette garde, la transition resterait
+   active — motion-reduce: n'existe pas en Tailwind pour les classes
+   générées par <Transition>, d'où le média query CSS direct (cf. CLAUDE.md,
+   neutralisation obligatoire des animations décoratives). */
+@media (prefers-reduced-motion: no-preference) {
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.5s ease;
+  }
+
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
+  }
+}
+</style>

@@ -4,7 +4,7 @@ import { RouterLink, useRoute } from 'vue-router'
 import { onClickOutside } from '@vueuse/core'
 import logoDark from '@/assets/images/logo-bleu.png'
 import logoWhite from '@/assets/images/logo-blanc.png'
-import { BUSINESS_UNITS, NAV_DEFAULT, type NavItem } from '@/features/navigation/mainNav'
+import { BUSINESS_UNITS, type NavItem } from '@/features/navigation/mainNav'
 
 const open = defineModel<boolean>('open', { default: false })
 const isDarkTheme = defineModel<boolean>('dark', { default: true })
@@ -43,7 +43,10 @@ onClickOutside(headerRef, () => {
 /* Panneau gauche + zone droite — dynamiques au survol                        */
 /* -------------------------------------------------------------------------- */
 
-const activeItem = ref<NavItem>(NAV_DEFAULT)
+/** `null` tant qu'aucun onglet n'a été survolé/cliqué : le panneau de droite
+ *  affiche alors une invitation à naviguer plutôt qu'un onglet par défaut
+ *  (cf. template, zones 1 et 3). */
+const activeItem = ref<NavItem | null>(null)
 
 /* -------------------------------------------------------------------------- */
 /* Sous-menu (Drill-down mobile)                                              */
@@ -55,6 +58,24 @@ function drillDown(id: string) {
   expandedId.value = id
 }
 
+/* -------------------------------------------------------------------------- */
+/* Clignotement des sous-liens (desktop) — un clic sur un onglet sans lien    */
+/* direct ne bascule plus toute l'interface (cf. VUE 2 drill-down, réservée   */
+/* au mobile) : la zone 3 est déjà révélée au survol, le clic ne fait que la  */
+/* mettre brièvement en évidence en vert pour indiquer où regarder.          */
+/* -------------------------------------------------------------------------- */
+
+const flashingTab = ref<string | null>(null)
+let flashTimeout: ReturnType<typeof setTimeout> | undefined
+
+function handleTabClick(id: string) {
+  flashingTab.value = id
+  clearTimeout(flashTimeout)
+  flashTimeout = setTimeout(() => {
+    flashingTab.value = null
+  }, 400)
+}
+
 function goBack() {
   expandedId.value = null
 }
@@ -64,7 +85,10 @@ const expandedEntry = computed(
 )
 
 watch(open, (isOpen) => {
-  if (!isOpen) expandedId.value = null
+  if (!isOpen) {
+    expandedId.value = null
+    activeItem.value = null
+  }
 })
 
 function closeMenu() {
@@ -127,7 +151,10 @@ function setupObserver() {
 const route = useRoute()
 
 onMounted(setupObserver)
-onBeforeUnmount(teardownObserver)
+onBeforeUnmount(() => {
+  teardownObserver()
+  clearTimeout(flashTimeout)
+})
 
 watch([() => props.scrollRoot, () => route.fullPath], async () => {
   await nextTick()
@@ -268,7 +295,7 @@ const focusRingClass = computed(() =>
             v-if="!expandedEntry"
             key="main-menu"
             class="flex max-[1315px]:min-h-[calc(100dvh-4rem)] min-[1316px]:min-h-[400px] w-full"
-            @mouseleave="activeItem = NAV_DEFAULT"
+            @mouseleave="activeItem = null"
           >
             <!-- ZONE 1 : Panneau gauche (info dynamique, desktop uniquement) -->
             <div
@@ -283,7 +310,7 @@ const focusRingClass = computed(() =>
                 leave-to-class="opacity-0"
                 mode="out-in"
               >
-                <div :key="activeItem.id">
+                <div v-if="activeItem" :key="activeItem.id">
                   <p class="mb-4 text-xs font-semibold uppercase tracking-widest text-accent-500">
                     Faceel-IT
                   </p>
@@ -305,22 +332,25 @@ const focusRingClass = computed(() =>
             <div
               class="flex-1 min-[1316px]:flex-none min-[1316px]:w-64 xl:w-72 min-[1316px]:shrink-0 min-[1316px]:bg-gray-50 min-[1316px]:border-r min-[1316px]:border-gray-100"
             >
-              <!-- Présentation desktop : liste compacte, logique/handlers inchangés. -->
+              <!-- Présentation desktop : liste compacte. Le clic ne bascule
+                   plus vers VUE 2 (drill-down) — le survol révèle déjà la
+                   zone 3, le clic se contente de la faire clignoter en vert
+                   (cf. `handleTabClick`/`flashingTab`). -->
               <ul class="hidden min-[1316px]:flex flex-col gap-1 py-6 min-[1316px]:py-8 px-3">
                 <li v-for="entry in entries" :key="entry.id">
-                  <!-- Drill-down desktop : aucune flèche, le survol révèle la zone 3. -->
+                  <!-- Pas de flèche : le survol révèle la zone 3. -->
                   <button
                     v-if="!entry.to"
                     type="button"
                     class="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left font-display font-bold text-primary-900 transition-colors duration-200 motion-reduce:transition-none"
                     :class="
-                      activeItem.id === entry.id
+                      activeItem?.id === entry.id
                         ? 'bg-primary-900/8 text-primary-900'
                         : 'hover:bg-primary-900/5'
                     "
                     :tabindex="open ? undefined : -1"
                     @mouseenter="activeItem = entry"
-                    @click="drillDown(entry.id)"
+                    @click="handleTabClick(entry.id)"
                   >
                     <span class="flex-1 text-base text-left">{{ entry.label }}</span>
                   </button>
@@ -331,7 +361,7 @@ const focusRingClass = computed(() =>
                     :to="entry.to"
                     class="flex w-full items-center gap-3 rounded-xl px-4 py-3 font-display font-bold text-primary-900 transition-colors duration-200 motion-reduce:transition-none"
                     :class="
-                      activeItem.id === entry.id
+                      activeItem?.id === entry.id
                         ? 'bg-primary-900/8 text-primary-900'
                         : 'hover:bg-primary-900/5'
                     "
@@ -343,16 +373,6 @@ const focusRingClass = computed(() =>
                   </RouterLink>
                 </li>
               </ul>
-
-              <!-- `surface="light"` EN DUR : ce rendu vit dans le panneau
-                   blanc, pas dans la barre — sa lisibilité ne doit jamais
-                   dépendre du thème de la section survolée.
-                   min-[500px]:hidden : miroir exact du seuil d'affichage des
-                   boutons dans la barre (cf. ci-dessus) — ils ne doivent
-                   jamais être visibles aux deux endroits à la fois. -->
-              <div class="hidden min-[1316px]:block mt-6 border-t border-primary-900/10 pt-4 px-1 min-[500px]:hidden">
-                <slot name="actions" surface="light" />
-              </div>
 
               <!-- Présentation mobile/tablette (<1316px) : menu plein écran
                    premium — contenu centré verticalement, typographie massive.
@@ -420,8 +440,15 @@ const focusRingClass = computed(() =>
                 leave-to-class="opacity-0"
                 mode="out-in"
               >
+                <div
+                  v-if="!activeItem"
+                  key="invite"
+                  class="flex h-full w-full items-center justify-center text-lg italic text-slate-400"
+                >
+                  Survolez ou cliquez sur une rubrique pour explorer notre univers.
+                </div>
                 <ul
-                  v-if="activeItem.subItems?.length"
+                  v-else-if="activeItem.subItems?.length"
                   :key="activeItem.id"
                   class="flex h-full w-full divide-x divide-primary-900/10"
                 >
@@ -433,7 +460,10 @@ const focusRingClass = computed(() =>
                       :tabindex="open ? undefined : -1"
                       @click="closeMenu()"
                     >
-                      <p class="font-display text-lg font-bold text-primary-900 transition-colors duration-200 group-hover:text-accent-700 motion-reduce:transition-none">
+                      <p
+                        class="font-display text-lg font-bold text-primary-900 transition-all duration-200 group-hover:text-accent-700 motion-reduce:transition-none motion-reduce:scale-100"
+                        :class="flashingTab === activeItem.id ? 'text-accent-700 scale-105' : ''"
+                      >
                         {{ sub.label }}
                       </p>
                       <p v-if="sub.description" class="text-sm leading-relaxed text-primary-900/55">
@@ -443,8 +473,8 @@ const focusRingClass = computed(() =>
                   </li>
                 </ul>
 
-                <!-- État vide (NAV_DEFAULT ou entrée sans subItems) : même
-                     disposition en bandes, pour les 4 practices internes. -->
+                <!-- Entrée survolée sans subItems (ex. « Sport & sponsoring ») :
+                     même disposition en bandes, pour les 4 practices internes. -->
                 <ul v-else key="empty" class="flex h-full w-full divide-x divide-primary-900/10">
                   <li v-for="bu in BUSINESS_UNITS" :key="bu.label" class="flex-1 min-w-[160px]">
                     <RouterLink

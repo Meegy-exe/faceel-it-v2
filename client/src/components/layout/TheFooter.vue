@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import CookieManagerModal from '@/components/ui/CookieManagerModal.vue'
 import logoSrc from '@/assets/images/2.svg'
+import glassdoorLogo from '@/assets/notations/glassdoor.svg'
+import googleLogo from '@/assets/notations/google.svg'
 
 const isCookieModalOpen = ref(false)
 
@@ -31,71 +33,6 @@ defineProps<{
               digitale. Au-delà du code, c'est l'engagement de notre collectif qui fait aboutir vos
               projets.
             </p>
-
-            <div class="mt-6 flex items-center gap-2">
-              <a
-                href="https://www.linkedin.com/company/faceel-it/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Faceel-IT sur LinkedIn"
-                class="inline-flex size-9 items-center justify-center rounded-full text-white transition-colors duration-200 hover:bg-white/10 hover:text-white"
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor" class="size-5">
-                  <path
-                    d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.1 1.43-2.1 2.9V21h-4V9Z"
-                  />
-                </svg>
-              </a>
-              <a
-                href="https://www.youtube.com/@Faceel-it"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Faceel-IT sur YouTube"
-                class="inline-flex size-9 items-center justify-center rounded-full text-white transition-colors duration-200 hover:bg-white/10 hover:text-white"
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor" class="size-5">
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M3 5h18v14H3V5Zm7 4 6 3-6 3V9Z"
-                  />
-                </svg>
-              </a>
-              <a
-                href="https://www.instagram.com/faceelit/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Faceel-IT sur Instagram"
-                class="inline-flex size-9 items-center justify-center rounded-full text-white transition-colors duration-200 hover:bg-white/10 hover:text-white"
-              >
-                <svg viewBox="0 0 24 24" fill="none" class="size-5">
-                  <rect
-                    x="3.5"
-                    y="3.5"
-                    width="17"
-                    height="17"
-                    rx="5"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                  />
-                  <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8" />
-                  <circle cx="17" cy="7" r="1" fill="currentColor" />
-                </svg>
-              </a>
-              <a
-                href="https://www.glassdoor.fr/Avis/Faceel-IT-Avis-E8791143.htm"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Faceel-IT sur Glassdoor"
-                class="inline-flex size-9 items-center justify-center rounded-full text-white transition-colors duration-200 hover:bg-white/10 hover:text-white"
-              >
-                <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
-                  <path
-                    d="M10 1.5l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.2-5.4 3.2 1.3-6-4.6-4.1 6.1-.6L10 1.5Z"
-                  />
-                </svg>
-              </a>
-            </div>
           </div>
 
           <!-- Colonne droite : notes Glassdoor + Google -->
@@ -104,24 +41,28 @@ defineProps<{
               href="https://www.glassdoor.fr/Avis/Faceel-it-Lille-Avis-EI_IE4844076.0,9_IL.10,15_IM1111.htm"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex flex-1 flex-col items-center rounded-xl bg-white px-4 py-4 text-gray-900 shadow-md transition-transform duration-300 hover:scale-105 hover:shadow-lg lg:px-8 lg:py-6"
+              class="flex flex-1 flex-col items-center transition-transform duration-300 hover:scale-105 hover:shadow-lg lg:px-8 lg:py-6"
             >
               <p class="text-3xl font-extrabold leading-none tracking-tight lg:text-5xl">5/5</p>
-              <p class="mt-1.5 text-xs font-bold text-green-600 lg:mt-2 lg:text-sm">Glassdoor</p>
+              <img
+                :src="glassdoorLogo"
+                alt="Glassdoor"
+                class="mt-1.5 w-36 h-auto object-contain brightness-0 invert lg:mt-2"
+              />
             </a>
 
             <a
               href="https://www.google.com/search?sca_esv=40dae565ac35b613&hl=fr&gl=fr&output=search&kgmid=/g/11r3m97yrh&q=Faceel-it&shndl=30&shem=lcuae,lstl1,uaasie&source=sh/x/loc/uni/m1/1&kgs=88c0721b1fda94c2"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex flex-1 flex-col items-center rounded-xl bg-white px-4 py-4 text-gray-900 shadow-md transition-transform duration-300 hover:scale-105 hover:shadow-lg lg:px-8 lg:py-6"
+              class="flex flex-1 flex-col items-center px-4 py-4 shadow-md transition-transform duration-300 hover:scale-105 hover:shadow-lg lg:px-8 lg:py-6"
             >
               <p class="text-3xl font-extrabold leading-none tracking-tight lg:text-5xl">5/5</p>
-              <p class="mt-1.5 text-xs font-bold lg:mt-2 lg:text-sm">
-                <span class="text-[#4285F4]">G</span><span class="text-[#EA4335]">o</span
-                ><span class="text-[#FBBC05]">o</span><span class="text-[#4285F4]">g</span
-                ><span class="text-[#34A853]">l</span><span class="text-[#EA4335]">e</span>
-              </p>
+              <img
+                :src="googleLogo"
+                alt="Google"
+                class="mt-1.5 w-36 h-auto object-contain brightness-0 invert lg:mt-2"
+              />
             </a>
           </div>
         </div>
@@ -149,57 +90,57 @@ defineProps<{
       <div class="mx-auto max-w-7xl px-4 py-12">
         <!-- Grille de navigation -->
         <div class="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-4">
-          <!-- Nos services -->
-          <nav aria-label="Nos services">
-            <p class="text-xs font-semibold uppercase tracking-widest text-gray-500">
-              Nos services
-            </p>
+          <!-- Nos BUs -->
+          <nav aria-label="Nos BUs">
+            <p class="text-xs font-semibold uppercase tracking-widest text-gray-500">NOS BUs</p>
             <ul class="mt-5 space-y-3 text-sm">
               <li>
                 <RouterLink
-                  to="/#services"
+                  to="/#business-units"
                   class="text-gray-700 transition-colors duration-200 hover:text-[#000066]"
                 >
-                  La tech au service des métiers
+                  Digital
                 </RouterLink>
               </li>
               <li>
                 <RouterLink
-                  to="/#valeurs"
+                  to="/#business-units"
                   class="text-gray-700 transition-colors duration-200 hover:text-[#000066]"
                 >
-                  Nos valeurs ajoutées
+                  Product
                 </RouterLink>
               </li>
               <li>
                 <RouterLink
-                  to="/#secteurs"
+                  to="/#business-units"
                   class="text-gray-700 transition-colors duration-200 hover:text-[#000066]"
                 >
-                  Nos secteurs d'activités
+                  Data & IA
                 </RouterLink>
               </li>
             </ul>
           </nav>
 
-          <!-- L'agence -->
-          <nav aria-label="L'agence">
-            <p class="text-xs font-semibold uppercase tracking-widest text-gray-500">L'agence</p>
+          <!-- Notre agence -->
+          <nav aria-label="Notre agence">
+            <p class="text-xs font-semibold uppercase tracking-widest text-gray-500">
+              NOTRE AGENCE
+            </p>
             <ul class="mt-5 space-y-3 text-sm">
               <li>
                 <RouterLink
-                  to="/politique-rse"
+                  :to="{ name: 'histoire' }"
                   class="text-gray-700 transition-colors duration-200 hover:text-[#000066]"
                 >
-                  Politique RSE
+                  Notre histoire
                 </RouterLink>
               </li>
               <li>
                 <RouterLink
-                  to="/consulter-nos-offres"
+                  :to="{ name: 'collectif' }"
                   class="text-gray-700 transition-colors duration-200 hover:text-[#000066]"
                 >
-                  Nous rejoindre
+                  Notre collectif
                 </RouterLink>
               </li>
             </ul>
@@ -282,19 +223,92 @@ defineProps<{
 
         <!-- CTAs de conversion -->
         <div class="mt-12 border-t border-gray-200 pt-10">
-          <div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <RouterLink
-              to="/contact-entreprise"
-              class="inline-flex w-full items-center justify-center rounded-lg border-2 border-[#000066] px-6 py-3 text-sm font-semibold text-[#000066] transition-colors duration-200 hover:bg-[#000066] hover:text-white sm:w-auto"
-            >
-              Un projet ?
-            </RouterLink>
-            <RouterLink
-              to="/consulter-nos-offres"
-              class="inline-flex w-full items-center justify-center rounded-lg bg-green-500 px-6 py-3 text-sm font-semibold text-gray-900 transition-colors duration-200 hover:bg-green-400 sm:w-auto"
-            >
-              Nous rejoindre
-            </RouterLink>
+          <div class="flex flex-col items-center gap-6 sm:w-full sm:flex-row sm:justify-between">
+            <!-- Réseaux sociaux — mêmes SVG inline qu'au-dessus, couleurs
+                 inversées : ce fond est blanc (pas #000066), donc le rond
+                 externe passe en primary-900 (+ hover accent-700, pas
+                 accent-500 : 1,9:1 sur blanc, cf. main.css) et la couche
+                 "transparente" interne passe de primary-900 à blanc pour se
+                 fondre dans CE fond-ci. -->
+            <div class="flex items-center gap-6">
+              <a
+                href="https://www.linkedin.com/company/faceel-it/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Faceel-IT sur LinkedIn"
+                class="inline-flex size-12 sm:size-14 items-center justify-center rounded-full transition-colors duration-200 hover:bg-primary-900/10"
+              >
+                <svg viewBox="0 0 92 92" fill="none" class="w-10 h-10 sm:w-12 sm:h-12 text-primary-900 transition-colors hover:text-accent-700">
+                  <rect x="0.247223" width="91.5618" height="91.5618" rx="45.7809" fill="currentColor" />
+                  <path
+                    class="text-white"
+                    fill="currentColor"
+                    d="M35.4959 64.3345V39.601H27.2821V64.3345H35.4967H35.4959ZM31.3907 36.2246C34.2544 36.2246 36.0373 34.3254 36.0373 31.9519C35.9837 29.5243 34.2544 27.678 31.4452 27.678C28.634 27.678 26.798 29.5243 26.798 31.9517C26.798 34.3252 28.5802 36.2244 31.3369 36.2244H31.3901L31.3907 36.2246ZM40.0423 64.3345H48.2554V50.5237C48.2554 49.7854 48.309 49.0452 48.526 48.518C49.1195 47.0404 50.4709 45.5109 52.7405 45.5109C55.7118 45.5109 56.9011 47.7789 56.9011 51.1042V64.3345H65.114V50.153C65.114 42.5563 61.0625 39.0211 55.6586 39.0211C51.2282 39.0211 49.2824 41.4996 48.2013 43.1876H48.256V39.6018H40.0427C40.1499 41.9221 40.0421 64.3353 40.0421 64.3353L40.0423 64.3345Z"
+                  />
+                </svg>
+              </a>
+              <a
+                href="https://www.youtube.com/@Faceel-it"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Faceel-IT sur YouTube"
+                class="inline-flex size-12 sm:size-14 items-center justify-center rounded-full transition-colors duration-200 hover:bg-primary-900/10"
+              >
+                <svg viewBox="0 0 93 93" fill="none" class="w-10 h-10 sm:w-12 sm:h-12 text-primary-900 transition-colors hover:text-accent-700">
+                  <rect x="0.561798" y="0.561829" width="91.5618" height="91.5618" rx="45.7809" fill="currentColor" />
+                  <path
+                    class="text-white"
+                    fill="currentColor"
+                    d="M71.8089 33.749C71.2111 31.5016 69.4427 29.7286 67.1927 29.121C63.1244 28.0306 46.8014 28.0306 46.8014 28.0306C46.8014 28.0306 30.4868 28.0306 26.4102 29.121C24.1685 29.7203 22.4001 31.4933 21.794 33.749C20.7063 37.8277 20.7063 46.3429 20.7063 46.3429C20.7063 46.3429 20.7063 54.8582 21.794 58.9369C22.3918 61.1843 24.1602 62.9572 26.4102 63.5649C30.4868 64.6553 46.8014 64.6553 46.8014 64.6553C46.8014 64.6553 63.1244 64.6553 67.1927 63.5649C69.4344 62.9656 71.2028 61.1926 71.8089 58.9369C72.8966 54.8582 72.8966 46.3429 72.8966 46.3429C72.8966 46.3429 72.8966 37.8277 71.8089 33.749Z"
+                  />
+                  <path fill="currentColor" d="M41.5874 54.1923L55.1456 46.3429L41.5874 38.4936V54.1923Z" />
+                </svg>
+              </a>
+              <a
+                href="https://www.instagram.com/faceelit/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Faceel-IT sur Instagram"
+                class="inline-flex size-12 sm:size-14 items-center justify-center rounded-full transition-colors duration-200 hover:bg-primary-900/10"
+              >
+                <svg viewBox="0 0 319.73 319.73" class="w-10 h-10 sm:w-12 sm:h-12 text-primary-900 transition-colors hover:text-accent-700">
+                  <circle cx="159.86" cy="159.86" r="159.86" fill="currentColor" />
+                  <path
+                    class="text-white"
+                    fill="currentColor"
+                    d="M159.87,64.38c-39.12,0-76.26-3.48-90.45,32.93-5.86,15.04-5.01,34.57-5.01,62.54,0,24.54-.79,47.61,5.01,62.53,14.16,36.44,51.6,32.94,90.43,32.94s76.08,3.9,90.44-32.94c5.87-15.19,5.01-34.43,5.01-62.53,0-37.3,2.06-61.38-16.03-79.45-18.31-18.31-43.08-16.02-79.44-16.02h.04ZM151.31,81.58c81.6-.13,91.98-9.2,86.25,116.82-2.04,44.57-35.97,39.68-77.69,39.68-76.06,0-78.25-2.18-78.25-78.27s6.03-78.18,69.68-78.25v.02ZM210.82,97.43c-6.32,0-11.45,5.13-11.45,11.45s5.13,11.45,11.45,11.45,11.45-5.13,11.45-11.45-5.13-11.45-11.45-11.45ZM159.87,110.82c-27.07,0-49.02,21.96-49.02,49.03s21.95,49.02,49.02,49.02,49.01-21.95,49.01-49.02-21.93-49.03-49.01-49.03h0ZM159.87,128.03c42.07,0,42.12,63.65,0,63.65s-42.12-63.65,0-63.65Z"
+                  />
+                </svg>
+              </a>
+              <a
+                href="https://www.glassdoor.fr/Avis/Faceel-IT-Avis-E8791143.htm"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Faceel-IT sur Glassdoor"
+                class="inline-flex size-12 sm:size-14 items-center justify-center rounded-full text-primary-900 transition-colors duration-200 hover:bg-primary-900/10 hover:text-accent-700"
+              >
+                <svg viewBox="0 0 20 20" fill="currentColor" class="w-10 h-10 sm:w-12 sm:h-12">
+                  <path
+                    d="M10 1.5l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.2-5.4 3.2 1.3-6-4.6-4.1 6.1-.6L10 1.5Z"
+                  />
+                </svg>
+              </a>
+            </div>
+
+            <div class="flex flex-col items-center gap-4 w-full sm:w-auto sm:flex-row">
+              <RouterLink
+                to="/contact-entreprise"
+                class="inline-flex w-full items-center justify-center rounded-lg border-2 border-[#000066] px-6 py-3 text-sm font-semibold text-[#000066] transition-colors duration-200 hover:bg-[#000066] hover:text-white sm:w-auto"
+              >
+                Un projet ?
+              </RouterLink>
+              <RouterLink
+                to="/consulter-nos-offres"
+                class="inline-flex w-full items-center justify-center rounded-lg bg-green-500 px-6 py-3 text-sm font-semibold text-gray-900 transition-colors duration-200 hover:bg-green-400 sm:w-auto"
+              >
+                Nous rejoindre
+              </RouterLink>
+            </div>
           </div>
 
           <p class="mt-8 text-center text-sm text-gray-400">

@@ -34,7 +34,7 @@ const EVENTS: TickerEvent[] = [
   { title: 'FACEEL-IT AU GRAND SOMMET "IA AVEC NOUS"' },
 ]
 
-/** Rotation infinie (toutes les 3 s) sans "rembobinage" visible : le
+/** Rotation infinie (toutes les 6 s) sans "rembobinage" visible : le
  *  `scrollLeft` natif retournant à 0 produisait un saut arrière perceptible
  *  en fin de boucle. À la place, on anime un simple `translateX(-100%)` sur
  *  le wrapper puis, une fois l'anim terminée, on fait tourner le tableau
@@ -52,7 +52,7 @@ function scrollNext() {
   const el = carouselInner.value
   if (!el) return
 
-  el.style.transition = 'transform 0.8s cubic-bezier(0.65, 0, 0.35, 1)'
+  el.style.transition = 'transform 1s cubic-bezier(0.65, 0, 0.35, 1)'
   el.style.transform = 'translateX(-100%)'
 
   rotateTimeout = setTimeout(() => {
@@ -62,7 +62,7 @@ function scrollNext() {
     if (firstEvent) activeEvents.value.push(firstEvent)
 
     el.style.transform = 'translateX(0)'
-  }, 800)
+  }, 1_200)
 }
 
 function pauseCarousel() {
@@ -74,7 +74,7 @@ function pauseCarousel() {
 function resumeCarousel() {
   if (scrollInterval) return
   if (import.meta.env.SSR || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-  scrollInterval = setInterval(scrollNext, 2_500)
+  scrollInterval = setInterval(scrollNext, 6_000)
 }
 
 onMounted(resumeCarousel)
@@ -89,12 +89,18 @@ onBeforeUnmount(pauseCarousel)
        au lieu de rester collé en haut.
        top-16 lg:top-20 : compense le header MegaMenu (fixed, hors du flux,
        même hauteur h-16/lg:h-20) pour ne pas être caché derrière lui. -->
-  <div class="absolute top-16 left-0 z-30 w-full bg-gray-50 border-b border-gray-200 h-16 lg:h-20 lg:top-20">
+  <div
+    class="absolute top-16 left-0 z-30 w-full bg-gray-50 border-b border-gray-200 h-16 lg:h-20 lg:top-20"
+  >
     <div
       class="flex items-center justify-center w-full max-w-[1920px] mx-auto px-4 h-16 lg:h-20 overflow-hidden bg-gray-50"
     >
       <!-- Conteneur central : seul ce bloc défile -->
-      <div class="flex overflow-hidden w-full" @mouseenter="pauseCarousel" @mouseleave="resumeCarousel">
+      <div
+        class="flex overflow-hidden w-full"
+        @mouseenter="pauseCarousel"
+        @mouseleave="resumeCarousel"
+      >
         <div ref="carouselInner" class="flex w-full">
           <RouterLink
             v-for="event in activeEvents"
@@ -102,7 +108,9 @@ onBeforeUnmount(pauseCarousel)
             :to="{ name: 'evenements-tech' }"
             class="group min-w-full shrink-0 flex flex-col items-center justify-center text-center gap-0.5 cursor-pointer"
           >
-            <p class="font-bold text-primary-900 text-sm lg:text-base leading-none transition-colors duration-200 group-hover:text-accent-700">
+            <p
+              class="font-bold text-primary-900 text-sm lg:text-base leading-none transition-colors duration-200 group-hover:text-accent-700"
+            >
               {{ event.title }}
             </p>
             <p

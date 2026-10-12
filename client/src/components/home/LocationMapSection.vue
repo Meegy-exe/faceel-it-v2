@@ -199,7 +199,7 @@ const infoReveal = useScrollReveal(infoEl)
               </svg>
               <div>
                 <p class="text-lg lg:text-xl font-semibold text-white">Horaires</p>
-                <p class="text-lg lg:text-xl text-white/60">Lun–Ven, 9h–18h</p>
+                <p class="text-lg lg:text-xl text-white/60">Lun-Jeu : 8h50 - 18h00<br />Ven : 8h50 - 17h30</p>
               </div>
             </div>
           </div>

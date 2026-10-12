@@ -244,7 +244,7 @@ onBeforeUnmount(() => {
     <!-- BLOC 2 : Texte central -->
     <div class="my-32 text-center md:my-40">
       <p class="text-base font-semibold uppercase tracking-widest text-blue-500">
-        Ils nous font confiance
+        Ils nous ont fait confiance
       </p>
       <h2 class="mt-2 overflow-hidden pb-2 font-display text-4xl font-extrabold tracking-tight text-gray-900 md:text-5xl">
         <Transition

@@ -170,19 +170,16 @@ export const mainNavEntries: NavItem[] = [
     ],
   },
   {
-    id: 'references',
+    id: 'business-units',
     label: 'Nos BU',
-    title: 'Nos secteurs',
-    description:
-      'Retail, industrie, logistique, banque et assurance — nous intervenons là où la donnée et le digital font la différence.',
+    title: 'Nos BUs, Experte de vos besoins.',
+    description: 'Une organisation interne adaptée au marché pour une réponse sur-mesure à nos clients.',
     ctaLabel: 'En savoir plus',
-    ctaTo: { path: '/', hash: '#secteurs' },
+    ctaTo: { path: '/', hash: '#business-units' },
     subItems: [
-      { label: 'Ecommerce', to: { path: '/', hash: '#secteurs' } },
-      { label: 'Industrie', to: { path: '/', hash: '#secteurs' } },
-      { label: 'Logistique', to: { path: '/', hash: '#secteurs' } },
-      { label: 'Banque & Assurance', to: { path: '/', hash: '#secteurs' } },
-      { label: 'Politique RSE', to: { name: 'politique-rse' } },
+      { label: 'Data & IA', to: { path: '/', hash: '#business-units' } },
+      { label: 'Product', to: { path: '/', hash: '#business-units' } },
+      { label: 'Digital', to: { path: '/', hash: '#business-units' } },
     ],
   },
   {

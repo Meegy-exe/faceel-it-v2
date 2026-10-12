@@ -67,12 +67,19 @@ function getSlideStyle(index: number, activeIndex: number) {
     return 'z-30 left-1/2 -translate-x-1/2 scale-125 opacity-100 origin-center'
   }
   // PREV (Ancrée exactement sur la ligne du padding gauche)
+  //
+  // Masquée jusqu'à 1840px : la carte active en `scale-125` et les
+  // slides adjacentes (`max-w-md`/`lg:max-w-lg` à 90%) n'ont pas assez de
+  // place pour coexister sans se chevaucher en dessous de cette largeur — le
+  // contenu de `CarouselSlideContent` est volontairement sans fond
+  // (cf. son propre commentaire d'en-tête), un chevauchement y est donc
+  // du texte fantôme illisible, pas un simple détail visuel.
   if (diff === -1) {
-    return 'z-10 left-0 translate-x-0 scale-90 opacity-40 origin-left pointer-events-none max-md:opacity-0 max-md:invisible'
+    return 'z-10 left-0 translate-x-0 scale-90 opacity-40 origin-left pointer-events-none max-[1840px]:opacity-0 max-[1840px]:invisible'
   }
-  // NEXT (Ancrée exactement sur la ligne du padding droit)
+  // NEXT (Ancrée exactement sur la ligne du padding droit) — même garde-fou.
   if (diff === 1) {
-    return 'z-10 left-full -translate-x-full scale-90 opacity-40 origin-right pointer-events-none max-md:opacity-0 max-md:invisible'
+    return 'z-10 left-full -translate-x-full scale-90 opacity-40 origin-right pointer-events-none max-[1840px]:opacity-0 max-[1840px]:invisible'
   }
   // CARTES LOINTAINES GAUCHE
   if (diff < -1) {

@@ -312,4 +312,10 @@
   .cursor-pointer {
     cursor: url('/cursor-pointer.svg') 16 16, pointer !important;
   }
+
+  /* Variante navy : l'anneau vert devient invisible sur les zones au fond
+     accent-500 (ex. moitié « Une entreprise » du sélecteur de profil). */
+  .cursor-faceel-blue {
+    cursor: url('/cursor-pointer-blue.svg') 16 16, pointer !important;
+  }
 }

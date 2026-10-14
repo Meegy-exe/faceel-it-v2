@@ -8,10 +8,13 @@ import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
  * elle-même (voir HomeView.vue / AdeoView.vue) pour partager son contexte de
  * scroll plutôt que de défiler séparément.
  *
- * Un seul élément : le texte de l'événement, centré, qui tourne en boucle
- * (translateX + rotation du tableau `activeEvents`, voir `scrollNext`
- * ci-dessous — pas de scroll-snap natif, le "rembobinage" à 0 était visible)
- * et renvoie vers l'agenda au clic.
+ * Slider tactile/souris (drag-to-scroll) sur un vrai conteneur `overflow-x-auto`
+ * à snap : chaque événement occupe toute la largeur, les points sous le texte
+ * indiquent la position et permettent d'y aller directement. La rotation
+ * automatique (6 s, pause au survol/au drag) réutilise `scrollToEvent` pour
+ * rester synchronisée avec les points — neutralisée sous
+ * `prefers-reduced-motion` et en SSR (même garde que les autres carrousels du
+ * site, ex. CoverCarousel.vue).
  *
  * Descriptions : seule HUMAIN DAY 2026 a une description, fournie par
  * l'utilisateur comme texte neutre explicitement provisoire — aucune date
@@ -34,47 +37,66 @@ const EVENTS: TickerEvent[] = [
   { title: 'FACEEL-IT AU GRAND SOMMET "IA AVEC NOUS"' },
 ]
 
-/** Rotation infinie (toutes les 6 s) sans "rembobinage" visible : le
- *  `scrollLeft` natif retournant à 0 produisait un saut arrière perceptible
- *  en fin de boucle. À la place, on anime un simple `translateX(-100%)` sur
- *  le wrapper puis, une fois l'anim terminée, on fait tourner le tableau
- *  (`shift`/`push`) et on coupe la transition le temps de revenir à
- *  `translateX(0)` à l'identique visuellement — aucun saut perçu. Pause au
- *  survol (UX) ; neutralisé sous `prefers-reduced-motion` et en SSR (cf.
- *  CLAUDE.md, même garde que les autres carrousels du site, ex.
- *  CoverCarousel.vue). */
-const carouselInner = useTemplateRef<HTMLDivElement>('carouselInner')
-const activeEvents = ref([...EVENTS])
-let scrollInterval: ReturnType<typeof setInterval> | undefined
-let rotateTimeout: ReturnType<typeof setTimeout> | undefined
+const slider = useTemplateRef<HTMLDivElement>('slider')
+const activeIndex = ref(0)
+const isDragging = ref(false)
+let startX = 0
+let scrollLeft = 0
+/** Distingue un vrai drag d'un simple clic : un `RouterLink` sous le doigt/la
+ *  souris ne doit naviguer que si la piste n'a pas bougé. */
+let dragged = false
 
-function scrollNext() {
-  const el = carouselInner.value
-  if (!el) return
-
-  el.style.transition = 'transform 1s cubic-bezier(0.65, 0, 0.35, 1)'
-  el.style.transform = 'translateX(-100%)'
-
-  rotateTimeout = setTimeout(() => {
-    el.style.transition = 'none'
-
-    const firstEvent = activeEvents.value.shift()
-    if (firstEvent) activeEvents.value.push(firstEvent)
-
-    el.style.transform = 'translateX(0)'
-  }, 1_200)
+function pointerX(e: MouseEvent | TouchEvent) {
+  return 'touches' in e ? (e.touches[0]?.pageX ?? 0) : e.pageX
 }
+
+function startDrag(e: MouseEvent | TouchEvent) {
+  if (!slider.value) return
+  isDragging.value = true
+  dragged = false
+  startX = pointerX(e) - slider.value.offsetLeft
+  scrollLeft = slider.value.scrollLeft
+}
+
+function stopDrag() {
+  isDragging.value = false
+}
+
+function onDrag(e: MouseEvent | TouchEvent) {
+  if (!isDragging.value || !slider.value) return
+  const x = pointerX(e) - slider.value.offsetLeft
+  const walk = x - startX
+  if (Math.abs(walk) > 5) dragged = true
+  slider.value.scrollLeft = scrollLeft - walk
+}
+
+function onLinkClick(e: MouseEvent) {
+  if (dragged) e.preventDefault()
+}
+
+function onSliderScroll() {
+  if (!slider.value || !slider.value.clientWidth) return
+  activeIndex.value = Math.round(slider.value.scrollLeft / slider.value.clientWidth)
+}
+
+function scrollToEvent(index: number) {
+  if (!slider.value) return
+  slider.value.scrollTo({ left: index * slider.value.clientWidth, behavior: 'smooth' })
+}
+
+let scrollInterval: ReturnType<typeof setInterval> | undefined
 
 function pauseCarousel() {
   clearInterval(scrollInterval)
   scrollInterval = undefined
-  clearTimeout(rotateTimeout)
 }
 
 function resumeCarousel() {
   if (scrollInterval) return
   if (import.meta.env.SSR || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-  scrollInterval = setInterval(scrollNext, 6_000)
+  scrollInterval = setInterval(() => {
+    scrollToEvent((activeIndex.value + 1) % EVENTS.length)
+  }, 6_000)
 }
 
 onMounted(resumeCarousel)
@@ -92,35 +114,57 @@ onBeforeUnmount(pauseCarousel)
   <div
     class="absolute top-16 left-0 z-30 w-full bg-gray-50 border-b border-gray-200 h-16 lg:h-20 lg:top-20"
   >
-    <div
-      class="flex items-center justify-center w-full max-w-[1920px] mx-auto px-4 h-16 lg:h-20 overflow-hidden bg-gray-50"
-    >
-      <!-- Conteneur central : seul ce bloc défile -->
+    <div class="relative flex flex-col justify-center w-full max-w-[1920px] mx-auto px-4 h-16 lg:h-20 bg-gray-50">
+      <!-- Piste draggable : un seul élément visible à la fois (snap-center).
+           pb-3 : laisse la place aux points, posés en absolu plus bas, sans
+           agrandir la hauteur stricte du bandeau (= hauteur de la Navbar). -->
       <div
-        class="flex overflow-hidden w-full"
+        ref="slider"
+        class="flex w-full items-center overflow-x-auto snap-x snap-mandatory hide-scrollbar select-none pb-3 transition-transform"
+        :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'"
         @mouseenter="pauseCarousel"
-        @mouseleave="resumeCarousel"
+        @mouseleave="stopDrag(); resumeCarousel()"
+        @mousedown="startDrag"
+        @mouseup="stopDrag"
+        @mousemove="onDrag"
+        @touchstart="startDrag"
+        @touchend="stopDrag"
+        @touchmove="onDrag"
+        @scroll="onSliderScroll"
       >
-        <div ref="carouselInner" class="flex w-full">
-          <RouterLink
-            v-for="event in activeEvents"
-            :key="event.title"
-            :to="{ name: 'evenements-tech' }"
-            class="group min-w-full shrink-0 flex flex-col items-center justify-center text-center gap-0.5 cursor-pointer"
+        <RouterLink
+          v-for="event in EVENTS"
+          :key="event.title"
+          :to="{ name: 'evenements-tech' }"
+          class="group w-full shrink-0 snap-center flex flex-col items-center justify-center text-center gap-0.5 cursor-pointer"
+          @click="onLinkClick"
+        >
+          <p
+            class="font-bold text-primary-900 text-sm lg:text-base leading-none transition-colors duration-200 group-hover:text-accent-700"
           >
-            <p
-              class="font-bold text-primary-900 text-sm lg:text-base leading-none transition-colors duration-200 group-hover:text-accent-700"
-            >
-              {{ event.title }}
-            </p>
-            <p
-              v-if="event.description"
-              class="text-[10px] lg:text-xs text-gray-500 leading-none hidden md:block"
-            >
-              {{ event.description }}
-            </p>
-          </RouterLink>
-        </div>
+            {{ event.title }}
+          </p>
+          <p
+            v-if="event.description"
+            class="text-[10px] lg:text-xs text-gray-500 leading-none hidden md:block"
+          >
+            {{ event.description }}
+          </p>
+        </RouterLink>
+      </div>
+
+      <!-- Points de pagination — en absolu : la hauteur du bandeau reste
+           verrouillée sur celle de la Navbar (h-16 lg:h-20). -->
+      <div class="absolute bottom-1 w-full flex justify-center gap-1.5">
+        <button
+          v-for="(event, index) in EVENTS"
+          :key="event.title"
+          type="button"
+          :aria-label="`Aller à l'événement ${index + 1}`"
+          class="size-1.5 rounded-full transition-colors duration-300"
+          :class="activeIndex === index ? 'bg-accent-500' : 'bg-primary-900/20'"
+          @click="scrollToEvent(index)"
+        />
       </div>
     </div>
   </div>

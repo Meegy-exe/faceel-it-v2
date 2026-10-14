@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { h, ref, useTemplateRef, watch, type FunctionalComponent } from 'vue'
+import { h, onMounted, ref, useTemplateRef, watch, type FunctionalComponent } from 'vue'
 import { useRoute } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
@@ -63,6 +63,39 @@ const isDarkTheme = ref(true)
  * zéro au changement de route (cf. `watch` plus bas).
  */
 const menuOpen = ref(false)
+
+/**
+ * Sélecteur de profil (onboarding) — s'affiche directement au montage si
+ * aucun profil n'est stocké.
+ */
+const PROFILE_STORAGE_KEY = 'faceel_user_profile'
+const showProfileSelector = ref(false)
+const animatingSelection = ref<string | null>(null)
+/** Pilote l'affichage conditionnel des CTA de la navbar (slot `#actions`). */
+const userProfile = ref<string | null>(null)
+
+onMounted(() => {
+  if (!localStorage.getItem(PROFILE_STORAGE_KEY)) showProfileSelector.value = true
+  userProfile.value = localStorage.getItem(PROFILE_STORAGE_KEY) || 'curieux'
+})
+
+function setProfile(profileType: 'candidat' | 'entreprise' | 'curieux') {
+  animatingSelection.value = profileType
+  setTimeout(() => {
+    localStorage.setItem(PROFILE_STORAGE_KEY, profileType)
+    showProfileSelector.value = false
+    userProfile.value = profileType
+  }, 800)
+}
+
+/** État possédé localement (pas de store global) : on le remet à zéro
+ *  directement plutôt que de recharger la page. */
+function resetProfile() {
+  localStorage.removeItem(PROFILE_STORAGE_KEY)
+  animatingSelection.value = null
+  showProfileSelector.value = true
+  userProfile.value = null
+}
 
 watch(
   () => route.fullPath,
@@ -171,6 +204,58 @@ const ArrowRightIcon: FunctionalComponent = () =>
       Aller au contenu
     </a>
 
+    <Transition
+      leave-active-class="transition-all duration-[1000ms] ease-in-out"
+      leave-to-class="opacity-0 blur-md scale-105"
+    >
+    <div v-if="showProfileSelector" class="fixed inset-0 z-[100] flex flex-col bg-white">
+      <h1
+        class="mt-12 mb-8 text-center font-display text-3xl font-bold text-primary-950 transition-all duration-500"
+        :class="{ 'scale-90 opacity-0 pointer-events-none': animatingSelection }"
+      >
+        Êtes-vous ?
+      </h1>
+      <div class="flex h-full w-full flex-1 flex-row overflow-hidden">
+        <button
+          type="button"
+          :class="[
+            animatingSelection === 'candidat'
+              ? 'w-full z-50 text-5xl'
+              : animatingSelection === 'entreprise'
+                ? 'w-0 opacity-0'
+                : 'w-1/2 hover:scale-[1.02] z-10',
+            'transition-all duration-700 ease-in-out origin-left flex items-center justify-center cursor-pointer bg-primary-950 text-white',
+          ]"
+          @click="setProfile('candidat')"
+        >
+          <span class="whitespace-nowrap text-2xl font-bold lg:text-4xl">Un candidat</span>
+        </button>
+        <button
+          type="button"
+          :class="[
+            animatingSelection === 'entreprise'
+              ? 'w-full z-50 text-5xl'
+              : animatingSelection === 'candidat'
+                ? 'w-0 opacity-0'
+                : 'w-1/2 hover:scale-[1.02] z-10',
+            'transition-all duration-700 ease-in-out origin-right flex items-center justify-center cursor-pointer cursor-faceel-blue bg-accent-500 text-primary-950',
+          ]"
+          @click="setProfile('entreprise')"
+        >
+          <span class="whitespace-nowrap text-2xl font-bold lg:text-4xl">Une entreprise</span>
+        </button>
+      </div>
+      <button
+        type="button"
+        class="absolute bottom-12 left-1/2 z-20 -translate-x-1/2 rounded-full bg-white px-8 py-4 font-display text-xl font-bold text-primary-950 shadow-xl transition-all duration-500 hover:scale-110"
+        :class="{ 'scale-90 opacity-0 pointer-events-none': animatingSelection }"
+        @click="setProfile('curieux')"
+      >
+        Juste curieux
+      </button>
+    </div>
+    </Transition>
+
     <MegaMenu
       v-model:open="menuOpen"
       v-model:dark="isDarkTheme"
@@ -259,13 +344,37 @@ const ArrowRightIcon: FunctionalComponent = () =>
            jeu de classes ici s'appliquerait identiquement aux deux. -->
       <template #actions="{ surface }">
         <div class="flex items-center gap-1 sm:gap-3">
-          <BaseButton variant="outline" size="sm" :surface="surface" :to="CONTACT_TO">
-            Un projet ?
-          </BaseButton>
-          <BaseButton variant="accent" size="sm" :surface="surface" :to="REJOINDRE_TO">
-            Nous rejoindre
-            <template #iconRight><ArrowRightIcon /></template>
-          </BaseButton>
+          <template v-if="userProfile === 'candidat'">
+            <BaseButton variant="outline" size="sm" :surface="surface" @click="resetProfile">
+              Changer de profil
+            </BaseButton>
+            <BaseButton variant="accent" size="sm" :surface="surface" :to="REJOINDRE_TO">
+              Nous rejoindre
+              <template #iconRight><ArrowRightIcon /></template>
+            </BaseButton>
+          </template>
+
+          <template v-else-if="userProfile === 'entreprise'">
+            <BaseButton variant="outline" size="sm" :surface="surface" :to="CONTACT_TO">
+              Un projet ?
+            </BaseButton>
+            <BaseButton variant="accent" size="sm" :surface="surface" @click="resetProfile">
+              Changer de profil
+            </BaseButton>
+          </template>
+
+          <template v-else>
+            <BaseButton variant="outline" size="sm" :surface="surface" @click="resetProfile">
+              Changer de profil
+            </BaseButton>
+            <BaseButton variant="outline" size="sm" :surface="surface" :to="CONTACT_TO">
+              Un projet ?
+            </BaseButton>
+            <BaseButton variant="accent" size="sm" :surface="surface" :to="REJOINDRE_TO">
+              Nous rejoindre
+              <template #iconRight><ArrowRightIcon /></template>
+            </BaseButton>
+          </template>
         </div>
       </template>
     </MegaMenu>

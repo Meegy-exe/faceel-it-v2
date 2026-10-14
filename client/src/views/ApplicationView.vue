@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSeo } from '@/composables/useSeo'
 import TheFooter from '@/components/layout/TheFooter.vue'
+import PrivacyNoticeModal from '@/components/ui/PrivacyNoticeModal.vue'
 
 const route = useRoute()
 
@@ -148,11 +149,15 @@ const motivation = ref('')
 const moreInfo = ref('')
 const cvFile = ref<File | null>(null)
 const cvDragOver = ref(false)
-const coverLetterFile = ref<File | null>(null)
-const coverLetterDragOver = ref(false)
 const certifiesCdi = ref(false)
 const certifiesLocation = ref(false)
+const privacyAccepted = ref(false)
+const isPrivacyModalOpen = ref(false)
 const submitted = ref(false)
+
+function openPrivacyModal() {
+  isPrivacyModalOpen.value = true
+}
 
 /** Ville de l'offre → case à cocher de résidence obligatoire. Pas de ville
  *  reconnue (ex. candidature spontanée, offre remote) : pas de case. */
@@ -175,17 +180,6 @@ function onCvDrop(e: DragEvent) {
   if (file && file.type === 'application/pdf') cvFile.value = file
 }
 
-function onCoverLetterFileInput(e: Event) {
-  const file = (e.target as HTMLInputElement).files?.[0]
-  if (file && file.type === 'application/pdf') coverLetterFile.value = file
-}
-
-function onCoverLetterDrop(e: DragEvent) {
-  coverLetterDragOver.value = false
-  const file = e.dataTransfer?.files[0]
-  if (file && file.type === 'application/pdf') coverLetterFile.value = file
-}
-
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const isFormValid = computed(() => {
@@ -196,6 +190,7 @@ const isFormValid = computed(() => {
   if (!moreInfo.value.trim()) return false
   if (!cvFile.value) return false
   if (!certifiesCdi.value) return false
+  if (!privacyAccepted.value) return false
   if (requiredCity.value && !certifiesLocation.value) return false
   return true
 })
@@ -314,7 +309,7 @@ function handleSubmit() {
          ============================================================ -->
     <div
       data-theme="light"
-      class="w-full lg:w-1/2 max-h-screen bg-white p-8 md:p-12 flex flex-col justify-center overflow-y-auto pb-4"
+      class="w-full lg:w-1/2 max-h-screen bg-white p-8 pt-32 md:p-12 md:pt-40 flex flex-col justify-center overflow-y-auto pb-4"
     >
 
       <!-- Confirmation envoi -->
@@ -401,7 +396,7 @@ function handleSubmit() {
           <!-- Motivation -->
           <div>
             <label for="motivation" class="mb-1.5 block text-sm font-medium text-primary-900">
-              Qu'est-ce qui vous motive dans ce poste ? <span class="text-red-500">*</span>
+              Parlez nous de vous <span class="text-red-500">*</span>
             </label>
             <textarea
               id="motivation"
@@ -453,31 +448,6 @@ function handleSubmit() {
             </label>
           </div>
 
-          <!-- Upload Lettre de motivation (facultatif) -->
-          <div>
-            <p class="mb-1.5 text-sm font-medium text-primary-900">Lettre de motivation</p>
-            <label
-              for="coverLetterFile"
-              class="flex cursor-pointer items-center gap-3 rounded-lg border-2 border-dashed border-gray-300 px-4 py-3 text-left transition-colors"
-              :class="coverLetterDragOver ? 'border-[#000066] bg-blue-50' : 'border-gray-200 hover:border-gray-300'"
-              @dragover.prevent="coverLetterDragOver = true"
-              @dragleave="coverLetterDragOver = false"
-              @drop.prevent="onCoverLetterDrop"
-            >
-              <svg class="size-6 shrink-0 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-              </svg>
-              <span class="flex flex-col">
-                <span v-if="coverLetterFile" class="text-sm font-medium text-[#000066]">{{ coverLetterFile.name }}</span>
-                <span v-else class="text-sm text-gray-500">
-                  Glissez votre lettre ici ou <span class="font-semibold text-[#000066]">parcourir</span>
-                </span>
-                <span class="text-xs text-gray-400">Format PDF, facultatif</span>
-              </span>
-              <input id="coverLetterFile" type="file" accept=".pdf" class="sr-only" @change="onCoverLetterFileInput" />
-            </label>
-          </div>
-
           <!-- Certifications -->
           <div class="space-y-2 border-t border-gray-100 pt-3">
             <label v-if="requiredCity" class="flex cursor-pointer items-start gap-3 text-sm text-primary-900">
@@ -501,6 +471,25 @@ function handleSubmit() {
               Je certifie rechercher un CDI
               <span class="text-red-500">*</span>
             </label>
+
+            <label class="flex cursor-pointer items-start gap-3 text-sm text-primary-900">
+              <input
+                v-model="privacyAccepted"
+                type="checkbox"
+                required
+                class="mt-0.5 h-4 w-4 shrink-0 rounded accent-[#000066]"
+              />
+              Vous déclarez avoir lu et accepté
+              <button
+                type="button"
+                class="font-bold text-blue-600 underline transition-colors hover:text-blue-800"
+                @click.prevent.stop="openPrivacyModal"
+              >
+                l'avis de confidentialité
+              </button>
+              de Faceel IT.
+              <span class="text-red-500">*</span>
+            </label>
           </div>
 
           <!-- Submit -->
@@ -511,13 +500,6 @@ function handleSubmit() {
           >
             Envoyer ma candidature
           </button>
-
-          <p class="text-center text-xs text-gray-400">
-            Vos données sont traitées conformément à notre
-            <RouterLink to="/politique-confidentialite" class="underline hover:text-gray-600">
-              politique de confidentialité
-            </RouterLink>.
-          </p>
         </form>
       </template>
     </div>
@@ -527,4 +509,6 @@ function handleSubmit() {
       <TheFooter />
     </section>
   </div>
+
+  <PrivacyNoticeModal :is-open="isPrivacyModalOpen" @close="isPrivacyModalOpen = false" />
 </template>

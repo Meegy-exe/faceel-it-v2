@@ -46,7 +46,7 @@ const OFFERS: JobOffer[] = [
     location: 'Lille',
     category: 'Data',
     contract: 'CDI',
-    level: 'Expérimentés',
+    level: '3 à 5 ans',
     metier: 'Data et intelligence artificielle',
     date: 'Publié il y a 9 mois',
     description:
@@ -54,11 +54,11 @@ const OFFERS: JobOffer[] = [
   },
   {
     id: 2,
-    title: 'Consultante / Consultant fonctionnel – Expert S4HANA SAP SD',
+    title: 'Consultante / Consultant fonctionnel - Expert S4HANA SAP SD',
     location: 'Lille, Toulouse, Paris',
     category: 'Solutions SaaS',
     contract: 'CDI',
-    level: 'Expérimentés',
+    level: 'Plus de 10 ans',
     metier: 'Business Analyst',
     date: 'Publié il y a 3 mois',
     description:
@@ -66,11 +66,11 @@ const OFFERS: JobOffer[] = [
   },
   {
     id: 3,
-    title: 'Architecte solutions – Microsoft Azure',
+    title: 'Architecte solutions - Microsoft Azure',
     location: 'Lyon, Remote',
     category: 'Cloud & Infrastructure',
     contract: 'CDI',
-    level: 'Expérimentés',
+    level: '6 à 10 ans',
     metier: 'Architecture',
     date: 'Publié il y a 2 semaines',
     description:
@@ -78,11 +78,11 @@ const OFFERS: JobOffer[] = [
   },
   {
     id: 4,
-    title: 'Business Analyst – Transformation digitale retail',
+    title: 'Business Analyst - Transformation digitale retail',
     location: 'Lille',
     category: 'Conseil',
     contract: 'CDD',
-    level: 'Etudiants / Jeunes diplômés',
+    level: '0 à 2 ans',
     metier: 'Business Analyst',
     date: 'Publié il y a 1 mois',
     description:
@@ -90,11 +90,11 @@ const OFFERS: JobOffer[] = [
   },
   {
     id: 5,
-    title: 'Développeur fullstack – React / Node.js',
+    title: 'Développeur fullstack - React / Node.js',
     location: 'Toulouse',
     category: 'Développement',
     contract: 'CDI',
-    level: 'Expérimentés',
+    level: '3 à 5 ans',
     metier: 'Développement',
     date: 'Publié il y a 5 mois',
     description:
@@ -102,11 +102,11 @@ const OFFERS: JobOffer[] = [
   },
   {
     id: 6,
-    title: 'Stage – Data Scientist junior IA générative',
+    title: 'Stage - Data Scientist junior IA générative',
     location: 'Paris',
     category: 'Data & IA',
     contract: 'Stage',
-    level: 'Etudiants / Jeunes diplômés',
+    level: '0 à 2 ans',
     metier: 'Data et intelligence artificielle',
     date: 'Publié il y a 1 semaine',
     description:
@@ -118,14 +118,20 @@ const OFFERS: JobOffer[] = [
 /* Filtres                                                                     */
 /* -------------------------------------------------------------------------- */
 
-const LEVELS = ['Expérimentés']
+const LEVELS = ['0 à 2 ans', '3 à 5 ans', '6 à 10 ans', 'Plus de 10 ans']
 const METIERS = [
-  'Architecture',
+  "Responsable d’Application",
+  "Architecte d’Entreprise",
+  'Développeur',
+  'Transformation manager',
   'Business Analyst',
-  'Data et intelligence artificielle',
-  'Développement',
+  "Responsable d’applications",
+  'Data Engineer',
+  'Data Analyst',
 ]
-const CONTRACTS = ['CDI', 'CDD']
+/** Liste stricte des 4 BUs officielles — fixée indépendamment des valeurs
+ *  libres de `category` sur les offres mock. */
+const CATEGORIES = ['Data & IA', 'Cloud & Infrastructure', 'Product', 'Digital']
 
 const searchQuery = ref('')
 const showSuggestions = ref(false)
@@ -134,7 +140,11 @@ const PAGE_SIZE = 4
 
 const selectedLevels = ref<string[]>([])
 const selectedMetiers = ref<string[]>([])
-const selectedContracts = ref<string[]>([])
+const selectedCategories = ref<string[]>([])
+
+const isLevelsOpen = ref(false)
+const isMetiersOpen = ref(false)
+const isCategoriesOpen = ref(false)
 
 /* Tokens extraits de toutes les offres pour l'autocomplétion. */
 const suggestions = computed(() => {
@@ -167,7 +177,7 @@ const filteredOffers = computed(() => {
       return false
     if (selectedLevels.value.length && !selectedLevels.value.includes(o.level)) return false
     if (selectedMetiers.value.length && !selectedMetiers.value.includes(o.metier)) return false
-    if (selectedContracts.value.length && !selectedContracts.value.includes(o.contract))
+    if (selectedCategories.value.length && !selectedCategories.value.includes(o.category))
       return false
     return true
   })
@@ -193,14 +203,14 @@ function selectSuggestion(suggestion: string) {
   currentPage.value = 1
 }
 
-function clearGroup(group: 'levels' | 'metiers' | 'contracts') {
+function clearGroup(group: 'levels' | 'metiers' | 'categories') {
   if (group === 'levels') selectedLevels.value = []
   else if (group === 'metiers') selectedMetiers.value = []
-  else selectedContracts.value = []
+  else selectedCategories.value = []
 }
 
 watch(
-  [selectedLevels, selectedMetiers, selectedContracts],
+  [selectedLevels, selectedMetiers, selectedCategories],
   () => {
     currentPage.value = 1
   },
@@ -443,97 +453,145 @@ watch(
 
             <h2 class="font-display text-lg font-bold text-primary-900">Filtres</h2>
 
-            <!-- Niveaux d'expérience -->
-            <div class="mt-5 border-t border-gray-200 pt-5">
-              <div class="flex items-center justify-between">
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                  Niveaux d'expérience
-                </h3>
-                <button
-                  v-if="selectedLevels.length"
-                  class="text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
-                  @click="clearGroup('levels')"
-                >
-                  Effacer
-                </button>
-              </div>
-              <ul class="mt-3 space-y-2.5">
-                <li v-for="level in LEVELS" :key="level">
-                  <label
-                    class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
-                  >
-                    <input
-                      v-model="selectedLevels"
-                      type="checkbox"
-                      :value="level"
-                      class="h-4 w-4 rounded accent-accent-500"
-                    />
-                    {{ level }}
-                  </label>
-                </li>
-              </ul>
-            </div>
-
             <!-- Métiers -->
             <div class="mt-5 border-t border-gray-200 pt-5">
-              <div class="flex items-center justify-between">
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <button
+                type="button"
+                class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
+                :aria-expanded="isMetiersOpen"
+                @click="isMetiersOpen = !isMetiersOpen"
+              >
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Métiers
-                </h3>
+                </span>
+                <svg
+                  class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
+                  :class="isMetiersOpen ? 'rotate-180' : ''"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path d="m5 7 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+              <div v-show="isMetiersOpen">
                 <button
                   v-if="selectedMetiers.length"
-                  class="text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
+                  class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
                   @click="clearGroup('metiers')"
                 >
                   Effacer
                 </button>
+                <ul class="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
+                  <li v-for="metier in METIERS" :key="metier">
+                    <label
+                      class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
+                    >
+                      <input
+                        v-model="selectedMetiers"
+                        type="checkbox"
+                        :value="metier"
+                        class="h-4 w-4 rounded accent-accent-500"
+                      />
+                      {{ metier }}
+                    </label>
+                  </li>
+                </ul>
               </div>
-              <ul class="mt-3 space-y-2.5">
-                <li v-for="metier in METIERS" :key="metier">
-                  <label
-                    class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
-                  >
-                    <input
-                      v-model="selectedMetiers"
-                      type="checkbox"
-                      :value="metier"
-                      class="h-4 w-4 rounded accent-accent-500"
-                    />
-                    {{ metier }}
-                  </label>
-                </li>
-              </ul>
             </div>
 
-            <!-- Types de contrat -->
+            <!-- BUs -->
             <div class="mt-5 border-t border-gray-200 pt-5">
-              <div class="flex items-center justify-between">
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                  Types de contrat
-                </h3>
+              <button
+                type="button"
+                class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
+                :aria-expanded="isCategoriesOpen"
+                @click="isCategoriesOpen = !isCategoriesOpen"
+              >
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                  BUSINESS UNITS
+                </span>
+                <svg
+                  class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
+                  :class="isCategoriesOpen ? 'rotate-180' : ''"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path d="m5 7 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+              <div v-show="isCategoriesOpen">
                 <button
-                  v-if="selectedContracts.length"
-                  class="text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
-                  @click="clearGroup('contracts')"
+                  v-if="selectedCategories.length"
+                  class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
+                  @click="clearGroup('categories')"
                 >
                   Effacer
                 </button>
+                <ul class="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
+                  <li v-for="category in CATEGORIES" :key="category">
+                    <label
+                      class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
+                    >
+                      <input
+                        v-model="selectedCategories"
+                        type="checkbox"
+                        :value="category"
+                        class="h-4 w-4 rounded accent-accent-500"
+                      />
+                      {{ category }}
+                    </label>
+                  </li>
+                </ul>
               </div>
-              <ul class="mt-3 space-y-2.5">
-                <li v-for="contract in CONTRACTS" :key="contract">
-                  <label
-                    class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
-                  >
-                    <input
-                      v-model="selectedContracts"
-                      type="checkbox"
-                      :value="contract"
-                      class="h-4 w-4 rounded accent-accent-500"
-                    />
-                    {{ contract }}
-                  </label>
-                </li>
-              </ul>
+            </div>
+
+            <!-- Niveau d'expérience -->
+            <div class="mt-5 border-t border-gray-200 pt-5">
+              <button
+                type="button"
+                class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
+                :aria-expanded="isLevelsOpen"
+                @click="isLevelsOpen = !isLevelsOpen"
+              >
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                  Niveau d'expérience
+                </span>
+                <svg
+                  class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
+                  :class="isLevelsOpen ? 'rotate-180' : ''"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path d="m5 7 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+              <div v-show="isLevelsOpen">
+                <button
+                  v-if="selectedLevels.length"
+                  class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
+                  @click="clearGroup('levels')"
+                >
+                  Effacer
+                </button>
+                <ul class="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
+                  <li v-for="level in LEVELS" :key="level">
+                    <label
+                      class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
+                    >
+                      <input
+                        v-model="selectedLevels"
+                        type="checkbox"
+                        :value="level"
+                        class="h-4 w-4 rounded accent-accent-500"
+                      />
+                      {{ level }}
+                    </label>
+                  </li>
+                </ul>
+              </div>
             </div>
           </aside>
         </div>

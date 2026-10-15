@@ -94,7 +94,7 @@ export const mainNavEntries: NavItem[] = [
     label: 'Je suis candidat',
     title: 'Rejoignez le collectif',
     description:
-      'Rejoignez un collectif où votre talent compte vraiment. CDI, CDD, stage — construisez votre carrière avec nous.',
+      'Rejoignez un collectif où votre talent compte vraiment. CDI - construisez votre carrière avec nous.',
     ctaLabel: 'Voir nos offres',
     ctaTo: { name: 'offres' },
     to: { name: 'candidat' },

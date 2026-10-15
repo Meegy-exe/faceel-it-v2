@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
 import { useSeo } from '@/composables/useSeo'
-import { useWaveCanvas } from '@/composables/useWaveCanvas'
 
 useSeo({
   title: 'Consulter nos offres',
@@ -18,9 +17,6 @@ const router = useRouter()
 const heroEl = useTemplateRef<HTMLElement>('heroEl')
 const heroReveal = useScrollReveal(heroEl)
 
-const waveCanvas = ref<HTMLCanvasElement | null>(null)
-useWaveCanvas(waveCanvas)
-
 const selectedOffer = ref<JobOffer | null>(null)
 
 /* -------------------------------------------------------------------------- */
@@ -32,7 +28,7 @@ interface JobOffer {
   title: string
   location: string
   category: string
-  contract: 'CDI' | 'CDD' | 'Stage'
+  contract: 'CDI' | 'CDD' | 'Stage' | 'Alternance'
   level: string
   metier: string
   description: string
@@ -112,6 +108,114 @@ const OFFERS: JobOffer[] = [
     description:
       "Dans le cadre d'un stage de fin d'études, vous travaillerez sur des cas d'usage d'intelligence artificielle générative. Vous participerez à la conception de pipelines de traitement de données et à l'évaluation de modèles de langage dans un environnement orienté recherche appliquée.",
   },
+  {
+    id: 7,
+    title: 'Développeur Android (H/F)',
+    location: 'Lille',
+    category: 'Digital',
+    contract: 'CDI',
+    level: '3 à 5 ans',
+    metier: 'Développeur',
+    date: 'Publié il y a 2 mois',
+    description:
+      "Vous rejoindrez une équipe mobile pour concevoir et maintenir des applications Android natives (Kotlin) à forte volumétrie. Vous travaillerez en étroite collaboration avec les équipes design et backend dans un cycle Agile.",
+  },
+  {
+    id: 8,
+    title: 'Développeur(se) Fullstack Vue / Node.js',
+    location: 'Wasquehal',
+    category: 'Digital',
+    contract: 'CDI',
+    level: '0 à 2 ans',
+    metier: 'Développeur',
+    date: 'Publié il y a 3 semaines',
+    description:
+      "Vous interviendrez sur l'ensemble de la chaîne applicative (Vue 3, Node.js) d'une plateforme métier interne. Vous participerez aux choix d'architecture frontend et à la mise en place de bonnes pratiques de test.",
+  },
+  {
+    id: 9,
+    title: 'Ingénieur DevOps (H/F)',
+    location: 'Métropole Lilloise',
+    category: 'Cloud & Infrastructure',
+    contract: 'CDI',
+    level: '6 à 10 ans',
+    metier: "Architecte d’Entreprise",
+    date: 'Publié il y a 1 mois',
+    description:
+      "Vous industrialisez les pipelines CI/CD et l'infrastructure cloud de nos clients (conteneurisation, supervision, sécurité). Vous accompagnez les équipes de développement vers une démarche DevOps mature.",
+  },
+  {
+    id: 10,
+    title: 'Tech Lead Java (H/F)',
+    location: 'Lille',
+    category: 'Digital',
+    contract: 'CDI',
+    level: 'Plus de 10 ans',
+    metier: 'Développeur',
+    date: 'Publié il y a 4 mois',
+    description:
+      "Vous encadrez techniquement une équipe de développeurs Java/Spring sur un projet métier critique. Vous garantissez la qualité du code, les choix d'architecture et la montée en compétence de l'équipe.",
+  },
+  {
+    id: 11,
+    title: 'Data Analyst (H/F)',
+    location: 'Wasquehal',
+    category: 'Data & IA',
+    contract: 'CDI',
+    level: '0 à 2 ans',
+    metier: 'Data Analyst',
+    date: 'Publié il y a 2 semaines',
+    description:
+      "Vous produisez des tableaux de bord et analyses pour accompagner la prise de décision de nos clients. Vous travaillez sur des outils de BI (Power BI) et participez à la fiabilisation des données sources.",
+  },
+  {
+    id: 12,
+    title: 'Alternance – Développeur Fullstack',
+    location: 'Lille',
+    category: 'Digital',
+    contract: 'Alternance',
+    level: '0 à 2 ans',
+    metier: 'Développeur',
+    date: 'Publié il y a 1 semaine',
+    description:
+      "En alternance, vous contribuez au développement de fonctionnalités sur une application web Vue/Node.js, encadré par un développeur senior. Formation Bac+4/5 en informatique requise.",
+  },
+  {
+    id: 13,
+    title: 'Scrum Master / Transformation Agile',
+    location: 'Métropole Lilloise',
+    category: 'Conseil',
+    contract: 'CDI',
+    level: '3 à 5 ans',
+    metier: 'Transformation manager',
+    date: 'Publié il y a 6 mois',
+    description:
+      "Vous accompagnez plusieurs équipes produit dans l'adoption et l'amélioration continue des pratiques Agile. Vous facilitez les rituels Scrum et diffusez une culture d'amélioration continue.",
+  },
+  {
+    id: 14,
+    title: 'Responsable Applicatif PLM (H/F)',
+    location: 'Wasquehal',
+    category: 'Digital',
+    contract: 'CDI',
+    level: '6 à 10 ans',
+    metier: "Responsable d’Application",
+    date: 'Publié il y a 5 mois',
+    description:
+      "Vous pilotez le maintien en conditions opérationnelles et les évolutions d'une application PLM métier. Vous coordonnez les équipes techniques et les utilisateurs clés côté client.",
+  },
+  {
+    id: 15,
+    title: "Architecte d'Entreprise",
+    location: 'Lille',
+    category: 'Digital',
+    contract: 'CDI',
+    level: 'Plus de 10 ans',
+    metier: "Architecte d’Entreprise",
+    date: 'Publié il y a 2 mois',
+    description:
+      "Vous définissez la cible d'architecture SI de nos clients grands comptes, en cohérence avec leur stratégie métier. Vous cadrez les projets de transformation et en garantissez la cohérence technique globale.",
+  },
 ]
 
 /* -------------------------------------------------------------------------- */
@@ -129,14 +233,14 @@ const METIERS = [
   'Data Engineer',
   'Data Analyst',
 ]
-/** Liste stricte des 4 BUs officielles — fixée indépendamment des valeurs
- *  libres de `category` sur les offres mock. */
-const CATEGORIES = ['Data & IA', 'Cloud & Infrastructure', 'Product', 'Digital']
+/** Liste stricte des BUs officielles — fixée indépendamment des valeurs
+ *  libres de `category` sur les offres mock. BU Cloud retirée. */
+const CATEGORIES = ['Data & IA', 'Product', 'Digital']
 
 const searchQuery = ref('')
 const showSuggestions = ref(false)
 const currentPage = ref(1)
-const PAGE_SIZE = 4
+const PAGE_SIZE = 10
 
 const selectedLevels = ref<string[]>([])
 const selectedMetiers = ref<string[]>([])
@@ -221,33 +325,41 @@ watch(
 <template>
   <!-- Pas de <main> ici : App.vue le fournit déjà. -->
 
-  <!-- CONTENEUR SNAP OPT-IN : isole le scroll magnétique de cette vue sans
-       dépendre de la hauteur flexée de <main> (cf. HomeView.vue). -->
-  <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
+  <!-- Scroll libre (page dédiée, hors du régime snap-scroll des autres
+       vues principales, cf. CLAUDE.md) — exception demandée pour cette page. -->
+  <div class="flex flex-col min-h-screen w-full overflow-x-hidden">
   <!-- ==================================================================
        1. HERO — sombre
        ================================================================== -->
   <section
     id="hero"
     data-theme="dark"
-    class="relative h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center overflow-hidden px-4 sm:px-6 lg:px-8 xl:px-12 bg-[#000066] text-white"
+    class="relative w-full h-auto min-h-[40vh] flex flex-col justify-center overflow-hidden px-4 pt-32 pb-16 sm:px-6 lg:px-8 xl:px-12 bg-[#000066] text-white"
   >
-    <!-- Canvas vague — fond animé, désactivé si motion-reduce. -->
-    <canvas
-      ref="waveCanvas"
-      aria-hidden="true"
-      class="absolute inset-0 h-full w-full pointer-events-none opacity-60 motion-reduce:hidden"
-    />
-
-    <!-- Cercle décoratif vert — touche d'accent sur fond sombre. -->
+    <!-- Fond vivant — remplace la vague animée d'origine (hors format pour
+         un Hero réduit h-auto) : lignes filaires ondulantes + halos
+         respirants, statiques sous prefers-reduced-motion. -->
     <div
       aria-hidden="true"
-      class="pointer-events-none absolute -right-40 top-1/2 h-[560px] w-[560px] -translate-y-1/2 rounded-full bg-accent-500/15 blur-3xl"
+      class="glow-pulse glow-pulse-1 pointer-events-none absolute -left-32 -top-32 z-0 h-[420px] w-[420px] rounded-full bg-[#5EC6FF] opacity-[0.15] blur-3xl"
     />
+    <div
+      aria-hidden="true"
+      class="glow-pulse glow-pulse-2 pointer-events-none absolute -right-32 -bottom-32 z-0 h-[420px] w-[420px] rounded-full bg-accent-500 opacity-[0.15] blur-3xl"
+    />
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-30">
+      <div class="mosaic-tile absolute top-[8%] left-[6%] h-14 w-14 rounded-md bg-[#5EC6FF] opacity-20" />
+      <div class="mosaic-tile absolute top-[20%] left-[42%] h-10 w-10 rounded-md bg-accent-500 opacity-30" />
+      <div class="mosaic-tile absolute top-[12%] right-[10%] h-20 w-20 rounded-md bg-[#5EC6FF] opacity-10" />
+      <div class="mosaic-tile absolute bottom-[18%] left-[18%] h-16 w-16 rounded-md bg-accent-500 opacity-20" />
+      <div class="mosaic-tile absolute bottom-[10%] right-[30%] h-12 w-12 rounded-md bg-[#5EC6FF] opacity-30" />
+      <div class="mosaic-tile absolute bottom-[28%] right-[8%] h-24 w-24 rounded-md bg-accent-500 opacity-10" />
+      <div class="mosaic-tile absolute top-[48%] left-[28%] h-8 w-8 rounded-md bg-[#5EC6FF] opacity-20" />
+    </div>
 
     <div
       ref="heroEl"
-      class="relative z-10 mr-auto w-full max-w-3xl transition-all duration-700 ease-out motion-reduce:transition-none"
+      class="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center text-center transition-all duration-700 ease-out motion-reduce:transition-none"
       :class="scrollRevealClass(heroReveal)"
     >
       <h1 class="font-display text-display text-balance text-white">
@@ -282,15 +394,9 @@ watch(
 
   <!-- ==================================================================
        2. JOB BOARD — clair
-       La section tient h-full (snap). L'intérieur est overflow-y-auto
-       pour scroller les offres sans déclencher le snap global de la page.
        ================================================================== -->
-  <section
-    id="job-board"
-    data-theme="light"
-    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-light overflow-hidden"
-  >
-    <div class="flex-1 overflow-y-auto px-4 pt-28 pb-8 sm:px-6 lg:px-8 xl:px-12">
+  <section id="job-board" data-theme="light" class="w-full flex flex-col bg-light">
+    <div class="px-4 pt-28 pb-8 sm:px-6 lg:px-8 xl:px-12">
       <div class="mx-auto max-w-6xl">
         <!-- ① Barre de recherche -->
         <div class="relative w-full mb-8 z-20">
@@ -356,12 +462,29 @@ watch(
                 v-for="offer in pagedOffers"
                 :key="offer.id"
                 class="group rounded-2xl bg-white p-5 ring-1 ring-gray-200 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:ring-gray-300 hover:shadow-md cursor-pointer"
-                @click="selectedOffer = offer"
+                @click="router.push({ name: 'offre-detail', params: { id: offer.id } })"
               >
-                <!-- Titre + date -->
+                <!-- Titre + date + aperçu rapide -->
                 <div class="flex items-start justify-between gap-4">
                   <h3 class="font-semibold text-primary-900">{{ offer.title }}</h3>
-                  <span class="shrink-0 text-xs text-gray-400">{{ offer.date }}</span>
+                  <div class="flex shrink-0 items-center gap-2">
+                    <span class="text-xs text-gray-400">{{ offer.date }}</span>
+                    <button
+                      type="button"
+                      aria-label="Aperçu rapide de l'offre"
+                      class="flex size-7 items-center justify-center rounded-full text-primary-900/50 transition-colors hover:bg-gray-100 hover:text-primary-900"
+                      @click.stop="selectedOffer = offer"
+                    >
+                      <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M2.25 12s3.75-7.5 9.75-7.5 9.75 7.5 9.75 7.5-3.75 7.5-9.75 7.5S2.25 12 2.25 12Z"
+                        />
+                        <circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
 
                 <!-- Description tronquée -->
@@ -599,17 +722,13 @@ watch(
       </div>
       <!-- fin max-w-6xl -->
     </div>
-    <!-- fin overflow-y-auto -->
   </section>
 
   <!-- ==================================================================
-       3. FOOTER — repris dans le flux snap local (cf. HomeView.vue) ;
-       App.vue masque son footer global pour cette route pour éviter le doublon.
+       3. FOOTER — App.vue masque son footer global pour cette route pour
+       éviter le doublon ; il est repris ici dans le flux normal de la page.
        ================================================================== -->
-  <section
-    data-theme="dark"
-    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
-  >
+  <section data-theme="dark" class="w-full bg-[#000066]">
     <TheFooter />
   </section>
   </div>
@@ -740,3 +859,81 @@ watch(
     </div>
   </Teleport>
 </template>
+
+<style scoped>
+/* Fond animé du Hero (mosaïque de tuiles + halos respirants) — neutralisé
+   sous prefers-reduced-motion, cf. CLAUDE.md. Rien de ceci n'anime le
+   layout, donc zéro impact sur le CLS. */
+@media (prefers-reduced-motion: no-preference) {
+  .mosaic-tile {
+    animation: floatTile 20s ease-in-out infinite;
+  }
+
+  .mosaic-tile:nth-child(1) {
+    animation-duration: 18s;
+    animation-delay: -2s;
+  }
+
+  .mosaic-tile:nth-child(2) {
+    animation-duration: 15s;
+    animation-delay: -5s;
+  }
+
+  .mosaic-tile:nth-child(3) {
+    animation-duration: 24s;
+    animation-delay: -8s;
+  }
+
+  .mosaic-tile:nth-child(4) {
+    animation-duration: 20s;
+    animation-delay: -11s;
+  }
+
+  .mosaic-tile:nth-child(5) {
+    animation-duration: 17s;
+    animation-delay: -14s;
+  }
+
+  .mosaic-tile:nth-child(6) {
+    animation-duration: 25s;
+    animation-delay: -17s;
+  }
+
+  .mosaic-tile:nth-child(7) {
+    animation-duration: 16s;
+    animation-delay: -20s;
+  }
+
+  @keyframes floatTile {
+    0% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-20px) rotate(5deg);
+    }
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+  }
+
+  .glow-pulse {
+    animation: pulseGlow 10s ease-in-out infinite alternate;
+  }
+
+  .glow-pulse-2 {
+    animation-duration: 12s;
+    animation-delay: -5s;
+  }
+
+  @keyframes pulseGlow {
+    0% {
+      opacity: 0.1;
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 0.22;
+      transform: scale(1.1);
+    }
+  }
+}
+</style>

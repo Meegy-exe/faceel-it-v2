@@ -52,6 +52,11 @@ interface Props {
    *  un besoin ponctuel (ex. `line-clamp-2`) sans changer `size` partout où
    *  ce composant est déjà utilisé (Services, Secteurs, RSE…). */
   bodyClass?: string
+  /** Opt-in par instance : centre titre, filet et description sous `sm:`
+   *  (box + text-align), reste identique (`items-start`/`text-left`) à partir
+   *  de `sm:` et sur toute instance qui ne passe pas cette prop — aucune
+   *  régression sur Services/Secteurs/RSE/Valeur ajoutée. */
+  centerOnMobile?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -59,6 +64,7 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'md',
   headingLevel: 3,
   bodyClass: '',
+  centerOnMobile: false,
 })
 
 defineSlots<{
@@ -102,7 +108,10 @@ const size = computed(() => SIZES[props.size])
 </script>
 
 <template>
-  <div class="flex min-h-[200px] flex-col items-start justify-center text-left">
+  <div
+    class="flex min-h-[200px] flex-col justify-center"
+    :class="centerOnMobile ? 'items-center text-center sm:items-start sm:text-left' : 'items-start text-left'"
+  >
     <span
       v-if="badge"
       class="mb-3 inline-flex items-center rounded-full px-3 py-1 text-eyebrow uppercase"
@@ -120,10 +129,15 @@ const size = computed(() => SIZES[props.size])
          animation au survol : la diapositive n'est pas interactive. -->
     <span aria-hidden="true" class="mt-4 h-0.5 w-10 bg-accent-500" />
 
+    <!-- `max-w-prose` conditionnelle : générée après les classes `max-w-[…]`
+         arbitraires dans la feuille Tailwind, elle les emportait toujours en
+         cascade — aucune valeur passée via `bodyClass` ne pouvait jamais la
+         battre. Retirée uniquement pour `centerOnMobile`, seul cas qui a
+         besoin d'une largeur mobile pilotée par l'appelant. -->
     <div
       v-if="$slots.default"
-      class="mt-4 max-w-prose leading-relaxed text-center sm:text-left"
-      :class="[tone.body, size.body, bodyClass]"
+      class="mt-4 leading-relaxed text-center sm:text-left"
+      :class="[tone.body, size.body, centerOnMobile ? '' : 'max-w-prose', bodyClass]"
     >
       <slot />
     </div>

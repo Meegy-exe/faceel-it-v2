@@ -18,8 +18,13 @@ const props = withDefaults(
      * `ARROW_TONE`), reconduit ici à l'identique plutôt que réinventé.
      */
     tone?: CardTone
+    /** Sous 460px, la flèche absolue (bord droit) chevauche le texte de la
+     *  diapositive faute de marge — bascule en flux normal, centrée sous la
+     *  piste, uniquement pour l'instance qui l'active (pas de régression sur
+     *  les autres carrousels du site). */
+    arrowBelowOnMobile?: boolean
   }>(),
-  { autoplayMs: 3_500, tone: 'light' },
+  { autoplayMs: 3_500, tone: 'light', arrowBelowOnMobile: false },
 )
 
 /** Ratios repris tels quels de `CardCarousel.vue` (skill `a11y-color-check`) :
@@ -180,7 +185,10 @@ onBeforeUnmount(() => {
     @focusout="handleFocusOut"
   >
     <!-- Conteneur principal -->
-    <div class="relative my-auto flex w-full items-center overflow-hidden">
+    <div
+      class="relative my-auto flex w-full items-center overflow-hidden"
+      :class="arrowBelowOnMobile ? 'flex-col max-[459px]:gap-4 sm:flex-row' : ''"
+    >
       <!-- Piste avec les MÊMES paddings que les en-têtes de HomeView -->
       <div class="relative h-[250px] w-full px-4 md:px-24 lg:px-28">
         <div class="relative h-full w-full">
@@ -195,12 +203,19 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <!-- Flèche ancrée au bord de l'écran global, totalement hors de la zone des slides -->
+      <!-- Flèche ancrée au bord de l'écran global, totalement hors de la zone des slides.
+           Sous 460px (si arrowBelowOnMobile) : sort du flow absolu, centrée en flux normal
+           sous la piste plutôt que chevauchant le texte faute de marge. -->
       <button
         type="button"
         aria-label="Diapositive suivante"
-        class="absolute top-1/2 right-4 z-50 inline-flex size-11 -translate-y-1/2 items-center justify-center transition-colors duration-200 focus-visible:outline-3 focus-visible:outline-offset-2 md:right-8 lg:right-12"
-        :class="arrowTone"
+        class="z-50 inline-flex size-11 items-center justify-center transition-colors duration-200 focus-visible:outline-3 focus-visible:outline-offset-2"
+        :class="[
+          arrowTone,
+          arrowBelowOnMobile
+            ? 'mx-auto sm:absolute sm:top-1/2 sm:right-4 sm:mx-0 sm:-translate-y-1/2 md:right-8 lg:right-12'
+            : 'absolute top-1/2 right-4 -translate-y-1/2 md:right-8 lg:right-12',
+        ]"
         @click="navigateTo(nextIndex)"
       >
         <svg class="size-8" viewBox="0 0 24 24" fill="none" aria-hidden="true">

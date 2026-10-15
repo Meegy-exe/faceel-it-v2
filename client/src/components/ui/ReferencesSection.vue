@@ -246,7 +246,7 @@ onBeforeUnmount(() => {
       <p class="text-base font-semibold uppercase tracking-widest text-blue-500">
         Ils nous ont fait confiance
       </p>
-      <h2 class="mt-2 overflow-hidden pb-2 font-display text-4xl font-extrabold tracking-tight text-gray-900 md:text-5xl">
+      <h2 class="mt-2 flex min-h-[88px] items-center justify-center overflow-hidden pb-2 font-display text-4xl font-extrabold tracking-tight text-gray-900 md:min-h-[112px] md:text-5xl">
         <Transition
           enter-active-class="transition-all duration-500 ease-out"
           enter-from-class="opacity-0 translate-y-4"
@@ -320,14 +320,14 @@ onBeforeUnmount(() => {
   display: flex;
   width: max-content;
   gap: 3rem;
-  animation: scroll-left 80s linear infinite;
+  animation: scroll-left 40s linear infinite;
 }
 
 .marquee-right {
   display: flex;
   width: max-content;
   gap: 3rem;
-  animation: scroll-right 80s linear infinite;
+  animation: scroll-right 40s linear infinite;
 }
 
 .marquee-track:hover .marquee-left,

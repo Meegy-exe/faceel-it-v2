@@ -285,7 +285,7 @@ const heroFullText = computed(
 
 const HERO_TYPEWRITER_ERASE_MS = 45
 const HERO_TYPEWRITER_TYPE_MS = 70
-const HERO_TYPEWRITER_START_DELAY_MS = 1_500
+const HERO_TYPEWRITER_START_DELAY_MS = 0
 const HERO_TYPEWRITER_PAUSE_MS = 3_000
 
 let heroEraseTimeout: ReturnType<typeof setTimeout> | undefined
@@ -524,7 +524,7 @@ onBeforeUnmount(() => {
 
   <!-- CONTENEUR SNAP OPT-IN : ce div isole le scroll magnétique de la page
        d'accueil pour ne pas briser le layout d'App.vue. -->
-  <div class="h-dvh w-full overflow-y-auto snap-y snap-mandatory">
+  <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
   <!-- snap-always retiré ici (seulement ici) : forçait un snap plein écran
        dès le moindre tick de molette, sans laisser au bandeau d'événements
        le temps de défiler sous la navbar fixe. snap-start conservé (section
@@ -557,12 +557,12 @@ onBeforeUnmount(() => {
 <!--          ESN · Data × IA × Transformation digitale-->
 <!--        </p>-->
 
-        <div class="mt-6 min-h-[140px] md:min-h-[180px] lg:min-h-[220px] flex items-center">
+        <div class="mt-6 min-h-[140px] md:min-h-[180px] lg:min-h-[220px] flex items-center max-sm:w-[320px] max-sm:overflow-hidden">
           <h1
-            class="flex max-w-7xl flex-col items-start gap-y-2 animate-fade-up motion-reduce:animate-none font-display text-5xl leading-[1.1] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl drop-shadow-xl"
+            class="flex max-w-7xl flex-col items-start gap-y-2 animate-fade-up motion-reduce:animate-none font-display text-5xl leading-[1.1] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl drop-shadow-xl max-sm:text-2xl max-sm:leading-tight"
           >
             <span class="sr-only">{{ heroFullText }}</span>
-            <span class="block text-white" aria-hidden="true">
+            <span class="block text-white max-sm:whitespace-nowrap" aria-hidden="true">
               {{ typedMain || '\u200B'
               }}<span
                 v-show="cursorPosition === 'main'"
@@ -570,7 +570,7 @@ onBeforeUnmount(() => {
                 aria-hidden="true"
               ></span>
             </span>
-            <span class="text-accent-500" aria-hidden="true">
+            <span class="text-accent-500 max-sm:whitespace-nowrap" aria-hidden="true">
               {{ typedHighlight || '\u200B'
               }}<span
                 v-show="cursorPosition === 'highlight'"
@@ -623,6 +623,7 @@ onBeforeUnmount(() => {
           :autoplay-ms="4000"
           label="Nos valeurs"
           tone="dark"
+          arrow-below-on-mobile
           class="relative z-10 h-full w-full"
           @update:active-index="valeursActiveSlide = $event"
         >
@@ -631,8 +632,9 @@ onBeforeUnmount(() => {
               tone="dark"
               :title="activeValue(index).title"
               :heading-level="3"
-              body-class="text-base lg:text-lg max-w-[320px]"
+              body-class="text-base lg:text-lg w-full max-w-full break-words px-6 sm:max-w-[320px] sm:px-0"
               class="max-w-xl"
+              center-on-mobile
             >
               <template v-for="(line, lineIndex) in activeValue(index).description" :key="lineIndex">
                 <br v-if="lineIndex > 0" />{{ line }}
@@ -650,7 +652,7 @@ onBeforeUnmount(() => {
   <section
     id="chiffres-cles"
     data-theme="dark"
-    class="relative h-dvh shrink-0 w-full snap-start snap-always overflow-hidden flex flex-col justify-center bg-[#000066] px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
+    class="relative h-auto shrink-0 w-full snap-start snap-always overflow-hidden flex flex-col justify-center bg-[#000066] px-4 py-12 sm:px-6 sm:py-16 lg:px-8 xl:px-12"
   >
     <!-- Halo lumineux central — décoratif. -->
     <div
@@ -977,7 +979,7 @@ onBeforeUnmount(() => {
 
   .animate-hero-text-delayed {
     opacity: 0;
-    animation: hero-text-up 1s cubic-bezier(0.25, 1, 0.5, 1) 0.8s forwards;
+    animation: hero-text-up 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   }
 }
 </style>

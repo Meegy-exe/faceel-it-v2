@@ -8,6 +8,8 @@ import CookieBanner from '@/components/ui/CookieBanner.vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import { mainNavEntries } from '@/features/navigation/mainNav'
 import { footerColumns, footerDescription } from '@/features/navigation/footerNav'
+import imgCandidat from '@/assets/images/photos/f-it-01.jpg'
+import imgEntreprise from '@/assets/images/padel-equipe.jpg'
 
 /**
  * Coquille de l'application : en-tête, contenu, pied de page.
@@ -209,12 +211,6 @@ const ArrowRightIcon: FunctionalComponent = () =>
       leave-to-class="opacity-0 blur-md scale-105"
     >
     <div v-if="showProfileSelector" class="fixed inset-0 z-[100] flex flex-col bg-white">
-      <h1
-        class="mt-12 mb-8 text-center font-display text-3xl font-bold text-primary-950 transition-all duration-500"
-        :class="{ 'scale-90 opacity-0 pointer-events-none': animatingSelection }"
-      >
-        Êtes-vous ?
-      </h1>
       <div class="flex h-full w-full flex-1 flex-row overflow-hidden">
         <button
           type="button"
@@ -224,11 +220,18 @@ const ArrowRightIcon: FunctionalComponent = () =>
               : animatingSelection === 'entreprise'
                 ? 'w-0 opacity-0'
                 : 'w-1/2 hover:scale-[1.02] z-10',
-            'transition-all duration-700 ease-in-out origin-left flex items-center justify-center cursor-pointer bg-primary-950 text-white',
+            'relative overflow-hidden transition-all duration-700 ease-in-out origin-left flex items-center justify-center cursor-pointer bg-primary-950 text-white',
           ]"
           @click="setProfile('candidat')"
         >
-          <span class="whitespace-nowrap text-2xl font-bold lg:text-4xl">Un candidat</span>
+          <div
+            class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.12] grayscale pointer-events-none"
+            :style="{ backgroundImage: `url(${imgCandidat})` }"
+          />
+          <div class="relative z-10 flex flex-col items-center justify-center">
+            <span class="block mb-1 text-sm font-medium text-white">Je suis</span>
+            <span class="whitespace-nowrap text-2xl font-bold lg:text-4xl">Un candidat</span>
+          </div>
         </button>
         <button
           type="button"
@@ -238,11 +241,19 @@ const ArrowRightIcon: FunctionalComponent = () =>
               : animatingSelection === 'candidat'
                 ? 'w-0 opacity-0'
                 : 'w-1/2 hover:scale-[1.02] z-10',
-            'transition-all duration-700 ease-in-out origin-right flex items-center justify-center cursor-pointer cursor-faceel-blue bg-accent-500 text-primary-950',
+            'relative overflow-hidden transition-all duration-700 ease-in-out origin-right flex items-center justify-center cursor-pointer cursor-faceel-blue bg-white text-primary-950',
           ]"
           @click="setProfile('entreprise')"
         >
-          <span class="whitespace-nowrap text-2xl font-bold lg:text-4xl">Une entreprise</span>
+          <div
+            class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 grayscale contrast-125 pointer-events-none"
+            :style="{ backgroundImage: `url(${imgEntreprise})` }"
+          />
+          <div class="absolute inset-0 bg-white/85 pointer-events-none" />
+          <div class="relative z-10 flex flex-col items-center justify-center">
+            <span class="block mb-1 text-sm font-medium text-primary-950">Je suis</span>
+            <span class="whitespace-nowrap text-2xl font-bold lg:text-4xl">Une entreprise</span>
+          </div>
         </button>
       </div>
       <button

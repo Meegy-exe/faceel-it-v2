@@ -252,7 +252,7 @@ useSeo({
        si son contenu est plus court, tout en se répartissant à égalité au-delà
        de ce plancher si le contenu déborde (ex. petit écran).
        ================================================================== -->
-  <div class="flex w-full flex-col">
+  <div class="flex w-full flex-col overflow-x-hidden">
     <section
       id="hero"
       data-theme="dark"

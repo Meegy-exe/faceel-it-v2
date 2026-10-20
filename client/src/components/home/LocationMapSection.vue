@@ -10,25 +10,33 @@ const infoReveal = useScrollReveal(infoEl)
   <section
     id="localisation"
     data-theme="dark"
-    class="bg-core-glow h-full w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12"
+    class="relative bg-core-glow h-dvh shrink-0 w-full snap-start snap-always overflow-hidden flex flex-col justify-between lg:justify-center pt-24 [@media(max-height:690px)]:pt-16 pb-8 px-4 sm:px-6 lg:px-8 xl:px-12"
   >
-    <div class="mx-auto w-full max-w-6xl px-4 lg:px-8">
-      <div class="mb-12 text-center">
-        <h2 class="mt-4 font-display text-display text-balance text-white">Où nous trouver</h2>
-      </div>
+    <h2 class="shrink-0 mb-8 [@media(max-height:568px)]:mb-4 text-center font-display text-display text-balance text-white [@media(min-height:569px)_and_(max-height:690px)]:text-4xl [@media(max-height:568px)]:text-3xl lg:mb-12">
+      Où nous trouver
+    </h2>
 
-      <div
-        class="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-16"
-      >
-        <!-- Hologramme France — tracé réel extrait de /france.svg,
-             encadré dans un halo circulaire, style blueprint/outline. -->
-        <div class="relative flex shrink-0 items-center justify-center">
-          <div class="absolute inset-10 rounded-full bg-[#5EC6FF]/15 blur-3xl" />
-          <svg
-            viewBox="0 0 864 865"
-            class="relative z-10 h-64 w-auto lg:h-[40rem]"
-            aria-hidden="true"
-          >
+    <!-- Conteneur carte + contact — `flex-1 min-h-0` : occupe tout l'espace
+         restant entre le titre et le bas de l'écran (le titre, lui, reste
+         `shrink-0`). Empilé en mobile (`flex-col`, défaut), côte à côte à
+         partir de `lg:` (`lg:flex-row`) pour retrouver la disposition
+         desktop d'origine. -->
+    <div class="flex flex-1 min-h-0 flex-col lg:flex-none lg:flex-row lg:items-center lg:justify-center lg:gap-12">
+      <!-- Hologramme France — tracé réel extrait de /france.svg, encadré dans un
+           halo circulaire, style blueprint/outline. `flex-1 min-h-0` : occupe
+           tout l'espace restant face au bloc contact (`shrink-0`), c'est CE
+           bloc qui cède de la place en premier sur un écran court. `lg:h-[600px]`
+           : le SVG a besoin d'une hauteur CONCRÈTE (pas juste `max-h-full`) pour
+           que son propre `h-full` interne ait une base de résolution — en
+           `lg:flex-row` l'axe transversal (hauteur) n'est plus piloté par
+           `flex-1` (qui ne joue que sur la largeur, axe principal de la ligne). -->
+      <div class="relative flex min-h-0 flex-1 items-center justify-center my-4 lg:my-0 lg:h-[600px] lg:w-auto lg:max-h-full lg:flex-none">
+        <div class="absolute inset-10 rounded-full bg-[#5EC6FF]/15 blur-3xl" />
+        <svg
+          viewBox="0 0 864 865"
+          class="relative z-10 h-full max-h-full w-auto max-w-full object-contain lg:w-[500px]"
+          aria-hidden="true"
+        >
             <defs>
               <radialGradient id="mapHalo" cx="50%" cy="50%" r="50%">
                 <stop offset="0%" stop-color="#0000aa" stop-opacity="0.35" />
@@ -94,104 +102,104 @@ const infoReveal = useScrollReveal(infoEl)
               </text>
             </a>
           </svg>
-        </div>
+      </div>
 
-        <!-- Informations d'adresse — entrée depuis la droite au scroll -->
-        <div
-          ref="infoEl"
-          class="flex flex-col gap-8 transition-all duration-700 ease-out motion-reduce:transition-none"
-          :class="
-            scrollRevealClass(infoReveal, 'right', {
-              offsetClass: 'translate-x-16',
-              delayClass: 'delay-[200ms]',
-              durationClass: 'duration-1200',
-            })
-          "
-        >
+      <!-- Bloc contact — remplace l'ancien paragraphe générique (déplacé, lui,
+           dans le bloc 'Cabinet de conseil...' du titre). `shrink-0` : contexte
+           identique au titre, c'est le bloc carte au-dessus qui cède de la
+           place en premier sur un écran court. `scale-95 origin-bottom` sous
+           568px : dernier filet de sécurité si même la compression du conteneur
+           flex ne suffit pas, pour garantir l'absence totale de double scroll. -->
+      <div
+        ref="infoEl"
+        class="shrink-0 mx-auto w-fit transition-all duration-700 ease-out motion-reduce:transition-none lg:mx-0 lg:w-auto lg:max-w-lg lg:flex-none [@media(max-height:568px)]:origin-bottom [@media(max-height:568px)]:scale-95"
+      :class="
+        scrollRevealClass(infoReveal, 'right', {
+          offsetClass: 'translate-x-16',
+          delayClass: 'delay-[200ms]',
+          durationClass: 'duration-1200',
+        })
+      "
+    >
+      <h3 class="font-display text-2xl font-bold text-white sm:text-3xl lg:text-4xl [@media(max-height:568px)]:text-xl">
+        Faceel IT - Siège social
+      </h3>
+      <p class="mt-1 text-sm text-white/50 sm:text-base lg:text-lg [@media(max-height:568px)]:text-xs">Hauts-de-France · Métropole Lilloise</p>
+
+      <div class="mt-4 grid gap-3 [@media(max-height:568px)]:gap-2 lg:gap-8">
+        <div class="flex items-start gap-3">
+          <svg
+            viewBox="0 0 20 20"
+            fill="none"
+            class="mt-0.5 size-5 shrink-0 text-[#12D80A] lg:size-6 [@media(max-height:568px)]:size-4"
+            aria-hidden="true"
+          >
+            <path
+              d="M10 2a6 6 0 016 6c0 4-6 10-6 10S4 12 4 8a6 6 0 016-6z"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="10" cy="8" r="2" stroke="currentColor" stroke-width="1.5" />
+          </svg>
           <div>
-            <h3 class="font-display text-3xl lg:text-4xl font-bold text-white">
-              Faceel IT — Siège social
-            </h3>
-            <p class="mt-2 text-lg text-white/50">Hauts-de-France · Métropole Lilloise</p>
-          </div>
-
-          <div class="flex flex-col gap-6 lg:gap-8">
-            <div class="flex items-start gap-4">
-              <svg
-                viewBox="0 0 20 20"
-                fill="none"
-                class="mt-0.5 size-7 shrink-0 text-[#12D80A]"
-                aria-hidden="true"
-              >
-                <path
-                  d="M10 2a6 6 0 016 6c0 4-6 10-6 10S4 12 4 8a6 6 0 016-6z"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <circle cx="10" cy="8" r="2" stroke="currentColor" stroke-width="1.5" />
-              </svg>
-              <div>
-                <p class="text-lg lg:text-xl font-semibold text-white">Adresse</p>
-                <p class="text-lg lg:text-xl text-white/60">Métropole Lilloise, 59000 Lille</p>
-              </div>
-            </div>
-
-            <div class="flex items-start gap-4">
-              <svg
-                viewBox="0 0 20 20"
-                fill="none"
-                class="mt-0.5 size-7 shrink-0 text-[#12D80A]"
-                aria-hidden="true"
-              >
-                <path
-                  d="M2 5a2 2 0 012-2h4l2 4-2.5 1.5a11 11 0 005 5L14 11l4 2v4a2 2 0 01-2 2A16 16 0 012 5z"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <div>
-                <p class="text-lg lg:text-xl font-semibold text-white">Contact</p>
-                <p class="text-lg lg:text-xl text-white/60">contact@faceel-it.com</p>
-              </div>
-            </div>
-
-            <div class="flex items-start gap-4">
-              <svg
-                viewBox="0 0 20 20"
-                fill="none"
-                class="mt-0.5 size-7 shrink-0 text-[#12D80A]"
-                aria-hidden="true"
-              >
-                <path
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-12v4l3 3"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <div>
-                <p class="text-lg lg:text-xl font-semibold text-white">Horaires</p>
-                <p class="text-lg lg:text-xl text-white/60">Lun-Jeu : 8h50 - 18h00<br />Ven : 8h50 - 17h30</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Pastille statut -->
-          <div class="flex items-center gap-3 pt-2">
-            <span class="relative flex size-3">
-              <span
-                class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#12D80A] opacity-75 motion-reduce:animate-none"
-              />
-              <span class="relative inline-flex size-3 rounded-full bg-[#12D80A]" />
-            </span>
-            <span class="text-base text-white/50">Équipe disponible en régie ou au bureau</span>
+            <p class="text-sm font-semibold text-white lg:text-lg [@media(max-height:568px)]:text-xs">Adresse</p>
+            <p class="text-sm text-white/60 lg:text-base [@media(max-height:568px)]:text-xs">Métropole Lilloise, 59000 Lille</p>
           </div>
         </div>
+
+        <div class="flex items-start gap-3">
+          <svg
+            viewBox="0 0 20 20"
+            fill="none"
+            class="mt-0.5 size-5 shrink-0 text-[#12D80A] lg:size-6 [@media(max-height:568px)]:size-4"
+            aria-hidden="true"
+          >
+            <path
+              d="M2 5a2 2 0 012-2h4l2 4-2.5 1.5a11 11 0 005 5L14 11l4 2v4a2 2 0 01-2 2A16 16 0 012 5z"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <div>
+            <p class="text-sm font-semibold text-white lg:text-lg [@media(max-height:568px)]:text-xs">Contact</p>
+            <p class="text-sm text-white/60 lg:text-base [@media(max-height:568px)]:text-xs">contact@faceel-it.com</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-3">
+          <svg
+            viewBox="0 0 20 20"
+            fill="none"
+            class="mt-0.5 size-5 shrink-0 text-[#12D80A] lg:size-6 [@media(max-height:568px)]:size-4"
+            aria-hidden="true"
+          >
+            <path
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-12v4l3 3"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <div>
+            <p class="text-sm font-semibold text-white lg:text-lg [@media(max-height:568px)]:text-xs">Horaires</p>
+            <p class="text-sm text-white/60 lg:text-base [@media(max-height:568px)]:text-xs">Lun-Jeu : 8h50 - 18h00<br />Ven : 8h50 - 17h30</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pastille statut -->
+      <div class="flex items-center gap-3 pt-4 lg:pt-8">
+        <span class="relative flex size-3">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#12D80A] opacity-75 motion-reduce:animate-none"></span>
+          <span class="relative inline-flex size-3 rounded-full bg-[#12D80A]"></span>
+        </span>
+        <span class="text-sm text-white/50 sm:text-base lg:text-lg [@media(max-height:568px)]:text-xs">Équipe disponible en régie ou au bureau</span>
+      </div>
       </div>
     </div>
   </section>

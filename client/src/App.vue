@@ -285,6 +285,20 @@ const ArrowRightIcon: FunctionalComponent = () =>
            `surface` calculée ici pour les deux aurait rendu l'un des deux
            illisible ; c'est exactement le bug que ce scoped slot corrige :
            `MegaMenu` connaît le fond réel de chaque rendu, `App.vue` non. -->
+      <!-- Équivalent mobile de la bulle flottante (masquée sous `md:`, cf.
+           plus bas) : même lien `/chat`, mêmes couleurs, en miniature pour
+           tenir dans la barre sans en déformer la hauteur. -->
+      <template #mobileChat>
+        <router-link
+          v-if="route.path !== '/chat'"
+          to="/chat"
+          aria-label="Ouvrir le ChatBot"
+          class="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#12D80A]"
+        >
+          <span class="text-xs font-bold leading-none tracking-tight text-white">it</span>
+        </router-link>
+      </template>
+
       <template #chatButton="{ surface }">
         <!-- Réseaux sociaux — visibles en permanence (jusqu'à 500px de large,
              au même titre que les boutons d'action, cf. MegaMenu.vue) :
@@ -507,8 +521,10 @@ const ArrowRightIcon: FunctionalComponent = () =>
 
     <!-- Bulle ChatBot flottante — remplace l'ancien bouton "ChatBot" de la
          navbar, reprend le rond vert/texte "it" du logo pour rester
-         identifiable même retiré de la barre. -->
-    <div v-if="route.path !== '/chat'" class="group fixed bottom-6 right-6 lg:bottom-8 lg:right-8 z-50 flex items-center gap-3">
+         identifiable même retiré de la barre. `hidden md:flex` : sur mobile
+         elle mangeait trop de place en bas d'écran, remplacée sous `md:` par
+         l'icône équivalente dans la barre (slot `#mobileChat` de MegaMenu). -->
+    <div v-if="route.path !== '/chat'" class="group hidden md:flex fixed bottom-2 right-2 [@media(max-height:568px)]:scale-75 lg:bottom-8 lg:right-8 z-50 items-center gap-3">
       <span class="bg-white/95 backdrop-blur-sm text-gray-800 text-sm md:text-base font-medium py-2.5 px-5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 cursor-default opacity-0 translate-x-2 pointer-events-none transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">Une question ?</span>
       <router-link
         to="/chat"

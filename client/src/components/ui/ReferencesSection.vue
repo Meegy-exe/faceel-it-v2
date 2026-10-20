@@ -87,7 +87,13 @@ function wrapTranslateX(tx: number, halfWidth: number): number {
   return wrapped > 0 ? wrapped - halfWidth : wrapped
 }
 
-function startDrag(e: MouseEvent, trackEl: HTMLElement | null, reverse: boolean) {
+/** Point X de l'événement, souris ou tactile — le drag/momentum ci-dessous
+ *  est écrit une seule fois et partagé par les deux familles d'événements. */
+function getClientX(e: MouseEvent | TouchEvent): number {
+  return 'touches' in e ? (e.touches[0]?.clientX ?? e.changedTouches[0]?.clientX ?? 0) : e.clientX
+}
+
+function startDrag(e: MouseEvent | TouchEvent, trackEl: HTMLElement | null, reverse: boolean) {
   if (!trackEl || dragSession) return
   const inner = trackEl.firstElementChild as HTMLElement | null
   if (!inner) return
@@ -99,18 +105,19 @@ function startDrag(e: MouseEvent, trackEl: HTMLElement | null, reverse: boolean)
 
   const tx = getTranslateX(inner)
   const duration = parseFloat(getComputedStyle(inner).animationDuration) || 80
+  const clientX = getClientX(e)
 
   inner.style.animation = 'none'
   inner.style.transform = `translateX(${tx}px)`
 
   dragSession = {
     el: inner,
-    startX: e.clientX,
+    startX: clientX,
     initialTx: tx,
     halfWidth: inner.scrollWidth / 2,
     duration,
     reverse,
-    lastX: e.clientX,
+    lastX: clientX,
     lastT: performance.now(),
     velocity: 0,
     didDrag: false,
@@ -119,27 +126,35 @@ function startDrag(e: MouseEvent, trackEl: HTMLElement | null, reverse: boolean)
 
   window.addEventListener('mousemove', moveDrag)
   window.addEventListener('mouseup', endDrag)
+  // `{ passive: false }` : indispensable pour que `preventDefault()` dans
+  // `moveDrag` bloque effectivement le scroll vertical de la page pendant un
+  // swipe horizontal sur le marquee (sinon le navigateur ignore l'appel et
+  // scrolle quand même, cf. `touch-pan-y` posé sur `.marquee-track` ci-dessous
+  // qui gère le cas où l'utilisateur n'a pas encore déplacé le doigt).
+  window.addEventListener('touchmove', moveDrag, { passive: false })
+  window.addEventListener('touchend', endDrag)
 }
 
-function moveDrag(e: MouseEvent) {
+function moveDrag(e: MouseEvent | TouchEvent) {
   if (!dragSession) return
   e.preventDefault()
 
+  const clientX = getClientX(e)
   const now = performance.now()
   const dt = now - dragSession.lastT
-  const dx = e.clientX - dragSession.lastX
+  const dx = clientX - dragSession.lastX
 
   if (Math.abs(dx) > 2) dragSession.didDrag = true
 
-  // Vélocité instantanée lissée (évite les à-coups entre deux `mousemove`).
+  // Vélocité instantanée lissée (évite les à-coups entre deux `mousemove`/`touchmove`).
   if (dt > 0) {
     const instant = dx / dt
     dragSession.velocity = dragSession.velocity * 0.7 + instant * 0.3
   }
-  dragSession.lastX = e.clientX
+  dragSession.lastX = clientX
   dragSession.lastT = now
 
-  const delta = e.clientX - dragSession.startX
+  const delta = clientX - dragSession.startX
   const tx = wrapTranslateX(dragSession.initialTx + delta, dragSession.halfWidth)
   dragSession.el.style.transform = `translateX(${tx}px)`
 }
@@ -190,6 +205,8 @@ function endDrag() {
 
   window.removeEventListener('mousemove', moveDrag)
   window.removeEventListener('mouseup', endDrag)
+  window.removeEventListener('touchmove', moveDrag)
+  window.removeEventListener('touchend', endDrag)
 
   if (session.didDrag && Math.abs(session.velocity) >= VELOCITY_EPSILON) {
     runMomentum(session)
@@ -209,17 +226,20 @@ onBeforeUnmount(() => {
   if (momentumFrame !== null) cancelAnimationFrame(momentumFrame)
   window.removeEventListener('mousemove', moveDrag)
   window.removeEventListener('mouseup', endDrag)
+  window.removeEventListener('touchmove', moveDrag)
+  window.removeEventListener('touchend', endDrag)
 })
 </script>
 
 <template>
-  <div class="flex h-full w-full flex-col justify-center py-8 md:py-12">
+  <div class="flex h-full w-full flex-col justify-center py-8 [@media(max-height:650px)]:justify-between [@media(max-height:650px)]:pt-20 [@media(max-height:650px)]:pb-8 md:py-12">
     <!-- BLOC 1 : Marquee ligne 1 → gauche -->
     <div
       ref="track1"
-      class="marquee-track"
+      class="marquee-track touch-pan-y"
       :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'"
       @mousedown="startDrag($event, track1, false)"
+      @touchstart="startDrag($event, track1, false)"
     >
       <div class="marquee-left">
         <template v-for="pass in 2" :key="pass">
@@ -228,7 +248,7 @@ onBeforeUnmount(() => {
             :key="`${pass}-${logo.name}`"
             class="shrink-0 transition-transform duration-300 hover:scale-105"
           >
-            <div class="flex h-20 w-48 items-center justify-center md:h-24 md:w-56 xl:h-28 xl:w-64">
+            <div class="flex h-20 [@media(max-height:650px)]:h-12 w-48 items-center justify-center md:h-24 md:w-56 xl:h-28 xl:w-64">
               <img
                 :src="logo.src"
                 :alt="logo.name"
@@ -246,7 +266,7 @@ onBeforeUnmount(() => {
       <p class="text-base font-semibold uppercase tracking-widest text-blue-500">
         Ils nous ont fait confiance
       </p>
-      <h2 class="mt-2 flex min-h-[88px] items-center justify-center overflow-hidden pb-2 font-display text-4xl font-extrabold tracking-tight text-gray-900 md:min-h-[112px] md:text-5xl">
+      <h2 class="mt-2 flex min-h-[88px] [@media(max-height:650px)]:min-h-[56px] items-center justify-center overflow-hidden pb-2 font-display text-4xl [@media(max-height:650px)]:text-2xl [@media(max-height:650px)]:leading-tight font-extrabold tracking-tight text-gray-900 md:min-h-[112px] md:text-5xl">
         <Transition
           enter-active-class="transition-all duration-500 ease-out"
           enter-from-class="opacity-0 translate-y-4"
@@ -264,9 +284,10 @@ onBeforeUnmount(() => {
     <!-- BLOC 3 : Marquee ligne 2 → droite -->
     <div
       ref="track2"
-      class="marquee-track"
+      class="marquee-track touch-pan-y"
       :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'"
       @mousedown="startDrag($event, track2, true)"
+      @touchstart="startDrag($event, track2, true)"
     >
       <div class="marquee-right">
         <template v-for="pass in 2" :key="pass">
@@ -275,7 +296,7 @@ onBeforeUnmount(() => {
             :key="`${pass}-${logo.name}`"
             class="shrink-0 transition-transform duration-300 hover:scale-105"
           >
-            <div class="flex h-20 w-48 items-center justify-center md:h-24 md:w-56 xl:h-28 xl:w-64">
+            <div class="flex h-20 [@media(max-height:650px)]:h-12 w-48 items-center justify-center md:h-24 md:w-56 xl:h-28 xl:w-64">
               <img
                 :src="logo.src"
                 :alt="logo.name"

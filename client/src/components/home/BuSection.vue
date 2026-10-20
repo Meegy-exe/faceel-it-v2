@@ -189,11 +189,11 @@ onBeforeUnmount(stopAutoSlide)
   <section
     id="business-units"
     data-theme="light"
-    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-light px-4 pt-36 pb-8 sm:px-6 lg:px-8 xl:px-12"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-light px-4 pt-36 [@media(max-height:850px)]:pt-16 pb-8 sm:px-6 lg:px-8 xl:px-12"
   >
     <header class="max-w-5xl px-4 md:px-24 2xl:px-28">
-      <h2 class="mt-4 font-display text-display min-[1030px]:whitespace-nowrap text-primary-900">
-        Nos BUs, Experte de vos besoins.
+      <h2 class="mt-4 [@media(max-height:850px)]:mt-2 font-display text-display min-[1030px]:whitespace-nowrap text-primary-900">
+        Nos BUs, Expertes de vos besoins.
       </h2>
       <p class="mt-4 min-[1030px]:whitespace-nowrap text-sm md:text-base min-[1030px]:text-lg leading-relaxed text-primary-900/60">
         Une organisation interne adaptée au marché pour une réponse sur-mesure à nos clients
@@ -389,19 +389,19 @@ onBeforeUnmount(stopAutoSlide)
           <div :key="mobileCardIndex" class="flex flex-col items-center">
             <!-- accent-700, pas accent-500 : 1,9:1 sur blanc, sous le seuil
                  WCAG même en grand gras (cf. sélecteur desktop ci-dessus). -->
-            <div class="mb-6 flex items-center justify-center gap-2 text-center font-display text-4xl font-black text-accent-700">
+            <div class="mb-4 [@media(max-height:690px)]:mb-2 flex items-center justify-center gap-2 text-center font-display text-4xl font-black text-accent-700">
               {{ currentMobileProfile.buLabel }}
             </div>
-            <div class="flex h-72 w-52 items-center justify-center overflow-hidden rounded-2xl bg-primary-950">
+            <div class="flex h-[clamp(200px,40dvh,350px)] w-52 shrink min-h-0 items-center justify-center overflow-hidden rounded-2xl bg-primary-950 [@media(max-height:690px)]:max-h-[25dvh]">
               <span class="font-display text-6xl font-extrabold text-white/10">{{
                 initials(currentMobileProfile.name)
               }}</span>
             </div>
 
-            <div class="mt-4 min-h-[160px] w-full max-w-[18rem] flex flex-col justify-start text-center">
+            <div class="mt-4 [@media(max-height:690px)]:mt-2 min-h-[160px] w-full max-w-[18rem] flex flex-col justify-start text-center">
               <p class="text-xl font-bold text-primary-950">{{ currentMobileProfile.name }}</p>
               <p class="text-sm font-medium text-primary-900/50">{{ currentMobileProfile.role }}</p>
-              <p class="mt-1 text-base italic leading-snug text-primary-900/80">
+              <p class="mt-1 text-base italic leading-snug text-primary-900/80 [@media(max-height:690px)]:text-sm [@media(max-height:690px)]:leading-tight">
                 <span v-for="(line, idx) in currentMobileProfile.quote" :key="idx" class="block">{{ line }}</span>
               </p>
             </div>

@@ -22,6 +22,14 @@ defineSlots<{
    */
   chatButton?(props: { surface: 'light' | 'dark' }): unknown
   /**
+   * Lien vers le ChatBot, affiché UNIQUEMENT sous `md:` — remplace la bulle
+   * flottante (`App.vue`) sur mobile, où elle prenait trop de place. Slot
+   * distinct de `chatButton` (ci-dessus, lequel porte en réalité les réseaux
+   * sociaux dans `App.vue` malgré son nom) pour ne pas réutiliser un nom déjà
+   * engagé ailleurs.
+   */
+  mobileChat?(): unknown
+  /**
    * Rendu à DEUX endroits distincts (barre desktop + panneau mobile, cf.
    * template) — jamais avec le même fond. `surface` est donc un paramètre du
    * SLOT, pas une prop lue une fois côté appelant : `App.vue` ne peut pas
@@ -256,6 +264,12 @@ const focusRingClass = computed(() =>
              suit `isBarDark` (fond réel de la barre, menu ouvert compris, pas
              le thème brut de la section). -->
         <div class="ml-auto flex items-center gap-1 sm:gap-4">
+          <!-- `md:hidden` : remplace la bulle ChatBot flottante sous `md:`
+               (cf. App.vue), masquée au-delà de ce seuil où la bulle reprend
+               le relais. -->
+          <div class="flex md:hidden items-center">
+            <slot name="mobileChat" />
+          </div>
           <slot name="chatButton" :surface="isBarDark ? 'dark' : 'light'" />
           <div class="hidden min-[500px]:flex items-center">
             <slot name="actions" :surface="isBarDark ? 'dark' : 'light'" />

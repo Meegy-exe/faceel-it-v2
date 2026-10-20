@@ -177,6 +177,7 @@ onBeforeUnmount(() => {
     aria-roledescription="carrousel"
     :aria-label="label"
     class="relative flex flex-col justify-between h-full w-full cursor-grab active:cursor-grabbing select-none"
+    :class="arrowBelowOnMobile ? '[@media(max-height:568px)]:justify-start [@media(max-height:568px)]:gap-0' : ''"
     @mousedown="handleMouseDown"
     @mouseup="handleMouseUp"
     @mouseenter="paused = true"
@@ -187,7 +188,7 @@ onBeforeUnmount(() => {
     <!-- Conteneur principal -->
     <div
       class="relative my-auto flex w-full items-center overflow-hidden"
-      :class="arrowBelowOnMobile ? 'flex-col max-[459px]:gap-4 sm:flex-row' : ''"
+      :class="arrowBelowOnMobile ? 'flex-col max-[459px]:gap-4 [@media(max-height:568px)]:gap-1 sm:flex-row' : ''"
     >
       <!-- Piste avec les MÊMES paddings que les en-têtes de HomeView -->
       <div class="relative h-[250px] w-full px-4 md:px-24 lg:px-28">
@@ -213,12 +214,18 @@ onBeforeUnmount(() => {
         :class="[
           arrowTone,
           arrowBelowOnMobile
-            ? 'mx-auto sm:absolute sm:top-1/2 sm:right-4 sm:mx-0 sm:-translate-y-1/2 md:right-8 lg:right-12'
+            ? 'mx-auto [@media(max-height:568px)]:size-6 sm:absolute sm:top-1/2 sm:right-4 sm:mx-0 sm:-translate-y-1/2 md:right-8 lg:right-12'
             : 'absolute top-1/2 right-4 -translate-y-1/2 md:right-8 lg:right-12',
         ]"
         @click="navigateTo(nextIndex)"
       >
-        <svg class="size-8" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <svg
+          class="size-8"
+          :class="arrowBelowOnMobile ? '[@media(max-height:568px)]:size-5' : ''"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+        >
           <path
             d="M4 12h16M14 6l6 6-6 6"
             stroke="currentColor"
@@ -231,7 +238,11 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Pagination en bas -->
-    <p aria-hidden="true" class="text-center text-sm font-semibold" :class="counterTone">
+    <p
+      aria-hidden="true"
+      class="text-center text-sm font-semibold"
+      :class="[counterTone, arrowBelowOnMobile ? '[@media(max-height:568px)]:text-[10px]' : '']"
+    >
       {{ activeIndex + 1 }} / {{ count }}
     </p>
   </div>

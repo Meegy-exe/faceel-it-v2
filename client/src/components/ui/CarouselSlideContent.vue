@@ -120,14 +120,24 @@ const size = computed(() => SIZES[props.size])
       {{ badge }}
     </span>
 
-    <component :is="heading" class="font-display text-balance" :class="[tone.title, size.title]">
+    <component
+      :is="heading"
+      class="font-display text-balance"
+      :class="[tone.title, size.title, centerOnMobile ? '[@media(max-height:568px)]:text-xl' : '']"
+    >
       {{ title }}
     </component>
 
     <!-- Trait d'accent sous le titre — démarre au bord gauche (V0.1.19,
          `items-start` sur le parent), plus au centre (V0.1.18). Sans
-         animation au survol : la diapositive n'est pas interactive. -->
-    <span aria-hidden="true" class="mt-4 h-0.5 w-10 bg-accent-500" />
+         animation au survol : la diapositive n'est pas interactive.
+         Compression `centerOnMobile` : seule l'instance "Nos valeurs" a
+         besoin de resserrer cet espace sur écran très court. -->
+    <span
+      aria-hidden="true"
+      class="h-0.5 w-10 bg-accent-500"
+      :class="centerOnMobile ? 'mt-4 [@media(max-height:568px)]:mt-0' : 'mt-4'"
+    />
 
     <!-- `max-w-prose` conditionnelle : générée après les classes `max-w-[…]`
          arbitraires dans la feuille Tailwind, elle les emportait toujours en

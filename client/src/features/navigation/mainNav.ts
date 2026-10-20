@@ -172,7 +172,7 @@ export const mainNavEntries: NavItem[] = [
   {
     id: 'business-units',
     label: 'Nos BU',
-    title: 'Nos BUs, Experte de vos besoins.',
+    title: 'Nos BUs, Expertes de vos besoins.',
     description: 'Une organisation interne adaptée au marché pour une réponse sur-mesure à nos clients.',
     ctaLabel: 'En savoir plus',
     ctaTo: { path: '/', hash: '#business-units' },

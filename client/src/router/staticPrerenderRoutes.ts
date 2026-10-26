@@ -28,6 +28,8 @@ export const staticPrerenderRoutes = [
   '/politique-rse',
   '/references/boulanger',
   '/references/adeo',
+  '/nos-bus/data-ia',
+  '/nos-bus/digital',
   '/evenements-tech',
   '/consulter-nos-offres',
   '/candidature-spontanee',

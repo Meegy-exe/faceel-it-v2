@@ -189,7 +189,7 @@ onBeforeUnmount(stopAutoSlide)
   <section
     id="business-units"
     data-theme="light"
-    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-light px-4 pt-36 [@media(max-height:850px)]:pt-16 pb-8 sm:px-6 lg:px-8 xl:px-12"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-light px-4 pt-36 [@media(max-height:850px)]:pt-28 pb-8 sm:px-6 lg:px-8 xl:px-12"
   >
     <header class="max-w-5xl px-4 md:px-24 2xl:px-28">
       <h2 class="mt-4 [@media(max-height:850px)]:mt-2 font-display text-display min-[1030px]:whitespace-nowrap text-primary-900">

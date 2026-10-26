@@ -172,6 +172,8 @@ const LOCAL_SNAP_FOOTER_ROUTES = new Set([
   '/politique-rse',
   '/references/boulanger',
   '/references/adeo',
+  '/nos-bus/data-ia',
+  '/nos-bus/digital',
 ])
 
 /** Même logique que `LOCAL_SNAP_FOOTER_ROUTES`, mais par nom de route : pour

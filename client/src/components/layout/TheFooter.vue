@@ -65,7 +65,7 @@ const whiteReveal = useScrollReveal(whiteEl)
         class="relative z-10 mx-auto w-full max-w-7xl px-4 py-8 [@media(max-height:568px)]:pt-20 [@media(max-height:568px)]:pb-2 transition-all duration-700 ease-out motion-reduce:transition-none sm:px-6 lg:px-8 lg:py-12 xl:px-12"
         :class="scrollRevealClass(blueReveal, 'up', { durationClass: 'duration-1000' })"
       >
-        <div class="flex flex-col items-center gap-6 text-center [@media(min-height:651px)_and_(max-height:760px)]:gap-4 [@media(min-height:569px)_and_(max-height:650px)]:gap-3 [@media(max-height:568px)]:gap-4 lg:flex-row lg:items-center lg:gap-16 lg:text-left">
+        <div class="flex flex-col items-center gap-6 text-center [@media(min-height:651px)_and_(max-height:760px)]:gap-4 [@media(min-height:569px)_and_(max-height:650px)]:gap-3 [@media(max-height:568px)]:gap-4 lg:flex-row lg:items-start lg:gap-16 lg:text-left">
           <!-- Colonne gauche : identité -->
           <div class="flex-1">
             <img :src="logoSrc" alt="Faceel-IT" class="mx-auto h-12 w-auto object-contain lg:mx-0 lg:h-16" />
@@ -97,12 +97,16 @@ const whiteReveal = useScrollReveal(whiteEl)
           </address>
 
           <!-- Colonne droite : notes Glassdoor + Google -->
-          <div class="flex w-full origin-bottom scale-90 gap-4 [@media(min-height:651px)_and_(max-height:760px)]:scale-75 [@media(min-height:569px)_and_(max-height:650px)]:scale-[0.65] [@media(max-height:568px)]:scale-[0.55] lg:w-auto lg:scale-100 lg:shrink-0">
+          <!-- `lg:mt-21` : compense le logo (`lg:h-16` = 4rem) + l'écart avant
+               le paragraphe (`mt-5` = 1.25rem) de la colonne de gauche, pour
+               que le haut des « 5/5 » s'aligne avec la première ligne du
+               texte, pas avec le logo au-dessus. -->
+          <div class="flex w-full items-start origin-bottom scale-90 gap-4 [@media(min-height:651px)_and_(max-height:760px)]:scale-75 [@media(min-height:569px)_and_(max-height:650px)]:scale-[0.65] [@media(max-height:568px)]:scale-[0.55] lg:mt-21 lg:w-auto lg:scale-100 lg:shrink-0">
             <a
               href="https://www.glassdoor.fr/Avis/Faceel-it-Lille-Avis-EI_IE4844076.0,9_IL.10,15_IM1111.htm"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex flex-1 flex-col items-center transition-transform duration-300 hover:scale-105 lg:px-8 lg:py-6"
+              class="flex flex-1 flex-col items-center transition-transform duration-300 hover:scale-105 lg:px-8 lg:pb-6"
             >
               <p class="text-3xl font-extrabold leading-none tracking-tight lg:text-5xl">5/5</p>
               <img
@@ -116,7 +120,7 @@ const whiteReveal = useScrollReveal(whiteEl)
               href="https://www.google.com/search?sca_esv=40dae565ac35b613&hl=fr&gl=fr&output=search&kgmid=/g/11r3m97yrh&q=Faceel-it&shndl=30&shem=lcuae,lstl1,uaasie&source=sh/x/loc/uni/m1/1&kgs=88c0721b1fda94c2"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex flex-1 flex-col items-center px-4 py-4 transition-transform duration-300 hover:scale-105 lg:px-8 lg:py-6"
+              class="flex flex-1 flex-col items-center transition-transform duration-300 hover:scale-105 lg:px-8 lg:pb-6"
             >
               <p class="text-3xl font-extrabold leading-none tracking-tight lg:text-5xl">5/5</p>
               <img
@@ -336,17 +340,10 @@ const whiteReveal = useScrollReveal(whiteEl)
             </ul>
           </nav>
 
-          <!-- Séparateur vertical + bloc contact encadré de crochets —
-               SEULES exceptions à la règle flat/sans bordure du projet,
-               explicitement demandées (cf. maquette). -->
+          <!-- Séparateur vertical + bloc contact. -->
           <div class="hidden lg:block lg:w-px lg:self-stretch lg:bg-gray-200" aria-hidden="true" />
 
-          <div class="relative hidden lg:col-span-auto lg:block lg:w-64 lg:shrink-0 lg:p-0 lg:pl-2">
-            <span class="pointer-events-none absolute left-0 top-0 size-5 border-l-2 border-t-2 border-gray-900" aria-hidden="true" />
-            <span class="pointer-events-none absolute right-0 top-0 size-5 border-r-2 border-t-2 border-gray-900" aria-hidden="true" />
-            <span class="pointer-events-none absolute bottom-0 left-0 size-5 border-b-2 border-l-2 border-gray-900" aria-hidden="true" />
-            <span class="pointer-events-none absolute bottom-0 right-0 size-5 border-b-2 border-r-2 border-gray-900" aria-hidden="true" />
-
+          <div class="hidden lg:col-span-auto lg:block lg:w-64 lg:shrink-0 lg:p-0 lg:pl-2">
             <address class="px-2 py-1 not-italic">
               <p class="text-xs font-semibold uppercase tracking-widest text-[#000066]">Contact</p>
               <div class="mt-5 space-y-3 text-sm text-gray-700">

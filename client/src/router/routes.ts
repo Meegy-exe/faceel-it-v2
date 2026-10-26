@@ -86,6 +86,16 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/references/AdeoView.vue'),
   },
   {
+    path: '/nos-bus/data-ia',
+    name: 'bu-data-ia',
+    component: () => import('@/views/DataIaView.vue'),
+  },
+  {
+    path: '/nos-bus/digital',
+    name: 'bu-digital',
+    component: () => import('@/views/DigitalView.vue'),
+  },
+  {
     path: '/evenements-tech',
     name: 'evenements-tech',
     component: () => import('@/views/TechEventsView.vue'),

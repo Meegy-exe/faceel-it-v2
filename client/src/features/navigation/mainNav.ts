@@ -223,8 +223,8 @@ export const mainNavEntries: NavItem[] = [
  * mega-menu quand aucun onglet n'est survolé (cf. `MegaMenu.vue`).
  */
 export const BUSINESS_UNITS: { label: string; to: RouteLocationRaw }[] = [
-  { label: 'Data & IA', to: { path: '/', hash: '#business-units' } },
-  { label: 'Digital', to: { path: '/', hash: '#business-units' } },
+  { label: 'Data & IA', to: { name: 'bu-data-ia' } },
+  { label: 'Digital', to: { name: 'bu-digital' } },
   { label: 'Product', to: { path: '/', hash: '#business-units' } },
   { label: 'Cloud & DevOps', to: { path: '/', hash: '#business-units' } },
 ]

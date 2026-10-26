@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, nextTick, watch } from 'vue'
-import { chatFlow } from '@/data/chatbotFlow_2'
+import { chatFlow } from '@/data/chatbotFlow'
 import { useSeo } from '@/composables/useSeo'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import teamPhoto from '@/assets/images/padel-equipe.jpg'
@@ -21,10 +21,13 @@ const currentStepId = ref('start')
 const stepHistory = ref<string[]>([])
 const chatHistory = ref<Message[]>([])
 const chatContainer = ref<HTMLElement | null>(null)
+/** Contexte utilisateur mémorisé tout au long du tunnel (cf. `chatbotFlow.ts`) :
+ *  Nom, Email, Téléphone, Projet — réutilisé pour personnaliser les messages
+ *  et pour construire le `mailto:` final. */
 const userName = ref('')
 const userEmail = ref('')
 const userPhone = ref('')
-const userDetails = ref('')
+const userProjet = ref('')
 const currentSubject = ref('')
 const userInput = ref('')
 
@@ -76,7 +79,7 @@ const dynamicAction = computed(() => {
   if (!action.url.startsWith('mailto:')) return action
   const subject = encodeURIComponent(`[Faceelbot] ${currentSubject.value} — ${userName.value}`)
   const body = encodeURIComponent(
-    `Nom : ${userName.value}\nE-mail : ${userEmail.value}\nTéléphone : ${userPhone.value || 'non renseigné'}\nSujet : ${currentSubject.value}\n\nMessage :\n${userDetails.value}`,
+    `Nom : ${userName.value}\nE-mail : ${userEmail.value}\nTéléphone : ${userPhone.value || 'non renseigné'}\nSujet : ${currentSubject.value}\nProjet : ${userProjet.value || 'non renseigné'}`,
   )
   return { label: action.label, url: `${action.url}?subject=${subject}&body=${body}` }
 })
@@ -113,7 +116,7 @@ async function handleTextSubmit() {
   } else if (currentStepId.value === 'collect_phone') {
     userPhone.value = value
   } else if (currentStepId.value === 'collect_details') {
-    userDetails.value = value
+    userProjet.value = value
   }
 
   chatHistory.value.push({ sender: 'user', text: value })
@@ -133,7 +136,7 @@ function resetConversation() {
   userName.value = ''
   userEmail.value = ''
   userPhone.value = ''
-  userDetails.value = ''
+  userProjet.value = ''
   currentSubject.value = ''
   userInput.value = ''
   simulateBotTyping(chatFlow['start']?.messages ?? [])
@@ -144,12 +147,19 @@ function resetConversation() {
   <!-- CONTENEUR SNAP OPT-IN : isole le scroll magnétique de cette vue sans
        dépendre de la hauteur flexée de <main> (cf. HomeView.vue). -->
   <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
-  <!-- Section 50/50 : présentation + chatbot, un seul accroche snap -->
-  <section class="grid h-dvh w-full shrink-0 snap-start snap-always grid-cols-1 md:grid-cols-2">
-    <!-- Colonne gauche : image & branding -->
+  <!-- Section split-screen : présentation + chatbot, un seul accroche snap.
+       Verrouillée sous la navbar fixe via `--navbar-height` (cf. main.css) au
+       lieu de flotter en plein `h-dvh` derrière elle (pt-* classique) : sur
+       mobile, `min-h-[100svh]` laisse le contenu grandir sans à-coups quand le
+       clavier virtuel s'ouvre (le `dvh`/`h-full` rigide se redimensionne trop
+       brutalement avec le clavier sur certains navigateurs mobiles). -->
+  <section
+    class="mt-[var(--navbar-height)] flex min-h-[100svh] w-full shrink-0 snap-start snap-always flex-col md:grid md:h-[calc(100dvh-var(--navbar-height))] md:min-h-0 md:grid-cols-2"
+  >
+    <!-- Colonne gauche : zone institutionnelle (image & branding) -->
     <section
       data-theme="dark"
-      class="relative flex h-full flex-col justify-end overflow-hidden bg-primary-950 bg-cover bg-center p-8 pt-24 md:p-16 md:pt-28"
+      class="relative flex h-full flex-col justify-end overflow-hidden bg-primary-950 bg-cover bg-center p-8 md:p-16"
       :style="{ backgroundImage: `url(${teamPhoto})` }"
     >
       <div class="absolute inset-0 bg-blue-950/70" aria-hidden="true" />
@@ -170,10 +180,8 @@ function resetConversation() {
       </div>
     </section>
 
-    <!-- Colonne droite : bot conversationnel -->
-    <section
-      class="flex h-full flex-col overflow-hidden bg-blue-950 pt-24 md:pt-28"
-    >
+    <!-- Colonne droite : chat -->
+    <section class="flex h-full min-h-0 flex-col overflow-hidden bg-blue-950">
       <div class="p-8 pb-0 md:p-16 md:pb-0">
         <div class="flex items-center gap-3">
           <span
@@ -194,7 +202,7 @@ function resetConversation() {
         <!-- Historique — seule zone scrollable -->
         <div
           ref="chatContainer"
-          class="min-h-0 flex-1 space-y-4 overflow-y-auto md:overscroll-contain p-4 md:p-8"
+          class="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain p-4 md:p-8"
         >
           <div
             v-for="(msg, index) in chatHistory"

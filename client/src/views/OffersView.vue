@@ -33,6 +33,9 @@ interface JobOffer {
   metier: string
   description: string
   date: string
+  /** Technologies citées par l'offre — vide pour les postes sans stack
+   *  technique propre (conseil, architecture SI, Scrum Master…). */
+  stack: string[]
 }
 
 const OFFERS: JobOffer[] = [
@@ -47,6 +50,7 @@ const OFFERS: JobOffer[] = [
     date: 'Publié il y a 9 mois',
     description:
       "Pour un client dans le secteur du retail, vous rejoindrez une équipe en charge de la mise en place et de l'optimisation des pipelines de données. Vous développerez et maintiendrez des flux fiables, structurerez les architectures data et assurerez l'intégrité et la qualité des informations utilisées par les équipes business et analytics, dans un environnement Agile et orienté performance.",
+    stack: ['Python', 'SQL', 'Airflow'],
   },
   {
     id: 2,
@@ -59,6 +63,7 @@ const OFFERS: JobOffer[] = [
     date: 'Publié il y a 3 mois',
     description:
       "Vous intégrerez une équipe projet pour accompagner la transformation SAP S/4HANA de nos clients industriels. Vous serez en charge de l'analyse des besoins fonctionnels, de la conception des solutions et de la conduite du changement auprès des équipes métier.",
+    stack: ['SAP S/4HANA', 'SAP SD'],
   },
   {
     id: 3,
@@ -71,6 +76,7 @@ const OFFERS: JobOffer[] = [
     date: 'Publié il y a 2 semaines',
     description:
       "Vous interviendrez en tant qu'Architecte Cloud principal sur des projets de migration et de modernisation d'infrastructures vers Microsoft Azure. Vous définirez les architectures cibles, accompagnerez les équipes techniques et assurerez la conformité des solutions déployées.",
+    stack: ['Microsoft Azure'],
   },
   {
     id: 4,
@@ -83,6 +89,7 @@ const OFFERS: JobOffer[] = [
     date: 'Publié il y a 1 mois',
     description:
       "Dans le cadre d'un programme de transformation digitale pour un acteur majeur du retail, vous contribuerez à la définition des besoins fonctionnels, à la rédaction des spécifications et au pilotage des recettes utilisateurs. Bonne maîtrise des méthodes Agile requise.",
+    stack: [],
   },
   {
     id: 5,
@@ -95,6 +102,7 @@ const OFFERS: JobOffer[] = [
     date: 'Publié il y a 5 mois',
     description:
       "Vous rejoindrez une squad produit pour développer et maintenir des applications web en React et Node.js. Vous participerez aux cérémonies Agile, contribuerez aux revues de code et serez acteur de l'amélioration continue des pratiques d'ingénierie au sein de l'équipe.",
+    stack: ['React', 'Node.js'],
   },
   {
     id: 6,
@@ -107,6 +115,7 @@ const OFFERS: JobOffer[] = [
     date: 'Publié il y a 1 semaine',
     description:
       "Dans le cadre d'un stage de fin d'études, vous travaillerez sur des cas d'usage d'intelligence artificielle générative. Vous participerez à la conception de pipelines de traitement de données et à l'évaluation de modèles de langage dans un environnement orienté recherche appliquée.",
+    stack: ['Python'],
   },
   {
     id: 7,
@@ -119,6 +128,7 @@ const OFFERS: JobOffer[] = [
     date: 'Publié il y a 2 mois',
     description:
       "Vous rejoindrez une équipe mobile pour concevoir et maintenir des applications Android natives (Kotlin) à forte volumétrie. Vous travaillerez en étroite collaboration avec les équipes design et backend dans un cycle Agile.",
+    stack: ['Android', 'Kotlin'],
   },
   {
     id: 8,
@@ -131,6 +141,7 @@ const OFFERS: JobOffer[] = [
     date: 'Publié il y a 3 semaines',
     description:
       "Vous interviendrez sur l'ensemble de la chaîne applicative (Vue 3, Node.js) d'une plateforme métier interne. Vous participerez aux choix d'architecture frontend et à la mise en place de bonnes pratiques de test.",
+    stack: ['Vue.js', 'Node.js'],
   },
   {
     id: 9,
@@ -143,6 +154,7 @@ const OFFERS: JobOffer[] = [
     date: 'Publié il y a 1 mois',
     description:
       "Vous industrialisez les pipelines CI/CD et l'infrastructure cloud de nos clients (conteneurisation, supervision, sécurité). Vous accompagnez les équipes de développement vers une démarche DevOps mature.",
+    stack: ['Docker', 'CI/CD'],
   },
   {
     id: 10,
@@ -155,6 +167,7 @@ const OFFERS: JobOffer[] = [
     date: 'Publié il y a 4 mois',
     description:
       "Vous encadrez techniquement une équipe de développeurs Java/Spring sur un projet métier critique. Vous garantissez la qualité du code, les choix d'architecture et la montée en compétence de l'équipe.",
+    stack: ['Java', 'Spring'],
   },
   {
     id: 11,
@@ -167,6 +180,7 @@ const OFFERS: JobOffer[] = [
     date: 'Publié il y a 2 semaines',
     description:
       "Vous produisez des tableaux de bord et analyses pour accompagner la prise de décision de nos clients. Vous travaillez sur des outils de BI (Power BI) et participez à la fiabilisation des données sources.",
+    stack: ['Power BI', 'SQL'],
   },
   {
     id: 12,
@@ -179,6 +193,7 @@ const OFFERS: JobOffer[] = [
     date: 'Publié il y a 1 semaine',
     description:
       "En alternance, vous contribuez au développement de fonctionnalités sur une application web Vue/Node.js, encadré par un développeur senior. Formation Bac+4/5 en informatique requise.",
+    stack: ['Vue.js', 'Node.js'],
   },
   {
     id: 13,
@@ -191,6 +206,7 @@ const OFFERS: JobOffer[] = [
     date: 'Publié il y a 6 mois',
     description:
       "Vous accompagnez plusieurs équipes produit dans l'adoption et l'amélioration continue des pratiques Agile. Vous facilitez les rituels Scrum et diffusez une culture d'amélioration continue.",
+    stack: [],
   },
   {
     id: 14,
@@ -203,6 +219,7 @@ const OFFERS: JobOffer[] = [
     date: 'Publié il y a 5 mois',
     description:
       "Vous pilotez le maintien en conditions opérationnelles et les évolutions d'une application PLM métier. Vous coordonnez les équipes techniques et les utilisateurs clés côté client.",
+    stack: ['PLM'],
   },
   {
     id: 15,
@@ -215,6 +232,7 @@ const OFFERS: JobOffer[] = [
     date: 'Publié il y a 2 mois',
     description:
       "Vous définissez la cible d'architecture SI de nos clients grands comptes, en cohérence avec leur stratégie métier. Vous cadrez les projets de transformation et en garantissez la cohérence technique globale.",
+    stack: [],
   },
 ]
 
@@ -245,10 +263,13 @@ const PAGE_SIZE = 10
 const selectedLevels = ref<string[]>([])
 const selectedMetiers = ref<string[]>([])
 const selectedCategories = ref<string[]>([])
+/** Filtre par stack technique — sélection unique, '' = « Toutes ». */
+const selectedStack = ref('')
 
 const isLevelsOpen = ref(false)
 const isMetiersOpen = ref(false)
 const isCategoriesOpen = ref(false)
+const isStackOpen = ref(false)
 
 /* Tokens extraits de toutes les offres pour l'autocomplétion. */
 const suggestions = computed(() => {
@@ -268,6 +289,14 @@ const suggestions = computed(() => {
   return [...pool].filter((s) => s.toLowerCase().includes(q) && s.toLowerCase() !== q).slice(0, 6)
 })
 
+/** Liste unique et dédoublonnée de toutes les technologies renseignées sur
+ *  les offres, triée alphabétiquement pour un ordre d'affichage stable. */
+const availableStacks = computed(() => {
+  const pool = new Set<string>()
+  OFFERS.forEach((o) => o.stack.forEach((tech) => pool.add(tech)))
+  return [...pool].sort((a, b) => a.localeCompare(b))
+})
+
 const filteredOffers = computed(() => {
   const q = searchQuery.value.toLowerCase().trim()
   return OFFERS.filter((o) => {
@@ -283,6 +312,7 @@ const filteredOffers = computed(() => {
     if (selectedMetiers.value.length && !selectedMetiers.value.includes(o.metier)) return false
     if (selectedCategories.value.length && !selectedCategories.value.includes(o.category))
       return false
+    if (selectedStack.value && !o.stack.includes(selectedStack.value)) return false
     return true
   })
 })
@@ -314,7 +344,7 @@ function clearGroup(group: 'levels' | 'metiers' | 'categories') {
 }
 
 watch(
-  [selectedLevels, selectedMetiers, selectedCategories],
+  [selectedLevels, selectedMetiers, selectedCategories, selectedStack],
   () => {
     currentPage.value = 1
   },
@@ -446,8 +476,15 @@ watch(
 
         <!-- ② Grille : offres + filtres -->
         <div class="grid gap-8 lg:grid-cols-[1fr_272px]">
-          <!-- Colonne gauche : liste + pagination -->
-          <div>
+          <!-- Colonne gauche : liste + pagination. `min-h-[60vh]` : un filtre
+               très restrictif (ex. une seule offre) ne doit pas faire
+               s'effondrer la hauteur totale de la page — sinon, si l'utilisateur
+               était déjà scrollé plus bas que la nouvelle hauteur (plus courte),
+               le navigateur borne (clamp) sa position de scroll au nouveau
+               maximum, ce qui se perçoit comme un saut/recentrage automatique
+               alors qu'aucun code ne pilote de scroll ici (vérifié : aucun
+               `window.scrollTo`/`scrollIntoView`/`scrollTop` dans ce fichier). -->
+          <div class="min-h-[60vh]">
             <p class="mb-4 text-sm text-primary-900/50">
               {{ filteredOffers.length }}
               {{ filteredOffers.length !== 1 ? 'offres disponibles' : 'offre disponible' }}
@@ -523,6 +560,13 @@ watch(
                     class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-primary-900/70"
                   >
                     {{ offer.level }}
+                  </span>
+                  <span
+                    v-for="tech in offer.stack"
+                    :key="tech"
+                    class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-primary-900/70"
+                  >
+                    {{ tech }}
                   </span>
                 </div>
               </li>
@@ -716,6 +760,58 @@ watch(
                 </ul>
               </div>
             </div>
+
+            <!-- Stack technique : sélection unique (pas de v-model array comme
+                 les groupes ci-dessus), affichée en badges empilés plutôt
+                 qu'en cases à cocher — cohérent avec la disposition verticale
+                 de la barre latérale, sans le défilement horizontal du
+                 placement précédent. -->
+            <div class="mt-5 border-t border-gray-200 pt-5">
+              <button
+                type="button"
+                class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
+                :aria-expanded="isStackOpen"
+                @click="isStackOpen = !isStackOpen"
+              >
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                  Stack technique
+                </span>
+                <svg
+                  class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
+                  :class="isStackOpen ? 'rotate-180' : ''"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path d="m5 7 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+              <div v-show="isStackOpen">
+                <button
+                  v-if="selectedStack"
+                  class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
+                  @click="selectedStack = ''"
+                >
+                  Effacer
+                </button>
+                <div class="mt-3 flex max-h-60 flex-wrap gap-2 overflow-y-auto pr-1">
+                  <button
+                    v-for="stack in availableStacks"
+                    :key="stack"
+                    type="button"
+                    class="rounded-full px-3 py-1 text-xs font-medium transition-colors"
+                    :class="
+                      selectedStack === stack
+                        ? 'bg-accent-500 text-white'
+                        : 'border border-gray-300 bg-white text-primary-900/70 hover:border-accent-500'
+                    "
+                    @click="selectedStack = selectedStack === stack ? '' : stack"
+                  >
+                    {{ stack }}
+                  </button>
+                </div>
+              </div>
+            </div>
           </aside>
         </div>
         <!-- fin grille -->
@@ -732,7 +828,7 @@ watch(
     <TheFooter />
   </section>
   </div>
-  <!-- /conteneur snap -->
+  <!-- /conteneur en flux normal (pas de snap-scroll, cf. commentaire plus haut) -->
 
   <!-- ==================================================================
        MODALE — aperçu rapide d'une offre

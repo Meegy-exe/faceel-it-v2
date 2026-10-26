@@ -1,6 +1,6 @@
 import { ViteSSG } from 'vite-ssg'
 import { createPinia } from 'pinia'
-import type { RouteLocationNormalized, RouteLocationNormalizedLoaded } from 'vue-router'
+import type { RouteLocationNormalized, RouterScrollBehavior } from 'vue-router'
 
 import App from './App.vue'
 import { routes } from './router/routes'
@@ -30,8 +30,14 @@ export const createApp = ViteSSG(
   {
     routes,
     base: import.meta.env.BASE_URL,
-    scrollBehavior(to: RouteLocationNormalizedLoaded, _from: RouteLocationNormalizedLoaded, savedPosition: any) {
-      // Retour arrière : on rend la position exacte, jamais autre chose.
+    scrollBehavior(
+      to: Parameters<RouterScrollBehavior>[0],
+      _from: Parameters<RouterScrollBehavior>[1],
+      savedPosition: Parameters<RouterScrollBehavior>[2],
+    ) {
+      // Retour arrière : on rend la position exacte, jamais autre chose —
+      // avant toute autre logique, même asynchrone, sous peine de perdre la
+      // position au retour depuis la fiche d'une offre.
       if (savedPosition) return savedPosition
 
       // Ancre : le décalage compense l'en-tête collant (h-16 en mobile, h-20

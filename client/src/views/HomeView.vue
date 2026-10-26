@@ -676,7 +676,7 @@ onBeforeUnmount(() => {
   <section
     id="chiffres-cles"
     data-theme="dark"
-    class="relative h-dvh shrink-0 w-full snap-start snap-always overflow-hidden flex flex-col justify-start md:justify-center scroll-mt-16 lg:scroll-mt-20 bg-[#000066] px-4 pt-20 [@media(max-height:568px)]:pt-16 pb-12 sm:px-6 sm:pt-16 sm:pb-16 lg:px-8 xl:px-12"
+    class="relative h-dvh shrink-0 w-full snap-start snap-always overflow-hidden flex flex-col justify-start md:justify-center bg-[#000066] px-4 pt-20 [@media(max-height:568px)]:pt-16 pb-12 sm:px-6 sm:pt-16 sm:pb-16 lg:px-8 xl:px-12"
   >
     <!-- Halo lumineux central — décoratif. -->
     <div
@@ -700,7 +700,7 @@ onBeforeUnmount(() => {
         <p class="text-lg sm:text-xl md:text-2xl font-bold tracking-wide uppercase text-accent-500">Nos chiffres clés</p>
 
         <blockquote
-          class="mt-6 max-w-3xl font-display text-xl leading-tight font-bold tracking-tight text-balance text-white sm:text-3xl lg:text-4xl"
+          class="mt-6 [@media(max-height:650px)]:mt-2 [@media(max-height:650px)]:text-base [@media(max-height:568px)]:hidden max-w-3xl font-display text-xl leading-tight font-bold tracking-tight text-balance text-white sm:text-3xl lg:text-4xl"
         >
           « Chez Faceel-it, nous ne nous contentons pas de vous délivrer une prestation&nbsp;: nous
           co-construisons des solutions durables, agiles et sur-mesure. Votre satisfaction est notre
@@ -708,16 +708,18 @@ onBeforeUnmount(() => {
         </blockquote>
       </div>
 
-      <ul class="mt-8 [@media(max-height:568px)]:mt-2 sm:mt-12 grid w-full grid-cols-2 gap-4 md:gap-8 lg:grid-cols-4">
+      <ul
+        class="mt-8 [@media(max-height:650px)]:mt-2 sm:mt-12 grid w-full grid-cols-2 gap-4 [@media(max-height:650px)]:gap-2 md:gap-8 lg:grid-cols-4"
+      >
         <li
           v-for="(stat, i) in PARSED_STATS"
           :key="stat.label"
-          class="flex h-full flex-col items-center justify-center p-4 text-center transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none sm:p-6"
+          class="flex h-full flex-col items-center justify-center p-4 [@media(max-height:650px)]:p-2 text-center transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none sm:p-6"
         >
-          <p class="font-display text-4xl font-extrabold tracking-tight text-accent-500 sm:text-5xl lg:text-6xl">
+          <p class="font-display text-4xl [@media(max-height:650px)]:text-4xl font-extrabold tracking-tight text-accent-500 sm:text-5xl lg:text-6xl">
             {{ countUpStarted ? animatedValues[i] : stat.target }}{{ stat.suffix }}
           </p>
-          <p class="mt-3 text-eyebrow leading-snug text-white">{{ stat.label }}</p>
+          <p class="mt-3 [@media(max-height:650px)]:mt-1 text-eyebrow leading-snug text-white">{{ stat.label }}</p>
         </li>
       </ul>
     </div>

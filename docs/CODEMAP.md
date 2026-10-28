@@ -18,6 +18,7 @@
  ├─→ `@/components/layout/TheFooter.vue`
  ├─→ `@/features/navigation/mainNav`
  ├─→ `@/features/navigation/footerNav`
+ ├─→ `@/stores/useProfileStore`
  ├─→ `@/assets/images/photos/f-it-01.jpg`
  ├─→ `@/assets/images/padel-equipe.jpg`
 
@@ -35,7 +36,11 @@
  ├─→ `@/composables/useWaveCanvas`
 
 ### `src/views/DataIaView.vue`
- ├─→ `@/components/ui/BaseButton.vue`
+ ├─→ `@/assets/images/photos/lille.jpg`
+ ├─→ `@/components/icons/IconGcp.vue`
+ ├─→ `@/components/icons/IconOmni.vue`
+ ├─→ `@/components/icons/IconPowerBi.vue`
+ ├─→ `@/components/icons/IconSnowflake.vue`
  ├─→ `@/components/layout/TheFooter.vue`
  ├─→ `@/composables/useSeo`
 
@@ -93,6 +98,7 @@
  ├─→ `@/assets/images/photos/f-it-02.jpg`
  ├─→ `@/assets/images/photos/f-it-03.jpg`
  ├─→ `@/composables/useSeo`
+ ├─→ `@/stores/useProfileStore`
 
 ### `src/views/ChatbotView.vue`
  ├─→ `@/data/chatbotFlow`

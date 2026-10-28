@@ -4,7 +4,7 @@ import { RouterLink, useRoute } from 'vue-router'
 import { onClickOutside } from '@vueuse/core'
 import logoDark from '@/assets/images/logo-bleu.png'
 import logoWhite from '@/assets/images/logo-blanc.png'
-import { BUSINESS_UNITS, type NavItem } from '@/features/navigation/mainNav'
+import type { NavItem } from '@/features/navigation/mainNav'
 
 const open = defineModel<boolean>('open', { default: false })
 const isDarkTheme = defineModel<boolean>('dark', { default: true })
@@ -487,22 +487,16 @@ const focusRingClass = computed(() =>
                   </li>
                 </ul>
 
-                <!-- Entrée survolée sans subItems (ex. « Sport & sponsoring ») :
-                     même disposition en bandes, pour les 4 practices internes. -->
-                <ul v-else key="empty" class="flex h-full w-full divide-x divide-primary-900/10">
-                  <li v-for="bu in BUSINESS_UNITS" :key="bu.label" class="flex-1 min-w-[160px]">
-                    <RouterLink
-                      :to="bu.to"
-                      class="group flex h-full flex-col justify-center gap-2 p-6 lg:p-8 transition-colors duration-200 hover:bg-gray-50 focus-visible:outline-primary-900 motion-reduce:transition-none"
-                      :tabindex="open ? undefined : -1"
-                      @click="closeMenu()"
-                    >
-                      <p class="font-display text-lg font-bold text-primary-900 transition-colors duration-200 group-hover:text-accent-700 motion-reduce:transition-none">
-                        {{ bu.label }}
-                      </p>
-                    </RouterLink>
-                  </li>
-                </ul>
+                <!-- Entrée survolée sans subItems (ex. « Sport & sponsoring »,
+                     « Partenaires ») : lien direct, pas de sous-menu —
+                     contenu neutre (sa propre description), jamais les
+                     sous-liens d'une autre entrée (ex. les BU, affichées ici
+                     par erreur avant cette correction). -->
+                <div v-else key="empty" class="flex h-full w-full items-center justify-center p-10 text-center">
+                  <p class="max-w-md text-lg leading-relaxed text-primary-900/60">
+                    {{ activeItem.description }}
+                  </p>
+                </div>
               </Transition>
             </div>
           </div>

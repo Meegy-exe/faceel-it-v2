@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { h, onMounted, ref, useTemplateRef, watch, type FunctionalComponent } from 'vue'
+import { computed, h, onMounted, ref, useTemplateRef, watch, type FunctionalComponent } from 'vue'
 import { useRoute } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import MegaMenu from '@/components/ui/MegaMenu.vue'
 import CookieBanner from '@/components/ui/CookieBanner.vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
-import { mainNavEntries } from '@/features/navigation/mainNav'
+import { getMainNavEntries } from '@/features/navigation/mainNav'
 import { footerColumns, footerDescription } from '@/features/navigation/footerNav'
+import { useProfileStore } from '@/stores/useProfileStore'
 import imgCandidat from '@/assets/images/photos/f-it-01.jpg'
 import imgEntreprise from '@/assets/images/padel-equipe.jpg'
 
@@ -68,36 +69,20 @@ const menuOpen = ref(false)
 
 /**
  * Sélecteur de profil (onboarding) — s'affiche directement au montage si
- * aucun profil n'est stocké.
+ * aucun profil n'est stocké. État possédé par `useProfileStore` (store
+ * global Pinia) : `HomeView.vue` et la navigation (cf. `navEntries`
+ * ci-dessous) doivent pouvoir y réagir sans dépendre de `App.vue`.
  */
-const PROFILE_STORAGE_KEY = 'faceel_user_profile'
-const showProfileSelector = ref(false)
-const animatingSelection = ref<string | null>(null)
-/** Pilote l'affichage conditionnel des CTA de la navbar (slot `#actions`). */
-const userProfile = ref<string | null>(null)
+const profileStore = useProfileStore()
 
 onMounted(() => {
-  if (!localStorage.getItem(PROFILE_STORAGE_KEY)) showProfileSelector.value = true
-  userProfile.value = localStorage.getItem(PROFILE_STORAGE_KEY) || 'curieux'
+  profileStore.hydrate()
 })
 
-function setProfile(profileType: 'candidat' | 'entreprise' | 'curieux') {
-  animatingSelection.value = profileType
-  setTimeout(() => {
-    localStorage.setItem(PROFILE_STORAGE_KEY, profileType)
-    showProfileSelector.value = false
-    userProfile.value = profileType
-  }, 800)
-}
-
-/** État possédé localement (pas de store global) : on le remet à zéro
- *  directement plutôt que de recharger la page. */
-function resetProfile() {
-  localStorage.removeItem(PROFILE_STORAGE_KEY)
-  animatingSelection.value = null
-  showProfileSelector.value = true
-  userProfile.value = null
-}
+/** Navigation du mega-menu, adaptée au profil actif (cf. `mainNav.ts` :
+ *  profil « entreprise » → retire "Je suis candidat"/"Consulter nos offres"
+ *  et reformule l'entrée "Je suis une entreprise" en indicateur de profil). */
+const navEntries = computed(() => getMainNavEntries(profileStore.profile))
 
 watch(
   () => route.fullPath,
@@ -174,6 +159,7 @@ const LOCAL_SNAP_FOOTER_ROUTES = new Set([
   '/references/adeo',
   '/nos-bus/data-ia',
   '/nos-bus/digital',
+  '/nos-bus/product',
 ])
 
 /** Même logique que `LOCAL_SNAP_FOOTER_ROUTES`, mais par nom de route : pour
@@ -212,19 +198,19 @@ const ArrowRightIcon: FunctionalComponent = () =>
       leave-active-class="transition-all duration-[1000ms] ease-in-out"
       leave-to-class="opacity-0 blur-md scale-105"
     >
-    <div v-if="showProfileSelector" class="fixed inset-0 z-[100] flex flex-col bg-white">
+    <div v-if="profileStore.showSelector" class="fixed inset-0 z-[100] flex flex-col bg-white">
       <div class="flex h-full w-full flex-1 flex-row overflow-hidden">
         <button
           type="button"
           :class="[
-            animatingSelection === 'candidat'
+            profileStore.animatingSelection === 'candidat'
               ? 'w-full z-50 text-5xl'
-              : animatingSelection === 'entreprise'
+              : profileStore.animatingSelection === 'entreprise'
                 ? 'w-0 opacity-0'
                 : 'w-1/2 hover:scale-[1.02] z-10',
             'relative overflow-hidden transition-all duration-700 ease-in-out origin-left flex items-center justify-center cursor-pointer bg-primary-950 text-white',
           ]"
-          @click="setProfile('candidat')"
+          @click="profileStore.setProfile('candidat')"
         >
           <div
             class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.12] grayscale pointer-events-none"
@@ -238,14 +224,14 @@ const ArrowRightIcon: FunctionalComponent = () =>
         <button
           type="button"
           :class="[
-            animatingSelection === 'entreprise'
+            profileStore.animatingSelection === 'entreprise'
               ? 'w-full z-50 text-5xl'
-              : animatingSelection === 'candidat'
+              : profileStore.animatingSelection === 'candidat'
                 ? 'w-0 opacity-0'
                 : 'w-1/2 hover:scale-[1.02] z-10',
             'relative overflow-hidden transition-all duration-700 ease-in-out origin-right flex items-center justify-center cursor-pointer cursor-faceel-blue bg-white text-primary-950',
           ]"
-          @click="setProfile('entreprise')"
+          @click="profileStore.setProfile('entreprise')"
         >
           <div
             class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 grayscale contrast-125 pointer-events-none"
@@ -261,8 +247,8 @@ const ArrowRightIcon: FunctionalComponent = () =>
       <button
         type="button"
         class="absolute bottom-12 left-1/2 z-20 -translate-x-1/2 rounded-full bg-white px-8 py-4 font-display text-xl font-bold text-primary-950 shadow-xl transition-all duration-500 hover:scale-110"
-        :class="{ 'scale-90 opacity-0 pointer-events-none': animatingSelection }"
-        @click="setProfile('curieux')"
+        :class="{ 'scale-90 opacity-0 pointer-events-none': profileStore.animatingSelection }"
+        @click="profileStore.setProfile('curieux')"
       >
         Juste curieux
       </button>
@@ -272,9 +258,10 @@ const ArrowRightIcon: FunctionalComponent = () =>
     <MegaMenu
       v-model:open="menuOpen"
       v-model:dark="isDarkTheme"
-      :entries="mainNavEntries"
+      :entries="navEntries"
       :scroll-root="scrollRootEl"
     >
+
       <!-- Deux CTA de conversion, côte à côte (V0.1.12, ticket #14) : un
            « outline » sobre pour l'action secondaire, un « accent » plein
            pour l'action prioritaire, flèche à l'appui pour renforcer son sens
@@ -371,8 +358,8 @@ const ArrowRightIcon: FunctionalComponent = () =>
            jeu de classes ici s'appliquerait identiquement aux deux. -->
       <template #actions="{ surface }">
         <div class="flex items-center gap-1 sm:gap-3">
-          <template v-if="userProfile === 'candidat'">
-            <BaseButton variant="outline" size="sm" :surface="surface" @click="resetProfile">
+          <template v-if="profileStore.profile === 'candidat'">
+            <BaseButton variant="outline" size="sm" :surface="surface" @click="profileStore.resetProfile">
               Changer de profil
             </BaseButton>
             <BaseButton variant="accent" size="sm" :surface="surface" :to="REJOINDRE_TO">
@@ -381,17 +368,17 @@ const ArrowRightIcon: FunctionalComponent = () =>
             </BaseButton>
           </template>
 
-          <template v-else-if="userProfile === 'entreprise'">
+          <template v-else-if="profileStore.profile === 'entreprise'">
             <BaseButton variant="outline" size="sm" :surface="surface" :to="CONTACT_TO">
               Un projet ?
             </BaseButton>
-            <BaseButton variant="accent" size="sm" :surface="surface" @click="resetProfile">
+            <BaseButton variant="accent" size="sm" :surface="surface" @click="profileStore.resetProfile">
               Changer de profil
             </BaseButton>
           </template>
 
           <template v-else>
-            <BaseButton variant="outline" size="sm" :surface="surface" @click="resetProfile">
+            <BaseButton variant="outline" size="sm" :surface="surface" @click="profileStore.resetProfile">
               Changer de profil
             </BaseButton>
             <BaseButton variant="outline" size="sm" :surface="surface" :to="CONTACT_TO">

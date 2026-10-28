@@ -41,6 +41,44 @@ onUnmounted(() => {
   clearInterval(carouselInterval)
 })
 
+interface ExpertiseOffer {
+  name: string
+  headline: string
+  description: string
+  /** Attribut `d` d'une icône trait 24×24 (stroke `currentColor`). */
+  iconPath: string
+  /** Carte mise en avant (bordure accent), cf. maquette : une seule. */
+  featured?: boolean
+}
+
+/* TODO: textes génériques du gabarit BU, orientés valeur mais sans aucun
+   fait chiffré — à valider/adapter par chaque BU avant publication. */
+const EXPERTISE_OFFERS: ExpertiseOffer[] = [
+  {
+    name: 'Centre de formation',
+    headline: 'Rendre vos équipes autonomes',
+    description:
+      'Des parcours conçus autour de vos outils Data & IA, pour que vos équipes maîtrisent leurs plateformes au quotidien.',
+    iconPath: 'M22 10 12 5 2 10l10 5 10-5Z M6 12v5c3 2 9 2 12 0v-5',
+  },
+  {
+    name: 'Assistance tech',
+    headline: 'Un expert à vos côtés',
+    description:
+      'Un accompagnement réactif pour débloquer vos projets, fiabiliser vos plateformes et sécuriser vos mises en production.',
+    iconPath:
+      'M4 14v-2a8 8 0 0 1 16 0v2 M4 14h3v5H5a1 1 0 0 1-1-1v-4Z M20 14h-3v5h2a1 1 0 0 0 1-1v-4Z',
+    featured: true,
+  },
+  {
+    name: 'Centre de service',
+    headline: 'Vos plateformes data, pilotées dans la durée',
+    description:
+      'Maintenance, évolutions et supervision de vos solutions, pour un patrimoine data fiable et aligné sur vos usages.',
+    iconPath: 'M4 5h16v5H4Z M4 14h16v5H4Z M8 7.5h.01 M8 16.5h.01',
+  },
+]
+
 interface CaseStudy {
   name: string
   description: string
@@ -178,13 +216,18 @@ const CASE_STUDIES: CaseStudy[] = [
       </div>
     </section>
 
-    <!-- SECTION 2 (Expertise) — en-tête centré + grille de 3 cartes (offre de
-         services), carte centrale (Assistance tech) mise en avant par une
-         bordure verte, cf. maquette. -->
+    <!-- SECTION 2 (Expertise) — même grammaire que les cartes bento du Hero,
+         transposée au thème clair (alternance des sections) : `bg-white/10`
+         serait invisible sur fond blanc, d'où des cartes plates `bg-gray-50`.
+         Seule « Assistance tech » porte la bordure accent à gauche, comme la
+         carte partenaires du Hero — une touche, jamais un aplat.
+         Mobile : icône à gauche du texte (`flex-row`) plutôt qu'au-dessus,
+         pour que les 3 cartes empilées tiennent dans `h-dvh` sans scroll ;
+         paliers de hauteur dans le bloc <style>. -->
     <section
       id="expertise-offre"
       data-theme="light"
-      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-white flex flex-col justify-center px-4 py-20 sm:px-6 lg:px-8 xl:px-12"
+      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-white flex flex-col justify-center px-4 pt-24 pb-12 sm:px-6 lg:px-8 xl:px-12"
     >
       <div class="mx-auto flex max-w-3xl flex-col items-center text-center">
         <p class="text-sm font-bold uppercase tracking-widest text-accent-500">Notre offre</p>
@@ -193,54 +236,37 @@ const CASE_STUDIES: CaseStudy[] = [
         </h2>
       </div>
 
-      <div class="mx-auto mt-10 grid w-full max-w-5xl grid-cols-1 gap-8 md:grid-cols-3">
-        <!-- Carte 1 — Centre de formation -->
-        <div class="flex flex-col items-center rounded-3xl bg-gray-50 p-8 text-center">
-          <div class="flex size-14 items-center justify-center rounded-2xl bg-[#000066]" aria-hidden="true">
-            <svg class="size-7 text-white" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+      <div class="expertise-grid mx-auto mt-10 grid w-full max-w-6xl grid-cols-1 gap-4 sm:gap-6 md:grid-cols-3 xl:gap-8">
+        <article
+          v-for="offer in EXPERTISE_OFFERS"
+          :key="offer.name"
+          :class="[
+            'expertise-card flex items-start gap-4 rounded-3xl bg-gray-50 p-6 text-left sm:p-8 md:flex-col md:gap-6',
+            offer.featured && 'border-l-4 border-accent-500',
+          ]"
+        >
+          <div
+            :class="[
+              'expertise-icon flex size-11 shrink-0 items-center justify-center rounded-2xl md:size-14',
+              offer.featured ? 'bg-accent-500 text-[#000066]' : 'bg-[#000066] text-white',
+            ]"
+            aria-hidden="true"
+          >
+            <svg class="size-5 md:size-7" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path :d="offer.iconPath" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </div>
-          <p class="mt-5 font-display font-bold text-[#000066]">Centre de formation</p>
-          <ul class="mt-4 w-full space-y-2 text-left text-sm text-gray-700">
-            <li v-for="n in 3" :key="n" class="flex items-center gap-3">
-              <span class="size-1.5 shrink-0 rounded-full bg-gray-900" aria-hidden="true" />
-              Sous-titre
-            </li>
-          </ul>
-        </div>
 
-        <!-- Carte 2 — Assistance tech (mise en avant) -->
-        <div class="flex flex-col items-center rounded-3xl border-2 border-accent-500 bg-white p-8 text-center">
-          <div class="flex size-14 items-center justify-center rounded-2xl bg-accent-500" aria-hidden="true">
-            <svg class="size-7 text-white" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
+          <div class="min-w-0">
+            <p class="text-xs font-bold uppercase tracking-widest text-accent-700">{{ offer.name }}</p>
+            <h3 class="expertise-headline mt-2 font-display text-lg font-bold leading-snug text-[#000066] xl:text-xl">
+              {{ offer.headline }}
+            </h3>
+            <p class="expertise-desc mt-3 text-sm leading-relaxed text-gray-600">
+              {{ offer.description }}
+            </p>
           </div>
-          <p class="mt-5 font-display font-bold text-[#000066]">Assistance tech</p>
-          <ul class="mt-4 w-full space-y-2 text-left text-sm text-gray-700">
-            <li v-for="n in 3" :key="n" class="flex items-center gap-3">
-              <span class="size-1.5 shrink-0 rounded-full bg-gray-900" aria-hidden="true" />
-              Sous-titre
-            </li>
-          </ul>
-        </div>
-
-        <!-- Carte 3 — Centre de service (identique à la carte 1) -->
-        <div class="flex flex-col items-center rounded-3xl bg-gray-50 p-8 text-center">
-          <div class="flex size-14 items-center justify-center rounded-2xl bg-[#000066]" aria-hidden="true">
-            <svg class="size-7 text-white" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </div>
-          <p class="mt-5 font-display font-bold text-[#000066]">Centre de service</p>
-          <ul class="mt-4 w-full space-y-2 text-left text-sm text-gray-700">
-            <li v-for="n in 3" :key="n" class="flex items-center gap-3">
-              <span class="size-1.5 shrink-0 rounded-full bg-gray-900" aria-hidden="true" />
-              Sous-titre
-            </li>
-          </ul>
-        </div>
+        </article>
       </div>
     </section>
 
@@ -871,14 +897,84 @@ const CASE_STUDIES: CaseStudy[] = [
   }
 }
 
+/* Hauteur élastique sur toute la tranche mobile compacte : les paliers fixes
+   ci-dessus (180px / 130px) laissaient un grand vide en bas dès que la
+   fenêtre grandissait (666px, 819px…). Pas de `clamp(…vh…)` : l'en-tête
+   n'a pas la même hauteur selon les paliers (228px à 666px, 324px à 819px),
+   aucune valeur en `vh` ne tombe juste partout — `38vh` débordait de 81px
+   à 666px et de 143px à 819px (mesuré). La grille prend donc tout l'espace
+   restant sous l'en-tête (`flex: 1`, `#hero` étant déjà en flex colonne
+   `h-dvh`) et ses 2 lignes (1 colonne, < sm) se le partagent à parts
+   égales, sans calcul à maintenir. Le palier ≤ 580px garde ses 175px fixes
+   (`min-height: 581px` ici). */
+@media (max-width: 639px) and (min-height: 581px) and (max-height: 820px) {
+  #hero .mx-auto.grid {
+    flex: 1 1 0;
+    min-height: 0;
+    grid-auto-rows: minmax(0, 1fr);
+  }
+
+  #hero .carousel-wrapper,
+  #hero .bento-photo-card,
+  #hero .partners-card {
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+}
+
+/* sm–md (640–767px) : les 2 cartes sont côte à côte sur UNE ligne — le
+   remplissage ci-dessus leur donnait toute la hauteur restante (~500px à
+   800px de haut), rendu étiré. Hauteur modérée + section centrée à la
+   place. Pas appliqué < sm : empilées, 2 × 240px minimum + l'en-tête
+   dépassaient l'écran (121 à 209px coupés à 375px de large, mesuré). */
+@media (min-width: 640px) and (max-width: 767px) and (min-height: 581px) and (max-height: 820px) {
+  #hero {
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  #hero .carousel-wrapper,
+  #hero .bento-photo-card,
+  #hero .partners-card {
+    height: clamp(240px, 42vh, 360px) !important;
+    min-height: unset !important;
+  }
+}
+
+@media (max-width: 767px) and (min-height: 581px) and (max-height: 820px) {
+  /* Même piège que dans le palier 580px : `.col3-stack` hérite du padding
+     de `.bento-photo-card` et décalerait la carte hors de son conteneur. */
+  #hero .col3-stack {
+    padding: 0 !important;
+  }
+
+  /* Les cartes faisant désormais ~50% de l'espace restant, la carte
+     partenaires descend à ~190px vers 631px de haut — seuil à partir duquel
+     les 4 logos s'affichent ensemble (cf. `@media not` en tête). Avec le
+     `mt-8` et le Power BI en `h-28` (112px), son contenu en demandait 220px :
+     mêmes plafonds de logos que le palier 580px, marge réduite. */
+  #hero .partners-logo-carousel {
+    margin-top: 0.5rem !important;
+  }
+
+  #hero .partner-pair:last-child svg {
+    height: 2.75rem !important;
+  }
+
+  #hero .partner-pair:last-child svg:last-child {
+    height: 4.5rem !important;
+  }
+}
+
 /* Dernier palier, pour les hauteurs mobiles extrêmes (ex. 568px) : les
    168–210px de plancher des paliers précédents restent trop grands une
    fois cumulés avec le padding et la typographie de base. */
 @media (max-width: 767px) and (max-height: 580px) {
   #hero .carousel-wrapper,
-  #hero .bento-photo-card {
-    height: 120px !important;
-    min-height: 120px !important;
+  #hero .bento-photo-card,
+  #hero .partners-card {
+    height: 175px !important;
+    min-height: 175px !important;
   }
 
   /* 4.75rem (76px) : au-delà des 64px de la navbar mobile (`h-16`, seul
@@ -904,11 +1000,134 @@ const CASE_STUDIES: CaseStudy[] = [
 
   #hero .partners-card {
     padding: 0.5rem 0.75rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
   }
 
   #hero .partners-card p.font-display {
     margin-bottom: 0.25rem !important;
-    font-size: 0.85rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* `.col3-stack` porte aussi `.bento-photo-card` et hérite donc du
+     `padding: 1.5rem` du palier `max-height: 800px` : la carte partenaires
+     (135px) se retrouvait décalée de 24px dans un conteneur de 135px et
+     débordait par le bas. Ce n'est qu'un wrapper, pas une carte visible. */
+  #hero .col3-stack {
+    padding: 0 !important;
+  }
+
+  /* Mesuré à 375×568 : contenu de 175px pour 135px de carte (le `mt-8` du
+     carrousel de logos + le Power BI en `h-28`, 112px, dépassaient de 40px).
+     Logos plafonnés en gardant leur rapport GCP/Power BI d'origine (≈ 4:7). */
+  #hero .partners-logo-carousel {
+    margin-top: 0 !important;
+  }
+
+  /* Seule la paire GCP/Power BI (2e paire) est concernée : Snowflake/Omni
+     (`h-10`, 40px) tiennent déjà dans la carte. */
+  #hero .partner-pair:last-child svg {
+    height: 2.75rem !important;
+  }
+
+  #hero .partner-pair:last-child svg:last-child {
+    height: 4.5rem !important;
+  }
+}
+
+/* Section Expertise, < md : les 3 cartes s'empilent et leurs gabarits de
+   base (p-6, texte `sm`) dépassaient `h-dvh` de 81px à 819px de haut et de
+   206px à 568px (mesuré) — `overflow-hidden` les aurait coupées. Paliers de
+   hauteur sur le modèle du Hero : on resserre les espacements d'abord, la
+   typographie ensuite, sans jamais masquer de contenu. */
+@media (max-width: 767px) and (max-height: 900px) {
+  #expertise-offre {
+    padding-top: 4.5rem !important;
+    padding-bottom: 1rem !important;
+  }
+
+  #expertise-offre h2 {
+    font-size: 2rem !important;
+  }
+
+  #expertise-offre .expertise-grid {
+    margin-top: 1.25rem !important;
+    gap: 0.75rem !important;
+  }
+
+  #expertise-offre .expertise-card {
+    padding: 1rem !important;
+    gap: 0.875rem !important;
+  }
+
+  #expertise-offre .expertise-headline {
+    margin-top: 0.25rem !important;
+    font-size: 1rem !important;
+  }
+
+  #expertise-offre .expertise-desc {
+    margin-top: 0.375rem !important;
+    font-size: 0.8125rem !important;
+    line-height: 1.45 !important;
+  }
+}
+
+@media (max-width: 767px) and (max-height: 740px) {
+  #expertise-offre {
+    padding-top: 4.25rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  #expertise-offre h2 {
+    margin-top: 0.125rem !important;
+    font-size: 1.75rem !important;
+  }
+
+  #expertise-offre .expertise-grid {
+    margin-top: 0.75rem !important;
+    gap: 0.5rem !important;
+  }
+
+  #expertise-offre .expertise-card {
+    padding: 0.75rem 1rem !important;
+    gap: 0.75rem !important;
+  }
+
+  #expertise-offre .expertise-icon {
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    border-radius: 0.75rem !important;
+  }
+
+  #expertise-offre .expertise-headline {
+    font-size: 0.9375rem !important;
+    line-height: 1.3 !important;
+  }
+
+  #expertise-offre .expertise-desc {
+    margin-top: 0.25rem !important;
+    font-size: 0.75rem !important;
+    line-height: 1.4 !important;
+  }
+}
+
+/* Hauteurs égales des cartes empilées (alignées sur la plus haute) — pas
+   en dessous de 601px de haut : à 568px, ce gain d'une vingtaine de pixels
+   suffisait à faire déborder la section (mesuré). */
+@media (max-width: 767px) and (min-height: 601px) {
+  #expertise-offre .expertise-grid {
+    grid-auto-rows: 1fr;
+  }
+}
+
+/* Très petits écrans (320px de large) : le texte y passe à la ligne bien
+   plus tôt et débordait encore de 34px à 568px de haut. L'icône est
+   purement décorative (`aria-hidden`) : la masquer rend ~48px de largeur au
+   texte, ce qui retire une ligne à chaque carte sans perdre de contenu. */
+@media (max-width: 359px) and (max-height: 740px) {
+  #expertise-offre .expertise-icon {
+    display: none !important;
   }
 }
 </style>

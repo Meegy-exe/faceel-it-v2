@@ -171,15 +171,15 @@ export const mainNavEntries: NavItem[] = [
   },
   {
     id: 'business-units',
-    label: 'Nos BU',
+    label: 'Nos BUs',
     title: 'Nos BUs, Expertes de vos besoins.',
     description: 'Une organisation interne adaptée au marché pour une réponse sur-mesure à nos clients.',
     ctaLabel: 'En savoir plus',
     ctaTo: { path: '/', hash: '#business-units' },
     subItems: [
-      { label: 'Data & IA', to: { path: '/', hash: '#business-units' } },
-      { label: 'Product', to: { path: '/', hash: '#business-units' } },
-      { label: 'Digital', to: { path: '/', hash: '#business-units' } },
+      { label: 'Data & IA', to: { name: 'bu-data-ia' } },
+      { label: 'Product', to: { name: 'product' } },
+      { label: 'Digital', to: { name: 'bu-digital' } },
     ],
   },
   {
@@ -218,13 +218,79 @@ export const mainNavEntries: NavItem[] = [
 ]
 
 /**
- * Nos 4 practices internes (cf. `BuSection.vue`, section `#business-units`
- * de l'accueil). Affichées en bande verticale dans la zone droite du
- * mega-menu quand aucun onglet n'est survolé (cf. `MegaMenu.vue`).
+ * Panneau gauche synthétique pour le profil « curieux » : aucune des deux
+ * entrées « Je suis une entreprise »/« Je suis candidat » ne lui correspond
+ * (ni l'un ni l'autre, ou pas encore décidé) — contrairement aux profils
+ * `entreprise`/`candidat`, il n'y a pas d'entrée existante à reformuler en
+ * indicateur, donc une entrée dédiée, sans `to` (pas de page propre au
+ * profil « curieux »), au même titre que `qui-sommes-nous`/`nos-references`. */
+const CURIEUX_INDICATOR: NavItem = {
+  id: 'curieux',
+  label: 'Je suis curieux',
+  title: 'Je suis curieux',
+  description:
+    "Vous découvrez Faceel-IT ? Retrouvez ici l'essentiel, côté entreprise comme côté candidat.",
+  ctaLabel: 'Découvrir Faceel-IT',
+  ctaTo: { name: 'histoire' },
+  /** Sans ces `subItems`, le survol (desktop) retombait sur le fallback de
+   *  `MegaMenu.vue` prévu pour les entrées sans sous-liens (ex. « Sport &
+   *  sponsoring ») — d'où un contenu incohérent affiché par erreur au survol
+   *  de « Je suis curieux ». */
+  subItems: [
+    {
+      label: 'Consultant chez Faceel-It',
+      description: 'Le parcours candidat',
+      to: { name: 'candidat' },
+    },
+    {
+      label: 'Client chez Faceel-It',
+      description: 'Le parcours entreprise',
+      to: { name: 'entreprise' },
+    },
+  ],
+}
+
+/**
+ * Entrées de navigation adaptées au profil actif (cf. `useProfileStore`) :
+ * une fois un profil choisi, l'invite à choisir CET profil (« Je suis une
+ * entreprise » / « Je suis candidat ») n'a plus de raison d'être proposée et
+ * devient un indicateur de profil à la place. Le profil « entreprise » n'a
+ * en revanche plus besoin de « Consulter nos offres » (retirée), tandis que
+ * le profil « candidat » la garde, reformulée en « Nos opportunités ».
+ * Le profil « curieux » propose un compromis entre les deux univers (offres
+ * ET références), dans un ordre qui ne correspond à aucun sous-ensemble
+ * contigu de la liste de base — reconstruit explicitement par id plutôt que
+ * filtré, contrairement aux deux cas précédents.
+ * L'absence de profil (visite avant tout choix) garde la navigation
+ * complète, inchangée.
  */
-export const BUSINESS_UNITS: { label: string; to: RouteLocationRaw }[] = [
-  { label: 'Data & IA', to: { name: 'bu-data-ia' } },
-  { label: 'Digital', to: { name: 'bu-digital' } },
-  { label: 'Product', to: { path: '/', hash: '#business-units' } },
-  { label: 'Cloud & DevOps', to: { path: '/', hash: '#business-units' } },
-]
+export function getMainNavEntries(profile: 'candidat' | 'entreprise' | 'curieux' | null): NavItem[] {
+  if (profile === 'entreprise') {
+    return mainNavEntries
+      .filter((entry) => entry.id !== 'candidat' && entry.id !== 'offres')
+      .map((entry) => (entry.id === 'entreprise' ? { ...entry, label: 'Client chez Faceel-It' } : entry))
+  }
+
+  if (profile === 'candidat') {
+    return mainNavEntries
+      .filter((entry) => entry.id !== 'entreprise')
+      .map((entry) => {
+        if (entry.id === 'candidat') return { ...entry, label: 'Consultant chez Faceel-It' }
+        if (entry.id === 'offres') return { ...entry, label: 'Nos opportunités' }
+        return entry
+      })
+  }
+
+  if (profile === 'curieux') {
+    const byId = new Map(mainNavEntries.map((entry) => [entry.id, entry]))
+    const order = ['offres', 'nos-references', 'qui-sommes-nous', 'business-units', 'sport', 'partenaires']
+    const rest = order
+      .map((id) => byId.get(id))
+      .filter((entry): entry is NavItem => entry !== undefined)
+      .map((entry) => (entry.id === 'offres' ? { ...entry, label: 'Nos opportunités' } : entry))
+
+    return [CURIEUX_INDICATOR, ...rest]
+  }
+
+  return mainNavEntries
+}

@@ -25,6 +25,9 @@ import sportImg1 from '@/assets/images/photos/f-it-01.jpg'
 import sportImg2 from '@/assets/images/photos/f-it-02.jpg'
 import sportImg3 from '@/assets/images/photos/f-it-03.jpg'
 import { useSeo } from '@/composables/useSeo'
+import { useProfileStore } from '@/stores/useProfileStore'
+
+const profileStore = useProfileStore()
 
 useSeo({
   title: 'Accueil',
@@ -726,6 +729,7 @@ onBeforeUnmount(() => {
   </section>
 
   <section
+    v-if="profileStore.profile !== 'entreprise'"
     id="evenements"
     ref="evenementsEl"
     data-theme="light"

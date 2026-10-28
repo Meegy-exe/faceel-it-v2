@@ -30,6 +30,7 @@ export const staticPrerenderRoutes = [
   '/references/adeo',
   '/nos-bus/data-ia',
   '/nos-bus/digital',
+  '/nos-bus/product',
   '/evenements-tech',
   '/consulter-nos-offres',
   '/candidature-spontanee',

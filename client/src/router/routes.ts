@@ -40,18 +40,21 @@ export const routes: RouteRecordRaw[] = [
     name: 'histoire',
     component: () => import('@/views/HistoireView.vue'),
   },
+  // desactive pour la v1
+  // {
+  //   path: '/qui-sommes-nous/notre-organisation',
+  //   name: 'notre-organisation',
+  //   component: () => import('@/views/NotreOrganisationView.vue'),
+  // },
+  // maj route entreprise
   {
-    path: '/qui-sommes-nous/notre-organisation',
-    name: 'notre-organisation',
-    component: () => import('@/views/NotreOrganisationView.vue'),
-  },
-  {
-    path: '/je-suis-une-entreprise',
+    path: '/client-chez-faceel-it',
     name: 'entreprise',
     component: () => import('@/views/EnterpriseView.vue'),
   },
+  // maj route consultant
   {
-    path: '/je-suis-candidat',
+    path: '/consultant-chez-faceel-it',
     name: 'candidat',
     component: () => import('@/views/CandidateView.vue'),
   },
@@ -70,11 +73,12 @@ export const routes: RouteRecordRaw[] = [
     name: 'partenaires',
     component: () => import('@/views/PartenairesView.vue'),
   },
-  {
-    path: '/politique-rse',
-    name: 'politique-rse',
-    component: () => import('@/views/PolitiqueRseView.vue'),
-  },
+  // desactive pour la v1
+  // {
+  //   path: '/politique-rse',
+  //   name: 'politique-rse',
+  //   component: () => import('@/views/PolitiqueRseView.vue'),
+  // },
   {
     path: '/references/boulanger',
     name: 'reference-boulanger',
@@ -101,9 +105,10 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/ProductView.vue'),
   },
   {
+    // redirige vers accueil temporairement v1
     path: '/evenements-tech',
     name: 'evenements-tech',
-    component: () => import('@/views/TechEventsView.vue'),
+    redirect: '/',
   },
   {
     path: '/offres/:id',

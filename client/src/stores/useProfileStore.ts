@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-export type UserProfileType = 'candidat' | 'entreprise' | 'curieux'
+export type UserProfileType = 'candidat' | 'entreprise'
 
 const PROFILE_STORAGE_KEY = 'faceel_user_profile'
 
@@ -14,6 +15,7 @@ const PROFILE_STORAGE_KEY = 'faceel_user_profile'
  * n'existe pas.
  */
 export const useProfileStore = defineStore('profile', () => {
+  const router = useRouter()
   const showSelector = ref(false)
   const animatingSelection = ref<UserProfileType | null>(null)
   /** Pilote l'affichage conditionnel des CTA de la navbar et, désormais, de
@@ -24,7 +26,8 @@ export const useProfileStore = defineStore('profile', () => {
    *  différée au montage client, jamais à l'exécution du store. */
   function hydrate() {
     if (!localStorage.getItem(PROFILE_STORAGE_KEY)) showSelector.value = true
-    profile.value = (localStorage.getItem(PROFILE_STORAGE_KEY) as UserProfileType | null) || 'curieux'
+    // plus de profil par defaut : seuls candidat/entreprise restent, le visiteur doit choisir
+    profile.value = localStorage.getItem(PROFILE_STORAGE_KEY) as UserProfileType | null
   }
 
   function setProfile(profileType: UserProfileType) {
@@ -33,6 +36,8 @@ export const useProfileStore = defineStore('profile', () => {
       localStorage.setItem(PROFILE_STORAGE_KEY, profileType)
       showSelector.value = false
       profile.value = profileType
+      // redirection accueil apres switch
+      router.push('/')
     }, 800)
   }
 

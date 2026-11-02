@@ -10,7 +10,7 @@ import { useSeo } from '@/composables/useSeo'
  * Page « Notre collectif » : les rôles du collectif (hero disruptif), puis
  * l'annuaire filtrable des membres (carrousel de cartes dépliables).
  *
- * ⚠️ CONTENU DE DÉMONSTRATION — À REMPLACER AVANT MISE EN LIGNE
+ * ⚠️ CONTENU DE DÉMONSTRATION À REMPLACER AVANT MISE EN LIGNE
  * Les membres ci-dessous (noms, postes, textes « Mission » et « Profil ») sont
  * des DONNÉES FICTIVES de maquette, explicitement demandées pour valider
  * l'interaction. Aucune ne provient du client. Rien ici ne doit partir en
@@ -19,7 +19,7 @@ import { useSeo } from '@/composables/useSeo'
  * retombe sur un monogramme, cf. `ProfileCard.vue`) plutôt que remplis par des
  * visages de banque d'images.
  *
- * TODO — à la livraison des vraies données : déplacer `PROFILES` dans
+ * TODO  à la livraison des vraies données : déplacer `PROFILES` dans
  * `features/collectif/` (une donnée métier n'a pas vocation à rester dans une
  * vue, cf. règle de dépendance `views/ → features/ → components/ui/`), ou le
  * brancher sur l'API si les membres deviennent une ressource du back.
@@ -27,7 +27,7 @@ import { useSeo } from '@/composables/useSeo'
 useSeo({
   title: 'Notre collectif',
   description:
-    'Les femmes et les hommes de Faceel-IT : Staff, BU Digital, Data & IA, Cyber — des rôles, des missions, un collectif.',
+    'Les femmes et les hommes de Faceel-IT : Staff, BU Digital, Data & IA, Cyber  des rôles, des missions, un collectif.',
 })
 
 /* -------------------------------------------------------------------------- */
@@ -56,7 +56,7 @@ const VALUES = [
 ]
 
 /* -------------------------------------------------------------------------- */
-/* Annuaire — catégories et membres                                           */
+/* Annuaire  catégories et membres                                           */
 /* -------------------------------------------------------------------------- */
 
 type CategoryId = 'staff' | 'digital' | 'data-ia' | 'cyber'
@@ -75,11 +75,11 @@ interface Profile {
   category: CategoryId
   mission: string
   profile: string
-  /** Portrait — vide tant que le client n'a pas fourni les photos. */
+  /** Portrait vide tant que le client n'a pas fourni les photos. */
   photo?: string
 }
 
-/** ⚠️ Fictif — cf. l'avertissement en tête de fichier. */
+/** ⚠️ Fictif cf. l'avertissement en tête de fichier. */
 const PROFILES: Profile[] = [
   {
     id: 'staff-1',
@@ -173,7 +173,7 @@ function toggleProfile(id: string) {
        dépendre de la hauteur flexée de <main> (cf. HomeView.vue). -->
   <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
     <!-- ================================================================== -->
-    <!-- 1. HERO — titre et description, cartes de rôles retirées (rendu    -->
+    <!-- 1. HERO  titre et description, cartes de rôles retirées (rendu    -->
     <!-- minimaliste).                                                      -->
     <!-- ================================================================== -->
     <section
@@ -196,7 +196,7 @@ function toggleProfile(id: string) {
     </section>
 
     <!-- ================================================================== -->
-    <!-- 2. PRINCIPES — « trois principes qui tiennent le collectif ».      -->
+    <!-- 2. PRINCIPES « trois principes qui tiennent le collectif ».      -->
     <!-- ================================================================== -->
     <section
       data-theme="light"
@@ -209,7 +209,7 @@ function toggleProfile(id: string) {
         </h2>
 
         <!-- `items-stretch` implicite de `grid` : les trois cartes partagent la
-             hauteur de la plus haute, sans hauteur en dur — les textes sont de
+             hauteur de la plus haute, sans hauteur en dur les textes sont de
              longueurs inégales, une hauteur fixe couperait le troisième. -->
         <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <HighlightCard
@@ -228,7 +228,7 @@ function toggleProfile(id: string) {
     </section>
 
     <!-- ================================================================== -->
-    <!-- 3. ÉQUIPES — « le collectif par équipe ». `min-h-dvh` : tabs +      -->
+    <!-- 3. ÉQUIPES  « le collectif par équipe ». `min-h-dvh` : tabs +      -->
     <!-- piste de cartes peuvent déborder sur mobile.                       -->
     <!-- ================================================================== -->
     <section
@@ -307,7 +307,7 @@ function toggleProfile(id: string) {
     </section>
 
     <!-- ================================================================== -->
-    <!-- 4. FOOTER — repris dans le flux snap local (cf. HomeView.vue) ;     -->
+    <!-- 4. FOOTER  repris dans le flux snap local (cf. HomeView.vue) ;     -->
     <!-- App.vue masque son footer global pour cette route pour éviter le   -->
     <!-- doublon.                                                           -->
     <!-- ================================================================== -->

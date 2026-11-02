@@ -64,5 +64,4 @@ export function useWaveCanvas(waveCanvas: Ref<HTMLCanvasElement | null>) {
     window.removeEventListener('resize', resizeWaveCanvas)
     if (animationFrameId !== null) cancelAnimationFrame(animationFrameId)
   })
-
 }

@@ -19,17 +19,17 @@ pas répétée ici.
 - `python3 scripts/generate-codemap.py` reste à lancer après l'ajout/le
   retrait d'un fichier ou d'une dépendance.
 - **Réponses ultra-concises :** pour une tâche d'UI/CSS/composant, livrer le
-  code modifié et un résumé de 2 phrases maximum — pas de compte-rendu long.
+  code modifié et un résumé de 2 phrases maximum - pas de compte-rendu long.
 - **Interdiction absolue de Playwright ou de tout script de test automatisé**,
   sur ce projet, sans exception ni demande explicite.
 
 ## Règles d'architecture globales
 
-- **Dépendances frontend à sens unique : `views/` → `features/` →
+- **Dépendances frontend à sens unique : `views/` -> `features/` ->
   `components/ui/`.** Jamais l'inverse.
 - **Full Page Snap Scroll (CRITIQUE) :** Toutes les vues principales utilisent un défilement par section. Chaque section HTML doit posséder les classes : `h-full w-full snap-start snap-always flex flex-col justify-center`. (Exception : les zones de listes/grilles doivent avoir un `overflow-y-auto` interne pour ne pas bloquer le scroll).
 - **Déterminisme obligatoire :** Pas de `Math.random()`, `Date.now()`, `new Date()`
-  sans argument dans un calcul de rendu — l'écart entre le HTML pré-rendu (SSG) et
+  sans argument dans un calcul de rendu - l'écart entre le HTML pré-rendu (SSG) et
   le rendu client casse l'hydratation.
 - **Aucun secret en dur :** Ni dans le code `client/src/`, ni dans les configurations versionnées.
 
@@ -45,7 +45,8 @@ pas répétée ici.
 
 ## Intégrité du contenu et Style de code
 
+- **Bannissement du "tiret IA" (CRITIQUE) :** Interdiction stricte d'utiliser le tiret cadratin ou demi-cadratin. Utilise exclusivement le tiret court classique (-) partout : dans le code, le texte, les balises `aria-label` et les commentaires.
 - **Ne jamais inventer un fait produit ou métier** (chiffre, date, témoignage). Un contenu manquant se signale par un `TODO`.
 - **Commenter le "pourquoi", pas le "quoi" :** Dans ce dépôt, expliquer une
   contrainte cachée, un arbitrage ou un piège évité vaut d'être écrit (en français).
-- `legacy/` n'est pas versionné et sert uniquement de référence produit — jamais de code à réutiliser tel quel.
+- `legacy/` n'est pas versionné et sert uniquement de référence produit - jamais de code à réutiliser tel quel.

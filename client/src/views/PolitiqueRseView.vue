@@ -60,7 +60,9 @@ function activeRse(index: number): RseCard {
 </script>
 
 <template>
-  <div class="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-primary-950">
+  <div
+    class="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-primary-950"
+  >
     <!-- Section 1 : Hero -->
     <section
       data-theme="dark"

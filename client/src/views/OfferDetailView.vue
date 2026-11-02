@@ -280,7 +280,9 @@ useSeo({
 
       <!-- pt-28 : descend le contenu dans sa moitié au lieu d'un centrage
            géométrique strict qui le remonte visuellement trop haut. -->
-      <div class="flex flex-1 flex-col items-center justify-center px-4 pt-28 sm:px-6 lg:px-8 xl:px-12">
+      <div
+        class="flex flex-1 flex-col items-center justify-center px-4 pt-28 sm:px-6 lg:px-8 xl:px-12"
+      >
         <div class="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
           <p class="mb-4 text-sm text-white">
             Équipe RH Faceel-IT · {{ offer.date }} · 3 min de lecture
@@ -291,12 +293,25 @@ useSeo({
           </h1>
 
           <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <span class="rounded-full border-none pr-3 pl-0 py-1 text-sm font-semibold text-accent-400">
+            <span
+              class="rounded-full border-none pr-3 pl-0 py-1 text-sm font-semibold text-accent-400"
+            >
               {{ offer.category }}
             </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
-              <svg class="h-4 w-4 shrink-0" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
+            <span
+              class="inline-flex items-center gap-1.5 rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400"
+            >
+              <svg
+                class="h-4 w-4 shrink-0"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"
+                  clip-rule="evenodd"
+                />
               </svg>
               {{ offer.location }}
             </span>
@@ -394,7 +409,9 @@ useSeo({
                   aria-hidden="true"
                 />
                 <span class="text-base leading-relaxed text-primary-900/70">
-                  <strong class="font-semibold text-primary-900">{{ splitTechLabel(tech).label }}</strong
+                  <strong class="font-semibold text-primary-900">{{
+                    splitTechLabel(tech).label
+                  }}</strong
                   >{{ ' : ' + splitTechLabel(tech).rest }}
                 </span>
               </li>
@@ -506,7 +523,9 @@ useSeo({
 
           <!-- Encart LinkedIn — repris tel quel de ContactView.vue (/contact-entreprise) -->
           <div class="mt-6 rounded-xl bg-blue-50 p-8">
-            <div class="flex size-12 items-center justify-center rounded-xl bg-[#0A66C2] text-white">
+            <div
+              class="flex size-12 items-center justify-center rounded-xl bg-[#0A66C2] text-white"
+            >
               <svg viewBox="0 0 24 24" fill="currentColor" class="size-6">
                 <path
                   d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.1 1.43-2.1 2.9V21h-4V9Z"
@@ -550,14 +569,16 @@ useSeo({
                 class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <div class="absolute inset-0 bg-primary-950/40" aria-hidden="true" />
-              <span
-                class="absolute inset-0 flex items-center justify-center"
-                aria-hidden="true"
-              >
+              <span class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
                 <span
                   class="flex size-14 items-center justify-center rounded-full bg-white/90 text-primary-950 shadow-lg transition-transform group-hover:scale-110"
                 >
-                  <svg class="ml-0.5 size-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <svg
+                    class="ml-0.5 size-6"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
                     <path d="M8 5v14l11-7L8 5z" />
                   </svg>
                 </span>
@@ -570,7 +591,9 @@ useSeo({
               <p class="mt-2 font-display text-base font-bold text-white">
                 La vie d'équipe vue de l'intérieur
               </p>
-              <p class="mt-1 text-sm text-white/60">{{ buTestimonial.name }} · {{ buTestimonial.role }}</p>
+              <p class="mt-1 text-sm text-white/60">
+                {{ buTestimonial.name }} · {{ buTestimonial.role }}
+              </p>
             </div>
           </button>
         </aside>
@@ -679,7 +702,10 @@ useSeo({
             />
           </div>
           <!-- TODO : vidéo à tourner pour cette BU — pas de contenu fictif en attendant. -->
-          <div v-else class="flex aspect-video w-full flex-col items-center justify-center gap-3 p-8 text-center">
+          <div
+            v-else
+            class="flex aspect-video w-full flex-col items-center justify-center gap-3 p-8 text-center"
+          >
             <p class="font-display text-lg font-bold text-white">Vidéo à venir</p>
             <p class="max-w-sm text-sm text-white/60">
               Le témoignage vidéo {{ buTestimonial.label }} de {{ buTestimonial.name }} est en cours

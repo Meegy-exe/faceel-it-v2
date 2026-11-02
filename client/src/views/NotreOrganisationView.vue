@@ -4,8 +4,7 @@ import { useSeo } from '@/composables/useSeo'
 
 useSeo({
   title: 'Notre vision & notre organisation',
-  description:
-    "Ce qui porte Faceel-IT et la façon dont le collectif s'organise au quotidien.",
+  description: "Ce qui porte Faceel-IT et la façon dont le collectif s'organise au quotidien.",
 })
 
 // TODO : contenu réel à fournir (vision d'entreprise, organigramme/organisation) —
@@ -15,7 +14,9 @@ useSeo({
 
 <template>
   <!-- Pas de `<main>` ici : la coquille (`App.vue`) le fournit déjà. -->
-  <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-primary-950">
+  <div
+    class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-primary-950"
+  >
     <section
       id="vision"
       data-theme="dark"
@@ -24,7 +25,9 @@ useSeo({
       <p class="text-white/60 mb-6 font-medium">
         Accueil / Qui sommes-nous / <span class="text-accent-500">Notre vision</span>
       </p>
-      <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight max-w-4xl">
+      <h1
+        class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight max-w-4xl"
+      >
         Notre vision
       </h1>
       <p class="mt-6 text-lg text-white/60 max-w-xl">Contenu à venir.</p>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, useTemplateRef } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
 import { useSeo } from '@/composables/useSeo'
@@ -13,11 +13,18 @@ useSeo({
 })
 
 const router = useRouter()
+const route = useRoute()
 
 const heroEl = useTemplateRef<HTMLElement>('heroEl')
 const heroReveal = useScrollReveal(heroEl)
 
 const selectedOffer = ref<JobOffer | null>(null)
+
+// clic "voir l'offre complete" : navigue puis ferme la modale
+function goToSelectedOfferDetail() {
+  router.push({ name: 'offre-detail', params: { id: selectedOffer.value!.id } })
+  selectedOffer.value = null
+}
 
 /* -------------------------------------------------------------------------- */
 /* Données mock — à remplacer par un appel API une fois le back disponible.   */
@@ -127,7 +134,7 @@ const OFFERS: JobOffer[] = [
     metier: 'Développeur',
     date: 'Publié il y a 2 mois',
     description:
-      "Vous rejoindrez une équipe mobile pour concevoir et maintenir des applications Android natives (Kotlin) à forte volumétrie. Vous travaillerez en étroite collaboration avec les équipes design et backend dans un cycle Agile.",
+      'Vous rejoindrez une équipe mobile pour concevoir et maintenir des applications Android natives (Kotlin) à forte volumétrie. Vous travaillerez en étroite collaboration avec les équipes design et backend dans un cycle Agile.',
     stack: ['Android', 'Kotlin'],
   },
   {
@@ -150,7 +157,7 @@ const OFFERS: JobOffer[] = [
     category: 'Cloud & Infrastructure',
     contract: 'CDI',
     level: '6 à 10 ans',
-    metier: "Architecte d’Entreprise",
+    metier: 'Architecte d’Entreprise',
     date: 'Publié il y a 1 mois',
     description:
       "Vous industrialisez les pipelines CI/CD et l'infrastructure cloud de nos clients (conteneurisation, supervision, sécurité). Vous accompagnez les équipes de développement vers une démarche DevOps mature.",
@@ -179,7 +186,7 @@ const OFFERS: JobOffer[] = [
     metier: 'Data Analyst',
     date: 'Publié il y a 2 semaines',
     description:
-      "Vous produisez des tableaux de bord et analyses pour accompagner la prise de décision de nos clients. Vous travaillez sur des outils de BI (Power BI) et participez à la fiabilisation des données sources.",
+      'Vous produisez des tableaux de bord et analyses pour accompagner la prise de décision de nos clients. Vous travaillez sur des outils de BI (Power BI) et participez à la fiabilisation des données sources.',
     stack: ['Power BI', 'SQL'],
   },
   {
@@ -192,7 +199,7 @@ const OFFERS: JobOffer[] = [
     metier: 'Développeur',
     date: 'Publié il y a 1 semaine',
     description:
-      "En alternance, vous contribuez au développement de fonctionnalités sur une application web Vue/Node.js, encadré par un développeur senior. Formation Bac+4/5 en informatique requise.",
+      'En alternance, vous contribuez au développement de fonctionnalités sur une application web Vue/Node.js, encadré par un développeur senior. Formation Bac+4/5 en informatique requise.',
     stack: ['Vue.js', 'Node.js'],
   },
   {
@@ -215,7 +222,7 @@ const OFFERS: JobOffer[] = [
     category: 'Digital',
     contract: 'CDI',
     level: '6 à 10 ans',
-    metier: "Responsable d’Application",
+    metier: 'Responsable d’Application',
     date: 'Publié il y a 5 mois',
     description:
       "Vous pilotez le maintien en conditions opérationnelles et les évolutions d'une application PLM métier. Vous coordonnez les équipes techniques et les utilisateurs clés côté client.",
@@ -228,7 +235,7 @@ const OFFERS: JobOffer[] = [
     category: 'Digital',
     contract: 'CDI',
     level: 'Plus de 10 ans',
-    metier: "Architecte d’Entreprise",
+    metier: 'Architecte d’Entreprise',
     date: 'Publié il y a 2 mois',
     description:
       "Vous définissez la cible d'architecture SI de nos clients grands comptes, en cohérence avec leur stratégie métier. Vous cadrez les projets de transformation et en garantissez la cohérence technique globale.",
@@ -242,12 +249,12 @@ const OFFERS: JobOffer[] = [
 
 const LEVELS = ['0 à 2 ans', '3 à 5 ans', '6 à 10 ans', 'Plus de 10 ans']
 const METIERS = [
-  "Responsable d’Application",
-  "Architecte d’Entreprise",
+  'Responsable d’Application',
+  'Architecte d’Entreprise',
   'Développeur',
   'Transformation manager',
   'Business Analyst',
-  "Responsable d’applications",
+  'Responsable d’applications',
   'Data Engineer',
   'Data Analyst',
 ]
@@ -262,7 +269,9 @@ const PAGE_SIZE = 10
 
 const selectedLevels = ref<string[]>([])
 const selectedMetiers = ref<string[]>([])
-const selectedCategories = ref<string[]>([])
+// recupere le filtre bu de l'url
+const activeBuFilter = typeof route.query.bu === 'string' ? route.query.bu : ''
+const selectedCategories = ref<string[]>(activeBuFilter ? [activeBuFilter] : [])
 /** Filtre par stack technique — sélection unique, '' = « Toutes ». */
 const selectedStack = ref('')
 
@@ -358,125 +367,142 @@ watch(
   <!-- Scroll libre (page dédiée, hors du régime snap-scroll des autres
        vues principales, cf. CLAUDE.md) — exception demandée pour cette page. -->
   <div class="flex flex-col min-h-screen w-full overflow-x-hidden">
-  <!-- ==================================================================
+    <!-- ==================================================================
        1. HERO — sombre
        ================================================================== -->
-  <section
-    id="hero"
-    data-theme="dark"
-    class="relative w-full h-auto min-h-[40vh] flex flex-col justify-center overflow-hidden px-4 pt-32 pb-16 sm:px-6 lg:px-8 xl:px-12 bg-[#000066] text-white"
-  >
-    <!-- Fond vivant — remplace la vague animée d'origine (hors format pour
+    <section
+      id="hero"
+      data-theme="dark"
+      class="relative w-full h-auto min-h-[40vh] flex flex-col justify-center overflow-hidden px-4 pt-32 pb-16 sm:px-6 lg:px-8 xl:px-12 bg-[#000066] text-white"
+    >
+      <!-- Fond vivant — remplace la vague animée d'origine (hors format pour
          un Hero réduit h-auto) : lignes filaires ondulantes + halos
          respirants, statiques sous prefers-reduced-motion. -->
-    <div
-      aria-hidden="true"
-      class="glow-pulse glow-pulse-1 pointer-events-none absolute -left-32 -top-32 z-0 h-[420px] w-[420px] rounded-full bg-[#5EC6FF] opacity-[0.15] blur-3xl"
-    />
-    <div
-      aria-hidden="true"
-      class="glow-pulse glow-pulse-2 pointer-events-none absolute -right-32 -bottom-32 z-0 h-[420px] w-[420px] rounded-full bg-accent-500 opacity-[0.15] blur-3xl"
-    />
-    <div aria-hidden="true" class="pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-30">
-      <div class="mosaic-tile absolute top-[8%] left-[6%] h-14 w-14 rounded-md bg-[#5EC6FF] opacity-20" />
-      <div class="mosaic-tile absolute top-[20%] left-[42%] h-10 w-10 rounded-md bg-accent-500 opacity-30" />
-      <div class="mosaic-tile absolute top-[12%] right-[10%] h-20 w-20 rounded-md bg-[#5EC6FF] opacity-10" />
-      <div class="mosaic-tile absolute bottom-[18%] left-[18%] h-16 w-16 rounded-md bg-accent-500 opacity-20" />
-      <div class="mosaic-tile absolute bottom-[10%] right-[30%] h-12 w-12 rounded-md bg-[#5EC6FF] opacity-30" />
-      <div class="mosaic-tile absolute bottom-[28%] right-[8%] h-24 w-24 rounded-md bg-accent-500 opacity-10" />
-      <div class="mosaic-tile absolute top-[48%] left-[28%] h-8 w-8 rounded-md bg-[#5EC6FF] opacity-20" />
-    </div>
+      <div
+        aria-hidden="true"
+        class="glow-pulse glow-pulse-1 pointer-events-none absolute -left-32 -top-32 z-0 h-[420px] w-[420px] rounded-full bg-[#5EC6FF] opacity-[0.15] blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        class="glow-pulse glow-pulse-2 pointer-events-none absolute -right-32 -bottom-32 z-0 h-[420px] w-[420px] rounded-full bg-accent-500 opacity-[0.15] blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-30"
+      >
+        <div
+          class="mosaic-tile absolute top-[8%] left-[6%] h-14 w-14 rounded-md bg-[#5EC6FF] opacity-20"
+        />
+        <div
+          class="mosaic-tile absolute top-[20%] left-[42%] h-10 w-10 rounded-md bg-accent-500 opacity-30"
+        />
+        <div
+          class="mosaic-tile absolute top-[12%] right-[10%] h-20 w-20 rounded-md bg-[#5EC6FF] opacity-10"
+        />
+        <div
+          class="mosaic-tile absolute bottom-[18%] left-[18%] h-16 w-16 rounded-md bg-accent-500 opacity-20"
+        />
+        <div
+          class="mosaic-tile absolute bottom-[10%] right-[30%] h-12 w-12 rounded-md bg-[#5EC6FF] opacity-30"
+        />
+        <div
+          class="mosaic-tile absolute bottom-[28%] right-[8%] h-24 w-24 rounded-md bg-accent-500 opacity-10"
+        />
+        <div
+          class="mosaic-tile absolute top-[48%] left-[28%] h-8 w-8 rounded-md bg-[#5EC6FF] opacity-20"
+        />
+      </div>
 
-    <div
-      ref="heroEl"
-      class="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center text-center transition-all duration-700 ease-out motion-reduce:transition-none"
-      :class="scrollRevealClass(heroReveal)"
-    >
-      <h1 class="font-display text-display text-balance text-white">
-        Intégrer un collectif où ton
-        <span class="relative inline-block">
-          talent
-          <svg
-            aria-hidden="true"
-            class="absolute -bottom-1 left-0 h-3 w-full overflow-visible text-accent-500"
-            viewBox="0 0 100 8"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M0 6 Q25 2 50 6 Q75 10 100 6"
-              stroke="currentColor"
-              stroke-width="2.5"
-              fill="none"
-              stroke-linecap="round"
-            />
-          </svg>
-        </span>
-        compte vraiment.
-      </h1>
-
-      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-white/75 sm:text-xl">
-        Ici, on ne cherche pas des CV parfaits, mais des personnes engagées, curieuses, et prêtes à
-        construire des projets concrets. Tu veux évoluer, apprendre, avoir un impact&nbsp;? Tu es au
-        bon endroit.
-      </p>
-    </div>
-  </section>
-
-  <!-- ==================================================================
-       2. JOB BOARD — clair
-       ================================================================== -->
-  <section id="job-board" data-theme="light" class="w-full flex flex-col bg-light">
-    <div class="px-4 pt-28 pb-8 sm:px-6 lg:px-8 xl:px-12">
-      <div class="mx-auto max-w-6xl">
-        <!-- ① Barre de recherche -->
-        <div class="relative w-full mb-8 z-20">
-          <span
-            class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400"
-          >
-            <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <div
+        ref="heroEl"
+        class="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center text-center transition-all duration-700 ease-out motion-reduce:transition-none"
+        :class="scrollRevealClass(heroReveal)"
+      >
+        <h1 class="font-display text-display text-balance text-white">
+          Intégrer un collectif où ton
+          <span class="relative inline-block">
+            talent
+            <svg
+              aria-hidden="true"
+              class="absolute -bottom-1 left-0 h-3 w-full overflow-visible text-accent-500"
+              viewBox="0 0 100 8"
+              preserveAspectRatio="none"
+            >
               <path
-                fill-rule="evenodd"
-                d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-                clip-rule="evenodd"
+                d="M0 6 Q25 2 50 6 Q75 10 100 6"
+                stroke="currentColor"
+                stroke-width="2.5"
+                fill="none"
+                stroke-linecap="round"
               />
             </svg>
           </span>
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Rechercher par ville, métier ou mot-clé"
-            autocomplete="off"
-            class="w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-primary-900 placeholder:text-gray-400 outline-none focus:border-transparent focus:ring-2 focus:ring-accent-500 transition-shadow"
-            @focus="showSuggestions = true"
-            @input="showSuggestions = true"
-            @blur="showSuggestions = false"
-            @keydown.enter.prevent="submitSearch"
-            @keydown.escape="showSuggestions = false"
-          />
+          compte vraiment.
+        </h1>
 
-          <!-- Dropdown suggestions -->
-          <ul
-            v-if="showSuggestions && suggestions.length"
-            role="listbox"
-            aria-label="Suggestions de recherche"
-            class="absolute w-full mt-1 overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg z-50"
-          >
-            <li v-for="s in suggestions" :key="s" role="option">
-              <button
-                type="button"
-                class="w-full px-4 py-2.5 text-left text-sm text-primary-900 transition-colors hover:bg-gray-50"
-                @mousedown.prevent
-                @click="selectSuggestion(s)"
-              >
-                {{ s }}
-              </button>
-            </li>
-          </ul>
-        </div>
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-white/75 sm:text-xl">
+          Ici, on ne cherche pas des CV parfaits, mais des personnes engagées, curieuses, et prêtes
+          à construire des projets concrets. Tu veux évoluer, apprendre, avoir un impact&nbsp;? Tu
+          es au bon endroit.
+        </p>
+      </div>
+    </section>
 
-        <!-- ② Grille : offres + filtres -->
-        <div class="grid gap-8 lg:grid-cols-[1fr_272px]">
-          <!-- Colonne gauche : liste + pagination. `min-h-[60vh]` : un filtre
+    <!-- ==================================================================
+       2. JOB BOARD — clair
+       ================================================================== -->
+    <section id="job-board" data-theme="light" class="w-full flex flex-col bg-light">
+      <div class="px-4 pt-28 pb-8 sm:px-6 lg:px-8 xl:px-12">
+        <div class="mx-auto max-w-6xl">
+          <!-- ① Barre de recherche -->
+          <div class="relative w-full mb-8 z-20">
+            <span
+              class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400"
+            >
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path
+                  fill-rule="evenodd"
+                  d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </span>
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Rechercher par ville, métier ou mot-clé"
+              autocomplete="off"
+              class="w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-primary-900 placeholder:text-gray-400 outline-none focus:border-transparent focus:ring-2 focus:ring-accent-500 transition-shadow"
+              @focus="showSuggestions = true"
+              @input="showSuggestions = true"
+              @blur="showSuggestions = false"
+              @keydown.enter.prevent="submitSearch"
+              @keydown.escape="showSuggestions = false"
+            />
+
+            <!-- Dropdown suggestions -->
+            <ul
+              v-if="showSuggestions && suggestions.length"
+              role="listbox"
+              aria-label="Suggestions de recherche"
+              class="absolute w-full mt-1 overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg z-50"
+            >
+              <li v-for="s in suggestions" :key="s" role="option">
+                <button
+                  type="button"
+                  class="w-full px-4 py-2.5 text-left text-sm text-primary-900 transition-colors hover:bg-gray-50"
+                  @mousedown.prevent
+                  @click="selectSuggestion(s)"
+                >
+                  {{ s }}
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <!-- ② Grille : offres + filtres -->
+          <div class="grid gap-8 lg:grid-cols-[1fr_272px]">
+            <!-- Colonne gauche : liste + pagination. `min-h-[60vh]` : un filtre
                très restrictif (ex. une seule offre) ne doit pas faire
                s'effondrer la hauteur totale de la page — sinon, si l'utilisateur
                était déjà scrollé plus bas que la nouvelle hauteur (plus courte),
@@ -484,349 +510,386 @@ watch(
                maximum, ce qui se perçoit comme un saut/recentrage automatique
                alors qu'aucun code ne pilote de scroll ici (vérifié : aucun
                `window.scrollTo`/`scrollIntoView`/`scrollTop` dans ce fichier). -->
-          <div class="min-h-[60vh]">
-            <p class="mb-4 text-sm text-primary-900/50">
-              {{ filteredOffers.length }}
-              {{ filteredOffers.length !== 1 ? 'offres disponibles' : 'offre disponible' }}
-            </p>
+            <div class="min-h-[60vh]">
+              <p class="mb-4 text-sm text-primary-900/50">
+                {{ filteredOffers.length }}
+                {{ filteredOffers.length !== 1 ? 'offres disponibles' : 'offre disponible' }}
+              </p>
 
-            <p v-if="pagedOffers.length === 0" class="py-16 text-center text-primary-900/50">
-              Aucune offre ne correspond à votre recherche.
-            </p>
+              <p v-if="pagedOffers.length === 0" class="py-16 text-center text-primary-900/50">
+                Aucune offre ne correspond à votre recherche.
+              </p>
 
-            <ul v-else class="space-y-4">
-              <li
-                v-for="offer in pagedOffers"
-                :key="offer.id"
-                class="group rounded-2xl bg-white p-5 ring-1 ring-gray-200 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:ring-gray-300 hover:shadow-md cursor-pointer"
-                @click="router.push({ name: 'offre-detail', params: { id: offer.id } })"
-              >
-                <!-- Titre + date + aperçu rapide -->
-                <div class="flex items-start justify-between gap-4">
-                  <h3 class="font-semibold text-primary-900">{{ offer.title }}</h3>
-                  <div class="flex shrink-0 items-center gap-2">
-                    <span class="text-xs text-gray-400">{{ offer.date }}</span>
-                    <button
-                      type="button"
-                      aria-label="Aperçu rapide de l'offre"
-                      class="flex size-7 items-center justify-center rounded-full text-primary-900/50 transition-colors hover:bg-gray-100 hover:text-primary-900"
-                      @click.stop="selectedOffer = offer"
-                    >
-                      <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M2.25 12s3.75-7.5 9.75-7.5 9.75 7.5 9.75 7.5-3.75 7.5-9.75 7.5S2.25 12 2.25 12Z"
-                        />
-                        <circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round" />
-                      </svg>
-                    </button>
+              <ul v-else class="space-y-4">
+                <li
+                  v-for="offer in pagedOffers"
+                  :key="offer.id"
+                  class="group rounded-2xl bg-white p-5 ring-1 ring-gray-200 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:ring-gray-300 hover:shadow-md cursor-pointer"
+                  @click="router.push({ name: 'offre-detail', params: { id: offer.id } })"
+                >
+                  <!-- Titre + date + aperçu rapide -->
+                  <div class="flex items-start justify-between gap-4">
+                    <h3 class="font-semibold text-primary-900">{{ offer.title }}</h3>
+                    <div class="flex shrink-0 items-center gap-2">
+                      <span class="text-xs text-gray-400">{{ offer.date }}</span>
+                      <button
+                        type="button"
+                        aria-label="Aperçu rapide de l'offre"
+                        class="flex size-7 items-center justify-center rounded-full text-primary-900/50 transition-colors hover:bg-gray-100 hover:text-primary-900"
+                        @click.stop="selectedOffer = offer"
+                      >
+                        <svg
+                          class="size-4"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                          aria-hidden="true"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M2.25 12s3.75-7.5 9.75-7.5 9.75 7.5 9.75 7.5-3.75 7.5-9.75 7.5S2.25 12 2.25 12Z"
+                          />
+                          <circle
+                            cx="12"
+                            cy="12"
+                            r="3"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
+
+                  <!-- Description tronquée -->
+                  <p class="mt-2 text-sm leading-relaxed text-primary-900/60 line-clamp-2">
+                    {{ offer.description }}
+                  </p>
+
+                  <!-- Badges -->
+                  <div class="mt-3 flex flex-wrap items-center gap-2">
+                    <span class="flex items-center gap-1 text-sm text-primary-900/55">
+                      <svg
+                        class="h-3.5 w-3.5 shrink-0"
+                        viewBox="0 0 16 16"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      {{ offer.location }}
+                    </span>
+                    <span
+                      class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-primary-900/70"
+                    >
+                      {{ offer.category }}
+                    </span>
+                    <span
+                      class="rounded-full bg-accent-500/15 px-2.5 py-0.5 text-xs font-medium text-primary-900"
+                    >
+                      {{ offer.contract }}
+                    </span>
+                    <span
+                      class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-primary-900/70"
+                    >
+                      {{ offer.level }}
+                    </span>
+                    <span
+                      v-for="tech in offer.stack"
+                      :key="tech"
+                      class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-primary-900/70"
+                    >
+                      {{ tech }}
+                    </span>
+                  </div>
+                </li>
+              </ul>
+
+              <!-- Pagination -->
+              <nav
+                v-if="totalPages > 1"
+                aria-label="Pagination des offres"
+                class="mt-6 flex items-center justify-center gap-1"
+              >
+                <button
+                  :disabled="currentPage === 1"
+                  class="rounded-lg px-3 py-2 text-sm text-primary-900/60 transition-colors hover:text-primary-900 disabled:opacity-30 disabled:cursor-not-allowed"
+                  @click="currentPage--"
+                >
+                  Précédent
+                </button>
+                <button
+                  v-for="page in pageRange"
+                  :key="page"
+                  class="min-w-[2.25rem] rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+                  :class="
+                    currentPage === page
+                      ? 'bg-accent-500 text-primary-900'
+                      : 'text-primary-900/60 hover:text-primary-900 hover:bg-gray-100'
+                  "
+                  :aria-current="currentPage === page ? 'page' : undefined"
+                  @click="currentPage = page"
+                >
+                  {{ page }}
+                </button>
+                <button
+                  :disabled="currentPage === totalPages"
+                  class="rounded-lg px-3 py-2 text-sm text-primary-900/60 transition-colors hover:text-primary-900 disabled:opacity-30 disabled:cursor-not-allowed"
+                  @click="currentPage++"
+                >
+                  Suivant
+                </button>
+              </nav>
+            </div>
+
+            <!-- Colonne droite : filtres -->
+            <aside aria-label="Filtres">
+              <RouterLink
+                :to="{ name: 'candidature-spontanee' }"
+                class="mb-6 flex w-full items-center justify-center gap-2 rounded-xl bg-accent-500 px-5 py-3 text-sm font-bold text-primary-950 transition-colors hover:bg-accent-400"
+              >
+                Candidature spontanée
+              </RouterLink>
+
+              <h2 class="font-display text-lg font-bold text-primary-900">Filtres</h2>
+
+              <!-- Métiers -->
+              <div class="mt-5 border-t border-gray-200 pt-5">
+                <button
+                  type="button"
+                  class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
+                  :aria-expanded="isMetiersOpen"
+                  @click="isMetiersOpen = !isMetiersOpen"
+                >
+                  <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    Métiers
+                  </span>
+                  <svg
+                    class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
+                    :class="isMetiersOpen ? 'rotate-180' : ''"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="m5 7 5 5 5-5"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <div v-show="isMetiersOpen">
+                  <button
+                    v-if="selectedMetiers.length"
+                    class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
+                    @click="clearGroup('metiers')"
+                  >
+                    Effacer
+                  </button>
+                  <ul class="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
+                    <li v-for="metier in METIERS" :key="metier">
+                      <label
+                        class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
+                      >
+                        <input
+                          v-model="selectedMetiers"
+                          type="checkbox"
+                          :value="metier"
+                          class="h-4 w-4 rounded accent-accent-500"
+                        />
+                        {{ metier }}
+                      </label>
+                    </li>
+                  </ul>
                 </div>
+              </div>
 
-                <!-- Description tronquée -->
-                <p class="mt-2 text-sm leading-relaxed text-primary-900/60 line-clamp-2">
-                  {{ offer.description }}
-                </p>
-
-                <!-- Badges -->
-                <div class="mt-3 flex flex-wrap items-center gap-2">
-                  <span class="flex items-center gap-1 text-sm text-primary-900/55">
-                    <svg
-                      class="h-3.5 w-3.5 shrink-0"
-                      viewBox="0 0 16 16"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                    {{ offer.location }}
+              <!-- BUs -->
+              <div class="mt-5 border-t border-gray-200 pt-5">
+                <button
+                  type="button"
+                  class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
+                  :aria-expanded="isCategoriesOpen"
+                  @click="isCategoriesOpen = !isCategoriesOpen"
+                >
+                  <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    BUSINESS UNITS
                   </span>
-                  <span
-                    class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-primary-900/70"
+                  <svg
+                    class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
+                    :class="isCategoriesOpen ? 'rotate-180' : ''"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    aria-hidden="true"
                   >
-                    {{ offer.category }}
-                  </span>
-                  <span
-                    class="rounded-full bg-accent-500/15 px-2.5 py-0.5 text-xs font-medium text-primary-900"
+                    <path
+                      d="m5 7 5 5 5-5"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <div v-show="isCategoriesOpen">
+                  <button
+                    v-if="selectedCategories.length"
+                    class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
+                    @click="clearGroup('categories')"
                   >
-                    {{ offer.contract }}
-                  </span>
-                  <span
-                    class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-primary-900/70"
-                  >
-                    {{ offer.level }}
-                  </span>
-                  <span
-                    v-for="tech in offer.stack"
-                    :key="tech"
-                    class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-primary-900/70"
-                  >
-                    {{ tech }}
-                  </span>
+                    Effacer
+                  </button>
+                  <ul class="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
+                    <li v-for="category in CATEGORIES" :key="category">
+                      <label
+                        class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
+                      >
+                        <input
+                          v-model="selectedCategories"
+                          type="checkbox"
+                          :value="category"
+                          class="h-4 w-4 rounded accent-accent-500"
+                        />
+                        {{ category }}
+                      </label>
+                    </li>
+                  </ul>
                 </div>
-              </li>
-            </ul>
-
-            <!-- Pagination -->
-            <nav
-              v-if="totalPages > 1"
-              aria-label="Pagination des offres"
-              class="mt-6 flex items-center justify-center gap-1"
-            >
-              <button
-                :disabled="currentPage === 1"
-                class="rounded-lg px-3 py-2 text-sm text-primary-900/60 transition-colors hover:text-primary-900 disabled:opacity-30 disabled:cursor-not-allowed"
-                @click="currentPage--"
-              >
-                Précédent
-              </button>
-              <button
-                v-for="page in pageRange"
-                :key="page"
-                class="min-w-[2.25rem] rounded-lg px-3 py-2 text-sm font-medium transition-colors"
-                :class="
-                  currentPage === page
-                    ? 'bg-accent-500 text-primary-900'
-                    : 'text-primary-900/60 hover:text-primary-900 hover:bg-gray-100'
-                "
-                :aria-current="currentPage === page ? 'page' : undefined"
-                @click="currentPage = page"
-              >
-                {{ page }}
-              </button>
-              <button
-                :disabled="currentPage === totalPages"
-                class="rounded-lg px-3 py-2 text-sm text-primary-900/60 transition-colors hover:text-primary-900 disabled:opacity-30 disabled:cursor-not-allowed"
-                @click="currentPage++"
-              >
-                Suivant
-              </button>
-            </nav>
-          </div>
-
-          <!-- Colonne droite : filtres -->
-          <aside aria-label="Filtres">
-            <RouterLink
-              :to="{ name: 'candidature-spontanee' }"
-              class="mb-6 flex w-full items-center justify-center gap-2 rounded-xl bg-accent-500 px-5 py-3 text-sm font-bold text-primary-950 transition-colors hover:bg-accent-400"
-            >
-              Candidature spontanée
-            </RouterLink>
-
-            <h2 class="font-display text-lg font-bold text-primary-900">Filtres</h2>
-
-            <!-- Métiers -->
-            <div class="mt-5 border-t border-gray-200 pt-5">
-              <button
-                type="button"
-                class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
-                :aria-expanded="isMetiersOpen"
-                @click="isMetiersOpen = !isMetiersOpen"
-              >
-                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                  Métiers
-                </span>
-                <svg
-                  class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
-                  :class="isMetiersOpen ? 'rotate-180' : ''"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path d="m5 7 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </button>
-              <div v-show="isMetiersOpen">
-                <button
-                  v-if="selectedMetiers.length"
-                  class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
-                  @click="clearGroup('metiers')"
-                >
-                  Effacer
-                </button>
-                <ul class="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
-                  <li v-for="metier in METIERS" :key="metier">
-                    <label
-                      class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
-                    >
-                      <input
-                        v-model="selectedMetiers"
-                        type="checkbox"
-                        :value="metier"
-                        class="h-4 w-4 rounded accent-accent-500"
-                      />
-                      {{ metier }}
-                    </label>
-                  </li>
-                </ul>
               </div>
-            </div>
 
-            <!-- BUs -->
-            <div class="mt-5 border-t border-gray-200 pt-5">
-              <button
-                type="button"
-                class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
-                :aria-expanded="isCategoriesOpen"
-                @click="isCategoriesOpen = !isCategoriesOpen"
-              >
-                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                  BUSINESS UNITS
-                </span>
-                <svg
-                  class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
-                  :class="isCategoriesOpen ? 'rotate-180' : ''"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path d="m5 7 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </button>
-              <div v-show="isCategoriesOpen">
+              <!-- Niveau d'expérience -->
+              <div class="mt-5 border-t border-gray-200 pt-5">
                 <button
-                  v-if="selectedCategories.length"
-                  class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
-                  @click="clearGroup('categories')"
+                  type="button"
+                  class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
+                  :aria-expanded="isLevelsOpen"
+                  @click="isLevelsOpen = !isLevelsOpen"
                 >
-                  Effacer
+                  <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    Niveau d'expérience
+                  </span>
+                  <svg
+                    class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
+                    :class="isLevelsOpen ? 'rotate-180' : ''"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="m5 7 5 5 5-5"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
                 </button>
-                <ul class="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
-                  <li v-for="category in CATEGORIES" :key="category">
-                    <label
-                      class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
-                    >
-                      <input
-                        v-model="selectedCategories"
-                        type="checkbox"
-                        :value="category"
-                        class="h-4 w-4 rounded accent-accent-500"
-                      />
-                      {{ category }}
-                    </label>
-                  </li>
-                </ul>
+                <div v-show="isLevelsOpen">
+                  <button
+                    v-if="selectedLevels.length"
+                    class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
+                    @click="clearGroup('levels')"
+                  >
+                    Effacer
+                  </button>
+                  <ul class="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
+                    <li v-for="level in LEVELS" :key="level">
+                      <label
+                        class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
+                      >
+                        <input
+                          v-model="selectedLevels"
+                          type="checkbox"
+                          :value="level"
+                          class="h-4 w-4 rounded accent-accent-500"
+                        />
+                        {{ level }}
+                      </label>
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
 
-            <!-- Niveau d'expérience -->
-            <div class="mt-5 border-t border-gray-200 pt-5">
-              <button
-                type="button"
-                class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
-                :aria-expanded="isLevelsOpen"
-                @click="isLevelsOpen = !isLevelsOpen"
-              >
-                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                  Niveau d'expérience
-                </span>
-                <svg
-                  class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
-                  :class="isLevelsOpen ? 'rotate-180' : ''"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path d="m5 7 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </button>
-              <div v-show="isLevelsOpen">
-                <button
-                  v-if="selectedLevels.length"
-                  class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
-                  @click="clearGroup('levels')"
-                >
-                  Effacer
-                </button>
-                <ul class="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
-                  <li v-for="level in LEVELS" :key="level">
-                    <label
-                      class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
-                    >
-                      <input
-                        v-model="selectedLevels"
-                        type="checkbox"
-                        :value="level"
-                        class="h-4 w-4 rounded accent-accent-500"
-                      />
-                      {{ level }}
-                    </label>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <!-- Stack technique : sélection unique (pas de v-model array comme
+              <!-- Stack technique : sélection unique (pas de v-model array comme
                  les groupes ci-dessus), affichée en badges empilés plutôt
                  qu'en cases à cocher — cohérent avec la disposition verticale
                  de la barre latérale, sans le défilement horizontal du
                  placement précédent. -->
-            <div class="mt-5 border-t border-gray-200 pt-5">
-              <button
-                type="button"
-                class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
-                :aria-expanded="isStackOpen"
-                @click="isStackOpen = !isStackOpen"
-              >
-                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                  Stack technique
-                </span>
-                <svg
-                  class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
-                  :class="isStackOpen ? 'rotate-180' : ''"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path d="m5 7 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </button>
-              <div v-show="isStackOpen">
+              <div class="mt-5 border-t border-gray-200 pt-5">
                 <button
-                  v-if="selectedStack"
-                  class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
-                  @click="selectedStack = ''"
+                  type="button"
+                  class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
+                  :aria-expanded="isStackOpen"
+                  @click="isStackOpen = !isStackOpen"
                 >
-                  Effacer
-                </button>
-                <div class="mt-3 flex max-h-60 flex-wrap gap-2 overflow-y-auto pr-1">
-                  <button
-                    v-for="stack in availableStacks"
-                    :key="stack"
-                    type="button"
-                    class="rounded-full px-3 py-1 text-xs font-medium transition-colors"
-                    :class="
-                      selectedStack === stack
-                        ? 'bg-accent-500 text-white'
-                        : 'border border-gray-300 bg-white text-primary-900/70 hover:border-accent-500'
-                    "
-                    @click="selectedStack = selectedStack === stack ? '' : stack"
+                  <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    Stack technique
+                  </span>
+                  <svg
+                    class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
+                    :class="isStackOpen ? 'rotate-180' : ''"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    aria-hidden="true"
                   >
-                    {{ stack }}
+                    <path
+                      d="m5 7 5 5 5-5"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <div v-show="isStackOpen">
+                  <button
+                    v-if="selectedStack"
+                    class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
+                    @click="selectedStack = ''"
+                  >
+                    Effacer
                   </button>
+                  <div class="mt-3 flex max-h-60 flex-wrap gap-2 overflow-y-auto pr-1">
+                    <button
+                      v-for="stack in availableStacks"
+                      :key="stack"
+                      type="button"
+                      class="rounded-full px-3 py-1 text-xs font-medium transition-colors"
+                      :class="
+                        selectedStack === stack
+                          ? 'bg-accent-500 text-white'
+                          : 'border border-gray-300 bg-white text-primary-900/70 hover:border-accent-500'
+                      "
+                      @click="selectedStack = selectedStack === stack ? '' : stack"
+                    >
+                      {{ stack }}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </aside>
+            </aside>
+          </div>
+          <!-- fin grille -->
         </div>
-        <!-- fin grille -->
+        <!-- fin max-w-6xl -->
       </div>
-      <!-- fin max-w-6xl -->
-    </div>
-  </section>
+    </section>
 
-  <!-- ==================================================================
+    <!-- ==================================================================
        3. FOOTER — App.vue masque son footer global pour cette route pour
        éviter le doublon ; il est repris ici dans le flux normal de la page.
        ================================================================== -->
-  <section data-theme="dark" class="w-full bg-[#000066]">
-    <TheFooter />
-  </section>
+    <section data-theme="dark" class="w-full bg-[#000066]">
+      <TheFooter />
+    </section>
   </div>
   <!-- /conteneur en flux normal (pas de snap-scroll, cf. commentaire plus haut) -->
 
@@ -839,11 +902,17 @@ watch(
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-md p-4"
       @click.self="selectedOffer = null"
     >
-      <div class="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white border border-gray-200 shadow-2xl">
+      <div
+        class="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white border border-gray-200 shadow-2xl"
+      >
         <!-- Bandeau en-tête bleu -->
-        <div class="sticky top-0 z-10 flex items-start justify-between gap-4 rounded-t-2xl bg-[#000066] px-6 py-5 md:px-8">
+        <div
+          class="sticky top-0 z-10 flex items-start justify-between gap-4 rounded-t-2xl bg-[#000066] px-6 py-5 md:px-8"
+        >
           <div class="pr-8">
-            <p class="text-xs font-semibold uppercase tracking-widest text-white/50">{{ selectedOffer.category }}</p>
+            <p class="text-xs font-semibold uppercase tracking-widest text-white/50">
+              {{ selectedOffer.category }}
+            </p>
             <h2 class="mt-1 font-display text-xl font-bold text-white sm:text-2xl">
               {{ selectedOffer.title }}
             </h2>
@@ -856,7 +925,9 @@ watch(
             @click="selectedOffer = null"
           >
             <svg viewBox="0 0 20 20" fill="currentColor" class="size-5" aria-hidden="true">
-              <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+              <path
+                d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"
+              />
             </svg>
           </button>
         </div>
@@ -865,23 +936,42 @@ watch(
         <div class="px-6 py-6 md:px-8">
           <!-- Grille de badges -->
           <div class="flex flex-wrap gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-accent-500/15 px-3 py-1 text-xs font-semibold text-primary-900">
+            <span
+              class="inline-flex items-center gap-1.5 rounded-full bg-accent-500/15 px-3 py-1 text-xs font-semibold text-primary-900"
+            >
               {{ selectedOffer.contract }}
             </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-primary-900/70">
-              <svg class="size-3.5 shrink-0" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
+            <span
+              class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-primary-900/70"
+            >
+              <svg
+                class="size-3.5 shrink-0"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"
+                  clip-rule="evenodd"
+                />
               </svg>
               {{ selectedOffer.location }}
             </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-primary-900/70">
+            <span
+              class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-primary-900/70"
+            >
               {{ selectedOffer.level }}
             </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-primary-900/70">
+            <span
+              class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-primary-900/70"
+            >
               <!-- Télétravail : TODO — à récupérer depuis l'API -->
               Hybride
             </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-primary-900/70">
+            <span
+              class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-primary-900/70"
+            >
               <!-- Salaire : TODO — à récupérer depuis l'API -->
               Salaire selon profil
             </span>
@@ -896,15 +986,18 @@ watch(
           <ul class="space-y-2 text-sm text-primary-900/70">
             <li class="flex items-start gap-2">
               <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
-              Analyser les besoins fonctionnels et techniques en collaboration avec les équipes métier.
+              Analyser les besoins fonctionnels et techniques en collaboration avec les équipes
+              métier.
             </li>
             <li class="flex items-start gap-2">
               <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
-              Concevoir et implémenter les solutions dans le respect des standards de qualité du client.
+              Concevoir et implémenter les solutions dans le respect des standards de qualité du
+              client.
             </li>
             <li class="flex items-start gap-2">
               <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
-              Participer aux rituels Agile (sprint planning, daily, retrospective) et aux revues de code.
+              Participer aux rituels Agile (sprint planning, daily, retrospective) et aux revues de
+              code.
             </li>
             <li class="flex items-start gap-2">
               <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
@@ -917,25 +1010,32 @@ watch(
           <ul class="space-y-2 text-sm text-primary-900/70">
             <li class="flex items-start gap-2">
               <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
-              Diplômé(e) Bac+5 (école d'ingénieurs, université) avec une spécialisation dans le domaine concerné.
+              Diplômé(e) Bac+5 (école d'ingénieurs, université) avec une spécialisation dans le
+              domaine concerné.
             </li>
             <li class="flex items-start gap-2">
               <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
-              Expérience significative en environnement de conseil ou ESN sur des missions similaires.
+              Expérience significative en environnement de conseil ou ESN sur des missions
+              similaires.
             </li>
             <li class="flex items-start gap-2">
               <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
-              Autonomie, rigueur et excellent relationnel client — vous êtes à l'aise en prise de parole.
+              Autonomie, rigueur et excellent relationnel client — vous êtes à l'aise en prise de
+              parole.
             </li>
             <li class="flex items-start gap-2">
               <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
-              Maîtrise des outils et méthodologies propres à la BU <strong class="font-semibold text-primary-900">{{ selectedOffer.metier }}</strong>.
+              Maîtrise des outils et méthodologies propres à la BU
+              <strong class="font-semibold text-primary-900">{{ selectedOffer.metier }}</strong
+              >.
             </li>
           </ul>
         </div>
 
         <!-- Pied fixe avec actions -->
-        <div class="sticky bottom-0 flex flex-col-reverse gap-3 rounded-b-2xl border-t border-gray-100 bg-white px-6 py-4 sm:flex-row sm:justify-end md:px-8">
+        <div
+          class="sticky bottom-0 flex flex-col-reverse gap-3 rounded-b-2xl border-t border-gray-100 bg-white px-6 py-4 sm:flex-row sm:justify-end md:px-8"
+        >
           <button
             type="button"
             class="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-primary-900 transition-colors hover:bg-gray-50"
@@ -946,7 +1046,7 @@ watch(
           <button
             type="button"
             class="rounded-lg bg-[#12D80A] px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:bg-[#0fc009]"
-            @click="router.push({ name: 'offre-detail', params: { id: selectedOffer!.id } }); selectedOffer = null"
+            @click="goToSelectedOfferDetail"
           >
             Voir l'offre complète
           </button>

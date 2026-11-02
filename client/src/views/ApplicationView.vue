@@ -97,7 +97,7 @@ const OFFERS: JobOffer[] = [
     level: 'Expérimentés',
     date: 'Publié il y a 5 mois',
     description:
-      "Vous rejoindrez une squad produit pour développer et maintenir des applications web en React et Node.js, en participant activement aux cérémonies Agile.",
+      'Vous rejoindrez une squad produit pour développer et maintenir des applications web en React et Node.js, en participant activement aux cérémonies Agile.',
     keyPoints: [
       '3+ ans en développement fullstack React / Node.js',
       'Bonne maîtrise de TypeScript',
@@ -135,10 +135,12 @@ const offer = computed(() =>
 
 useSeo({
   title: computed(() =>
-    isSpontaneous.value ? 'Candidature spontanée – Faceel-IT' : `Postuler – ${offer.value!.title} – Faceel-IT`,
+    isSpontaneous.value
+      ? 'Candidature spontanée – Faceel-IT'
+      : `Postuler – ${offer.value!.title} – Faceel-IT`,
   ),
   description:
-    "Déposez votre candidature en quelques minutes. CV, lettre de motivation et coordonnées — nous reviendrons vers vous rapidement.",
+    'Déposez votre candidature en quelques minutes. CV, lettre de motivation et coordonnées — nous reviendrons vers vous rapidement.',
 })
 
 const firstName = ref('')
@@ -209,303 +211,380 @@ function handleSubmit() {
        `/offres/:id/postuler`, pas compatible avec le `Set` de chemins exacts
        d'App.vue) — exclue via les noms de route à la place, cf. App.vue. -->
   <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth">
-    <div class="h-dvh w-full shrink-0 snap-start snap-always flex flex-col lg:flex-row pt-20 lg:pt-0">
-
-    <!-- ============================================================
+    <div
+      class="h-dvh w-full shrink-0 snap-start snap-always flex flex-col lg:flex-row pt-20 lg:pt-0"
+    >
+      <!-- ============================================================
          COLONNE GAUCHE — Résumé de l'offre (ou message spontané)
          ============================================================ -->
-    <div
-      data-theme="dark"
-      class="w-full lg:w-1/2 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] bg-gradient-to-b from-[#000066] via-[#000066] via-65% to-blue-800 text-white p-8 md:p-12 flex flex-col justify-center overflow-y-auto"
-    >
-      <template v-if="isSpontaneous">
-        <!-- Retour -->
-        <RouterLink
-          :to="{ name: 'offres' }"
-          class="mb-10 inline-flex items-center gap-2 text-sm font-medium text-white transition-all hover:text-gray-200 hover:underline self-start"
-        >
-          <svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M10 3L5 8l5 5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          Retour aux offres
-        </RouterLink>
-
-        <p class="text-xs font-semibold uppercase tracking-widest text-blue-300 mb-3">
-          Candidature spontanée
-        </p>
-
-        <h1 class="font-display text-3xl font-bold text-white leading-tight mb-6 lg:text-4xl">
-          Un profil, pas encore une offre ?
-        </h1>
-
-        <p class="text-base leading-relaxed text-white/75">
-          Aucune de nos offres actuelles ne correspond à votre profil ? Envoyez-nous votre
-          candidature : nous la gardons en tête pour nos prochains recrutements.
-        </p>
-      </template>
-
-      <template v-else>
-        <!-- Retour -->
-        <RouterLink
-          :to="{ name: 'offre-detail', params: { id: offer!.id } }"
-          class="mb-10 inline-flex items-center gap-2 text-sm font-medium text-white transition-all hover:text-gray-200 hover:underline self-start"
-        >
-          <svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M10 3L5 8l5 5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          Retour à l'offre
-        </RouterLink>
-
-        <!-- Surtitre -->
-        <p class="text-xs font-semibold uppercase tracking-widest text-blue-300 mb-3">
-          Candidature pour
-        </p>
-
-        <!-- Titre -->
-        <h1 class="font-display text-3xl font-bold text-white leading-tight mb-6 lg:text-4xl">
-          {{ offer!.title }}
-        </h1>
-
-        <!-- Badges -->
-        <div class="flex flex-wrap gap-2 mb-8">
-          <span class="rounded-full border-none pr-3 pl-0 py-1 text-sm font-semibold text-accent-400">
-            {{ offer!.category }}
-          </span>
-          <span class="inline-flex items-center gap-1.5 rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
-            <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-              <path fill-rule="evenodd" d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
-            </svg>
-            {{ offer!.location }}
-          </span>
-          <span class="rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
-            {{ offer!.contract }}
-          </span>
-          <span class="rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
-            {{ offer!.level }}
-          </span>
-        </div>
-
-        <!-- Points clés -->
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-widest text-blue-300 mb-4">
-            Prérequis
-          </p>
-          <ul class="space-y-3">
-            <li
-              v-for="point in offer!.keyPoints"
-              :key="point"
-              class="flex items-start gap-3"
+      <div
+        data-theme="dark"
+        class="w-full lg:w-1/2 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] bg-gradient-to-b from-[#000066] via-[#000066] via-65% to-blue-800 text-white p-8 md:p-12 flex flex-col justify-center overflow-y-auto"
+      >
+        <template v-if="isSpontaneous">
+          <!-- Retour -->
+          <RouterLink
+            :to="{ name: 'offres' }"
+            class="mb-10 inline-flex items-center gap-2 text-sm font-medium text-white transition-all hover:text-gray-200 hover:underline self-start"
+          >
+            <svg
+              class="h-4 w-4"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
             >
-              <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
-              <span class="text-sm leading-relaxed text-white/80">{{ point }}</span>
-            </li>
-          </ul>
-        </div>
-      </template>
-    </div>
+              <path d="M10 3L5 8l5 5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            Retour aux offres
+          </RouterLink>
 
-    <!-- ============================================================
-         COLONNE DROITE — Formulaire
-         ============================================================ -->
-    <div
-      data-theme="light"
-      class="w-full lg:w-1/2 max-h-screen bg-white p-8 pt-32 md:p-12 md:pt-40 flex flex-col justify-center overflow-y-auto pb-4"
-    >
+          <p class="text-xs font-semibold uppercase tracking-widest text-blue-300 mb-3">
+            Candidature spontanée
+          </p>
 
-      <!-- Confirmation envoi -->
-      <div v-if="submitted" class="rounded-2xl border border-green-200 bg-green-50 p-8 text-center">
-        <svg class="mx-auto mb-4 size-12 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <h2 class="text-xl font-bold text-green-800">Candidature envoyée !</h2>
-        <p class="mt-2 text-sm text-green-700">Notre équipe RH vous contactera dans les meilleurs délais.</p>
-        <RouterLink
-          :to="isSpontaneous ? { name: 'offres' } : { name: 'offre-detail', params: { id: offer!.id } }"
-          class="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#000066] hover:underline"
-        >
-          {{ isSpontaneous ? 'Voir nos offres' : "Retour à l'offre" }}
-        </RouterLink>
+          <h1 class="font-display text-3xl font-bold text-white leading-tight mb-6 lg:text-4xl">
+            Un profil, pas encore une offre ?
+          </h1>
+
+          <p class="text-base leading-relaxed text-white/75">
+            Aucune de nos offres actuelles ne correspond à votre profil ? Envoyez-nous votre
+            candidature : nous la gardons en tête pour nos prochains recrutements.
+          </p>
+        </template>
+
+        <template v-else>
+          <!-- Retour -->
+          <RouterLink
+            :to="{ name: 'offre-detail', params: { id: offer!.id } }"
+            class="mb-10 inline-flex items-center gap-2 text-sm font-medium text-white transition-all hover:text-gray-200 hover:underline self-start"
+          >
+            <svg
+              class="h-4 w-4"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path d="M10 3L5 8l5 5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            Retour à l'offre
+          </RouterLink>
+
+          <!-- Surtitre -->
+          <p class="text-xs font-semibold uppercase tracking-widest text-blue-300 mb-3">
+            Candidature pour
+          </p>
+
+          <!-- Titre -->
+          <h1 class="font-display text-3xl font-bold text-white leading-tight mb-6 lg:text-4xl">
+            {{ offer!.title }}
+          </h1>
+
+          <!-- Badges -->
+          <div class="flex flex-wrap gap-2 mb-8">
+            <span
+              class="rounded-full border-none pr-3 pl-0 py-1 text-sm font-semibold text-accent-400"
+            >
+              {{ offer!.category }}
+            </span>
+            <span
+              class="inline-flex items-center gap-1.5 rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400"
+            >
+              <svg
+                class="h-3.5 w-3.5 shrink-0"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M8 1.5A4.5 4.5 0 003.5 6c0 2.9 3.23 6.77 4.5 8.25C9.27 12.77 12.5 8.9 12.5 6A4.5 4.5 0 008 1.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              {{ offer!.location }}
+            </span>
+            <span class="rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
+              {{ offer!.contract }}
+            </span>
+            <span class="rounded-full border-none px-3 py-1 text-sm font-semibold text-accent-400">
+              {{ offer!.level }}
+            </span>
+          </div>
+
+          <!-- Points clés -->
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-widest text-blue-300 mb-4">
+              Prérequis
+            </p>
+            <ul class="space-y-3">
+              <li v-for="point in offer!.keyPoints" :key="point" class="flex items-start gap-3">
+                <span
+                  class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#12D80A]"
+                  aria-hidden="true"
+                />
+                <span class="text-sm leading-relaxed text-white/80">{{ point }}</span>
+              </li>
+            </ul>
+          </div>
+        </template>
       </div>
 
-      <template v-else>
-        <h2 class="text-2xl font-bold text-[#000066] mb-4">
-          {{ isSpontaneous ? 'Candidature spontanée' : 'Postuler à cette offre' }}
-        </h2>
-
-        <form class="space-y-3" novalidate @submit.prevent="handleSubmit">
-          <!-- Prénom / Nom -->
-          <div class="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label for="firstName" class="mb-1.5 block text-sm font-medium text-primary-900">
-                Prénom <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="firstName"
-                v-model="firstName"
-                type="text"
-                autocomplete="given-name"
-                required
-                class="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
-              />
-            </div>
-            <div>
-              <label for="lastName" class="mb-1.5 block text-sm font-medium text-primary-900">
-                Nom <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="lastName"
-                v-model="lastName"
-                type="text"
-                autocomplete="family-name"
-                required
-                class="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
-              />
-            </div>
-          </div>
-
-          <!-- Email -->
-          <div>
-            <label for="email" class="mb-1.5 block text-sm font-medium text-primary-900">
-              Email <span class="text-red-500">*</span>
-            </label>
-            <input
-              id="email"
-              v-model="email"
-              type="email"
-              autocomplete="email"
-              required
-              class="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
-            />
-          </div>
-
-          <!-- LinkedIn -->
-          <div>
-            <label for="linkedinUrl" class="mb-1.5 block text-sm font-medium text-primary-900">
-              Profil LinkedIn
-            </label>
-            <input
-              id="linkedinUrl"
-              v-model="linkedinUrl"
-              type="url"
-              autocomplete="url"
-              placeholder="https://www.linkedin.com/in/votre-profil"
-              class="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
-            />
-          </div>
-
-          <!-- Motivation -->
-          <div>
-            <label for="motivation" class="mb-1.5 block text-sm font-medium text-primary-900">
-              Parlez nous de vous <span class="text-red-500">*</span>
-            </label>
-            <textarea
-              id="motivation"
-              v-model="motivation"
-              rows="2"
-              required
-              class="w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
-            />
-          </div>
-
-          <!-- Questions -->
-          <div>
-            <label for="moreInfo" class="mb-1.5 block text-sm font-medium text-primary-900">
-              Que voudriez-vous savoir de plus ? <span class="text-red-500">*</span>
-            </label>
-            <textarea
-              id="moreInfo"
-              v-model="moreInfo"
-              rows="2"
-              required
-              class="w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
-            />
-          </div>
-
-          <!-- Upload CV -->
-          <div>
-            <p class="mb-1.5 text-sm font-medium text-primary-900">
-              CV <span class="text-red-500">*</span>
-            </p>
-            <label
-              for="cvFile"
-              class="flex cursor-pointer items-center gap-3 rounded-lg border-2 border-dashed border-gray-300 px-4 py-3 text-left transition-colors"
-              :class="cvDragOver ? 'border-[#000066] bg-blue-50' : 'border-gray-200 hover:border-gray-300'"
-              @dragover.prevent="cvDragOver = true"
-              @dragleave="cvDragOver = false"
-              @drop.prevent="onCvDrop"
-            >
-              <svg class="size-6 shrink-0 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-              </svg>
-              <span class="flex flex-col">
-                <span v-if="cvFile" class="text-sm font-medium text-[#000066]">{{ cvFile.name }}</span>
-                <span v-else class="text-sm text-gray-500">
-                  Glissez votre CV ici ou <span class="font-semibold text-[#000066]">parcourir</span>
-                </span>
-                <span class="text-xs text-gray-400">Format PDF uniquement</span>
-              </span>
-              <input id="cvFile" type="file" accept=".pdf" class="sr-only" required @change="onCvFileInput" />
-            </label>
-          </div>
-
-          <!-- Certifications -->
-          <div class="space-y-2 border-t border-gray-100 pt-3">
-            <label v-if="requiredCity" class="flex cursor-pointer items-start gap-3 text-sm text-primary-900">
-              <input
-                v-model="certifiesLocation"
-                type="checkbox"
-                required
-                class="mt-0.5 h-4 w-4 shrink-0 rounded accent-[#000066]"
-              />
-              Je certifie habiter à {{ requiredCity }} ou être prêt à emménager à {{ requiredCity }}
-              <span class="text-red-500">*</span>
-            </label>
-
-            <label class="flex cursor-pointer items-start gap-3 text-sm text-primary-900">
-              <input
-                v-model="certifiesCdi"
-                type="checkbox"
-                required
-                class="mt-0.5 h-4 w-4 shrink-0 rounded accent-[#000066]"
-              />
-              Je certifie rechercher un CDI
-              <span class="text-red-500">*</span>
-            </label>
-
-            <label class="flex cursor-pointer items-start gap-3 text-sm text-primary-900">
-              <input
-                v-model="privacyAccepted"
-                type="checkbox"
-                required
-                class="mt-0.5 h-4 w-4 shrink-0 rounded accent-[#000066]"
-              />
-              Vous déclarez avoir lu et accepté
-              <button
-                type="button"
-                class="font-bold text-blue-600 underline transition-colors hover:text-blue-800"
-                @click.prevent.stop="openPrivacyModal"
-              >
-                l'avis de confidentialité
-              </button>
-              de Faceel IT.
-              <span class="text-red-500">*</span>
-            </label>
-          </div>
-
-          <!-- Submit -->
-          <button
-            type="submit"
-            :disabled="!isFormValid"
-            class="w-full rounded-xl bg-[#12D80A] px-6 py-4 text-base font-semibold text-gray-900 transition-colors hover:bg-[#0fc009] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12D80A] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#12D80A]"
+      <!-- ============================================================
+         COLONNE DROITE — Formulaire
+         ============================================================ -->
+      <div
+        data-theme="light"
+        class="w-full lg:w-1/2 max-h-screen bg-white p-8 pt-32 md:p-12 md:pt-40 flex flex-col justify-center overflow-y-auto pb-4"
+      >
+        <!-- Confirmation envoi -->
+        <div
+          v-if="submitted"
+          class="rounded-2xl border border-green-200 bg-green-50 p-8 text-center"
+        >
+          <svg
+            class="mx-auto mb-4 size-12 text-green-500"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            aria-hidden="true"
           >
-            Envoyer ma candidature
-          </button>
-        </form>
-      </template>
-    </div>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <h2 class="text-xl font-bold text-green-800">Candidature envoyée !</h2>
+          <p class="mt-2 text-sm text-green-700">
+            Notre équipe RH vous contactera dans les meilleurs délais.
+          </p>
+          <RouterLink
+            :to="
+              isSpontaneous
+                ? { name: 'offres' }
+                : { name: 'offre-detail', params: { id: offer!.id } }
+            "
+            class="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#000066] hover:underline"
+          >
+            {{ isSpontaneous ? 'Voir nos offres' : "Retour à l'offre" }}
+          </RouterLink>
+        </div>
+
+        <template v-else>
+          <h2 class="text-2xl font-bold text-[#000066] mb-4">
+            {{ isSpontaneous ? 'Candidature spontanée' : 'Postuler à cette offre' }}
+          </h2>
+
+          <form class="space-y-3" novalidate @submit.prevent="handleSubmit">
+            <!-- Prénom / Nom -->
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label for="firstName" class="mb-1.5 block text-sm font-medium text-primary-900">
+                  Prénom <span class="text-red-500">*</span>
+                </label>
+                <input
+                  id="firstName"
+                  v-model="firstName"
+                  type="text"
+                  autocomplete="given-name"
+                  required
+                  class="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
+                />
+              </div>
+              <div>
+                <label for="lastName" class="mb-1.5 block text-sm font-medium text-primary-900">
+                  Nom <span class="text-red-500">*</span>
+                </label>
+                <input
+                  id="lastName"
+                  v-model="lastName"
+                  type="text"
+                  autocomplete="family-name"
+                  required
+                  class="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
+                />
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label for="email" class="mb-1.5 block text-sm font-medium text-primary-900">
+                Email <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="email"
+                v-model="email"
+                type="email"
+                autocomplete="email"
+                required
+                class="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
+              />
+            </div>
+
+            <!-- LinkedIn -->
+            <div>
+              <label for="linkedinUrl" class="mb-1.5 block text-sm font-medium text-primary-900">
+                Profil LinkedIn
+              </label>
+              <input
+                id="linkedinUrl"
+                v-model="linkedinUrl"
+                type="url"
+                autocomplete="url"
+                placeholder="https://www.linkedin.com/in/votre-profil"
+                class="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
+              />
+            </div>
+
+            <!-- Motivation -->
+            <div>
+              <label for="motivation" class="mb-1.5 block text-sm font-medium text-primary-900">
+                Parlez nous de vous <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                id="motivation"
+                v-model="motivation"
+                rows="2"
+                required
+                class="w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
+              />
+            </div>
+
+            <!-- Questions -->
+            <div>
+              <label for="moreInfo" class="mb-1.5 block text-sm font-medium text-primary-900">
+                Que voudriez-vous savoir de plus ? <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                id="moreInfo"
+                v-model="moreInfo"
+                rows="2"
+                required
+                class="w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-primary-900 outline-none transition-shadow focus:border-transparent focus:ring-2 focus:ring-[#000066]"
+              />
+            </div>
+
+            <!-- Upload CV -->
+            <div>
+              <p class="mb-1.5 text-sm font-medium text-primary-900">
+                CV <span class="text-red-500">*</span>
+              </p>
+              <label
+                for="cvFile"
+                class="flex cursor-pointer items-center gap-3 rounded-lg border-2 border-dashed border-gray-300 px-4 py-3 text-left transition-colors"
+                :class="
+                  cvDragOver
+                    ? 'border-[#000066] bg-blue-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                "
+                @dragover.prevent="cvDragOver = true"
+                @dragleave="cvDragOver = false"
+                @drop.prevent="onCvDrop"
+              >
+                <svg
+                  class="size-6 shrink-0 text-gray-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+                  />
+                </svg>
+                <span class="flex flex-col">
+                  <span v-if="cvFile" class="text-sm font-medium text-[#000066]">{{
+                    cvFile.name
+                  }}</span>
+                  <span v-else class="text-sm text-gray-500">
+                    Glissez votre CV ici ou
+                    <span class="font-semibold text-[#000066]">parcourir</span>
+                  </span>
+                  <span class="text-xs text-gray-400">Format PDF uniquement</span>
+                </span>
+                <input
+                  id="cvFile"
+                  type="file"
+                  accept=".pdf"
+                  class="sr-only"
+                  required
+                  @change="onCvFileInput"
+                />
+              </label>
+            </div>
+
+            <!-- Certifications -->
+            <div class="space-y-2 border-t border-gray-100 pt-3">
+              <label
+                v-if="requiredCity"
+                class="flex cursor-pointer items-start gap-3 text-sm text-primary-900"
+              >
+                <input
+                  v-model="certifiesLocation"
+                  type="checkbox"
+                  required
+                  class="mt-0.5 h-4 w-4 shrink-0 rounded accent-[#000066]"
+                />
+                Je certifie habiter à {{ requiredCity }} ou être prêt à emménager à
+                {{ requiredCity }}
+                <span class="text-red-500">*</span>
+              </label>
+
+              <label class="flex cursor-pointer items-start gap-3 text-sm text-primary-900">
+                <input
+                  v-model="certifiesCdi"
+                  type="checkbox"
+                  required
+                  class="mt-0.5 h-4 w-4 shrink-0 rounded accent-[#000066]"
+                />
+                Je certifie rechercher un CDI
+                <span class="text-red-500">*</span>
+              </label>
+
+              <label class="flex cursor-pointer items-start gap-3 text-sm text-primary-900">
+                <input
+                  v-model="privacyAccepted"
+                  type="checkbox"
+                  required
+                  class="mt-0.5 h-4 w-4 shrink-0 rounded accent-[#000066]"
+                />
+                Vous déclarez avoir lu et accepté
+                <button
+                  type="button"
+                  class="font-bold text-blue-600 underline transition-colors hover:text-blue-800"
+                  @click.prevent.stop="openPrivacyModal"
+                >
+                  l'avis de confidentialité
+                </button>
+                de Faceel IT.
+                <span class="text-red-500">*</span>
+              </label>
+            </div>
+
+            <!-- Submit -->
+            <button
+              type="submit"
+              :disabled="!isFormValid"
+              class="w-full rounded-xl bg-[#12D80A] px-6 py-4 text-base font-semibold text-gray-900 transition-colors hover:bg-[#0fc009] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12D80A] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#12D80A]"
+            >
+              Envoyer ma candidature
+            </button>
+          </form>
+        </template>
+      </div>
     </div>
 
-    <section class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]">
+    <section
+      class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
+    >
       <TheFooter />
     </section>
   </div>

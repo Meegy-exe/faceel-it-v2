@@ -16,16 +16,17 @@
  * Les routes dynamiques (offres, membres) viendront de l'API au moment du
  * build, une fois les vues correspondantes construites.
  */
+// desactive pour la v1 : organisation et rse retirees du prerender avec leurs routes
 export const staticPrerenderRoutes = [
   '/',
   '/qui-sommes-nous/notre-histoire',
-  '/qui-sommes-nous/notre-organisation',
   '/qui-sommes-nous/notre-collectif',
-  '/je-suis-une-entreprise',
-  '/je-suis-candidat',
+  // maj route entreprise
+  '/client-chez-faceel-it',
+  // maj route consultant
+  '/consultant-chez-faceel-it',
   '/sport-sponsoring',
   '/partenaires',
-  '/politique-rse',
   '/references/boulanger',
   '/references/adeo',
   '/nos-bus/data-ia',

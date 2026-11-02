@@ -13,7 +13,7 @@ import type {
 import { useSeo } from '@/composables/useSeo'
 
 /**
- * VUE JETABLE — À SUPPRIMER AVANT LA MISE EN LIGNE.
+ * VUE JETABLE À SUPPRIMER AVANT LA MISE EN LIGNE.
  *
  * Banc d'essai du Design System : chaque composant de `components/ui/` y est
  * rendu dans toutes ses variantes avec des données factices, pour valider
@@ -142,7 +142,7 @@ useSeo({
 <template>
   <!-- Ni en-tête ni `<main>` ici : `App.vue` les fournit désormais pour toutes
        les pages. Le `MegaMenu` visible en haut est donc l'instance globale,
-       alimentée par le vrai `mainNavEntries` — ce qui en fait un meilleur banc
+       alimentée par le vrai `mainNavEntries`  ce qui en fait un meilleur banc
        d'essai que le jeu factice qu'embarquait cette vue. -->
   <div>
     <div class="w-full px-4 pb-32 sm:px-6 lg:px-8 xl:px-12">
@@ -154,7 +154,7 @@ useSeo({
       >
         <AnimatedBackground variant="pixels" tone="dark" />
 
-        <p class="text-eyebrow uppercase text-accent-500">Design System — Faceel-IT v2</p>
+        <p class="text-eyebrow uppercase text-accent-500">Design System - Faceel-IT v2</p>
         <h1 class="mt-4 font-display text-display text-balance">Banc d’essai des composants</h1>
         <p class="mt-6 max-w-2xl text-lg text-white/70">
           Vue jetable. Tous les composants de
@@ -223,7 +223,7 @@ useSeo({
           <p class="text-base text-primary-900/70">
             Base — corps de texte courant, 16px, interlignage confortable.
           </p>
-          <p class="font-mono text-sm text-primary-900/70">Mono — JetBrains Mono, 14px.</p>
+          <p class="font-mono text-sm text-primary-900/70">Mono - JetBrains Mono, 14px.</p>
         </div>
 
         <h3 class="mt-10 font-display text-lg font-bold text-primary-900">Ombres</h3>
@@ -255,7 +255,7 @@ useSeo({
 
         <!-- Matrice variante × taille, sur fond clair -->
         <h3 class="mt-10 font-display text-lg font-bold text-primary-900">
-          Variantes × tailles — <code class="font-mono text-base">surface="light"</code>
+          Variantes × tailles - <code class="font-mono text-base">surface="light"</code>
         </h3>
         <div class="mt-4 space-y-6 rounded-card bg-white p-6 ring-1 ring-primary-900/8 sm:p-8">
           <div v-for="variant in BUTTON_VARIANTS" :key="variant">
@@ -276,7 +276,7 @@ useSeo({
 
         <!-- Même matrice sur fond sombre : valide le focus accent -->
         <h3 class="mt-10 font-display text-lg font-bold text-primary-900">
-          Variantes × tailles — <code class="font-mono text-base">surface="dark"</code>
+          Variantes × tailles - <code class="font-mono text-base">surface="dark"</code>
         </h3>
         <p class="mt-2 max-w-2xl text-sm text-primary-900/60">
           <code class="font-mono">surface</code> pilote l’habillage complet, pas seulement l’anneau
@@ -366,16 +366,16 @@ useSeo({
 
           <div>
             <p class="mb-3 text-eyebrow uppercase text-primary-900/45">
-              Éléments rendus — <code class="font-mono">button</code> /
+              Éléments rendus - <code class="font-mono">button</code> /
               <code class="font-mono">a</code> /
               <code class="font-mono">RouterLink</code>
             </p>
             <div class="flex flex-wrap items-center gap-4">
               <BaseButton variant="primary" @click="clicks++">button (compteur)</BaseButton>
               <BaseButton variant="outline" href="https://www.faceel-it.com"
-                >a — externe</BaseButton
+                >a - externe</BaseButton
               >
-              <BaseButton variant="ghost" to="/">RouterLink — accueil</BaseButton>
+              <BaseButton variant="ghost" to="/">RouterLink - accueil</BaseButton>
               <BaseButton variant="ghost" type="submit">type="submit"</BaseButton>
             </div>
             <p class="mt-4 text-sm text-primary-900/60" aria-live="polite">
@@ -385,7 +385,7 @@ useSeo({
 
           <div>
             <p class="mb-3 text-eyebrow uppercase text-primary-900/45">
-              Pleine largeur — <code class="font-mono">block</code>
+              Pleine largeur - <code class="font-mono">block</code>
             </p>
             <div class="max-w-sm space-y-3">
               <BaseButton variant="primary" block>Bloc primaire</BaseButton>
@@ -405,12 +405,12 @@ useSeo({
         <p class="mt-3 max-w-2xl text-primary-900/65">
           Toutes les tonalités convergent vers le navy au survol. Une carte devient cliquable dans
           son ensemble dès qu’elle reçoit <code class="font-mono text-sm">to</code> ou
-          <code class="font-mono text-sm">href</code> — jamais de lien imbriqué dedans.
+          <code class="font-mono text-sm">href</code> - jamais de lien imbriqué dedans.
         </p>
 
         <!-- Les trois tonalités, en version cliquable et complète -->
         <h3 class="mt-10 font-display text-lg font-bold text-primary-900">
-          Tonalités — cartes cliquables
+          Tonalités - cartes cliquables
         </h3>
         <div class="mt-4 grid gap-6 md:grid-cols-3">
           <HighlightCard
@@ -433,7 +433,7 @@ useSeo({
 
         <!-- Cartes non interactives -->
         <h3 class="mt-10 font-display text-lg font-bold text-primary-900">
-          Non cliquables — rendu <code class="font-mono text-base">div</code>
+          Non cliquables - rendu <code class="font-mono text-base">div</code>
         </h3>
         <div class="mt-4 grid gap-6 md:grid-cols-3">
           <HighlightCard
@@ -441,7 +441,7 @@ useSeo({
             :key="cardTone"
             :tone="cardTone"
             :heading-level="4"
-            :title="`Statique — ${cardTone}`"
+            :title="`Statique ${cardTone}`"
           >
             Sans <code class="font-mono text-sm">to</code> ni
             <code class="font-mono text-sm">href</code> : pas d’élévation au survol, pas de ligne

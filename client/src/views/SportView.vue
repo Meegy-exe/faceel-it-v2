@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { useTemplateRef } from 'vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import { useSeo } from '@/composables/useSeo'
+import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
 import photoVeloEquipe from '@/assets/images/photos/velo-equipe.jpg'
 import photoPadelEquipe from '@/assets/images/padel-equipe.jpg'
 import photoFit01 from '@/assets/images/photos/f-it-01.jpg'
@@ -12,19 +14,38 @@ useSeo({
   description:
     'Padel, vélo, course, tennis : chez Faceel-IT, le sport façonne le collectif, le recrutement et nos partenariats avec la région.',
 })
+
+// anim texte : une ref + un etat par section, meme mecanique que HistoireView.vue
+const heroEl = useTemplateRef<HTMLElement>('heroEl')
+const heroReveal = useScrollReveal(heroEl)
+const teamEl = useTemplateRef<HTMLElement>('teamEl')
+const teamReveal = useScrollReveal(teamEl)
+const recruitEl = useTemplateRef<HTMLElement>('recruitEl')
+const recruitReveal = useScrollReveal(recruitEl)
+const partnersEl = useTemplateRef<HTMLElement>('partnersEl')
+const partnersReveal = useScrollReveal(partnersEl)
+
+// cascade sur les 3 cartes partenariats
+const CARD_DELAYS = ['delay-0', 'delay-150', 'delay-300']
 </script>
 
 <template>
   <!-- Pas de `<main>` ici : la coquille (`App.vue`) le fournit déjà. -->
-  <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-primary-950">
+  <div
+    class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-primary-950"
+  >
     <!-- ==================================================================
-         1. HERO — 50/50, texte à gauche / photo cyclistes à droite.
+         1. HERO 50/50, texte à gauche / photo cyclistes à droite.
          ================================================================== -->
     <section
       data-theme="dark"
       class="w-full shrink-0 snap-start snap-always h-dvh flex flex-col lg:grid lg:grid-cols-2 bg-primary-950"
     >
-      <div class="flex flex-col justify-center px-6 lg:px-16 xl:px-24 h-[50vh] lg:h-full">
+      <div
+        ref="heroEl"
+        class="flex flex-col justify-center px-6 lg:px-16 xl:px-24 h-[50vh] lg:h-full transition-all duration-700 ease-out motion-reduce:transition-none"
+        :class="scrollRevealClass(heroReveal)"
+      >
         <p class="text-white/60 mb-6 font-medium">
           Accueil / <span class="text-accent-500">Sport &amp; sponsoring</span>
         </p>
@@ -51,31 +72,39 @@ useSeo({
     </section>
 
     <!-- ==================================================================
-         2. LA VIE D'ÉQUIPE — fond bleu foncé, texte + grille d'images.
+         2. LA VIE D'ÉQUIPE fond bleu foncé, texte + grille d'images.
          ================================================================== -->
     <section
       data-theme="light"
       class="w-full shrink-0 snap-start snap-always h-dvh flex items-center bg-white text-primary-950 px-6 lg:px-12"
     >
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div>
+      <div ref="teamEl" class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div
+          class="transition-all duration-700 ease-out motion-reduce:transition-none"
+          :class="scrollRevealClass(teamReveal, 'left')"
+        >
           <!-- accent-700, pas accent-500 : sur fond blanc, accent-500 ne tient
                que 1,9:1 (décor uniquement) contre 4,9:1 pour accent-700
                (cf. main.css, tokens de couleur). -->
           <p class="text-accent-700 text-sm font-bold tracking-widest uppercase mb-4">
-            — La vie d'équipe
+            La vie d'équipe
           </p>
           <h2 class="text-4xl md:text-5xl font-extrabold mb-6 text-primary-900">
             Un rendez-vous par mois, un séminaire par an.
           </h2>
           <p class="text-gray-600 mb-8">
-            L'activité change — padel, escalade, tennis — le principe reste : sortir du cadre du
+            L'activité change, padel, escalade, tennis, le principe reste : sortir du cadre du
             bureau pour que les équipes se connaissent vraiment. Deux séances hebdomadaires sont
             aussi ouvertes à distance, pour ne pas exclure celles et ceux en mission ailleurs.
           </p>
           <div class="flex flex-wrap gap-3">
             <span
-              v-for="badge in ['Afterwork mensuel', 'Séminaire annuel (UE)', 'Foulées Lilloises', 'Sorties vélo']"
+              v-for="badge in [
+                'Afterwork mensuel',
+                'Séminaire annuel (UE)',
+                'Foulées Lilloises',
+                'Sorties vélo',
+              ]"
               :key="badge"
               class="border border-gray-200 rounded-full px-4 py-2 text-sm text-primary-900"
             >
@@ -84,7 +113,10 @@ useSeo({
           </div>
         </div>
 
-        <div class="grid grid-cols-2 grid-rows-2 gap-4 h-[500px]">
+        <div
+          class="grid grid-cols-2 grid-rows-2 gap-4 h-[500px] transition-all duration-700 ease-out motion-reduce:transition-none"
+          :class="scrollRevealClass(teamReveal, 'right')"
+        >
           <div class="col-span-2 overflow-hidden rounded-2xl">
             <img
               :src="photoPadelEquipe"
@@ -117,14 +149,17 @@ useSeo({
     </section>
 
     <!-- ==================================================================
-         3. SPORT & RECRUTEMENT — fond bleu foncé, texte + image.
+         3. SPORT & RECRUTEMENT fond bleu foncé, texte + image.
          ================================================================== -->
     <section
       data-theme="dark"
       class="w-full shrink-0 snap-start snap-always h-dvh flex items-center bg-primary-950 text-white px-6 lg:px-12"
     >
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div>
+      <div ref="recruitEl" class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div
+          class="transition-all duration-700 ease-out motion-reduce:transition-none"
+          :class="scrollRevealClass(recruitReveal, 'left')"
+        >
           <p class="text-accent-500 text-sm font-bold uppercase tracking-widest mb-4">
             Sport &amp; recrutement
           </p>
@@ -144,7 +179,10 @@ useSeo({
           </RouterLink>
         </div>
 
-        <div class="h-[500px] overflow-hidden rounded-2xl">
+        <div
+          class="h-[500px] overflow-hidden rounded-2xl transition-all duration-700 ease-out motion-reduce:transition-none"
+          :class="scrollRevealClass(recruitReveal, 'right')"
+        >
           <img
             :src="photoFit03"
             alt=""
@@ -157,37 +195,50 @@ useSeo({
     </section>
 
     <!-- ==================================================================
-         4. NOS PARTENARIATS — fond beige clair, 3 cartes.
+         4. NOS PARTENARIATS fond beige clair, 3 cartes.
          ================================================================== -->
     <section
       data-theme="light"
       class="w-full shrink-0 snap-start snap-always min-h-dvh flex flex-col justify-center bg-gray-50 text-primary-950 px-6 lg:px-12 py-12"
     >
-      <p class="text-accent-600 text-sm font-bold uppercase tracking-widest mb-4">
-        Nos partenariats
-      </p>
-      <h2 class="text-4xl md:text-5xl font-extrabold mb-6">
-        Ce que nous soutenons autour de nous.
-      </h2>
-      <p class="text-primary-950/70 mb-12 text-lg max-w-3xl">
-        Nous préférons financer ce qui se passe près de nous plutôt que de la publicité : des clubs
-        locaux, un joueur professionnel, et les rendez-vous qui font vivre la communauté tech des
-        Hauts-de-France.
-      </p>
+      <div
+        ref="partnersEl"
+        class="transition-all duration-700 ease-out motion-reduce:transition-none"
+        :class="scrollRevealClass(partnersReveal)"
+      >
+        <p class="text-accent-600 text-sm font-bold uppercase tracking-widest mb-4">
+          Nos partenariats
+        </p>
+        <h2 class="text-4xl md:text-5xl font-extrabold mb-6">
+          Ce que nous soutenons autour de nous.
+        </h2>
+        <p class="text-primary-950/70 mb-12 text-lg max-w-3xl">
+          Nous préférons financer ce qui se passe près de nous plutôt que de la publicité : des
+          clubs locaux, un joueur professionnel, et les rendez-vous qui font vivre la communauté
+          tech des Hauts-de-France.
+        </p>
+      </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 rounded-2xl border border-gray-200 overflow-hidden">
-        <article class="bg-white p-8 md:border-r border-gray-200">
+      <div
+        class="grid grid-cols-1 md:grid-cols-3 rounded-2xl border border-gray-200 overflow-hidden"
+      >
+        <article
+          class="bg-white p-8 md:border-r border-gray-200 transition-all duration-700 ease-out motion-reduce:transition-none"
+          :class="[scrollRevealClass(partnersReveal), CARD_DELAYS[0]]"
+        >
           <p class="text-accent-600 text-sm font-bold uppercase tracking-widest mb-3">
             Sport professionnel
           </p>
           <h3 class="text-xl font-bold mb-3">Un joueur de padel pro</h3>
           <p class="text-primary-950/70 text-sm leading-relaxed">
-            Nous accompagnons un joueur de padel professionnel — et il vient jouer avec les
-            équipes.
+            Nous accompagnons un joueur de padel professionne et il vient jouer avec les équipes.
           </p>
         </article>
 
-        <article class="bg-white p-8">
+        <article
+          class="bg-white p-8 transition-all duration-700 ease-out motion-reduce:transition-none"
+          :class="[scrollRevealClass(partnersReveal), CARD_DELAYS[1]]"
+        >
           <p class="text-accent-600 text-sm font-bold uppercase tracking-widest mb-3">
             Clubs locaux
           </p>
@@ -197,7 +248,10 @@ useSeo({
           </p>
         </article>
 
-        <article class="bg-primary-950 text-white p-8">
+        <article
+          class="bg-primary-950 text-white p-8 transition-all duration-700 ease-out motion-reduce:transition-none"
+          :class="[scrollRevealClass(partnersReveal), CARD_DELAYS[2]]"
+        >
           <p class="text-accent-500 text-sm font-bold uppercase tracking-widest mb-3">
             Écosystème tech
           </p>
@@ -217,9 +271,13 @@ useSeo({
     </section>
 
     <!-- ==================================================================
-         5. FOOTER
+         5. FOOTER — pousse footer en bas meme si son contenu est plus court
+         qu'un ecran (meme recette que HistoireView.vue/LoginView.vue).
          ================================================================== -->
-    <section data-theme="dark" class="w-full shrink-0 snap-start snap-always">
+    <section
+      data-theme="dark"
+      class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
+    >
       <TheFooter />
     </section>
   </div>

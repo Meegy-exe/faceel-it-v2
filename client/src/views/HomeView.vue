@@ -1,29 +1,14 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
-import { useSwipe } from '@vueuse/core'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import TickerBand from '@/components/layout/TickerBand.vue'
 import CoverCarousel from '@/components/ui/CoverCarousel.vue'
 import CarouselSlideContent from '@/components/ui/CarouselSlideContent.vue'
 import ReferencesSection from '@/components/ui/ReferencesSection.vue'
 import BuSection from '@/components/home/BuSection.vue'
+import EventsSection from '@/components/home/EventsSection.vue'
 import LocationMapSection from '@/components/home/LocationMapSection.vue'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
-// PHOTOS « NOS ÉVÉNEMENTS » — déjà présentes dans `assets/images/` (dépôt
-// client, dossier `Animate the header/assets/photos/`), aucune n'est encore
-// utilisée ailleurs sur le site : pas de nouveau fichier à importer, pas de
-// dépendance à un hébergeur d'images tiers. `picsum.photos` était exclu
-// d'office — le CSP de production (`client/security-headers.conf`) déclare
-// `img-src 'self'` sans exception, une image hotlinkée y serait simplement
-// bloquée par le navigateur après déploiement.
-import eventAfterwork from '@/assets/images/photos/afterwork.jpg'
-import eventPaintball from '@/assets/images/photos/paintball.jpg'
-import eventCourseGroupe from '@/assets/images/photos/course-groupe.jpg'
-import eventCourseSolo from '@/assets/images/photos/course-solo.jpg'
-import eventPadelEquipe from '@/assets/images/padel-equipe.jpg'
-import sportImg1 from '@/assets/images/photos/f-it-01.jpg'
-import sportImg2 from '@/assets/images/photos/f-it-02.jpg'
-import sportImg3 from '@/assets/images/photos/f-it-03.jpg'
 import { useSeo } from '@/composables/useSeo'
 import { useProfileStore } from '@/stores/useProfileStore'
 
@@ -51,8 +36,6 @@ const chiffresReveal = useScrollReveal(chiffresEl)
  *  reste visible pour le SSR/no-JS, même garantie que `ScrollRevealState`
  *  (cf. `useScrollReveal.ts`). */
 const textRevealState = ref<'idle' | 'hidden' | 'visible'>('idle')
-const evenementsEl = useTemplateRef<HTMLElement>('evenementsEl')
-const evenementsReveal = useScrollReveal(evenementsEl)
 const valeursEl = useTemplateRef<HTMLElement>('valeursEl')
 const valeursReveal = useScrollReveal(valeursEl)
 
@@ -65,7 +48,7 @@ interface KeyStat {
   label: string
 }
 
-/** Chiffres fournis tels quels par la demande client — aucune valeur
+/** Chiffres fournis tels quels par la demande client aucune valeur
  *  inventée (cf. CLAUDE.md, intégrité du contenu). */
 const KEY_STATS: KeyStat[] = [
   { value: '65', label: 'Collaborateurs' },
@@ -89,7 +72,7 @@ const PARSED_STATS: ParsedStat[] = KEY_STATS.map((s) => ({
 const animatedValues = ref<number[]>(PARSED_STATS.map(() => 0))
 const countUpStarted = ref(false)
 let countUpRaf: number | undefined
-/** Durée du count-up (`runCountUp`) — reprise telle quelle comme durée de la
+/** Durée du count-up (`runCountUp`) reprise telle quelle comme durée de la
  *  transition CSS du bloc texte (cf. template) pour que les deux animations,
  *  démarrées ensemble, se terminent au même instant. */
 const COUNT_UP_DURATION_MS = 2000
@@ -126,123 +109,9 @@ watch(chiffresReveal, (state) => {
   }
 })
 
-/* -------------------------------------------------------------------------- */
-/* Nos événements — bascule design sport                                      */
-/* -------------------------------------------------------------------------- */
-
-/** 3 diapositives au sein de la même section `#evenements` (pas 3 sections
- *  snap distinctes) : galerie de cohésion, événements tech, design sport. */
-type EventsSlide = 'events' | 'tech' | 'sport'
-const EVENTS_SLIDES: EventsSlide[] = ['events', 'sport', 'tech']
-const activeEventsSlide = ref<EventsSlide>('events')
-
-function nextEventsSlide() {
-  const currentIndex = EVENTS_SLIDES.indexOf(activeEventsSlide.value)
-  activeEventsSlide.value = EVENTS_SLIDES[(currentIndex + 1) % EVENTS_SLIDES.length]!
-}
-
-function prevEventsSlide() {
-  const currentIndex = EVENTS_SLIDES.indexOf(activeEventsSlide.value)
-  activeEventsSlide.value =
-    EVENTS_SLIDES[(currentIndex - 1 + EVENTS_SLIDES.length) % EVENTS_SLIDES.length]!
-}
-
-/** Swipe tactile — remplace la flèche sur mobile (masquée sous `md:`, cf.
- *  template) : ne consomme que l'axe horizontal (`direction` ignore les
- *  swipes verticaux), le scroll-snap vertical du site reste donc intact. */
-useSwipe(evenementsEl, {
-  threshold: 50,
-  onSwipeEnd(_event, direction) {
-    if (direction === 'left') {
-      nextEventsSlide()
-      resetSportTimer()
-    } else if (direction === 'right') {
-      prevEventsSlide()
-      resetSportTimer()
-    }
-  },
-})
-
-let sportInterval: ReturnType<typeof setInterval> | undefined
-
-/** Survol du bloc : coupe la bascule automatique sans arrêter le
- *  `setInterval` lui-même (évite de dé-synchroniser `resetSportTimer`, déjà
- *  appelé au clic manuel) — même garde que `paused` dans `CoverCarousel.vue`. */
-const eventsCarouselPaused = ref(false)
-
-function clearSportInterval() {
-  if (sportInterval !== undefined) {
-    clearInterval(sportInterval)
-    sportInterval = undefined
-  }
-}
-
-/** Lance (ou relance) la boucle de 5 s. Appelé au clic manuel pour éviter un
- *  basculement automatique immédiat juste après l'action de l'utilisateur. */
-function resetSportTimer() {
-  clearSportInterval()
-  sportInterval = setInterval(() => {
-    if (!eventsCarouselPaused.value) nextEventsSlide()
-  }, 5_000)
-}
-
-watch(evenementsReveal, (state) => {
-  if (import.meta.env.SSR) return
-  if (state === 'visible') resetSportTimer()
-  if (state === 'hidden') {
-    clearSportInterval()
-    activeEventsSlide.value = 'events'
-  }
-})
-
-/* -------------------------------------------------------------------------- */
-/* Nos événements — galerie photo                                             */
-/* -------------------------------------------------------------------------- */
-
-interface EventPhoto {
-  src: string
-  alt: string
-}
-
-/** La première entrée est la tuile en vedette (cf. `v-for` du template, qui
- *  lui attribue seul `col-span-2 row-span-2`) — l'ordre du tableau porte donc
- *  une signification visuelle, ce n'est pas une liste interchangeable. */
-const EVENT_PHOTOS: EventPhoto[] = [
-  { src: eventAfterwork, alt: "Collègues réunis autour d'un after-work" },
-  { src: eventPaintball, alt: 'Session de paintball entre collaborateurs' },
-  { src: eventCourseGroupe, alt: "Course à pied en équipe lors d'un événement sportif" },
-  { src: eventCourseSolo, alt: "Collaborateur à l'arrivée d'une course" },
-  { src: eventPadelEquipe, alt: "Équipe réunie autour d'un terrain de padel" },
-]
-
-
-/** Carrousel mobile : index courant, avance toutes les 3 s. SSR-safe : le
- *  setInterval est instancié uniquement dans onMounted, jamais pendant le
- *  pré-rendu (même discipline que les autres carrousels du site). */
-const mobilePhotoIndex = ref(0)
-let mobilePhotoInterval: ReturnType<typeof setInterval> | undefined
-
-function startMobilePhotoAutoplay() {
-  if (import.meta.env.SSR || mobilePhotoInterval !== undefined) return
-  mobilePhotoInterval = setInterval(() => {
-    mobilePhotoIndex.value = (mobilePhotoIndex.value + 1) % EVENT_PHOTOS.length
-  }, 3_000)
-}
-
-function stopMobilePhotoAutoplay() {
-  if (mobilePhotoInterval === undefined) return
-  clearInterval(mobilePhotoInterval)
-  mobilePhotoInterval = undefined
-}
-
-onMounted(startMobilePhotoAutoplay)
-
 onBeforeUnmount(() => {
-  stopMobilePhotoAutoplay()
   if (countUpRaf !== undefined) cancelAnimationFrame(countUpRaf)
-  clearSportInterval()
 })
-
 
 /* -------------------------------------------------------------------------- */
 /* Valeur ajoutée                                                             */
@@ -250,7 +119,7 @@ onBeforeUnmount(() => {
 
 interface ValueCard {
   title: string
-  /** Segments joints par un `<br>` dans le template (cf. `#slide` plus bas) —
+  /** Segments joints par un `<br>` dans le template (cf. `#slide` plus bas)
    *  un seul élément dans la plupart des cas ; `Accompagnement` en a deux
    *  pour forcer un retour à la ligne exact après "modernes" dès 1840px,
    *  sans dépendre du calcul automatique des largeurs. */
@@ -260,11 +129,19 @@ interface ValueCard {
 const VALUE_CARDS: ValueCard[] = [
   {
     title: 'Collectif',
-    description: ['Tout ce que nous réalisons,', 'nous le faisons ensemble,', 'grâce et avec nos collaborateurs.'],
+    description: [
+      'Tout ce que nous réalisons,',
+      'nous le faisons ensemble,',
+      'grâce et avec nos collaborateurs.',
+    ],
   },
   {
     title: 'Engagement',
-    description: ['Comme l’esprit sportif,', 'on avance en donnant 100%', 'de nos efforts pour atteindre l’objectif.'],
+    description: [
+      'Comme l’esprit sportif,',
+      'on avance en donnant 100%',
+      'de nos efforts pour atteindre l’objectif.',
+    ],
   },
   {
     title: 'Accompagnement',
@@ -280,17 +157,16 @@ function activeValue(index: number): ValueCard {
   return VALUE_CARDS[index]!
 }
 
-/** Diapositive active du carrousel "Nos valeurs" — pilote la pulsation du
+/** Diapositive active du carrousel "Nos valeurs" pilote la pulsation du
  *  halo lumineux (cf. template, `Transition name="halo-pulse"`). */
 const valeursActiveSlide = ref(0)
 
-
 /* -------------------------------------------------------------------------- */
-/* Hero — effet machine à écrire                                              */
+/* Hero effet machine à écrire                                              */
 /* -------------------------------------------------------------------------- */
 
 /** Reprend tel quel le texte réel de l'ancien effet machine à écrire pour la
- *  1ère phrase — aucun texte n'est inventé ici, cf. CLAUDE.md « Intégrité du
+ *  1ère phrase aucun texte n'est inventé ici, cf. CLAUDE.md « Intégrité du
  *  contenu ». */
 const heroPhrases = [
   { main: 'On ne rejoint pas une ESN.', highlight: 'On rejoint une équipe.' },
@@ -299,15 +175,16 @@ const heroPhrases = [
 const currentPhraseIndex = ref(0)
 const typedMain = ref('')
 const typedHighlight = ref('')
-/** Quelle ligne affiche le curseur clignotant — suit la ligne réellement en
+/** Quelle ligne affiche le curseur clignotant suit la ligne réellement en
  *  cours de frappe/effacement plutôt que de rester fixé sur "highlight". */
 const cursorPosition = ref<'main' | 'highlight'>('main')
 
 /** Texte complet de la phrase active, pour la version lue aux lecteurs
- *  d'écran (span `sr-only` dans le template) — l'animation caractère par
+ *  d'écran (span `sr-only` dans le template) l'animation caractère par
  *  caractère n'a de sens que visuellement. */
 const heroFullText = computed(
-  () => `${heroPhrases[currentPhraseIndex.value]!.main} ${heroPhrases[currentPhraseIndex.value]!.highlight}`,
+  () =>
+    `${heroPhrases[currentPhraseIndex.value]!.main} ${heroPhrases[currentPhraseIndex.value]!.highlight}`,
 )
 
 const HERO_TYPEWRITER_ERASE_MS = 45
@@ -451,7 +328,7 @@ onBeforeUnmount(() => {
 })
 
 /* -------------------------------------------------------------------------- */
-/* Hero — vague canvas autonome                                               */
+/* Hero vague canvas autonome                                               */
 /* -------------------------------------------------------------------------- */
 
 // SSR-safe : sessionStorage n'existe pas côté serveur
@@ -538,7 +415,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <!-- Cinématique d'entrée — fixed z-[100] pour se superposer à tout le site -->
+  <!-- Cinématique d'entrée fixed z-[100] pour se superposer à tout le site -->
   <div
     v-if="showSplash"
     class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none"
@@ -552,368 +429,214 @@ onBeforeUnmount(() => {
   <!-- CONTENEUR SNAP OPT-IN : ce div isole le scroll magnétique de la page
        d'accueil pour ne pas briser le layout d'App.vue. -->
   <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
-  <!-- snap-always retiré ici (seulement ici) : forçait un snap plein écran
+    <!-- snap-always retiré ici (seulement ici) : forçait un snap plein écran
        dès le moindre tick de molette, sans laisser au bandeau d'événements
        le temps de défiler sous la navbar fixe. snap-start conservé (section
        reste un point d'ancrage valide, cf. CLAUDE.md "Full Page Snap
        Scroll"). -->
-  <section
-    id="hero"
-    data-theme="dark"
-    class="relative isolate overflow-hidden h-dvh shrink-0 w-full snap-start flex flex-col justify-center text-white pt-24 lg:pt-28"
-  >
-    <!-- TickerBand DANS cette section (pas dans App.vue, ni au-dessus d'elle) :
-         c'est le conteneur `h-dvh overflow-y-auto snap-y` englobant qui capte
-         le scroll — le bandeau doit vivre dans le MÊME bloc snap-start que le
-         Hero pour apparaître à l'écran dès le chargement. -->
-    <TickerBand />
-    <div class="absolute inset-0 z-0 bg-gradient-to-b from-[#000066] via-[#000066] via-65% to-blue-800">
-      <canvas
-        ref="waveCanvas"
-        class="absolute inset-0 h-full w-full pointer-events-none opacity-80"
-      ></canvas>
-    </div>
-    <div
-      class="relative z-10 w-full px-4 py-12 sm:px-6 lg:px-8 xl:px-12"
-      :class="isFirstVisit ? 'animate-hero-text-delayed' : 'animate-hero-text'"
+    <section
+      id="hero"
+      data-theme="dark"
+      class="relative isolate overflow-hidden h-dvh shrink-0 w-full snap-start flex flex-col justify-center text-white pt-24 lg:pt-28"
     >
-      <div>
-<!--        <p-->
-<!--          class="animate-fade-up motion-reduce:animate-none text-eyebrow uppercase text-accent-500 drop-shadow-md"-->
-<!--        >-->
-<!--          ESN · Data × IA × Transformation digitale-->
-<!--        </p>-->
+      <!-- TickerBand DANS cette section (pas dans App.vue, ni au-dessus d'elle) :
+         c'est le conteneur `h-dvh overflow-y-auto snap-y` englobant qui capte
+         le scroll le bandeau doit vivre dans le MÊME bloc snap-start que le
+         Hero pour apparaître à l'écran dès le chargement. -->
+      <TickerBand />
+      <div
+        class="absolute inset-0 z-0 bg-gradient-to-b from-[#000066] via-[#000066] via-65% to-blue-800"
+      >
+        <canvas
+          ref="waveCanvas"
+          class="absolute inset-0 h-full w-full pointer-events-none opacity-80"
+        ></canvas>
+      </div>
+      <div
+        class="relative z-10 w-full px-4 py-12 sm:px-6 lg:px-8 xl:px-12"
+        :class="isFirstVisit ? 'animate-hero-text-delayed' : 'animate-hero-text'"
+      >
+        <div>
+          <!--        <p-->
+          <!--          class="animate-fade-up motion-reduce:animate-none text-eyebrow uppercase text-accent-500 drop-shadow-md"-->
+          <!--        >-->
+          <!--          ESN · Data × IA × Transformation digitale-->
+          <!--        </p>-->
 
-        <div class="mt-6 min-h-[140px] md:min-h-[180px] lg:min-h-[220px] flex items-center max-sm:w-[320px] max-sm:overflow-hidden">
-          <h1
-            class="flex max-w-7xl flex-col items-start gap-y-2 animate-fade-up motion-reduce:animate-none font-display text-5xl leading-[1.1] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl drop-shadow-xl max-sm:text-2xl max-sm:leading-tight"
+          <div
+            class="mt-6 min-h-[140px] md:min-h-[180px] lg:min-h-[220px] flex items-center max-sm:w-[320px] max-sm:overflow-hidden"
           >
-            <span class="sr-only">{{ heroFullText }}</span>
-            <span class="block text-white max-sm:whitespace-nowrap" aria-hidden="true">
-              {{ typedMain || '\u200B'
-              }}<span
-                v-show="cursorPosition === 'main'"
-                class="ml-1 inline-block h-[0.9em] w-[4px] md:w-[6px] translate-y-[0.05em] animate-blink bg-white motion-reduce:animate-none"
-                aria-hidden="true"
-              ></span>
-            </span>
-            <span class="text-accent-500 max-sm:whitespace-nowrap" aria-hidden="true">
-              {{ typedHighlight || '\u200B'
-              }}<span
-                v-show="cursorPosition === 'highlight'"
-                class="ml-1 inline-block h-[0.9em] w-[4px] md:w-[6px] translate-y-[0.05em] animate-blink bg-[#12D80A] motion-reduce:animate-none"
-                aria-hidden="true"
-              ></span>
-            </span>
-          </h1>
+            <h1
+              class="flex max-w-7xl flex-col items-start gap-y-2 animate-fade-up motion-reduce:animate-none font-display text-5xl leading-[1.1] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl drop-shadow-xl max-sm:text-2xl max-sm:leading-tight"
+            >
+              <span class="sr-only">{{ heroFullText }}</span>
+              <span class="block text-white max-sm:whitespace-nowrap" aria-hidden="true">
+                {{ typedMain || '\u200B'
+                }}<span
+                  v-show="cursorPosition === 'main'"
+                  class="ml-1 inline-block h-[0.9em] w-[4px] md:w-[6px] translate-y-[0.05em] animate-blink bg-white motion-reduce:animate-none"
+                  aria-hidden="true"
+                ></span>
+              </span>
+              <span class="text-accent-500 max-sm:whitespace-nowrap" aria-hidden="true">
+                {{ typedHighlight || '\u200B'
+                }}<span
+                  v-show="cursorPosition === 'highlight'"
+                  class="ml-1 inline-block h-[0.9em] w-[4px] md:w-[6px] translate-y-[0.05em] animate-blink bg-[#12D80A] motion-reduce:animate-none"
+                  aria-hidden="true"
+                ></span>
+              </span>
+            </h1>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <BuSection />
+    <BuSection />
 
-  <section
-    id="valeurs"
-    data-theme="dark"
-    class="relative overflow-hidden h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-[#000066] px-4 pt-36 [@media(max-height:850px)]:pt-16 [@media(max-height:568px)]:pt-10 pb-8 [@media(max-height:568px)]:pb-4 text-white sm:px-6 lg:px-8 xl:px-12"
-  >
-    <div class="relative z-10 flex flex-1 flex-col w-full">
-      <header
-        ref="valeursEl"
-        class="max-w-6xl px-4 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
-        :class="scrollRevealClass(valeursReveal)"
-      >
-        <h2 class="font-display text-display text-balance text-white [@media(max-height:568px)]:text-2xl">Nos valeurs</h2>
-        <p class="mt-4 w-full text-lg leading-relaxed text-white [@media(max-height:568px)]:text-sm [@media(max-height:568px)]:leading-tight">
-          Faceel-it est plus qu'une ESN française et indépendante, c'est une équipe qui se
-          construit autour des valeurs du sport qui nous font avancer ensemble.
-        </p>
-      </header>
+    <section
+      id="valeurs"
+      data-theme="dark"
+      class="relative overflow-hidden h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-[#000066] px-4 pt-36 [@media(max-height:850px)]:pt-16 [@media(max-height:568px)]:pt-10 pb-8 [@media(max-height:568px)]:pb-4 text-white sm:px-6 lg:px-8 xl:px-12"
+    >
+      <div class="relative z-10 flex flex-1 flex-col w-full">
+        <header
+          ref="valeursEl"
+          class="max-w-6xl px-4 md:px-24 lg:px-28 transition-all duration-700 ease-out motion-reduce:transition-none"
+          :class="scrollRevealClass(valeursReveal)"
+        >
+          <h2
+            class="font-display text-display text-balance text-white [@media(max-height:568px)]:text-2xl"
+          >
+            Nos valeurs
+          </h2>
+          <p
+            class="mt-4 w-full text-lg leading-relaxed text-white [@media(max-height:568px)]:text-sm [@media(max-height:568px)]:leading-tight"
+          >
+            Faceel-it est plus qu'une ESN française et indépendante, c'est une équipe qui se
+            construit autour des valeurs du sport qui nous font avancer ensemble.
+          </p>
+        </header>
 
-      <div class="relative flex-1 w-full mt-8 [@media(max-height:568px)]:mt-1">
-        <!-- Core Glow — halo lumineux centré derrière la slide active, donc
+        <div class="relative flex-1 w-full mt-8 [@media(max-height:568px)]:mt-1">
+          <!-- Core Glow halo lumineux centré derrière la slide active, donc
              relatif au carrousel lui-même (et non à toute la section, sous
              peine d'être décalé par le <header> au-dessus). Pulsation
              synchronisée au changement de diapositive via `@update:active-
              index` (cf. CoverCarousel.vue). -->
-        <Transition name="halo-pulse" mode="out-in">
-          <div
-            :key="valeursActiveSlide"
-            class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl aspect-square bg-blue-600/30 rounded-full blur-[120px] z-0"
-            aria-hidden="true"
-          />
-        </Transition>
+          <Transition name="halo-pulse" mode="out-in">
+            <div
+              :key="valeursActiveSlide"
+              class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl aspect-square bg-blue-600/30 rounded-full blur-[120px] z-0"
+              aria-hidden="true"
+            />
+          </Transition>
 
-        <CoverCarousel
-          :count="VALUE_CARDS.length"
-          :autoplay-ms="4000"
-          label="Nos valeurs"
-          tone="dark"
-          arrow-below-on-mobile
-          class="relative z-10 h-full w-full"
-          @update:active-index="valeursActiveSlide = $event"
-        >
-          <template #slide="{ index }">
-            <CarouselSlideContent
-              tone="dark"
-              :title="activeValue(index).title"
-              :heading-level="3"
-              body-class="text-base lg:text-lg w-full max-w-full break-words px-6 sm:max-w-[320px] sm:px-0 [@media(max-height:568px)]:text-sm [@media(max-height:568px)]:leading-tight"
-              class="max-w-xl"
-              center-on-mobile
-            >
-              <template v-for="(line, lineIndex) in activeValue(index).description" :key="lineIndex">
-                <br v-if="lineIndex > 0" />{{ line }}
-              </template>
-            </CarouselSlideContent>
-          </template>
-        </CoverCarousel>
+          <CoverCarousel
+            :count="VALUE_CARDS.length"
+            :autoplay-ms="4000"
+            label="Nos valeurs"
+            tone="dark"
+            arrow-below-on-mobile
+            class="relative z-10 h-full w-full"
+            @update:active-index="valeursActiveSlide = $event"
+          >
+            <template #slide="{ index }">
+              <CarouselSlideContent
+                tone="dark"
+                :title="activeValue(index).title"
+                :heading-level="3"
+                body-class="text-base lg:text-lg w-full max-w-full break-words px-6 sm:max-w-[320px] sm:px-0 [@media(max-height:568px)]:text-sm [@media(max-height:568px)]:leading-tight"
+                class="max-w-xl"
+                center-on-mobile
+              >
+                <template
+                  v-for="(line, lineIndex) in activeValue(index).description"
+                  :key="lineIndex"
+                >
+                  <br v-if="lineIndex > 0" />{{ line }}
+                </template>
+              </CarouselSlideContent>
+            </template>
+          </CoverCarousel>
+        </div>
       </div>
-    </div>
-  </section>
-  <section id="references" data-theme="light" class="h-dvh shrink-0 w-full snap-start snap-always overflow-hidden">
-    <ReferencesSection />
-  </section>
-
-  <section
-    id="chiffres-cles"
-    data-theme="dark"
-    class="relative h-dvh shrink-0 w-full snap-start snap-always overflow-hidden flex flex-col justify-start md:justify-center bg-[#000066] px-4 pt-20 [@media(max-height:568px)]:pt-16 pb-12 sm:px-6 sm:pt-16 sm:pb-16 lg:px-8 xl:px-12"
-  >
-    <!-- Halo lumineux central — décoratif. -->
-    <div
-      aria-hidden="true"
-      class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl aspect-square bg-blue-600/30 rounded-full blur-[120px] z-0"
-    />
-
-    <div
-      ref="chiffresEl"
-      class="relative z-10 mx-auto flex h-full w-full max-w-5xl flex-1 flex-col items-center justify-evenly text-center [@media(max-height:568px)]:justify-start [@media(max-height:568px)]:scale-95 md:justify-center"
+    </section>
+    <section
+      id="references"
+      data-theme="light"
+      class="h-dvh shrink-0 w-full snap-start snap-always overflow-hidden"
     >
+      <ReferencesSection />
+    </section>
+
+    <section
+      id="chiffres-cles"
+      data-theme="dark"
+      class="relative h-dvh shrink-0 w-full snap-start snap-always overflow-hidden flex flex-col justify-start md:justify-center bg-[#000066] px-4 pt-20 [@media(max-height:568px)]:pt-16 pb-12 sm:px-6 sm:pt-16 sm:pb-16 lg:px-8 xl:px-12"
+    >
+      <!-- Halo lumineux central décoratif. -->
       <div
-        :class="
-          scrollRevealClass(textRevealState, 'up', {
-            offsetClass: 'translate-y-28',
-            durationClass: 'duration-2000',
-            scaleClass: 'scale-95',
-          })
-        "
+        aria-hidden="true"
+        class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl aspect-square bg-blue-600/30 rounded-full blur-[120px] z-0"
+      />
+
+      <div
+        ref="chiffresEl"
+        class="relative z-10 mx-auto flex h-full w-full max-w-5xl flex-1 flex-col items-center justify-evenly text-center [@media(max-height:568px)]:justify-start [@media(max-height:568px)]:scale-95 md:justify-center"
       >
-        <p class="text-lg sm:text-xl md:text-2xl font-bold tracking-wide uppercase text-accent-500">Nos chiffres clés</p>
-
-        <blockquote
-          class="mt-6 [@media(max-height:650px)]:mt-2 [@media(max-height:650px)]:text-base [@media(max-height:568px)]:hidden max-w-3xl font-display text-xl leading-tight font-bold tracking-tight text-balance text-white sm:text-3xl lg:text-4xl"
+        <div
+          :class="
+            scrollRevealClass(textRevealState, 'up', {
+              offsetClass: 'translate-y-28',
+              durationClass: 'duration-2000',
+              scaleClass: 'scale-95',
+            })
+          "
         >
-          « Chez Faceel-it, nous ne nous contentons pas de vous délivrer une prestation&nbsp;: nous
-          co-construisons des solutions durables, agiles et sur-mesure. Votre satisfaction est notre
-          plus grande fête. »
-        </blockquote>
-      </div>
-
-      <ul
-        class="mt-8 [@media(max-height:650px)]:mt-2 sm:mt-12 grid w-full grid-cols-2 gap-4 [@media(max-height:650px)]:gap-2 md:gap-8 lg:grid-cols-4"
-      >
-        <li
-          v-for="(stat, i) in PARSED_STATS"
-          :key="stat.label"
-          class="flex h-full flex-col items-center justify-center p-4 [@media(max-height:650px)]:p-2 text-center transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none sm:p-6"
-        >
-          <p class="font-display text-4xl [@media(max-height:650px)]:text-4xl font-extrabold tracking-tight text-accent-500 sm:text-5xl lg:text-6xl">
-            {{ countUpStarted ? animatedValues[i] : stat.target }}{{ stat.suffix }}
+          <p
+            class="text-lg sm:text-xl md:text-2xl font-bold tracking-wide uppercase text-accent-500"
+          >
+            Nos chiffres clés
           </p>
-          <p class="mt-3 [@media(max-height:650px)]:mt-1 text-eyebrow leading-snug text-white">{{ stat.label }}</p>
-        </li>
-      </ul>
-    </div>
-  </section>
 
-  <section
-    v-if="profileStore.profile !== 'entreprise'"
-    id="evenements"
-    ref="evenementsEl"
-    data-theme="light"
-    class="relative h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center [@media(min-height:569px)_and_(max-height:750px)]:justify-start overflow-hidden bg-white px-4 pt-24 [@media(max-height:568px)]:pt-16 pb-8 text-gray-900 sm:px-6 lg:px-8 xl:px-12"
-    @mouseenter="eventsCarouselPaused = true"
-    @mouseleave="eventsCarouselPaused = false"
-  >
-    <Transition
-      enter-active-class="transition-all duration-500 ease-out motion-reduce:transition-none"
-      enter-from-class="opacity-0 translate-y-4"
-      enter-to-class="opacity-100 translate-y-0"
-      leave-active-class="transition-all duration-300 ease-in motion-reduce:transition-none"
-      leave-from-class="opacity-100 translate-y-0"
-      leave-to-class="opacity-0 -translate-y-4"
-      mode="out-in"
-    >
-      <!-- SLIDE 1 : galerie événements équipe -->
-      <div v-if="activeEventsSlide === 'events'" key="events" class="w-full min-h-0">
-        <header
-          class="mx-auto max-w-3xl text-center transition-all duration-700 ease-out motion-reduce:transition-none"
-          :class="scrollRevealClass(evenementsReveal)"
-        >
-          <h2 class="mt-4 font-display text-3xl leading-tight text-balance text-primary-900 [@media(max-height:885px)]:text-2xl md:text-display">Nos événements</h2>
-          <p class="mt-4 text-sm leading-relaxed text-primary-900/60 md:text-lg">
-            La cohésion ne s'arrête pas à la porte des bureaux&nbsp;: after-works, événements sportifs
-            et repas partagés rythment aussi la vie de nos équipes.
-          </p>
-        </header>
+          <blockquote
+            class="mt-6 [@media(max-height:650px)]:mt-2 [@media(max-height:650px)]:text-base [@media(max-height:568px)]:hidden max-w-3xl font-display text-xl leading-tight font-bold tracking-tight text-balance text-white sm:text-3xl lg:text-4xl"
+          >
+            « Chez Faceel-it, nous ne nous contentons pas de vous délivrer une prestation&nbsp;:
+            nous co-construisons des solutions durables, agiles et sur-mesure. Votre satisfaction
+            est notre plus grande fête. »
+          </blockquote>
+        </div>
 
-        <!-- Grille bento — masquée sur mobile, visible à partir de sm: -->
         <ul
-          class="mx-auto mt-12 hidden w-full max-w-6xl grid-cols-2 auto-rows-[9rem] gap-4 sm:grid sm:grid-cols-4 sm:auto-rows-[10rem] lg:auto-rows-[12rem]"
+          class="mt-8 [@media(max-height:650px)]:mt-2 sm:mt-12 grid w-full grid-cols-2 gap-4 [@media(max-height:650px)]:gap-2 md:gap-8 lg:grid-cols-4"
         >
           <li
-            v-for="(photo, index) in EVENT_PHOTOS"
-            :key="photo.src"
-            class="group relative overflow-hidden rounded-card"
-            :class="index === 0 ? 'col-span-2 row-span-2' : ''"
+            v-for="(stat, i) in PARSED_STATS"
+            :key="stat.label"
+            class="flex h-full flex-col items-center justify-center p-4 [@media(max-height:650px)]:p-2 text-center transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none sm:p-6"
           >
-            <img
-              :src="photo.src"
-              :alt="photo.alt"
-              loading="lazy"
-              decoding="async"
-              class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-            />
+            <p
+              class="font-display text-4xl [@media(max-height:650px)]:text-4xl font-extrabold tracking-tight text-accent-500 sm:text-5xl lg:text-6xl"
+            >
+              {{ countUpStarted ? animatedValues[i] : stat.target }}{{ stat.suffix }}
+            </p>
+            <p class="mt-3 [@media(max-height:650px)]:mt-1 text-eyebrow leading-snug text-white">
+              {{ stat.label }}
+            </p>
           </li>
         </ul>
-
-        <!-- Slider automatique — visible sur mobile uniquement -->
-        <div
-          class="relative mx-auto mt-10 [@media(max-height:568px)]:mt-2 h-72 min-h-0 [@media(max-height:568px)]:max-h-[30dvh] [@media(max-height:568px)]:min-h-[100px] w-full overflow-hidden rounded-xl sm:hidden"
-          @mouseenter="stopMobilePhotoAutoplay"
-          @mouseleave="startMobilePhotoAutoplay"
-        >
-          <TransitionGroup
-            enter-active-class="transition-opacity duration-700 ease-in-out motion-reduce:transition-none"
-            enter-from-class="opacity-0"
-            enter-to-class="opacity-100"
-            leave-active-class="transition-opacity duration-700 ease-in-out motion-reduce:transition-none absolute inset-0"
-            leave-from-class="opacity-100"
-            leave-to-class="opacity-0"
-          >
-            <img
-              v-for="(photo, index) in EVENT_PHOTOS"
-              v-show="index === mobilePhotoIndex"
-              :key="photo.src"
-              :src="photo.src"
-              :alt="photo.alt"
-              loading="lazy"
-              decoding="async"
-              class="absolute inset-0 h-full w-full object-cover"
-            />
-          </TransitionGroup>
-          <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5" aria-hidden="true">
-            <span
-              v-for="(_, i) in EVENT_PHOTOS"
-              :key="i"
-              class="block h-1.5 rounded-full transition-all duration-300"
-              :class="i === mobilePhotoIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/40'"
-            />
-          </div>
-        </div>
       </div>
+    </section>
 
-      <!-- SLIDE 2 : événements tech -->
-      <div v-else-if="activeEventsSlide === 'tech'" key="tech" class="mx-auto flex max-w-2xl flex-col items-center text-center">
-        <h2 class="font-display text-3xl leading-tight text-balance text-primary-900 [@media(max-height:885px)]:text-2xl md:text-display">Événements tech</h2>
-        <p class="mt-4 text-sm leading-relaxed text-primary-900/60 md:text-lg">
-          Meetups, conférences, hackathons&nbsp;: retrouvez les rendez-vous auxquels participe
-          Faceel-IT.
-        </p>
-        <RouterLink
-          :to="{ name: 'evenements-tech' }"
-          class="mt-8 inline-flex items-center gap-2 rounded-full bg-accent-500 px-6 py-3 text-sm font-bold text-primary-950 transition-colors duration-200 hover:bg-accent-400 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-900"
-        >
-          Découvrez nos événements
-        </RouterLink>
-      </div>
+    <!-- event accueil : composant partage avec CandidateView.vue -->
+    <EventsSection v-if="profileStore.profile !== 'entreprise'" />
 
-      <!-- SLIDE 3 : design sport -->
-      <div v-else key="sport" class="mx-auto flex w-full max-w-6xl min-h-0 flex-col gap-10 [@media(min-height:569px)_and_(max-height:690px)]:gap-3 [@media(max-height:568px)]:gap-4 lg:grid lg:grid-cols-2 lg:items-center">
-        <!-- Colonne gauche : texte -->
-        <div>
-          <p class="mb-4 text-sm font-bold uppercase tracking-widest text-accent-500 [@media(max-height:885px)]:hidden">Le sport, notre méthode</p>
-          <h2 class="mb-8 [@media(max-height:690px)]:mb-2 [@media(max-height:568px)]:mb-2 text-2xl font-extrabold leading-tight text-primary-900 [@media(max-height:690px)]:text-xl [@media(max-height:568px)]:text-lg md:text-5xl lg:text-6xl">
-            Le sport nous sert<br class="hidden sm:block" /> à travailler.
-          </h2>
-          <p class="text-sm leading-relaxed text-gray-600 md:text-base">
-            Sur un terrain, on voit tout de suite comment quelqu'un communique, encaisse la pression
-            et joue avec les autres. C'est pour ça qu'une partie de padel s'invite souvent dans nos
-            recrutements, et que le sport structure ensuite la vie de l'équipe&nbsp;: rendez-vous
-            mensuel, séminaire annuel, clubs partenaires dans la région.
-          </p>
-          <div class="mt-8 flex flex-wrap gap-3 [@media(max-height:885px)]:hidden">
-            <span
-              v-for="badge in ['Padel', 'Vélo', 'Running', 'Séminaire annuel']"
-              :key="badge"
-              class="rounded-full border border-primary-900/20 px-4 py-1 text-sm text-primary-900/70"
-            >{{ badge }}</span>
-          </div>
-        </div>
-
-        <!-- Colonne droite : grille d'images -->
-        <div class="grid shrink min-h-0 grid-cols-2 grid-rows-2 gap-3 h-[250px] [@media(min-height:691px)_and_(max-height:900px)]:max-h-[35vh] [@media(min-height:569px)_and_(max-height:690px)]:max-h-[30vh] [@media(max-height:568px)]:max-h-[25vh] md:h-[360px] lg:h-[420px]">
-          <div class="col-span-1 row-span-2 h-full w-full overflow-hidden rounded-xl">
-            <img
-              :src="sportImg1"
-              alt="Équipe Faceel IT lors d'une activité sportive"
-              loading="lazy"
-              decoding="async"
-              class="h-full w-full object-cover transition-transform duration-500 hover:scale-110 motion-reduce:transition-none cursor-pointer"
-            />
-          </div>
-          <div class="col-span-1 row-span-1 h-full w-full overflow-hidden rounded-xl">
-            <img
-              :src="sportImg2"
-              alt="Équipe Faceel IT lors d'une activité sportive"
-              loading="lazy"
-              decoding="async"
-              class="h-full w-full object-cover transition-transform duration-500 hover:scale-110 motion-reduce:transition-none cursor-pointer"
-            />
-          </div>
-          <div class="col-span-1 row-span-1 h-full w-full overflow-hidden rounded-xl">
-            <img
-              :src="sportImg3"
-              alt="Équipe Faceel IT lors d'une activité sportive"
-              loading="lazy"
-              decoding="async"
-              class="h-full w-full object-cover transition-transform duration-500 hover:scale-110 motion-reduce:transition-none cursor-pointer"
-            />
-          </div>
-        </div>
-      </div>
-    </Transition>
-
-    <!-- Flèche de navigation : fait défiler les 3 diapositives, toujours vers l'avant.
-         En flux (plus en `absolute`) : superposée au texte en `top-1/2`, elle
-         tombait pile sur la fin du paragraphe de la diapositive "sport" —
-         placée ici sous le contenu, elle reste toujours en dessous quelle
-         que soit la diapositive active. -->
-    <div class="mx-auto mt-4 hidden w-full max-w-6xl justify-end md:flex">
-      <button
-        type="button"
-        aria-label="Diapositive suivante"
-        class="z-10 inline-flex size-11 items-center justify-center text-accent-500 transition-colors duration-200 hover:text-accent-600 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-900"
-        @click="nextEventsSlide(); resetSportTimer()"
-      >
-        <svg class="size-8" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path
-            d="M4 12h16M14 6l6 6-6 6"
-            stroke="currentColor"
-            stroke-width="3"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </button>
-    </div>
-  </section>
-
-  <LocationMapSection />
-  <TheFooter full-page-scroll />
-  </div><!-- /conteneur snap -->
+    <LocationMapSection />
+    <TheFooter full-page-scroll />
+  </div>
+  <!-- /conteneur snap -->
 </template>
 
 <style scoped>

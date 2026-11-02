@@ -21,7 +21,9 @@ function handleSubmit() {
 </script>
 
 <template>
-  <div class="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth">
+  <div
+    class="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth"
+  >
     <!-- ══════════════════════════════════════════════
          SECTION 1 : HERO IMMERSIF (image + overlay + grille 2 colonnes)
          ══════════════════════════════════════════════ -->
@@ -65,7 +67,14 @@ function handleSubmit() {
 
       <!-- Flèche scroll-down -->
       <div class="absolute inset-x-0 bottom-8 flex justify-center motion-reduce:hidden">
-        <svg class="w-5 h-5 text-white/40 animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <svg
+          class="w-5 h-5 text-white/40 animate-bounce"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
           <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
       </div>
@@ -74,7 +83,9 @@ function handleSubmit() {
     <!-- ══════════════════════════════════════════════
          SECTION 3 : FORMULAIRE & ENCART LINKEDIN
          ══════════════════════════════════════════════ -->
-    <section class="min-h-screen w-full snap-start snap-always flex flex-col justify-center bg-white py-16">
+    <section
+      class="min-h-screen w-full snap-start snap-always flex flex-col justify-center bg-white py-16"
+    >
       <div class="mx-auto max-w-6xl px-4">
         <div class="grid grid-cols-1 gap-12 md:grid-cols-3">
           <!-- Formulaire (col-span-2) -->
@@ -274,21 +285,42 @@ function handleSubmit() {
             <!-- Email -->
             <div class="flex flex-col items-center gap-3">
               <div class="flex size-12 items-center justify-center rounded-full bg-white/10">
-                <svg class="size-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1.25 1.25 0 0 0 1.118 0L19 7.162V6a2 2 0 0 0-2-2H3Z" />
-                  <path d="m19 8.839-7.77 3.885a2.75 2.75 0 0 1-2.46 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z" />
+                <svg
+                  class="size-5 text-white"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1.25 1.25 0 0 0 1.118 0L19 7.162V6a2 2 0 0 0-2-2H3Z"
+                  />
+                  <path
+                    d="m19 8.839-7.77 3.885a2.75 2.75 0 0 1-2.46 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z"
+                  />
                 </svg>
               </div>
               <p class="text-xs font-semibold uppercase tracking-widest text-blue-300">Email</p>
-              <a href="mailto:contact@faceel-it.com" class="text-lg font-semibold text-white transition-opacity hover:opacity-75">
+              <a
+                href="mailto:contact@faceel-it.com"
+                class="text-lg font-semibold text-white transition-opacity hover:opacity-75"
+              >
                 contact@faceel-it.com
               </a>
             </div>
             <!-- Adresse -->
             <div class="flex flex-col items-center gap-3">
               <div class="flex size-12 items-center justify-center rounded-full bg-white/10">
-                <svg class="size-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path fill-rule="evenodd" d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 15.01 17 12.462 17 9A7 7 0 1 0 3 9c0 3.462 1.698 6.01 3.354 7.584a13.731 13.731 0 0 0 2.75 1.908l.002.001.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z" clip-rule="evenodd" />
+                <svg
+                  class="size-5 text-white"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 15.01 17 12.462 17 9A7 7 0 1 0 3 9c0 3.462 1.698 6.01 3.354 7.584a13.731 13.731 0 0 0 2.75 1.908l.002.001.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z"
+                    clip-rule="evenodd"
+                  />
                 </svg>
               </div>
               <p class="text-xs font-semibold uppercase tracking-widest text-blue-300">Adresse</p>
@@ -301,13 +333,17 @@ function handleSubmit() {
 
         <!-- Colonne Droite : Avis Google -->
         <div class="flex flex-col items-center text-center pt-12 md:pt-0">
-          <p class="text-sm font-semibold uppercase tracking-widest text-yellow-300">Avis clients</p>
-          <h2 class="mt-4 font-display text-3xl font-extrabold tracking-tight text-white md:text-4xl">
+          <p class="text-sm font-semibold uppercase tracking-widest text-yellow-300">
+            Avis clients
+          </p>
+          <h2
+            class="mt-4 font-display text-3xl font-extrabold tracking-tight text-white md:text-4xl"
+          >
             Votre avis compte pour nous
           </h2>
           <p class="mt-4 max-w-xl text-base leading-relaxed text-white/70">
-            Vos retours nous aident à progresser et permettent à d'autres entreprises et candidats de
-            mieux nous connaître.
+            Vos retours nous aident à progresser et permettent à d'autres entreprises et candidats
+            de mieux nous connaître.
           </p>
 
           <!-- Note Google stylisée -->

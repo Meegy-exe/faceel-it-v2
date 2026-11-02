@@ -49,7 +49,9 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
 </script>
 
 <template>
-  <div class="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-primary-950">
+  <div
+    class="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-primary-950"
+  >
     <!-- Section Hero — data-theme="light" force la navbar en surface claire
          (texte sombre) sur tout le bloc teal, jusqu'au footer (data-theme
          "dark" plus bas) qui la bascule en sombre — mécanisme déjà générique
@@ -69,7 +71,9 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
            MÊME bloc snap-start que le Hero pour apparaître dès le
            chargement. -->
       <TickerBand />
-      <div class="relative z-10 w-full max-w-[1700px] mx-auto grid grid-cols-1 lg:grid-cols-12 items-center gap-12 px-4 sm:px-6 lg:px-24 xl:px-32">
+      <div
+        class="relative z-10 w-full max-w-[1700px] mx-auto grid grid-cols-1 lg:grid-cols-12 items-center gap-12 px-4 sm:px-6 lg:px-24 xl:px-32"
+      >
         <!-- Colonne gauche : textes -->
         <div
           ref="heroTextEl"
@@ -78,8 +82,8 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
         >
           <h1 class="text-6xl lg:text-8xl font-bold text-white mb-6">Adeo</h1>
           <p class="text-lg lg:text-xl text-white/90 w-full">
-            Déploiement de solutions IA et automatisation des flux de données RH pour garantir
-            une vision globale et fiable des applications internes.
+            Déploiement de solutions IA et automatisation des flux de données RH pour garantir une
+            vision globale et fiable des applications internes.
           </p>
         </div>
 
@@ -99,22 +103,28 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
       data-theme="light"
       class="relative min-h-screen w-full snap-start snap-always flex items-center bg-white py-24"
     >
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 max-w-[1700px] mx-auto px-6 lg:px-24 xl:px-32 items-center">
+      <div
+        class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 max-w-[1700px] mx-auto px-6 lg:px-24 xl:px-32 items-center"
+      >
         <!-- Colonne gauche : textes -->
-        <div ref="dataTextEl" class="justify-self-start lg:-translate-x-12" :class="scrollRevealClass(dataTextReveal)">
+        <div
+          ref="dataTextEl"
+          class="justify-self-start lg:-translate-x-12"
+          :class="scrollRevealClass(dataTextReveal)"
+        >
           <h2 class="text-[#059dab] text-4xl lg:text-5xl font-bold mb-8">Mieux gérer la donnée</h2>
           <p class="text-base lg:text-lg text-primary-900/80 leading-relaxed">
-            Dans le cadre d'un projet data, Adeo avait besoin de renforcer son équipe en charge
-            de la gestion des données internes. L'objectif était double&nbsp;: fiabiliser les
-            flux de données et améliorer leur exploitation pour le service RH de l'entreprise.
+            Dans le cadre d'un projet data, Adeo avait besoin de renforcer son équipe en charge de
+            la gestion des données internes. L'objectif était double&nbsp;: fiabiliser les flux de
+            données et améliorer leur exploitation pour le service RH de l'entreprise.
           </p>
           <p class="mt-6 text-base lg:text-lg text-primary-900/80 leading-relaxed">
             C'est dans ce contexte que nos collaborateurs, <strong>Clément</strong>,
             <strong>Lauriane</strong> et <strong>Alexandre</strong>, sont intervenus pour venir
-            renforcer une équipe déjà en place, avec une forte dimension opérationnelle et
-            métier. Ils ont rapidement dû s'intégrer à l'environnement du client, à ses outils et
-            à ses contraintes, notamment autour de <strong>Workday</strong>, qui centralisait une
-            grande partie des données.
+            renforcer une équipe déjà en place, avec une forte dimension opérationnelle et métier.
+            Ils ont rapidement dû s'intégrer à l'environnement du client, à ses outils et à ses
+            contraintes, notamment autour de <strong>Workday</strong>, qui centralisait une grande
+            partie des données.
           </p>
         </div>
 
@@ -153,14 +163,19 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
       data-theme="light"
       class="relative min-h-screen w-full snap-start snap-always flex items-center bg-[#059dab] py-24"
     >
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 max-w-[1700px] mx-auto px-6 lg:px-24 xl:px-32 items-center">
+      <div
+        class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 max-w-[1700px] mx-auto px-6 lg:px-24 xl:px-32 items-center"
+      >
         <!-- Colonne gauche : image avec cadre décalé -->
         <div
           ref="accessImageEl"
           class="relative w-full max-w-lg lg:ml-0 lg:mr-auto justify-self-start"
           :class="scrollRevealClass(accessImageReveal, 'right')"
         >
-          <div aria-hidden="true" class="absolute -bottom-8 -left-8 w-full h-full bg-white rounded-2xl z-0" />
+          <div
+            aria-hidden="true"
+            class="absolute -bottom-8 -left-8 w-full h-full bg-white rounded-2xl z-0"
+          />
           <img
             src="/images/partners/adeo/tt.png"
             alt="Équipe au travail"
@@ -174,10 +189,12 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
           class="mx-auto justify-self-center"
           :class="scrollRevealClass(accessTextReveal, 'left', { delayClass: 'delay-200' })"
         >
-          <h2 class="text-white text-4xl lg:text-5xl font-bold mb-8">Accélérer l'accès à la donnée</h2>
+          <h2 class="text-white text-4xl lg:text-5xl font-bold mb-8">
+            Accélérer l'accès à la donnée
+          </h2>
           <p class="text-white/90 text-lg leading-relaxed">
-            Dès leur arrivée, <strong>Clément</strong> et <strong>Lauriane</strong> ont commencé
-            par prendre en main l'écosystème data du client, notamment les flux issus de
+            Dès leur arrivée, <strong>Clément</strong> et <strong>Lauriane</strong> ont commencé par
+            prendre en main l'écosystème data du client, notamment les flux issus de
             <strong>Workday</strong>. Cette phase d'onboarding leur a permis de comprendre les
             usages internes et les attentes des différents services.
           </p>
@@ -201,7 +218,9 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
       data-theme="light"
       class="relative min-h-screen w-full snap-start snap-always flex items-center bg-white py-24"
     >
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 max-w-[1700px] mx-auto px-6 lg:px-24 xl:px-32 items-center">
+      <div
+        class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 max-w-[1700px] mx-auto px-6 lg:px-24 xl:px-32 items-center"
+      >
         <!-- Colonne gauche : textes -->
         <div ref="resultsTextEl" :class="scrollRevealClass(resultsTextReveal)">
           <h2 class="text-[#059dab] text-4xl lg:text-5xl font-bold mb-8">Des résultats concrets</h2>
@@ -209,19 +228,25 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
             Grâce à leur intervention, le client a rapidement constaté&nbsp;:
           </p>
           <ul class="list-disc pl-6 space-y-3 text-lg text-gray-800 mb-8">
-            <li><strong>Des requêtes plus rapides et plus fiables, améliorant l'exploitation</strong> des données</li>
+            <li>
+              <strong>Des requêtes plus rapides et plus fiables, améliorant l'exploitation</strong>
+              des données
+            </li>
             <li>Des dashboards plus clairs et plus utiles pour les équipes internes</li>
             <li>
-              Un gain de temps pour les services utilisateurs, grâce à des données mieux
-              structurées et plus accessibles
+              Un gain de temps pour les services utilisateurs, grâce à des données mieux structurées
+              et plus accessibles
             </li>
             <li>Une meilleure continuité opérationnelle grâce à une gestion efficace du RUN</li>
           </ul>
           <p class="text-lg text-gray-800">
-            Au final, cette mission <strong>a permis de renforcer la performance data du client
-            tout en s'appuyant sur un contact humain fort, essentiel</strong> à la bonne
-            compréhension des enjeux et des attentes. Un bel exemple de collaboration efficace
-            entre nos équipes et celles du client dans un environnement retail exigeant.
+            Au final, cette mission
+            <strong
+              >a permis de renforcer la performance data du client tout en s'appuyant sur un contact
+              humain fort, essentiel</strong
+            >
+            à la bonne compréhension des enjeux et des attentes. Un bel exemple de collaboration
+            efficace entre nos équipes et celles du client dans un environnement retail exigeant.
           </p>
         </div>
 
@@ -231,7 +256,10 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
           class="relative w-full max-w-md mx-auto lg:mr-0 lg:ml-auto"
           :class="scrollRevealClass(resultsVisualReveal, 'up', { delayClass: 'delay-200' })"
         >
-          <div aria-hidden="true" class="absolute top-8 left-8 w-full h-full bg-[#059dab] rounded-2xl z-0" />
+          <div
+            aria-hidden="true"
+            class="absolute top-8 left-8 w-full h-full bg-[#059dab] rounded-2xl z-0"
+          />
           <div
             class="relative z-10 bg-white rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)] border border-gray-50 aspect-square flex items-center justify-center p-8 animate-float motion-reduce:animate-none"
           >
@@ -261,9 +289,15 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
         </div>
 
         <!-- Grille des technologies -->
-        <div ref="techs1GridEl" class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-[1400px] mx-auto px-6">
+        <div
+          ref="techs1GridEl"
+          class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-[1400px] mx-auto px-6"
+        >
           <!-- Item 1 : NestJS -->
-          <div class="flex flex-col items-center text-center" :class="scrollRevealClass(techs1GridReveal, 'up', { delayClass: 'delay-100' })">
+          <div
+            class="flex flex-col items-center text-center"
+            :class="scrollRevealClass(techs1GridReveal, 'up', { delayClass: 'delay-100' })"
+          >
             <img
               src="/images/partners/adeo/techs/nest_js.png"
               alt="NestJS"
@@ -278,7 +312,10 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
           </div>
 
           <!-- Item 2 : PostgreSQL -->
-          <div class="flex flex-col items-center text-center" :class="scrollRevealClass(techs1GridReveal, 'up', { delayClass: 'delay-200' })">
+          <div
+            class="flex flex-col items-center text-center"
+            :class="scrollRevealClass(techs1GridReveal, 'up', { delayClass: 'delay-200' })"
+          >
             <img
               src="/images/partners/adeo/techs/postgre_sql.png"
               alt="PostgreSQL"
@@ -293,7 +330,10 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
           </div>
 
           <!-- Item 3 : Prisma -->
-          <div class="flex flex-col items-center text-center" :class="scrollRevealClass(techs1GridReveal, 'up', { delayClass: 'delay-300' })">
+          <div
+            class="flex flex-col items-center text-center"
+            :class="scrollRevealClass(techs1GridReveal, 'up', { delayClass: 'delay-300' })"
+          >
             <img
               src="/images/partners/adeo/techs/prisma.png"
               alt="Prisma"
@@ -302,8 +342,8 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
             <h3 class="text-xl lg:text-2xl font-bold text-[#0b0c10] mb-2">Prisma.io</h3>
             <div class="w-12 h-[3px] bg-green-500 mb-4"></div>
             <p class="text-[16px] lg:text-[17px] text-primary-950/80 leading-relaxed">
-              Permet de gagner en productivité en simplifiant les requêtes et la gestion des
-              modèles de données au sein des applications.
+              Permet de gagner en productivité en simplifiant les requêtes et la gestion des modèles
+              de données au sein des applications.
             </p>
           </div>
         </div>
@@ -330,9 +370,15 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
         </div>
 
         <!-- Grille des technologies -->
-        <div ref="techs2GridEl" class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-[1400px] mx-auto px-6">
+        <div
+          ref="techs2GridEl"
+          class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-[1400px] mx-auto px-6"
+        >
           <!-- Item 4 : Vue.JS -->
-          <div class="flex flex-col items-center text-center" :class="scrollRevealClass(techs2GridReveal, 'up', { delayClass: 'delay-100' })">
+          <div
+            class="flex flex-col items-center text-center"
+            :class="scrollRevealClass(techs2GridReveal, 'up', { delayClass: 'delay-100' })"
+          >
             <img
               src="/images/partners/adeo/techs/vue_js.png"
               alt="Vue.JS"
@@ -347,7 +393,10 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
           </div>
 
           <!-- Item 5 : Vuetify -->
-          <div class="flex flex-col items-center text-center" :class="scrollRevealClass(techs2GridReveal, 'up', { delayClass: 'delay-200' })">
+          <div
+            class="flex flex-col items-center text-center"
+            :class="scrollRevealClass(techs2GridReveal, 'up', { delayClass: 'delay-200' })"
+          >
             <img
               src="/images/partners/adeo/techs/Vuetify.png"
               alt="Vuetify"
@@ -356,13 +405,16 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
             <h3 class="text-xl lg:text-2xl font-bold text-[#0b0c10] mb-2">Vuetify</h3>
             <div class="w-12 h-[3px] bg-green-500 mb-4"></div>
             <p class="text-[16px] lg:text-[17px] text-primary-950/80 leading-relaxed">
-              Accélère le développement d'interfaces cohérente tout en garantissant une
-              expérience utilisateur fluide.
+              Accélère le développement d'interfaces cohérente tout en garantissant une expérience
+              utilisateur fluide.
             </p>
           </div>
 
           <!-- Item 6 : Google Cloud Platform -->
-          <div class="flex flex-col items-center text-center" :class="scrollRevealClass(techs2GridReveal, 'up', { delayClass: 'delay-300' })">
+          <div
+            class="flex flex-col items-center text-center"
+            :class="scrollRevealClass(techs2GridReveal, 'up', { delayClass: 'delay-300' })"
+          >
             <img
               src="/images/partners/adeo/techs/google_cloud_platform.png"
               alt="Google Cloud Platform"
@@ -379,8 +431,11 @@ const techs2GridReveal = useScrollReveal(techs2GridEl)
       </div>
     </section>
 
-    <!-- Footer -->
-    <section data-theme="dark" class="w-full snap-start snap-always">
+    <!-- pousse footer : h-dvh + justify-end, sinon TheFooter flotte au milieu -->
+    <section
+      data-theme="dark"
+      class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
+    >
       <TheFooter />
     </section>
   </div>

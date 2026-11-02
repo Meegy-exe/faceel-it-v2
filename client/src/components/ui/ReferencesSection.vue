@@ -232,7 +232,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="flex h-full w-full flex-col justify-center py-8 [@media(max-height:650px)]:justify-between [@media(max-height:650px)]:pt-20 [@media(max-height:650px)]:pb-8 md:py-12">
+  <div
+    class="flex h-full w-full flex-col justify-center py-8 [@media(max-height:650px)]:justify-between [@media(max-height:650px)]:pt-20 [@media(max-height:650px)]:pb-8 md:py-12"
+  >
     <!-- BLOC 1 : Marquee ligne 1 → gauche -->
     <div
       ref="track1"
@@ -248,7 +250,9 @@ onBeforeUnmount(() => {
             :key="`${pass}-${logo.name}`"
             class="shrink-0 transition-transform duration-300 hover:scale-105"
           >
-            <div class="flex h-20 [@media(max-height:650px)]:h-12 w-48 items-center justify-center md:h-24 md:w-56 xl:h-28 xl:w-64">
+            <div
+              class="flex h-20 [@media(max-height:650px)]:h-12 w-48 items-center justify-center md:h-24 md:w-56 xl:h-28 xl:w-64"
+            >
               <img
                 :src="logo.src"
                 :alt="logo.name"
@@ -266,7 +270,9 @@ onBeforeUnmount(() => {
       <p class="text-base font-semibold uppercase tracking-widest text-blue-500">
         Ils nous ont fait confiance
       </p>
-      <h2 class="mt-2 flex min-h-[88px] [@media(max-height:650px)]:min-h-[56px] items-center justify-center overflow-hidden pb-2 font-display text-4xl [@media(max-height:650px)]:text-2xl [@media(max-height:650px)]:leading-tight font-extrabold tracking-tight text-gray-900 md:min-h-[112px] md:text-5xl">
+      <h2
+        class="mt-2 flex min-h-[88px] [@media(max-height:650px)]:min-h-[56px] items-center justify-center overflow-hidden pb-2 font-display text-4xl [@media(max-height:650px)]:text-2xl [@media(max-height:650px)]:leading-tight font-extrabold tracking-tight text-gray-900 md:min-h-[112px] md:text-5xl"
+      >
         <Transition
           enter-active-class="transition-all duration-500 ease-out"
           enter-from-class="opacity-0 translate-y-4"
@@ -296,7 +302,9 @@ onBeforeUnmount(() => {
             :key="`${pass}-${logo.name}`"
             class="shrink-0 transition-transform duration-300 hover:scale-105"
           >
-            <div class="flex h-20 [@media(max-height:650px)]:h-12 w-48 items-center justify-center md:h-24 md:w-56 xl:h-28 xl:w-64">
+            <div
+              class="flex h-20 [@media(max-height:650px)]:h-12 w-48 items-center justify-center md:h-24 md:w-56 xl:h-28 xl:w-64"
+            >
               <img
                 :src="logo.src"
                 :alt="logo.name"

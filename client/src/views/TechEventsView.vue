@@ -4,8 +4,7 @@ import { useSeo } from '@/composables/useSeo'
 
 useSeo({
   title: 'Événements tech',
-  description:
-    'Retrouvez les meetups, conférences et hackathons auxquels participe Faceel-IT.',
+  description: 'Retrouvez les meetups, conférences et hackathons auxquels participe Faceel-IT.',
 })
 
 // TODO : brancher la liste réelle des événements (API ou CMS) — aucun événement
@@ -22,7 +21,9 @@ const events: TechEvent[] = []
 
 <template>
   <!-- Pas de `<main>` ici : la coquille (`App.vue`) le fournit déjà. -->
-  <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-primary-950">
+  <div
+    class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-primary-950"
+  >
     <!-- ==================================================================
          1. HERO
          ================================================================== -->
@@ -33,7 +34,9 @@ const events: TechEvent[] = []
       <p class="text-white/60 mb-6 font-medium">
         Accueil / <span class="text-accent-500">Événements tech</span>
       </p>
-      <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight max-w-4xl">
+      <h1
+        class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight max-w-4xl"
+      >
         Agenda des événements tech
       </h1>
       <p class="mt-6 text-lg text-white/80 max-w-xl">

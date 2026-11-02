@@ -16,25 +16,31 @@ import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
  * `prefers-reduced-motion` et en SSR (même garde que les autres carrousels du
  * site, ex. CoverCarousel.vue).
  *
- * Descriptions : seule HUMAIN DAY 2026 a une description, fournie par
- * l'utilisateur comme texte neutre explicitement provisoire — aucune date
- * précise n'a été communiquée pour les 3 événements (cf. CLAUDE.md
- * « Intégrité du contenu », ne jamais inventer de date/fait métier), donc
- * aucune n'est affichée ; les slides 2 et 3 restent sans description
- * (TODO : à compléter si fournie).
+ * Descriptions : aucune des 3 n'en a (cf. CLAUDE.md « Intégrité du contenu »,
+ * ne jamais inventer de date/fait métier).
+ *
+ * Chaque titre pointe désormais vers le post LinkedIn correspondant (lien
+ * externe, nouvel onglet) plutôt que vers une page interne.
  */
 interface TickerEvent {
   title: string
   description?: string
+  href: string
 }
 
 const EVENTS: TickerEvent[] = [
   {
-    title: 'HUMAIN DAY 2026',
-    description: "Venez nous rencontrer lors de cette journée dédiée à l'humain et la tech.",
+    title: 'Human Day',
+    href: 'https://www.linkedin.com/posts/faceel-it_human-day-activity-7511396464183574529-DmwC?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEsIulEBAjfoGqhFm6qlV6M1Wh0h8DzEPl4',
   },
-  { title: 'Faceel-it aux Trophées Employeurs' },
-  { title: 'FACEEL-IT AU GRAND SOMMET "IA AVEC NOUS"' },
+  {
+    title: 'Dev Lille',
+    href: 'https://www.linkedin.com/posts/faceel-it_devlille-faceelit-esn-activity-7472520923183681536--1fk?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEsIulEBAjfoGqhFm6qlV6M1Wh0h8DzEPl4',
+  },
+  {
+    title: 'Trophée employeur',
+    href: 'https://www.linkedin.com/posts/faceel-it_faceelit-trophaezesemployeurs-fidaezlisation-activity-7403754387384270848-JAnf?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEsIulEBAjfoGqhFm6qlV6M1Wh0h8DzEPl4',
+  },
 ]
 
 const slider = useTemplateRef<HTMLDivElement>('slider')
@@ -42,8 +48,8 @@ const activeIndex = ref(0)
 const isDragging = ref(false)
 let startX = 0
 let scrollLeft = 0
-/** Distingue un vrai drag d'un simple clic : un `RouterLink` sous le doigt/la
- *  souris ne doit naviguer que si la piste n'a pas bougé. */
+/** Distingue un vrai drag d'un simple clic : le lien sous le doigt/la souris
+ *  ne doit ouvrir LinkedIn que si la piste n'a pas bougé. */
 let dragged = false
 
 function pointerX(e: MouseEvent | TouchEvent) {
@@ -60,6 +66,12 @@ function startDrag(e: MouseEvent | TouchEvent) {
 
 function stopDrag() {
   isDragging.value = false
+}
+
+// sortie de piste : stoppe le drag et relance la rotation auto
+function handleSliderMouseLeave() {
+  stopDrag()
+  resumeCarousel()
 }
 
 function onDrag(e: MouseEvent | TouchEvent) {
@@ -114,16 +126,17 @@ onBeforeUnmount(pauseCarousel)
   <div
     class="absolute top-16 left-0 z-30 w-full bg-gray-50 border-b border-gray-200 h-16 lg:h-20 lg:top-20"
   >
-    <div class="relative flex flex-col justify-center w-full max-w-[1920px] mx-auto px-4 h-16 lg:h-20 bg-gray-50">
-      <!-- Piste draggable : un seul élément visible à la fois (snap-center).
-           pb-3 : laisse la place aux points, posés en absolu plus bas, sans
-           agrandir la hauteur stricte du bandeau (= hauteur de la Navbar). -->
+    <!-- centre bandeau -->
+    <div
+      class="flex flex-col items-center justify-center w-full h-full max-w-[1920px] mx-auto px-4 bg-gray-50 text-center"
+    >
+      <!-- Piste draggable : un seul élément visible à la fois (snap-center). -->
       <div
         ref="slider"
-        class="flex w-full items-center overflow-x-auto snap-x snap-mandatory hide-scrollbar select-none pb-3 transition-transform"
+        class="flex w-full items-center overflow-x-auto snap-x snap-mandatory hide-scrollbar select-none transition-transform"
         :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'"
         @mouseenter="pauseCarousel"
-        @mouseleave="stopDrag(); resumeCarousel()"
+        @mouseleave="handleSliderMouseLeave"
         @mousedown="startDrag"
         @mouseup="stopDrag"
         @mousemove="onDrag"
@@ -132,10 +145,13 @@ onBeforeUnmount(pauseCarousel)
         @touchmove="onDrag"
         @scroll="onSliderScroll"
       >
-        <RouterLink
+        <!-- liens events linkedin externes -->
+        <a
           v-for="event in EVENTS"
           :key="event.title"
-          :to="{ name: 'evenements-tech' }"
+          :href="event.href"
+          target="_blank"
+          rel="noopener noreferrer"
           class="group w-full shrink-0 snap-center flex flex-col items-center justify-center text-center gap-0.5 cursor-pointer"
           @click="onLinkClick"
         >
@@ -150,21 +166,28 @@ onBeforeUnmount(pauseCarousel)
           >
             {{ event.description }}
           </p>
-        </RouterLink>
+        </a>
       </div>
 
-      <!-- Points de pagination — en absolu : la hauteur du bandeau reste
-           verrouillée sur celle de la Navbar (h-16 lg:h-20). -->
-      <div class="absolute bottom-1 w-full flex justify-center gap-1.5">
+      <!-- puces en flux : la marge negative des boutons (-m-3) annule leur
+           propre padding dans le calcul de hauteur du flex, la rangee garde
+           donc une empreinte proche de la taille du point (justify-center du
+           parent absorbe le reste sans depasser h-16 lg:h-20). -->
+      <div class="mt-1.5 flex w-full justify-center gap-5">
+        <!-- elargit touch target : padding invisible (-m-3) autour du point -->
         <button
           v-for="(event, index) in EVENTS"
           :key="event.title"
           type="button"
           :aria-label="`Aller à l'événement ${index + 1}`"
-          class="size-1.5 rounded-full transition-colors duration-300"
-          :class="activeIndex === index ? 'bg-accent-500' : 'bg-primary-900/20'"
+          class="-m-3 p-3"
           @click="scrollToEvent(index)"
-        />
+        >
+          <span
+            class="block size-3 rounded-full transition-colors duration-300"
+            :class="activeIndex === index ? 'bg-accent-500' : 'bg-primary-900/20'"
+          />
+        </button>
       </div>
     </div>
   </div>

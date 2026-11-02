@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import { useTemplateRef } from 'vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
-import CoverCarousel from '@/components/ui/CoverCarousel.vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
+import EventsSection from '@/components/home/EventsSection.vue'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
 import { useSeo } from '@/composables/useSeo'
 import photoVeloEquipe from '@/assets/images/photos/velo-equipe.jpg'
 import photoCourseGroupe from '@/assets/images/photos/course-groupe.jpg'
-import photoAfterwork from '@/assets/images/photos/afterwork.jpg'
-import photoPaintball from '@/assets/images/photos/paintball.jpg'
-import photoCourseSolo from '@/assets/images/photos/course-solo.jpg'
-import photoFondateurs from '@/assets/images/photos/fondateurs.jpg'
 
 /**
  * Page « Je suis candidat » — V0.9.
@@ -26,26 +22,20 @@ import photoFondateurs from '@/assets/images/photos/fondateurs.jpg'
  * template et le script »). La page est fonctionnelle et indexable
  * (pré-rendue) mais n'apparaît pour l'instant dans aucun menu.
  *
- * IMAGES — `picsum.photos` explicitement demandé par le brief pour la
- * galerie, exclu comme pour les autres pages : le CSP de production
+ * IMAGES — `picsum.photos` explicitement demandé par le brief, exclu comme
+ * pour les autres pages : le CSP de production
  * (`client/security-headers.conf`) déclare `img-src 'self'` sans exception.
- * Six photos déjà présentes ou ajoutées dans `assets/images/photos/`
- * (dépôt client) servent de substitut, décoratives (`alt=""`).
+ * Photos déjà présentes dans `assets/images/photos/` (dépôt client) servent
+ * de substitut, décoratives (`alt=""`).
  *
- * CTA FINAL — « Voir nos offres » pointe vers le `mailto` de contact, pas
- * vers une page d'offres : aucune route de recrutement n'existe encore dans
- * `routes.ts`, exactement la même mesure temporaire déjà en place pour
- * « Nous rejoindre » dans `App.vue` (cf. son commentaire « MESURE
- * TEMPORAIRE »). Un lien vers une route inexistante serait un lien mort.
+ * CTA FINAL — « Voir nos offres » pointe vers la route `offres` (V1).
  *
- * ACTIVE = FOND ACCENT, MAIS TEXTE NAVY, PAS BLANC — le brief demande
- * `bg-accent-500` + « texte blanc » pour la carte active du carrousel de
- * témoignages. Blanc sur `accent-500` ne tient que 1,9:1 (cf. l'en-tête de
- * `main.css`), un échec WCAG net sur un paragraphe entier de citation — pas
- * une nuance de goût, un texte réellement illisible pour une partie des
- * visiteurs. `text-primary-900` (navy) à la place : c'est exactement la
- * paire déjà validée par `BaseButton.vue` (variante `accent`, 9,1:1) pour
- * tout texte porté par un aplat `accent-500` du design system.
+ * EVENT ACCUEIL — la section « Nos événements » réutilise `EventsSection.vue`
+ * (`components/home/`), le même composant que `HomeView.vue`, plutôt qu'un
+ * bloc propre à cette page (V1).
+ *
+ * TÉMOIGNAGES — refonte V1 : carrousel plein ecran (full bleed) a defilement
+ * natif, cf. la section plus bas pour le detail des classes.
  */
 useSeo({
   title: 'Je suis candidat',
@@ -62,14 +52,31 @@ const collectifEl = useTemplateRef<HTMLElement>('collectifEl')
 const collectifReveal = useScrollReveal(collectifEl)
 const processEl = useTemplateRef<HTMLElement>('processEl')
 const processReveal = useScrollReveal(processEl)
-const eventsEl = useTemplateRef<HTMLElement>('eventsEl')
-const eventsReveal = useScrollReveal(eventsEl)
 const temoignagesEl = useTemplateRef<HTMLElement>('temoignagesEl')
 const temoignagesReveal = useScrollReveal(temoignagesEl)
+const carouselEl = useTemplateRef<HTMLElement>('carouselEl')
 const ctaEl = useTemplateRef<HTMLElement>('ctaEl')
 const ctaReveal = useScrollReveal(ctaEl)
 
-const CONTACT_HREF = 'mailto:contact@faceel-it.com'
+// scroll molette horizontal : vertical hors des bords, horizontal sinon
+function handleWheel(e: WheelEvent) {
+  const el = carouselEl.value
+  if (!el) return
+  const atStart = el.scrollLeft <= 0
+  const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1
+  if ((atStart && e.deltaY < 0) || (atEnd && e.deltaY > 0)) return
+  e.preventDefault()
+  el.scrollLeft += e.deltaY
+}
+
+// fleches nav : largeur carte md (340px) + gap (32px)
+function scrollPrev() {
+  carouselEl.value?.scrollBy({ left: -372, behavior: 'smooth' })
+}
+
+function scrollNext() {
+  carouselEl.value?.scrollBy({ left: 372, behavior: 'smooth' })
+}
 
 /* -------------------------------------------------------------------------- */
 /* Le Collectif — 3 avantages                                                 */
@@ -117,26 +124,6 @@ const PROCESS_STEPS: ProcessStep[] = [
   },
   { number: '03', title: 'Proposition d’embauche' },
   { number: '04', title: 'Intégration' },
-]
-
-/* -------------------------------------------------------------------------- */
-/* Faceel-event — galerie marquee                                            */
-/* -------------------------------------------------------------------------- */
-
-interface EventPhoto {
-  src: string
-}
-
-/** Repris des photos déjà importées ailleurs sur le site (cf. commentaire
- *  d'en-tête) — le doublon d'usage entre pages est préférable à des fichiers
- *  de plusieurs Mo non optimisés (cf. `HistoireView.vue`, même arbitrage). */
-const EVENT_PHOTOS: EventPhoto[] = [
-  { src: photoVeloEquipe },
-  { src: photoAfterwork },
-  { src: photoPaintball },
-  { src: photoCourseGroupe },
-  { src: photoCourseSolo },
-  { src: photoFondateurs },
 ]
 
 /* -------------------------------------------------------------------------- */
@@ -188,7 +175,7 @@ const TESTIMONIALS: Testimonial[] = [
        dans le dépôt (routes.ts / App.vue), ce conteneur local est donc le
        seul mécanisme réel de snap sur cette page. -->
   <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
-  <!-- ==================================================================
+    <!-- ==================================================================
        1. SAVOIR-ÊTRE — sombre, image « mask » à gauche / texte à droite.
 
        « Mask » plutôt que « parallax » (le brief laisse le choix) : un
@@ -197,347 +184,353 @@ const TESTIMONIALS: Testimonial[] = [
        (Playwright est interdit sur ce projet, cf. CLAUDE.md) qu'un simple
        dévoilement en `clip-path`, rejoué une seule fois via le même
        `useScrollReveal` que tout le reste de la page. -->
-  <section
-    id="savoir-etre"
-    data-theme="dark"
-    class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
-  >
-    <!-- `<h1>` de la page : premier titre significatif rencontré, résume le
-         sujet pour l'a11y/le SEO (même parti que `HistoireView.vue`). -->
-    <div
-      ref="savoirEtreEl"
-      class="mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16"
+    <section
+      id="savoir-etre"
+      data-theme="dark"
+      class="relative min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center overflow-hidden px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
     >
+      <!-- effet core glow -->
       <div
+        class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(30,60,180,0.35)_0%,_transparent_70%)] pointer-events-none"
         aria-hidden="true"
-        class="overflow-hidden rounded-3xl shadow-lift transition-all duration-700 ease-out motion-reduce:transition-none"
-        :class="scrollRevealClass(savoirEtreReveal, 'left')"
-      >
-        <img
-          :src="photoVeloEquipe"
-          alt=""
-          loading="eager"
-          fetchpriority="high"
-          decoding="async"
-          class="aspect-[4/5] w-full object-cover transition-[clip-path] duration-1000 ease-out motion-reduce:transition-none"
-          :style="{
-            clipPath: savoirEtreReveal !== 'hidden' ? 'inset(0 0 0 0)' : 'inset(0 100% 0 0)',
-          }"
-        />
-      </div>
+      ></div>
 
+      <!-- `<h1>` de la page : premier titre significatif rencontré, résume le
+         sujet pour l'a11y/le SEO (même parti que `HistoireView.vue`). -->
       <div
-        class="transition-all duration-700 ease-out motion-reduce:transition-none [animation-delay:120ms]"
-        :class="scrollRevealClass(savoirEtreReveal, 'right')"
-      >
-        <h1 class="font-display text-display text-balance">
-          D’abord un
-          <!-- Effet outline demandé par le brief : bordure blanche, repli
-               (`supports-[...]`) — sans support, le mot reste en plein blanc,
-               jamais invisible. -->
-          <span
-            class="text-white supports-[-webkit-text-stroke:1px]:text-transparent supports-[-webkit-text-stroke:1px]:[-webkit-text-stroke:2px_white]"
-          >
-            savoir être
-          </span>
-        </h1>
-        <p class="mt-6 text-lg leading-relaxed text-white/75 sm:text-xl">
-          Chez Faceel-it nous cherchons avant tout des collaborateurs passionnés par leur métier et
-          capables de s’ouvrir à de nouveaux projets.
-        </p>
-        <p class="mt-4 text-lg leading-relaxed text-white/75 sm:text-xl">
-          Sortir de sa zone de confort et se challenger sont deux qualités essentielles si vous
-          voulez nous rejoindre.
-        </p>
-        <p class="mt-4 text-lg leading-relaxed text-white/75 sm:text-xl">
-          C’est pour cette raison que nous serons toujours à votre écoute et privilégierons vos
-          souhaits d’évolution.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================================================================
-       2. SAVOIR-FAIRE — clair, texte à gauche / image à droite (hover scale).
-       ================================================================== -->
-  <section
-    id="savoir-faire"
-    data-theme="light"
-    class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
-  >
-    <div
-      ref="savoirFaireEl"
-      class="mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16"
-    >
-      <div
-        class="order-2 lg:order-1 transition-all duration-700 ease-out motion-reduce:transition-none"
-        :class="scrollRevealClass(savoirFaireReveal, 'left')"
-      >
-        <h2 class="font-display text-display text-balance">
-          Ensuite un
-          <span
-            class="text-primary-900 supports-[-webkit-text-stroke:1px]:text-transparent supports-[-webkit-text-stroke:1px]:[-webkit-text-stroke:2px_var(--color-primary-900)]"
-          >
-            savoir faire
-          </span>
-        </h2>
-        <p class="mt-6 text-lg leading-relaxed text-primary-900/80 sm:text-xl">
-          Nous vous accompagnons tout au long de votre carrière au sein de Faceel-it sur le
-          développement de vos compétences.
-        </p>
-        <p class="mt-4 text-lg leading-relaxed text-primary-900/80 sm:text-xl">
-          Diversité des missions, programmes de formation, meetups sont autant de leviers qui nous
-          permettrons de vous faire progresser pour atteindre vos ambitions.
-        </p>
-      </div>
-
-      <div
-        class="group order-1 lg:order-2 overflow-hidden rounded-3xl shadow-lift transition-all duration-700 ease-out motion-reduce:transition-none [animation-delay:120ms]"
-        :class="scrollRevealClass(savoirFaireReveal, 'right')"
-      >
-        <img
-          :src="photoCourseGroupe"
-          alt=""
-          loading="lazy"
-          decoding="async"
-          class="aspect-[4/5] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110 motion-reduce:transition-none"
-        />
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================================================================
-       3. LE COLLECTIF — sombre, texte décoratif géant + 3 avantages.
-       ================================================================== -->
-  <section
-    id="collectif"
-    data-theme="dark"
-    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
-  >
-    <div ref="collectifEl" class="mx-auto w-full max-w-6xl">
-      <h2
-        class="text-center font-display text-display text-balance transition-all duration-700 ease-out motion-reduce:transition-none"
-        :class="scrollRevealClass(collectifReveal)"
-      >
-        Rejoindre un collectif créé par et pour des passionnés
-      </h2>
-
-      <div class="mt-12 grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
-        <!-- Texte décoratif géant, purement atmosphérique : le vrai titre de
-             section est le `<h2>` ci-dessus, celui-ci n'apporte aucune
-             information supplémentaire — `aria-hidden` évite le bruit pour
-             un lecteur d'écran. -->
-        <p
-          aria-hidden="true"
-          class="hidden select-none font-display text-[clamp(3rem,10vw,9rem)] leading-[0.85] text-transparent [-webkit-text-stroke:2px_white] opacity-40 lg:block"
-        >
-          Juste
-          <br />
-          pour
-          <br />
-          vous
-        </p>
-
-        <ul class="grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-1">
-          <li
-            v-for="(advantage, index) in ADVANTAGES"
-            :key="advantage.number"
-            class="transition-all duration-700 ease-out motion-reduce:transition-none"
-            :style="{ transitionDelay: `${index * 140}ms` }"
-            :class="scrollRevealClass(collectifReveal, 'right')"
-          >
-            <p class="font-display text-3xl font-extrabold text-accent-500">
-              {{ advantage.number }}
-            </p>
-            <p class="mt-1 font-display text-lg font-bold text-white">{{ advantage.title }}</p>
-            <p class="mt-2 text-sm leading-relaxed text-white/70">{{ advantage.description }}</p>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================================================================
-       4. PROCESSUS DE RECRUTEMENT — clair, timeline verticale.
-       ================================================================== -->
-  <section
-    id="process"
-    data-theme="light"
-    class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
-  >
-    <div ref="processEl" class="mx-auto w-full max-w-4xl">
-      <h2
-        class="font-display text-display text-balance text-primary-900 transition-all duration-700 ease-out motion-reduce:transition-none"
-        :class="scrollRevealClass(processReveal)"
-      >
-        Notre process d’entrée
-      </h2>
-
-      <!-- Reprise verbatim de la section #independance de HistoireView.vue :
-           même fait, pas une reformulation — cf. CLAUDE.md, intégrité du
-           contenu. -->
-      <p class="mt-4 font-display text-xl font-bold text-primary-900 sm:text-2xl">
-        <span class="text-accent-700">100&nbsp;%</span> indépendante ·
-        <span class="text-accent-700">100&nbsp;%</span> de croissance organique
-      </p>
-
-      <!-- `<ol>`, pas `<ul>` : c'est un ORDRE, une entrée n'a de sens qu'après
-           la précédente — un lecteur d'écran doit l'entendre comme tel. -->
-      <ol class="mt-12 space-y-8">
-        <li
-          v-for="(step, index) in PROCESS_STEPS"
-          :key="step.number"
-          class="flex items-start gap-6 border-l-2 border-primary-900/10 pl-6 transition-all duration-700 ease-out motion-reduce:transition-none sm:gap-8 sm:pl-8"
-          :style="{ transitionDelay: `${index * 120}ms` }"
-          :class="scrollRevealClass(processReveal, 'left')"
-        >
-          <span
-            class="shrink-0 font-display text-5xl font-extrabold tracking-tight text-accent-500 sm:text-6xl"
-          >
-            {{ step.number }}
-          </span>
-          <p class="mt-2 text-lg leading-relaxed text-primary-900 sm:mt-3 sm:text-xl">
-            {{ step.title }}
-          </p>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- ==================================================================
-       5. FACEEL-EVENT — sombre, galerie marquee.
-       ================================================================== -->
-  <section
-    id="events"
-    data-theme="dark"
-    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center py-16 text-white bg-[#000066]"
-  >
-    <div ref="eventsEl" class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 xl:px-12">
-      <h2
-        class="text-center font-display text-display text-balance transition-all duration-700 ease-out motion-reduce:transition-none"
-        :class="scrollRevealClass(eventsReveal)"
-      >
-        Faceel-event
-      </h2>
-    </div>
-
-    <!-- Défilement infini : même mécanique que `PartnerCarousel.vue` (piste
-         dupliquée, `--animate-marquee`, pause au survol/focus,
-         `motion-reduce` replié en grille statique) — reconduite ici pour des
-         photos plutôt que des logos, pas réinventée. -->
-    <div class="group/marquee mt-12 overflow-hidden motion-reduce:overflow-visible">
-      <div
-        class="flex w-max shrink-0 items-center gap-6 animate-marquee will-change-transform group-hover/marquee:[animation-play-state:paused] group-focus-within/marquee:[animation-play-state:paused] motion-reduce:w-full motion-reduce:animate-none motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:px-4"
+        ref="savoirEtreEl"
+        class="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16"
       >
         <div
-          v-for="(photo, index) in EVENT_PHOTOS"
-          :key="`${index}-${photo.src}`"
-          class="group h-56 w-72 shrink-0 overflow-hidden rounded-3xl shadow-lift sm:h-64 sm:w-80"
+          aria-hidden="true"
+          class="overflow-hidden rounded-3xl shadow-lift transition-all duration-700 ease-out motion-reduce:transition-none"
+          :class="scrollRevealClass(savoirEtreReveal, 'left')"
         >
           <img
-            :src="photo.src"
+            :src="photoVeloEquipe"
             alt=""
-            loading="lazy"
+            loading="eager"
+            fetchpriority="high"
             decoding="async"
-            class="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110 motion-reduce:transition-none"
+            class="aspect-[4/5] w-full object-cover transition-[clip-path] duration-1000 ease-out motion-reduce:transition-none"
+            :style="{
+              clipPath: savoirEtreReveal !== 'hidden' ? 'inset(0 0 0 0)' : 'inset(0 100% 0 0)',
+            }"
           />
         </div>
 
-        <!-- Copie dupliquée, purement visuelle (boucle sans saut) — retirée
-             de l'accessibilité comme dans `PartnerCarousel.vue`. -->
         <div
-          v-for="(photo, index) in EVENT_PHOTOS"
-          :key="`clone-${index}-${photo.src}`"
-          aria-hidden="true"
-          class="h-56 w-72 shrink-0 overflow-hidden rounded-3xl shadow-lift motion-reduce:hidden sm:h-64 sm:w-80"
+          class="transition-all duration-700 ease-out motion-reduce:transition-none [animation-delay:120ms]"
+          :class="scrollRevealClass(savoirEtreReveal, 'right')"
         >
-          <img :src="photo.src" alt="" class="h-full w-full object-cover" />
+          <h1 class="font-display text-display text-balance">
+            D’abord un
+            <!-- Effet outline demandé par le brief : bordure blanche, repli
+               (`supports-[...]`) — sans support, le mot reste en plein blanc,
+               jamais invisible. -->
+            <span
+              class="text-white supports-[-webkit-text-stroke:1px]:text-transparent supports-[-webkit-text-stroke:1px]:[-webkit-text-stroke:2px_white]"
+            >
+              savoir être
+            </span>
+          </h1>
+          <p class="mt-6 text-lg leading-relaxed text-white/75 sm:text-xl">
+            Chez Faceel-it nous cherchons avant tout des collaborateurs passionnés par leur métier
+            et capables de s’ouvrir à de nouveaux projets.
+          </p>
+          <p class="mt-4 text-lg leading-relaxed text-white/75 sm:text-xl">
+            Sortir de sa zone de confort et se challenger sont deux qualités essentielles si vous
+            voulez nous rejoindre.
+          </p>
+          <p class="mt-4 text-lg leading-relaxed text-white/75 sm:text-xl">
+            C’est pour cette raison que nous serons toujours à votre écoute et privilégierons vos
+            souhaits d’évolution.
+          </p>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ==================================================================
-       6. PAROLES DE COLLABORATEURS — clair, carrousel de témoignages.
+    <!-- ==================================================================
+       2. SAVOIR-FAIRE — clair, texte à gauche / image à droite (hover scale).
        ================================================================== -->
-  <section
-    id="temoignages"
-    data-theme="light"
-    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
-  >
-    <div
-      ref="temoignagesEl"
-      class="mx-auto w-full max-w-6xl transition-all duration-700 ease-out motion-reduce:transition-none"
-      :class="scrollRevealClass(temoignagesReveal)"
+    <section
+      id="savoir-faire"
+      data-theme="light"
+      class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
     >
-      <h2 class="text-center font-display text-display text-balance text-primary-900">
-        Paroles de collaborateurs
-      </h2>
-
-      <CoverCarousel
-        :count="TESTIMONIALS.length"
-        label="Paroles de collaborateurs"
-        class="mt-8 h-[380px] sm:h-[340px]"
+      <div
+        ref="savoirFaireEl"
+        class="mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16"
       >
-        <template #slide="{ index, active }">
-          <!-- `active` → fond accent, texte NAVY (pas blanc, cf. commentaire
-               d'en-tête du script) ; sinon fond blanc « estompé » demandé par
-               le brief (`ring` léger, pas de couleur vive). -->
-          <blockquote
-            class="flex h-full flex-col justify-center rounded-3xl p-8 text-center shadow-lift transition-colors duration-500 sm:p-10"
-            :class="
-              active
-                ? 'bg-accent-500 text-primary-900'
-                : 'bg-white text-primary-900/60 ring-1 ring-primary-900/8'
-            "
+        <div
+          class="order-2 lg:order-1 transition-all duration-700 ease-out motion-reduce:transition-none"
+          :class="scrollRevealClass(savoirFaireReveal, 'left')"
+        >
+          <h2 class="font-display text-display text-balance">
+            Ensuite un
+            <span
+              class="text-primary-900 supports-[-webkit-text-stroke:1px]:text-transparent supports-[-webkit-text-stroke:1px]:[-webkit-text-stroke:2px_var(--color-primary-900)]"
+            >
+              savoir faire
+            </span>
+          </h2>
+          <p class="mt-6 text-lg leading-relaxed text-primary-900/80 sm:text-xl">
+            Nous vous accompagnons tout au long de votre carrière au sein de Faceel-it sur le
+            développement de vos compétences.
+          </p>
+          <p class="mt-4 text-lg leading-relaxed text-primary-900/80 sm:text-xl">
+            Diversité des missions, programmes de formation, meetups sont autant de leviers qui nous
+            permettrons de vous faire progresser pour atteindre vos ambitions.
+          </p>
+        </div>
+
+        <div
+          class="group order-1 lg:order-2 overflow-hidden rounded-3xl shadow-lift transition-all duration-700 ease-out motion-reduce:transition-none [animation-delay:120ms]"
+          :class="scrollRevealClass(savoirFaireReveal, 'right')"
+        >
+          <img
+            :src="photoCourseGroupe"
+            alt=""
+            loading="lazy"
+            decoding="async"
+            class="aspect-[4/5] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110 motion-reduce:transition-none"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================
+       3. LE COLLECTIF — sombre, texte décoratif géant + 3 avantages.
+       ================================================================== -->
+    <section
+      id="collectif"
+      data-theme="dark"
+      class="relative h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center overflow-hidden px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
+    >
+      <!-- effet core glow -->
+      <div
+        class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(30,60,180,0.35)_0%,_transparent_70%)] pointer-events-none"
+        aria-hidden="true"
+      ></div>
+
+      <div ref="collectifEl" class="relative z-10 mx-auto w-full max-w-6xl">
+        <h2
+          class="text-center font-display text-display text-balance transition-all duration-700 ease-out motion-reduce:transition-none"
+          :class="scrollRevealClass(collectifReveal)"
+        >
+          Rejoindre un collectif créé par et pour des passionnés
+        </h2>
+
+        <div class="mt-12 grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
+          <!-- Texte décoratif géant, purement atmosphérique : le vrai titre de
+             section est le `<h2>` ci-dessus, celui-ci n'apporte aucune
+             information supplémentaire — `aria-hidden` évite le bruit pour
+             un lecteur d'écran. -->
+          <p
+            aria-hidden="true"
+            class="hidden select-none font-display text-[clamp(3rem,10vw,9rem)] leading-[0.85] text-transparent [-webkit-text-stroke:2px_white] opacity-40 lg:block"
           >
-            <p class="text-base leading-relaxed sm:text-lg">« {{ TESTIMONIALS[index]!.quote }} »</p>
-            <footer class="mt-6 text-sm font-bold uppercase tracking-wide">
-              {{ TESTIMONIALS[index]!.author }} — {{ TESTIMONIALS[index]!.role }}
+            Juste
+            <br />
+            pour
+            <br />
+            vous
+          </p>
+
+          <ul class="grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-1">
+            <li
+              v-for="(advantage, index) in ADVANTAGES"
+              :key="advantage.number"
+              class="transition-all duration-700 ease-out motion-reduce:transition-none"
+              :style="{ transitionDelay: `${index * 140}ms` }"
+              :class="scrollRevealClass(collectifReveal, 'right')"
+            >
+              <p class="font-display text-3xl font-extrabold text-accent-500">
+                {{ advantage.number }}
+              </p>
+              <p class="mt-1 font-display text-lg font-bold text-white">{{ advantage.title }}</p>
+              <p class="mt-2 text-sm leading-relaxed text-white/70">{{ advantage.description }}</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================
+       4. PROCESSUS DE RECRUTEMENT — clair, timeline verticale.
+       ================================================================== -->
+    <section
+      id="process"
+      data-theme="light"
+      class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
+    >
+      <div ref="processEl" class="mx-auto w-full max-w-4xl">
+        <h2
+          class="font-display text-display text-balance text-primary-900 transition-all duration-700 ease-out motion-reduce:transition-none"
+          :class="scrollRevealClass(processReveal)"
+        >
+          Notre process d’entrée
+        </h2>
+
+        <!-- Reprise verbatim de la section #independance de HistoireView.vue :
+           même fait, pas une reformulation — cf. CLAUDE.md, intégrité du
+           contenu. -->
+        <p class="mt-4 font-display text-xl font-bold text-primary-900 sm:text-2xl">
+          <span class="text-accent-700">100&nbsp;%</span> indépendante ·
+          <span class="text-accent-700">100&nbsp;%</span> de croissance organique
+        </p>
+
+        <!-- `<ol>`, pas `<ul>` : c'est un ORDRE, une entrée n'a de sens qu'après
+           la précédente — un lecteur d'écran doit l'entendre comme tel. -->
+        <ol class="mt-12 space-y-8">
+          <li
+            v-for="(step, index) in PROCESS_STEPS"
+            :key="step.number"
+            class="flex items-start gap-6 border-l-2 border-primary-900/10 pl-6 transition-all duration-700 ease-out motion-reduce:transition-none sm:gap-8 sm:pl-8"
+            :style="{ transitionDelay: `${index * 120}ms` }"
+            :class="scrollRevealClass(processReveal, 'left')"
+          >
+            <span
+              class="shrink-0 font-display text-5xl font-extrabold tracking-tight text-accent-500 sm:text-6xl"
+            >
+              {{ step.number }}
+            </span>
+            <p class="mt-2 text-lg leading-relaxed text-primary-900 sm:mt-3 sm:text-xl">
+              {{ step.title }}
+            </p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- event accueil : composant partage avec HomeView.vue -->
+    <EventsSection />
+
+    <!-- ==================================================================
+       5. PAROLES DE COLLABORATEURS — clair, carrousel de témoignages.
+       ================================================================== -->
+    <!-- carrousel temoignages : defilement natif plutot qu'une grille figee -->
+    <section
+      id="temoignages"
+      data-theme="dark"
+      class="relative min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center overflow-hidden px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-primary-950"
+    >
+      <!-- effet core glow -->
+      <div
+        class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(30,60,180,0.35)_0%,_transparent_70%)] pointer-events-none"
+        aria-hidden="true"
+      ></div>
+
+      <div
+        ref="temoignagesEl"
+        class="relative z-10 mx-auto w-full max-w-6xl transition-all duration-700 ease-out motion-reduce:transition-none"
+        :class="scrollRevealClass(temoignagesReveal)"
+      >
+        <h2 class="text-center font-display text-display text-balance text-white">
+          Paroles de collaborateurs
+        </h2>
+      </div>
+
+      <!-- conteneur 3 cartes : boite max-w-6xl, plus de bleed ni de calc complexe -->
+      <div class="relative z-10 mx-auto mt-12 w-full max-w-6xl">
+        <div
+          ref="carouselEl"
+          class="flex snap-x snap-mandatory gap-8 overflow-x-auto pb-8 hide-scrollbar transition-all duration-700 ease-out motion-reduce:transition-none"
+          :class="scrollRevealClass(temoignagesReveal)"
+          @wheel="handleWheel"
+        >
+          <blockquote
+            v-for="testimonial in TESTIMONIALS"
+            :key="testimonial.author"
+            class="w-[85vw] shrink-0 snap-center rounded-xl border-l-4 border-accent-500 bg-primary-900 p-6 md:w-[340px] lg:w-[calc(33.333%-1.5rem)]"
+          >
+            <p class="text-sm leading-relaxed text-white/80 sm:text-base">
+              « {{ testimonial.quote }} »
+            </p>
+            <footer class="mt-4 text-sm">
+              <span class="font-bold text-accent-500">{{ testimonial.author }}</span>
+              <span class="text-white/60"> - {{ testimonial.role }}</span>
             </footer>
           </blockquote>
-        </template>
-      </CoverCarousel>
-    </div>
-  </section>
+        </div>
 
-  <!-- ==================================================================
-       7. CALL TO ACTION — sombre, encart final impactant.
-       ================================================================== -->
-  <section
-    id="cta"
-    data-theme="dark"
-    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col items-center justify-center px-4 py-16 text-center text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
-  >
-    <div
-      ref="ctaEl"
-      class="mx-auto max-w-2xl transition-all duration-700 ease-out motion-reduce:transition-none"
-      :class="scrollRevealClass(ctaReveal)"
-    >
-      <h2 class="font-display text-display text-balance">
-        Prêt à écrire la suite
-        <span class="text-accent-500">avec nous</span>
-        ?
-      </h2>
-      <div class="mt-10">
-        <BaseButton variant="accent" size="lg" surface="dark" :href="CONTACT_HREF">
-          Voir nos offres
-        </BaseButton>
+        <!-- fleches nav -->
+        <div class="mt-6 flex justify-center gap-4">
+          <button
+            type="button"
+            aria-label="Témoignage précédent"
+            class="inline-flex size-11 items-center justify-center rounded-full text-white/70 transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
+            @click="scrollPrev"
+          >
+            <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path
+                d="m12 15-5-5 5-5"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            aria-label="Témoignage suivant"
+            class="inline-flex size-11 items-center justify-center rounded-full text-white/70 transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
+            @click="scrollNext"
+          >
+            <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path
+                d="m8 5 5 5-5 5"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ==================================================================
-       8. FOOTER — repris dans le flux snap local (cf. HomeView.vue) ;
+    <!-- ==================================================================
+       6. CALL TO ACTION — clair, encart final impactant.
+       ================================================================== -->
+    <section
+      id="cta"
+      data-theme="light"
+      class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col items-center justify-center px-4 py-16 text-center sm:px-6 lg:px-8 xl:px-12 bg-white"
+    >
+      <div
+        ref="ctaEl"
+        class="mx-auto max-w-2xl transition-all duration-700 ease-out motion-reduce:transition-none"
+        :class="scrollRevealClass(ctaReveal)"
+      >
+        <h2 class="font-display text-display text-balance text-primary-900">
+          Prêt à écrire la suite
+          <span class="text-accent-700">avec nous</span>
+          ?
+        </h2>
+        <div class="mt-10">
+          <!-- route offres -->
+          <BaseButton variant="accent" size="lg" surface="light" :to="{ name: 'offres' }">
+            Voir nos offres
+          </BaseButton>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================
+       7. FOOTER — repris dans le flux snap local (cf. HomeView.vue) ;
        App.vue masque son footer global pour cette route pour éviter le
        doublon.
        ================================================================== -->
-  <section
-    data-theme="dark"
-    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
-  >
-    <TheFooter />
-  </section>
+    <section
+      data-theme="dark"
+      class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
+    >
+      <TheFooter />
+    </section>
   </div>
   <!-- /conteneur snap -->
 </template>

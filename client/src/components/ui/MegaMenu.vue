@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { onClickOutside } from '@vueuse/core'
 import logoDark from '@/assets/images/logo-bleu.png'
 import logoWhite from '@/assets/images/logo-blanc.png'
@@ -157,6 +157,16 @@ function setupObserver() {
 }
 
 const route = useRoute()
+const router = useRouter()
+
+function handleLogoClick() {
+  // refresh ou home
+  if (route.path === '/') {
+    window.location.reload()
+  } else {
+    router.push('/')
+  }
+}
 
 onMounted(setupObserver)
 onBeforeUnmount(() => {
@@ -229,11 +239,12 @@ const focusRingClass = computed(() =>
           </svg>
         </button>
 
-        <RouterLink
-          to="/"
-          aria-label="Faceel-IT — retour à l'accueil"
-          class="shrink-0 rounded-xl focus-visible:outline-3 focus-visible:outline-offset-2"
+        <button
+          type="button"
+          aria-label="Faceel-IT - retour à l'accueil"
+          class="shrink-0 cursor-pointer rounded-xl focus-visible:outline-3 focus-visible:outline-offset-2"
           :class="focusRingClass"
+          @click.prevent="handleLogoClick"
         >
           <slot name="logo">
             <span class="relative block h-9 sm:h-14">
@@ -251,7 +262,7 @@ const focusRingClass = computed(() =>
               />
             </span>
           </slot>
-        </RouterLink>
+        </button>
 
         <!-- Zone droite de la barre : chatButton (déjà `hidden min-[500px]:
              flex` dans son propre contenu, cf. App.vue) + actions, visibles
@@ -294,7 +305,10 @@ const focusRingClass = computed(() =>
            occuper toute la page, pas rester une bande courte. Desktop
            (min-[1316px]:) inchangé — min-h-[400px] reste la hauteur du
            mega-menu. Seuil aligné sur celui du burger (cf. plus bas). -->
-      <nav aria-label="Navigation principale" class="w-full max-[1315px]:min-h-[calc(100dvh-4rem)] min-[1316px]:min-h-[400px]">
+      <nav
+        aria-label="Navigation principale"
+        class="w-full max-[1315px]:min-h-[calc(100dvh-4rem)] min-[1316px]:min-h-[400px]"
+      >
         <Transition
           enter-active-class="transition-opacity duration-300 ease-out"
           enter-from-class="opacity-0"
@@ -444,7 +458,9 @@ const focusRingClass = computed(() =>
             <!-- ZONE 3 : Sous-liens de l'entrée survolée (desktop uniquement)
                  — bandes verticales côte à côte, une colonne par entrée,
                  séparées par un trait vertical (cf. maquette). -->
-            <div class="max-[1315px]:hidden min-[1316px]:flex flex-1 items-stretch justify-start overflow-x-auto">
+            <div
+              class="max-[1315px]:hidden min-[1316px]:flex flex-1 items-stretch justify-start overflow-x-auto"
+            >
               <Transition
                 enter-active-class="transition-opacity duration-200 ease-out"
                 enter-from-class="opacity-0"
@@ -466,7 +482,11 @@ const focusRingClass = computed(() =>
                   :key="activeItem.id"
                   class="flex h-full w-full divide-x divide-primary-900/10"
                 >
-                  <li v-for="sub in activeItem.subItems" :key="sub.label" class="flex-1 min-w-[160px]">
+                  <li
+                    v-for="sub in activeItem.subItems"
+                    :key="sub.label"
+                    class="flex-1 min-w-[160px]"
+                  >
                     <component
                       :is="sub.to !== undefined ? 'RouterLink' : 'a'"
                       v-bind="sub.to !== undefined ? { to: sub.to } : { href: sub.href ?? '#' }"
@@ -492,7 +512,11 @@ const focusRingClass = computed(() =>
                      contenu neutre (sa propre description), jamais les
                      sous-liens d'une autre entrée (ex. les BU, affichées ici
                      par erreur avant cette correction). -->
-                <div v-else key="empty" class="flex h-full w-full items-center justify-center p-10 text-center">
+                <div
+                  v-else
+                  key="empty"
+                  class="flex h-full w-full items-center justify-center p-10 text-center"
+                >
                   <p class="max-w-md text-lg leading-relaxed text-primary-900/60">
                     {{ activeItem.description }}
                   </p>

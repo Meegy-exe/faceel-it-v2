@@ -93,16 +93,19 @@ const quickActions = [
 
     <!-- Zone réservée Super-Admin -->
     <section v-if="auth.isSuperAdmin" class="mt-10">
-      <h2 class="text-sm font-semibold uppercase tracking-widest text-white/60">
-        Super-Admin
-      </h2>
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-white/60">Super-Admin</h2>
       <div class="mt-4 flex gap-4">
         <button
           type="button"
           class="flex items-center gap-2 rounded-xl border border-accent-500/30 bg-accent-500/10 px-5 py-3 text-sm font-semibold text-accent-500 transition hover:bg-accent-500/20"
         >
           <svg viewBox="0 0 20 20" fill="none" class="size-4 shrink-0" aria-hidden="true">
-            <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path
+              d="M10 4v12M4 10h12"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
           </svg>
           Ajouter un compte Admin
         </button>

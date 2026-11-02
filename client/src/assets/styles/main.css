@@ -319,18 +319,24 @@
      éléments cliquables pour distinguer visuellement l'affordance. */
   html,
   body {
-    cursor: url('/cursor.svg') 12 12, auto !important;
+    cursor:
+      url('/cursor.svg') 12 12,
+      auto !important;
   }
 
   a,
   button,
   .cursor-pointer {
-    cursor: url('/cursor-pointer.svg') 16 16, pointer !important;
+    cursor:
+      url('/cursor-pointer.svg') 16 16,
+      pointer !important;
   }
 
   /* Variante navy : l'anneau vert devient invisible sur les zones au fond
      accent-500 (ex. moitié « Une entreprise » du sélecteur de profil). */
   .cursor-faceel-blue {
-    cursor: url('/cursor-pointer-blue.svg') 16 16, pointer !important;
+    cursor:
+      url('/cursor-pointer-blue.svg') 16 16,
+      pointer !important;
   }
 }

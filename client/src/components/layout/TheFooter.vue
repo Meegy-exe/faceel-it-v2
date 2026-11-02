@@ -5,8 +5,11 @@ import logoSrc from '@/assets/images/2.svg'
 import glassdoorLogo from '@/assets/notations/glassdoor.svg'
 import googleLogo from '@/assets/notations/google.svg'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
+import { useProfileStore } from '@/stores/useProfileStore'
 
 const isCookieModalOpen = ref(false)
+// pilote l'affichage conditionnel des cta du footer
+const profileStore = useProfileStore()
 
 /**
  * `fullPageScroll` bascule entre deux rendus du MÊME contenu :
@@ -36,7 +39,7 @@ const props = defineProps<{
 const blueSectionClass = computed(() =>
   props.fullPageScroll
     ? 'relative isolate h-dvh shrink-0 w-full snap-start snap-always lg:flex lg:flex-1 lg:flex-col lg:justify-center lg:snap-align-none overflow-hidden flex flex-col justify-center [@media(max-height:568px)]:justify-end bg-[#000066] text-white'
-    : 'relative isolate w-full overflow-hidden bg-[#000066] text-white',
+    : 'relative isolate w-full flex-1 flex flex-col justify-center overflow-hidden bg-[#000066] text-white',
 )
 
 const whiteSectionClass = computed(() =>
@@ -53,8 +56,8 @@ const whiteReveal = useScrollReveal(whiteEl)
 
 <template>
   <footer
-    class="w-full shrink-0"
-    :class="fullPageScroll ? 'lg:flex lg:h-dvh lg:flex-col lg:snap-start lg:snap-always' : ''"
+    class="flex w-full shrink-0 flex-col"
+    :class="fullPageScroll ? 'lg:flex lg:h-dvh lg:flex-col lg:snap-start lg:snap-always' : 'h-full'"
   >
     <!-- ═══════════════════════════════════════════════════════════════════════
          SECTION 1 : Fond bleu — marque, notes de satisfaction, coordonnées
@@ -65,12 +68,20 @@ const whiteReveal = useScrollReveal(whiteEl)
         class="relative z-10 mx-auto w-full max-w-7xl px-4 py-8 [@media(max-height:568px)]:pt-20 [@media(max-height:568px)]:pb-2 transition-all duration-700 ease-out motion-reduce:transition-none sm:px-6 lg:px-8 lg:py-12 xl:px-12"
         :class="scrollRevealClass(blueReveal, 'up', { durationClass: 'duration-1000' })"
       >
-        <div class="flex flex-col items-center gap-6 text-center [@media(min-height:651px)_and_(max-height:760px)]:gap-4 [@media(min-height:569px)_and_(max-height:650px)]:gap-3 [@media(max-height:568px)]:gap-4 lg:flex-row lg:items-start lg:gap-16 lg:text-left">
+        <div
+          class="flex flex-col items-center gap-6 text-center [@media(min-height:651px)_and_(max-height:760px)]:gap-4 [@media(min-height:569px)_and_(max-height:650px)]:gap-3 [@media(max-height:568px)]:gap-4 lg:flex-row lg:items-start lg:gap-16 lg:text-left"
+        >
           <!-- Colonne gauche : identité -->
           <div class="flex-1">
-            <img :src="logoSrc" alt="Faceel-IT" class="mx-auto h-12 w-auto object-contain lg:mx-0 lg:h-16" />
+            <img
+              :src="logoSrc"
+              alt="Faceel-IT"
+              class="mx-auto h-12 w-auto object-contain lg:mx-0 lg:h-16"
+            />
 
-            <p class="mx-auto mt-5 [@media(max-height:568px)]:mt-2 max-w-lg text-sm leading-snug text-white/80 [@media(min-height:651px)_and_(max-height:760px)]:text-xs [@media(min-height:569px)_and_(max-height:650px)]:text-[11px] [@media(min-height:569px)_and_(max-height:650px)]:leading-tight [@media(max-height:568px)]:text-[11px] [@media(max-height:568px)]:leading-tight md:text-base lg:mx-0 lg:text-lg">
+            <p
+              class="mx-auto mt-5 [@media(max-height:568px)]:mt-2 max-w-lg text-sm leading-snug text-white/80 [@media(min-height:651px)_and_(max-height:760px)]:text-xs [@media(min-height:569px)_and_(max-height:650px)]:text-[11px] [@media(min-height:569px)_and_(max-height:650px)]:leading-tight [@media(max-height:568px)]:text-[11px] [@media(max-height:568px)]:leading-tight md:text-base lg:mx-0 lg:text-lg"
+            >
               Cabinet de conseil expert en Data, Intelligence Artificielle et Transformation
               digitale. Au-delà du code, c'est l'engagement de notre collectif qui fait aboutir vos
               projets.
@@ -83,11 +94,15 @@ const whiteReveal = useScrollReveal(whiteEl)
                la mise en page `lg:flex-row` du desktop. Mêmes coordonnées,
                pas de crochets : simple repli mobile du bloc encadré de la
                section blanche (cf. plus bas). -->
-          <address class="space-y-2 [@media(min-height:651px)_and_(max-height:760px)]:space-y-1 [@media(min-height:569px)_and_(max-height:650px)]:space-y-0.5 [@media(max-height:568px)]:space-y-0.5 text-sm [@media(min-height:569px)_and_(max-height:760px)]:text-xs [@media(max-height:568px)]:text-[11px] [@media(max-height:568px)]:leading-tight not-italic text-white lg:hidden">
+          <address
+            class="space-y-2 [@media(min-height:651px)_and_(max-height:760px)]:space-y-1 [@media(min-height:569px)_and_(max-height:650px)]:space-y-0.5 [@media(max-height:568px)]:space-y-0.5 text-sm [@media(min-height:569px)_and_(max-height:760px)]:text-xs [@media(max-height:568px)]:text-[11px] [@media(max-height:568px)]:leading-tight not-italic text-white lg:hidden"
+          >
             <p class="text-xs font-bold uppercase tracking-widest text-[#12D80A]">Contact</p>
             <p>10 allée du Château Blanc, 59290 Wasquehal</p>
             <p>
-              <a href="tel:+33359617188" class="transition-colors hover:text-white">03 59 61 71 88</a>
+              <a href="tel:+33359617188" class="transition-colors hover:text-white"
+                >03 59 61 71 88</a
+              >
             </p>
             <p>
               <a href="mailto:contact@faceel-it.com" class="transition-colors hover:text-white"
@@ -101,7 +116,9 @@ const whiteReveal = useScrollReveal(whiteEl)
                le paragraphe (`mt-5` = 1.25rem) de la colonne de gauche, pour
                que le haut des « 5/5 » s'aligne avec la première ligne du
                texte, pas avec le logo au-dessus. -->
-          <div class="flex w-full items-start origin-bottom scale-90 gap-4 [@media(min-height:651px)_and_(max-height:760px)]:scale-75 [@media(min-height:569px)_and_(max-height:650px)]:scale-[0.65] [@media(max-height:568px)]:scale-[0.55] lg:mt-21 lg:w-auto lg:scale-100 lg:shrink-0">
+          <div
+            class="flex w-full items-start origin-bottom scale-90 gap-4 [@media(min-height:651px)_and_(max-height:760px)]:scale-75 [@media(min-height:569px)_and_(max-height:650px)]:scale-[0.65] [@media(max-height:568px)]:scale-[0.55] lg:mt-21 lg:w-auto lg:scale-100 lg:shrink-0"
+          >
             <a
               href="https://www.glassdoor.fr/Avis/Faceel-it-Lille-Avis-EI_IE4844076.0,9_IL.10,15_IM1111.htm"
               target="_blank"
@@ -137,7 +154,9 @@ const whiteReveal = useScrollReveal(whiteEl)
              couleurs inversées pour ce fond bleu. La barre d'origine est
              masquée sur cette plage de largeur (`hidden lg:flex`, cf. plus
              bas) pour éviter le doublon. -->
-        <div class="mt-4 [@media(min-height:651px)_and_(max-height:760px)]:mt-2 [@media(max-height:650px)]:mt-1 flex w-full flex-col items-center gap-6 bg-transparent lg:hidden">
+        <div
+          class="mt-4 [@media(min-height:651px)_and_(max-height:760px)]:mt-2 [@media(max-height:650px)]:mt-1 flex w-full flex-col items-center gap-6 bg-transparent lg:hidden"
+        >
           <div class="flex items-center gap-6">
             <a
               href="https://www.linkedin.com/company/faceel-it/"
@@ -146,8 +165,18 @@ const whiteReveal = useScrollReveal(whiteEl)
               aria-label="Faceel-IT sur LinkedIn"
               class="inline-flex size-12 sm:size-14 [@media(max-height:650px)]:size-10 items-center justify-center rounded-full transition-colors duration-200 hover:bg-white/10"
             >
-              <svg viewBox="0 0 92 92" fill="none" class="w-10 h-10 sm:w-12 sm:h-12 [@media(max-height:650px)]:w-8 [@media(max-height:650px)]:h-8 text-white transition-colors hover:text-accent-500">
-                <rect x="0.247223" width="91.5618" height="91.5618" rx="45.7809" fill="currentColor" />
+              <svg
+                viewBox="0 0 92 92"
+                fill="none"
+                class="w-10 h-10 sm:w-12 sm:h-12 [@media(max-height:650px)]:w-8 [@media(max-height:650px)]:h-8 text-white transition-colors hover:text-accent-500"
+              >
+                <rect
+                  x="0.247223"
+                  width="91.5618"
+                  height="91.5618"
+                  rx="45.7809"
+                  fill="currentColor"
+                />
                 <path
                   class="text-[#000066]"
                   fill="currentColor"
@@ -162,14 +191,28 @@ const whiteReveal = useScrollReveal(whiteEl)
               aria-label="Faceel-IT sur YouTube"
               class="inline-flex size-12 sm:size-14 [@media(max-height:650px)]:size-10 items-center justify-center rounded-full transition-colors duration-200 hover:bg-white/10"
             >
-              <svg viewBox="0 0 93 93" fill="none" class="w-10 h-10 sm:w-12 sm:h-12 [@media(max-height:650px)]:w-8 [@media(max-height:650px)]:h-8 text-white transition-colors hover:text-accent-500">
-                <rect x="0.561798" y="0.561829" width="91.5618" height="91.5618" rx="45.7809" fill="currentColor" />
+              <svg
+                viewBox="0 0 93 93"
+                fill="none"
+                class="w-10 h-10 sm:w-12 sm:h-12 [@media(max-height:650px)]:w-8 [@media(max-height:650px)]:h-8 text-white transition-colors hover:text-accent-500"
+              >
+                <rect
+                  x="0.561798"
+                  y="0.561829"
+                  width="91.5618"
+                  height="91.5618"
+                  rx="45.7809"
+                  fill="currentColor"
+                />
                 <path
                   class="text-[#000066]"
                   fill="currentColor"
                   d="M71.8089 33.749C71.2111 31.5016 69.4427 29.7286 67.1927 29.121C63.1244 28.0306 46.8014 28.0306 46.8014 28.0306C46.8014 28.0306 30.4868 28.0306 26.4102 29.121C24.1685 29.7203 22.4001 31.4933 21.794 33.749C20.7063 37.8277 20.7063 46.3429 20.7063 46.3429C20.7063 46.3429 20.7063 54.8582 21.794 58.9369C22.3918 61.1843 24.1602 62.9572 26.4102 63.5649C30.4868 64.6553 46.8014 64.6553 46.8014 64.6553C46.8014 64.6553 63.1244 64.6553 67.1927 63.5649C69.4344 62.9656 71.2028 61.1926 71.8089 58.9369C72.8966 54.8582 72.8966 46.3429 72.8966 46.3429C72.8966 46.3429 72.8966 37.8277 71.8089 33.749Z"
                 />
-                <path fill="currentColor" d="M41.5874 54.1923L55.1456 46.3429L41.5874 38.4936V54.1923Z" />
+                <path
+                  fill="currentColor"
+                  d="M41.5874 54.1923L55.1456 46.3429L41.5874 38.4936V54.1923Z"
+                />
               </svg>
             </a>
             <a
@@ -179,7 +222,10 @@ const whiteReveal = useScrollReveal(whiteEl)
               aria-label="Faceel-IT sur Instagram"
               class="inline-flex size-12 sm:size-14 [@media(max-height:650px)]:size-10 items-center justify-center rounded-full transition-colors duration-200 hover:bg-white/10"
             >
-              <svg viewBox="0 0 319.73 319.73" class="w-10 h-10 sm:w-12 sm:h-12 [@media(max-height:650px)]:w-8 [@media(max-height:650px)]:h-8 text-white transition-colors hover:text-accent-500">
+              <svg
+                viewBox="0 0 319.73 319.73"
+                class="w-10 h-10 sm:w-12 sm:h-12 [@media(max-height:650px)]:w-8 [@media(max-height:650px)]:h-8 text-white transition-colors hover:text-accent-500"
+              >
                 <circle cx="159.86" cy="159.86" r="159.86" fill="currentColor" />
                 <path
                   class="text-[#000066]"
@@ -195,7 +241,11 @@ const whiteReveal = useScrollReveal(whiteEl)
               aria-label="Faceel-IT sur Glassdoor"
               class="inline-flex size-12 sm:size-14 [@media(max-height:650px)]:size-10 items-center justify-center rounded-full text-white transition-colors duration-200 hover:bg-white/10 hover:text-accent-500"
             >
-              <svg viewBox="0 0 20 20" fill="currentColor" class="w-10 h-10 sm:w-12 sm:h-12 [@media(max-height:650px)]:w-8 [@media(max-height:650px)]:h-8">
+              <svg
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                class="w-10 h-10 sm:w-12 sm:h-12 [@media(max-height:650px)]:w-8 [@media(max-height:650px)]:h-8"
+              >
                 <path
                   d="M10 1.5l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.2-5.4 3.2 1.3-6-4.6-4.1 6.1-.6L10 1.5Z"
                 />
@@ -203,14 +253,18 @@ const whiteReveal = useScrollReveal(whiteEl)
             </a>
           </div>
 
-          <div class="flex w-full flex-col items-center gap-4 [@media(max-height:760px)]:gap-2 sm:w-auto sm:flex-row">
+          <div
+            class="flex w-full flex-col items-center gap-4 [@media(max-height:760px)]:gap-2 sm:w-auto sm:flex-row"
+          >
             <RouterLink
+              v-if="profileStore.profile !== 'candidat'"
               to="/contact-entreprise"
               class="inline-flex w-full items-center justify-center rounded-lg border-2 border-white px-5 py-2.5 [@media(min-height:651px)_and_(max-height:760px)]:py-1.5 [@media(min-height:569px)_and_(max-height:650px)]:py-1 [@media(max-height:568px)]:py-1.5 text-sm [@media(min-height:651px)_and_(max-height:760px)]:text-xs [@media(min-height:569px)_and_(max-height:650px)]:text-[11px] [@media(max-height:568px)]:text-[10px] font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-[#000066] sm:w-auto"
             >
               Un projet ?
             </RouterLink>
             <RouterLink
+              v-if="profileStore.profile !== 'entreprise'"
               to="/consulter-nos-offres"
               class="inline-flex w-full items-center justify-center rounded-lg bg-green-500 px-5 py-2.5 [@media(min-height:651px)_and_(max-height:760px)]:py-1.5 [@media(min-height:569px)_and_(max-height:650px)]:py-1 [@media(max-height:568px)]:py-1.5 text-sm [@media(min-height:651px)_and_(max-height:760px)]:text-xs [@media(min-height:569px)_and_(max-height:650px)]:text-[11px] [@media(max-height:568px)]:text-[10px] font-semibold text-gray-900 transition-colors duration-200 hover:bg-green-400 sm:w-auto"
             >
@@ -233,7 +287,9 @@ const whiteReveal = useScrollReveal(whiteEl)
         <!-- Grille de navigation — bascule en flex à partir de `lg:` pour
              accueillir le bloc contact (col-cadre à crochets) et son
              séparateur vertical en bout de ligne, cf. plus bas. -->
-        <div class="grid grid-cols-2 gap-x-4 gap-y-8 [@media(max-width:1023px)_and_(max-height:610px)]:gap-y-4 md:grid-cols-3 lg:flex lg:items-start lg:gap-x-10">
+        <div
+          class="grid grid-cols-2 gap-x-4 gap-y-8 [@media(max-width:1023px)_and_(max-height:610px)]:gap-y-4 md:grid-cols-3 lg:flex lg:items-start lg:gap-x-10"
+        >
           <!-- Nos BUs -->
           <nav aria-label="Nos BUs" class="lg:flex-1">
             <p class="text-xs font-semibold uppercase tracking-widest text-gray-500">NOS BUs</p>
@@ -349,7 +405,10 @@ const whiteReveal = useScrollReveal(whiteEl)
               <div class="mt-5 space-y-3 text-sm text-gray-700">
                 <p>10 allée du Château Blanc<br />59290 Wasquehal</p>
                 <p>
-                  <a href="tel:+33359617188" class="transition-colors duration-200 hover:text-[#000066]">
+                  <a
+                    href="tel:+33359617188"
+                    class="transition-colors duration-200 hover:text-[#000066]"
+                  >
                     03 59 61 71 88
                   </a>
                 </p>
@@ -367,8 +426,12 @@ const whiteReveal = useScrollReveal(whiteEl)
         </div>
 
         <!-- CTAs de conversion -->
-        <div class="mt-12 [@media(max-width:1023px)_and_(max-height:610px)]:mt-4 border-t border-gray-200 pt-10 [@media(max-width:1023px)_and_(max-height:610px)]:pt-4">
-          <div class="hidden flex-col items-center gap-6 sm:w-full sm:flex-row sm:justify-between lg:flex">
+        <div
+          class="mt-12 [@media(max-width:1023px)_and_(max-height:610px)]:mt-4 border-t border-gray-200 pt-10 [@media(max-width:1023px)_and_(max-height:610px)]:pt-4"
+        >
+          <div
+            class="hidden flex-col items-center gap-6 sm:w-full sm:flex-row sm:justify-between lg:flex"
+          >
             <!-- Réseaux sociaux — mêmes SVG inline que la section bleue, couleurs
                  inversées : ce fond est blanc (pas #000066), donc le rond
                  externe passe en primary-900 (+ hover accent-700, pas
@@ -383,8 +446,18 @@ const whiteReveal = useScrollReveal(whiteEl)
                 aria-label="Faceel-IT sur LinkedIn"
                 class="inline-flex size-12 sm:size-14 items-center justify-center rounded-full transition-colors duration-200 hover:bg-primary-900/10"
               >
-                <svg viewBox="0 0 92 92" fill="none" class="w-10 h-10 sm:w-12 sm:h-12 text-primary-900 transition-colors hover:text-accent-700">
-                  <rect x="0.247223" width="91.5618" height="91.5618" rx="45.7809" fill="currentColor" />
+                <svg
+                  viewBox="0 0 92 92"
+                  fill="none"
+                  class="w-10 h-10 sm:w-12 sm:h-12 text-primary-900 transition-colors hover:text-accent-700"
+                >
+                  <rect
+                    x="0.247223"
+                    width="91.5618"
+                    height="91.5618"
+                    rx="45.7809"
+                    fill="currentColor"
+                  />
                   <path
                     class="text-white"
                     fill="currentColor"
@@ -399,14 +472,28 @@ const whiteReveal = useScrollReveal(whiteEl)
                 aria-label="Faceel-IT sur YouTube"
                 class="inline-flex size-12 sm:size-14 items-center justify-center rounded-full transition-colors duration-200 hover:bg-primary-900/10"
               >
-                <svg viewBox="0 0 93 93" fill="none" class="w-10 h-10 sm:w-12 sm:h-12 text-primary-900 transition-colors hover:text-accent-700">
-                  <rect x="0.561798" y="0.561829" width="91.5618" height="91.5618" rx="45.7809" fill="currentColor" />
+                <svg
+                  viewBox="0 0 93 93"
+                  fill="none"
+                  class="w-10 h-10 sm:w-12 sm:h-12 text-primary-900 transition-colors hover:text-accent-700"
+                >
+                  <rect
+                    x="0.561798"
+                    y="0.561829"
+                    width="91.5618"
+                    height="91.5618"
+                    rx="45.7809"
+                    fill="currentColor"
+                  />
                   <path
                     class="text-white"
                     fill="currentColor"
                     d="M71.8089 33.749C71.2111 31.5016 69.4427 29.7286 67.1927 29.121C63.1244 28.0306 46.8014 28.0306 46.8014 28.0306C46.8014 28.0306 30.4868 28.0306 26.4102 29.121C24.1685 29.7203 22.4001 31.4933 21.794 33.749C20.7063 37.8277 20.7063 46.3429 20.7063 46.3429C20.7063 46.3429 20.7063 54.8582 21.794 58.9369C22.3918 61.1843 24.1602 62.9572 26.4102 63.5649C30.4868 64.6553 46.8014 64.6553 46.8014 64.6553C46.8014 64.6553 63.1244 64.6553 67.1927 63.5649C69.4344 62.9656 71.2028 61.1926 71.8089 58.9369C72.8966 54.8582 72.8966 46.3429 72.8966 46.3429C72.8966 46.3429 72.8966 37.8277 71.8089 33.749Z"
                   />
-                  <path fill="currentColor" d="M41.5874 54.1923L55.1456 46.3429L41.5874 38.4936V54.1923Z" />
+                  <path
+                    fill="currentColor"
+                    d="M41.5874 54.1923L55.1456 46.3429L41.5874 38.4936V54.1923Z"
+                  />
                 </svg>
               </a>
               <a
@@ -416,7 +503,10 @@ const whiteReveal = useScrollReveal(whiteEl)
                 aria-label="Faceel-IT sur Instagram"
                 class="inline-flex size-12 sm:size-14 items-center justify-center rounded-full transition-colors duration-200 hover:bg-primary-900/10"
               >
-                <svg viewBox="0 0 319.73 319.73" class="w-10 h-10 sm:w-12 sm:h-12 text-primary-900 transition-colors hover:text-accent-700">
+                <svg
+                  viewBox="0 0 319.73 319.73"
+                  class="w-10 h-10 sm:w-12 sm:h-12 text-primary-900 transition-colors hover:text-accent-700"
+                >
                   <circle cx="159.86" cy="159.86" r="159.86" fill="currentColor" />
                   <path
                     class="text-white"
@@ -442,12 +532,14 @@ const whiteReveal = useScrollReveal(whiteEl)
 
             <div class="flex flex-col items-center gap-4 w-full sm:w-auto sm:flex-row">
               <RouterLink
+                v-if="profileStore.profile !== 'candidat'"
                 to="/contact-entreprise"
                 class="inline-flex w-full items-center justify-center rounded-lg border-2 border-[#000066] px-6 py-3 text-sm font-semibold text-[#000066] transition-colors duration-200 hover:bg-[#000066] hover:text-white sm:w-auto"
               >
                 Un projet ?
               </RouterLink>
               <RouterLink
+                v-if="profileStore.profile !== 'entreprise'"
                 to="/consulter-nos-offres"
                 class="inline-flex w-full items-center justify-center rounded-lg bg-green-500 px-6 py-3 text-sm font-semibold text-gray-900 transition-colors duration-200 hover:bg-green-400 sm:w-auto"
               >
@@ -456,7 +548,9 @@ const whiteReveal = useScrollReveal(whiteEl)
             </div>
           </div>
 
-          <p class="mt-8 [@media(max-width:1023px)_and_(max-height:610px)]:mt-4 text-center text-sm text-gray-400">
+          <p
+            class="mt-8 [@media(max-width:1023px)_and_(max-height:610px)]:mt-4 text-center text-sm text-gray-400"
+          >
             Faceel-IT — ESN, Wasquehal, Hauts-de-France.
           </p>
         </div>

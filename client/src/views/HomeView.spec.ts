@@ -10,6 +10,7 @@ import { mount } from '@vue/test-utils'
 // dans `useSeo.spec.ts`, `HomeView` appelle `useSeo` en profondeur et a donc
 // besoin d'une instance `unhead` réelle, pas d'un simple stub.
 import { createHead } from '@unhead/vue/client'
+import { createPinia } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from './HomeView.vue'
 
@@ -49,7 +50,7 @@ describe('HomeView — Hero, effet machine à écrire', () => {
     await router.push('/')
     await router.isReady()
 
-    return mount(HomeView, { global: { plugins: [router, createHead()] } })
+    return mount(HomeView, { global: { plugins: [router, createHead(), createPinia()] } })
   }
 
   afterEach(() => {

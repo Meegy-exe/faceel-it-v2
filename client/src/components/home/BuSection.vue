@@ -39,7 +39,12 @@ const TABS: { slug: BuSlug; label: string; description: string }[] = [
 
 const MEMBERS: Record<BuSlug, [Member, Member]> = {
   'data-ia': [
-    { id: 'di1', name: 'Robin Rins', role: 'Directeur BU Data & IA', quote: ['[Citation à venir]'] },
+    {
+      id: 'di1',
+      name: 'Robin Rins',
+      role: 'Directeur BU Data & IA',
+      quote: ['[Citation à venir]'],
+    },
     { id: 'di2', name: 'Lena Lebecq', role: 'Responsable RH', quote: ['[Citation à venir]'] },
   ],
   digital: [
@@ -111,6 +116,28 @@ function toggleRightFlip() {
   else startAutoSlide()
 }
 
+// survol carte gauche : flip + pause/reprise auto
+function flipLeftIn() {
+  flippedLeft.value = true
+  stopAutoSlide()
+}
+
+function flipLeftOut() {
+  flippedLeft.value = false
+  startAutoSlide()
+}
+
+// survol carte droite : flip + pause/reprise auto
+function flipRightIn() {
+  flippedRight.value = true
+  stopAutoSlide()
+}
+
+function flipRightOut() {
+  flippedRight.value = false
+  startAutoSlide()
+}
+
 interface FlatProfile extends Member {
   buLabel: string
 }
@@ -127,6 +154,12 @@ const currentMobileProfile = computed(() => ALL_PROFILES[mobileCardIndex.value]!
 
 function nextMobileCard() {
   mobileCardIndex.value = (mobileCardIndex.value + 1) % ALL_PROFILES.length
+}
+
+// clic manuel sur la fleche mobile : avance + relance le minuteur
+function handleNextMobileCardClick() {
+  nextMobileCard()
+  resetTimer()
 }
 
 function initials(name: string): string {
@@ -192,10 +225,14 @@ onBeforeUnmount(stopAutoSlide)
     class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-light px-4 pt-36 [@media(max-height:850px)]:pt-28 pb-8 sm:px-6 lg:px-8 xl:px-12"
   >
     <header class="max-w-5xl px-4 md:px-24 2xl:px-28">
-      <h2 class="mt-4 [@media(max-height:850px)]:mt-2 font-display text-display min-[1030px]:whitespace-nowrap text-primary-900">
+      <h2
+        class="mt-4 [@media(max-height:850px)]:mt-2 font-display text-display min-[1030px]:whitespace-nowrap text-primary-900"
+      >
         Nos BUs, Expertes de vos besoins.
       </h2>
-      <p class="mt-4 min-[1030px]:whitespace-nowrap text-sm md:text-base min-[1030px]:text-lg leading-relaxed text-primary-900/60">
+      <p
+        class="mt-4 min-[1030px]:whitespace-nowrap text-sm md:text-base min-[1030px]:text-lg leading-relaxed text-primary-900/60"
+      >
         Une organisation interne adaptée au marché pour une réponse sur-mesure à nos clients
       </p>
     </header>
@@ -207,7 +244,9 @@ onBeforeUnmount(stopAutoSlide)
          accent-500 — sur fond clair, accent-500 ne tient que 1,9:1 même en
          grand gras (seuil large-text 3:1), accent-700 tient 4,9:1
          (cf. main.css). -->
-    <div class="flex w-full justify-between items-end mt-8 mb-8 px-4 md:px-24 2xl:px-28 max-[459px]:hidden">
+    <div
+      class="flex w-full justify-between items-end mt-8 mb-8 px-4 md:px-24 2xl:px-28 max-[459px]:hidden"
+    >
       <h3
         v-for="(tab, index) in TABS"
         :key="tab.slug"
@@ -230,7 +269,9 @@ onBeforeUnmount(stopAutoSlide)
       class="relative flex w-full flex-1 items-stretch max-[984px]:justify-center min-[985px]:justify-between gap-4 min-[985px]:gap-8 px-4 md:px-24 2xl:px-28 max-[459px]:hidden"
     >
       <!-- Combattant gauche -->
-      <div class="flex w-auto shrink-0 flex-col items-center justify-center min-[630px]:max-[984px]:-translate-x-16">
+      <div
+        class="flex w-auto shrink-0 flex-col items-center justify-center min-[630px]:max-[984px]:-translate-x-16"
+      >
         <!-- Nom/poste/citation : copie compacte, visible uniquement sous
              985px, où le texte se retrouvait coincé entre les deux cartes
              (cf. zone centrale ci-dessous, cachée à cette largeur). -->
@@ -238,8 +279,13 @@ onBeforeUnmount(stopAutoSlide)
           <p class="text-sm font-bold text-primary-950">{{ leftMember.name }}</p>
           <p class="text-[11px] font-medium text-primary-900/50">{{ leftMember.role }}</p>
           <Transition name="fade" mode="out-in">
-            <p :key="leftMember.id" class="mt-1 min-h-[72px] text-xs italic leading-snug text-primary-900/80 transition-all duration-300 ease-in-out">
-              <span v-for="(line, idx) in leftMember.quote" :key="idx" class="block">{{ line }}</span>
+            <p
+              :key="leftMember.id"
+              class="mt-1 min-h-[72px] text-xs italic leading-snug text-primary-900/80 transition-all duration-300 ease-in-out"
+            >
+              <span v-for="(line, idx) in leftMember.quote" :key="idx" class="block">{{
+                line
+              }}</span>
             </p>
           </Transition>
         </div>
@@ -255,8 +301,8 @@ onBeforeUnmount(stopAutoSlide)
           <div :key="activeBUIndex" class="flex flex-col items-center">
             <div
               class="w-32 h-48 min-[985px]:w-48 min-[985px]:h-72 2xl:w-[320px] 2xl:h-[480px] [perspective:1000px] transform-gpu border-0 ring-0 outline-none"
-              @mouseenter="flippedLeft = true; stopAutoSlide()"
-              @mouseleave="flippedLeft = false; startAutoSlide()"
+              @mouseenter="flipLeftIn"
+              @mouseleave="flipLeftOut"
               @click="toggleLeftFlip"
             >
               <div
@@ -267,9 +313,10 @@ onBeforeUnmount(stopAutoSlide)
                 <div
                   class="absolute inset-0 h-full w-full backface-hidden antialiased translate-z-[1px] bg-primary-950 rounded-2xl flex items-center justify-center overflow-hidden border-0 border-transparent"
                 >
-                  <span class="font-display text-3xl min-[985px]:text-5xl 2xl:text-7xl font-extrabold text-white/10 border-0 border-transparent">{{
-                    initials(leftMember.name)
-                  }}</span>
+                  <span
+                    class="font-display text-3xl min-[985px]:text-5xl 2xl:text-7xl font-extrabold text-white/10 border-0 border-transparent"
+                    >{{ initials(leftMember.name) }}</span
+                  >
                 </div>
 
                 <!-- Face arrière — description de la BU uniquement, pas de
@@ -298,20 +345,40 @@ onBeforeUnmount(stopAutoSlide)
              compensation optique du line-height. -->
         <div class="relative w-full h-48 min-[985px]:h-72 2xl:h-[480px]">
           <div class="-mt-2 absolute inset-x-0 top-0 w-full px-4 text-left">
-            <p class="text-base 2xl:text-2xl font-bold text-primary-950 mb-1">{{ leftMember.name }}</p>
+            <p class="text-base 2xl:text-2xl font-bold text-primary-950 mb-1">
+              {{ leftMember.name }}
+            </p>
             <p class="text-sm font-medium text-primary-900/50 mb-2">{{ leftMember.role }}</p>
             <Transition name="fade" mode="out-in">
-              <p :key="leftMember.id" class="min-h-[100px] 2xl:min-h-[120px] w-full max-w-full overflow-hidden text-xs 2xl:text-lg italic text-primary-900/80 leading-relaxed transition-all duration-300 ease-in-out">
-                <span v-for="(line, idx) in leftMember.quote" :key="idx" class="block whitespace-normal break-words">{{ line }}</span>
+              <p
+                :key="leftMember.id"
+                class="min-h-[100px] 2xl:min-h-[120px] w-full max-w-full overflow-hidden text-xs 2xl:text-lg italic text-primary-900/80 leading-relaxed transition-all duration-300 ease-in-out"
+              >
+                <span
+                  v-for="(line, idx) in leftMember.quote"
+                  :key="idx"
+                  class="block whitespace-normal break-words"
+                  >{{ line }}</span
+                >
               </p>
             </Transition>
           </div>
           <div class="-mb-2 absolute inset-x-0 bottom-0 w-full px-4 text-right">
-            <p class="text-base 2xl:text-2xl font-bold text-primary-950 mb-1">{{ rightMember.name }}</p>
+            <p class="text-base 2xl:text-2xl font-bold text-primary-950 mb-1">
+              {{ rightMember.name }}
+            </p>
             <p class="text-sm font-medium text-primary-900/50 mb-2">{{ rightMember.role }}</p>
             <Transition name="fade" mode="out-in">
-              <p :key="rightMember.id" class="min-h-[100px] 2xl:min-h-[120px] w-full max-w-full overflow-hidden text-xs 2xl:text-lg italic text-primary-900/80 leading-relaxed transition-all duration-300 ease-in-out">
-                <span v-for="(line, idx) in rightMember.quote" :key="idx" class="block whitespace-normal break-words">{{ line }}</span>
+              <p
+                :key="rightMember.id"
+                class="min-h-[100px] 2xl:min-h-[120px] w-full max-w-full overflow-hidden text-xs 2xl:text-lg italic text-primary-900/80 leading-relaxed transition-all duration-300 ease-in-out"
+              >
+                <span
+                  v-for="(line, idx) in rightMember.quote"
+                  :key="idx"
+                  class="block whitespace-normal break-words"
+                  >{{ line }}</span
+                >
               </p>
             </Transition>
           </div>
@@ -319,7 +386,9 @@ onBeforeUnmount(stopAutoSlide)
       </div>
 
       <!-- Combattant droit -->
-      <div class="flex w-auto shrink-0 flex-col items-center justify-center min-[630px]:max-[984px]:translate-x-16">
+      <div
+        class="flex w-auto shrink-0 flex-col items-center justify-center min-[630px]:max-[984px]:translate-x-16"
+      >
         <Transition
           mode="out-in"
           enter-active-class="transition-all duration-700 ease-out"
@@ -332,8 +401,8 @@ onBeforeUnmount(stopAutoSlide)
           <div :key="activeBUIndex" class="flex flex-col items-center">
             <div
               class="w-32 h-48 min-[985px]:w-48 min-[985px]:h-72 2xl:w-[320px] 2xl:h-[480px] [perspective:1000px] transform-gpu border-0 ring-0 outline-none"
-              @mouseenter="flippedRight = true; stopAutoSlide()"
-              @mouseleave="flippedRight = false; startAutoSlide()"
+              @mouseenter="flipRightIn"
+              @mouseleave="flipRightOut"
               @click="toggleRightFlip"
             >
               <div
@@ -344,9 +413,10 @@ onBeforeUnmount(stopAutoSlide)
                 <div
                   class="absolute inset-0 h-full w-full backface-hidden antialiased translate-z-[1px] bg-primary-950 rounded-2xl flex items-center justify-center overflow-hidden border-0 border-transparent"
                 >
-                  <span class="font-display text-3xl min-[985px]:text-5xl 2xl:text-7xl font-extrabold text-white/10 border-0 border-transparent">{{
-                    initials(rightMember.name)
-                  }}</span>
+                  <span
+                    class="font-display text-3xl min-[985px]:text-5xl 2xl:text-7xl font-extrabold text-white/10 border-0 border-transparent"
+                    >{{ initials(rightMember.name) }}</span
+                  >
                 </div>
 
                 <!-- Face arrière — description de la BU uniquement, pas de
@@ -365,8 +435,13 @@ onBeforeUnmount(stopAutoSlide)
           <p class="text-sm font-bold text-primary-950">{{ rightMember.name }}</p>
           <p class="text-[11px] font-medium text-primary-900/50">{{ rightMember.role }}</p>
           <Transition name="fade" mode="out-in">
-            <p :key="rightMember.id" class="mt-1 min-h-[72px] text-xs italic leading-snug text-primary-900/80 transition-all duration-300 ease-in-out">
-              <span v-for="(line, idx) in rightMember.quote" :key="idx" class="block">{{ line }}</span>
+            <p
+              :key="rightMember.id"
+              class="mt-1 min-h-[72px] text-xs italic leading-snug text-primary-900/80 transition-all duration-300 ease-in-out"
+            >
+              <span v-for="(line, idx) in rightMember.quote" :key="idx" class="block">{{
+                line
+              }}</span>
             </p>
           </Transition>
         </div>
@@ -375,7 +450,9 @@ onBeforeUnmount(stopAutoSlide)
 
     <!-- Carrousel mobile : sous 460px, l'arène à deux cartes ne tient plus —
          un seul profil à la fois, les 6 profils de toutes les BUs confondus. -->
-    <div class="hidden max-[459px]:flex w-full flex-1 flex-col items-center justify-center gap-6 px-4">
+    <div
+      class="hidden max-[459px]:flex w-full flex-1 flex-col items-center justify-center gap-6 px-4"
+    >
       <div class="relative flex w-full flex-col items-center">
         <Transition
           mode="out-in"
@@ -389,20 +466,30 @@ onBeforeUnmount(stopAutoSlide)
           <div :key="mobileCardIndex" class="flex flex-col items-center">
             <!-- accent-700, pas accent-500 : 1,9:1 sur blanc, sous le seuil
                  WCAG même en grand gras (cf. sélecteur desktop ci-dessus). -->
-            <div class="mb-4 [@media(max-height:690px)]:mb-2 flex items-center justify-center gap-2 text-center font-display text-4xl font-black text-accent-700">
+            <div
+              class="mb-4 [@media(max-height:690px)]:mb-2 flex items-center justify-center gap-2 text-center font-display text-4xl font-black text-accent-700"
+            >
               {{ currentMobileProfile.buLabel }}
             </div>
-            <div class="flex h-[clamp(200px,40dvh,350px)] w-52 shrink min-h-0 items-center justify-center overflow-hidden rounded-2xl bg-primary-950 [@media(max-height:690px)]:max-h-[25dvh]">
+            <div
+              class="flex h-[clamp(200px,40dvh,350px)] w-52 shrink min-h-0 items-center justify-center overflow-hidden rounded-2xl bg-primary-950 [@media(max-height:690px)]:max-h-[25dvh]"
+            >
               <span class="font-display text-6xl font-extrabold text-white/10">{{
                 initials(currentMobileProfile.name)
               }}</span>
             </div>
 
-            <div class="mt-4 [@media(max-height:690px)]:mt-2 min-h-[160px] w-full max-w-[18rem] flex flex-col justify-start text-center">
+            <div
+              class="mt-4 [@media(max-height:690px)]:mt-2 min-h-[160px] w-full max-w-[18rem] flex flex-col justify-start text-center"
+            >
               <p class="text-xl font-bold text-primary-950">{{ currentMobileProfile.name }}</p>
               <p class="text-sm font-medium text-primary-900/50">{{ currentMobileProfile.role }}</p>
-              <p class="mt-1 text-base italic leading-snug text-primary-900/80 [@media(max-height:690px)]:text-sm [@media(max-height:690px)]:leading-tight">
-                <span v-for="(line, idx) in currentMobileProfile.quote" :key="idx" class="block">{{ line }}</span>
+              <p
+                class="mt-1 text-base italic leading-snug text-primary-900/80 [@media(max-height:690px)]:text-sm [@media(max-height:690px)]:leading-tight"
+              >
+                <span v-for="(line, idx) in currentMobileProfile.quote" :key="idx" class="block">{{
+                  line
+                }}</span>
               </p>
             </div>
           </div>
@@ -412,7 +499,7 @@ onBeforeUnmount(stopAutoSlide)
           type="button"
           aria-label="Profil suivant"
           class="absolute right-2 top-36 z-10 -translate-y-1/2 inline-flex size-10 items-center justify-center rounded-full text-primary-900 transition-colors duration-200 hover:bg-primary-900/10 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-900 motion-reduce:transition-none"
-          @click="nextMobileCard(); resetTimer()"
+          @click="handleNextMobileCardClick"
         >
           <svg class="size-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path

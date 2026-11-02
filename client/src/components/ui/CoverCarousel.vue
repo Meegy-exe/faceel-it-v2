@@ -177,7 +177,11 @@ onBeforeUnmount(() => {
     aria-roledescription="carrousel"
     :aria-label="label"
     class="relative flex flex-col justify-between h-full w-full cursor-grab active:cursor-grabbing select-none"
-    :class="arrowBelowOnMobile ? '[@media(max-height:568px)]:justify-start [@media(max-height:568px)]:gap-0' : ''"
+    :class="
+      arrowBelowOnMobile
+        ? '[@media(max-height:568px)]:justify-start [@media(max-height:568px)]:gap-0'
+        : ''
+    "
     @mousedown="handleMouseDown"
     @mouseup="handleMouseUp"
     @mouseenter="paused = true"
@@ -188,7 +192,11 @@ onBeforeUnmount(() => {
     <!-- Conteneur principal -->
     <div
       class="relative my-auto flex w-full items-center overflow-hidden"
-      :class="arrowBelowOnMobile ? 'flex-col max-[459px]:gap-4 [@media(max-height:568px)]:gap-1 sm:flex-row' : ''"
+      :class="
+        arrowBelowOnMobile
+          ? 'flex-col max-[459px]:gap-4 [@media(max-height:568px)]:gap-1 sm:flex-row'
+          : ''
+      "
     >
       <!-- Piste avec les MÊMES paddings que les en-têtes de HomeView -->
       <div class="relative h-[250px] w-full px-4 md:px-24 lg:px-28">

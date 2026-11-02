@@ -505,8 +505,12 @@ const testimonialReveal = useScrollReveal(testimonialEl)
       </div>
     </section>
 
-    <!-- 7. Footer -->
-    <section data-theme="dark" class="w-full snap-start snap-always">
+    <!-- 7. Footer, conteneur final verrouille en hauteur ecran -->
+    <!-- bloc bleu en flex-1 pousse deja le footer en bas -->
+    <section
+      data-theme="dark"
+      class="relative h-dvh w-full shrink-0 snap-start snap-always flex flex-col bg-white"
+    >
       <TheFooter />
     </section>
   </div>

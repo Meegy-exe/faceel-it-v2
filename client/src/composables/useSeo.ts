@@ -11,7 +11,7 @@ import { SITE_URL } from '@/config/site'
  * charge et sérialise le résultat dans le HTML pré-rendu). `useHead` collecte
  * les balises pendant le rendu, ce qui les rend disponibles au pré-rendu au
  * build (arbitrage n°5). Toucher au `document` depuis un `onMounted`
- * produirait des pages statiques sans aucune meta — l'inverse du but
+ * produirait des pages statiques sans aucune meta - l'inverse du but
  * recherché.
  *
  * Les valeurs sont acceptées en getters : une page dont le titre dépend d'une
@@ -23,6 +23,42 @@ const SITE_NAME = 'Faceel-IT'
 
 /** Ajouté après chaque titre de page, sauf sur l'accueil qui se suffit. */
 const TITLE_SUFFIX = ` | ${SITE_NAME}`
+
+/**
+ * Adresse et coordonnees reelles du bureau Wasquehal, reprises telles
+ * quelles (cf. CLAUDE.md, integrite du contenu) - memes coordonnees que
+ * `App.vue` (`PHONE_HREF`/`EMAIL`), pas une seconde source a maintenir.
+ */
+const BUSINESS_PHONE = '+33359617188'
+const BUSINESS_EMAIL = 'contact@faceel-it.com'
+const BUSINESS_ADDRESS = {
+  streetAddress: '10 allee du Chateau Blanc',
+  addressLocality: 'Wasquehal',
+  postalCode: '59290',
+  addressRegion: 'Hauts-de-France',
+  addressCountry: 'FR',
+}
+const BUSINESS_LAT = 50.6695
+const BUSINESS_LNG = 3.1309
+
+// schema local business : une seule entite, reinjectee a chaque page
+const LOCAL_BUSINESS_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: SITE_NAME,
+  url: SITE_URL,
+  telephone: BUSINESS_PHONE,
+  email: BUSINESS_EMAIL,
+  address: {
+    '@type': 'PostalAddress',
+    ...BUSINESS_ADDRESS,
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: BUSINESS_LAT,
+    longitude: BUSINESS_LNG,
+  },
+}
 
 export interface SeoInput {
   /** Titre de la page, sans le nom du site. */
@@ -73,7 +109,7 @@ export function useSeo(input: SeoInput) {
       { name: 'description', content: description },
       { name: 'robots', content: indexable ? 'index, follow' : 'noindex, nofollow' },
 
-      // Open Graph — Facebook, LinkedIn, Slack, iMessage…
+      // Open Graph - Facebook, LinkedIn, Slack, iMessage…
       { property: 'og:site_name', content: SITE_NAME },
       { property: 'og:type', content: input.type ?? 'website' },
       { property: 'og:title', content: title },
@@ -90,6 +126,18 @@ export function useSeo(input: SeoInput) {
       { name: 'twitter:title', content: title },
       { name: 'twitter:description', content: description },
       { name: 'twitter:image', content: image },
+
+      // geo tags : bureau Wasquehal, memes sur toutes les pages
+      { name: 'geo.region', content: 'FR-HDF' },
+      { name: 'geo.placename', content: 'Wasquehal' },
+      { name: 'geo.position', content: `${BUSINESS_LAT};${BUSINESS_LNG}` },
+      { name: 'ICBM', content: `${BUSINESS_LAT}, ${BUSINESS_LNG}` },
+    ],
+    script: [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify(LOCAL_BUSINESS_SCHEMA),
+      },
     ],
   })
 }

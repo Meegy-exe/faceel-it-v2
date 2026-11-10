@@ -15,6 +15,6 @@ Disallow: /api/
 # build (arbitrage n°5, cf. CLAUDE.md) qui l'alimentera depuis
 # src/router/routes.ts (staticPrerenderRoutes) et les routes dynamiques
 # publiées par l'API. Tant que ce chantier n'est pas fait, cette URL renvoie
-# 404 — un comportement que les crawlers gèrent sans casser la lecture du
+# 404 - un comportement que les crawlers gèrent sans casser la lecture du
 # reste de ce fichier, mais qu'il ne faut pas laisser en l'état indéfiniment.
 Sitemap: https://www.faceel-it.com/sitemap.xml

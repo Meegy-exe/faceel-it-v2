@@ -9,7 +9,7 @@ export { staticPrerenderRoutes }
  *
  * Chaque vue est chargée en différé : le pré-rendu au build s'appuie sur
  * `staticPrerenderRoutes` (`./staticPrerenderRoutes.ts`) pour savoir quelles
- * URLs générer en statique — `/admin` en est volontairement absent (contenu
+ * URLs générer en statique - `/admin` en est volontairement absent (contenu
  * authentifié, jamais pré-rendu ni indexé).
  *
  * Scroll : App.vue est désormais un layout fluide sans logique conditionnelle.
@@ -28,7 +28,7 @@ export const routes: RouteRecordRaw[] = [
      * PLAT, pas une route parente avec `children` : sans layout commun à
      * partager (aucune `<RouterView>` intermédiaire, aucun sous-menu de
      * rubrique affiché sur les deux pages), une route parente n'apporterait
-     * qu'un niveau d'indirection — la parenté est ici un fait d'URL et de
+     * qu'un niveau d'indirection - la parenté est ici un fait d'URL et de
      * menu, pas de rendu.
      */
     path: '/qui-sommes-nous/notre-collectif',
@@ -62,6 +62,8 @@ export const routes: RouteRecordRaw[] = [
     path: '/consulter-nos-offres',
     name: 'offres',
     component: () => import('@/views/OffersView.vue'),
+    // desactive animation footer sur cette page (gene le scroll de la liste)
+    meta: { staticFooter: true },
   },
   {
     path: '/sport-sponsoring',
@@ -114,6 +116,8 @@ export const routes: RouteRecordRaw[] = [
     path: '/offres/:id',
     name: 'offre-detail',
     component: () => import('@/views/OfferDetailView.vue'),
+    // sans anim footer
+    meta: { staticFooter: true },
   },
   {
     path: '/offres/:id/postuler',
@@ -213,7 +217,7 @@ export const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    // JETABLE — banc d'essai du Design System, à retirer avant la mise en ligne.
+    // JETABLE - banc d'essai du Design System, à retirer avant la mise en ligne.
     // Absente de `staticPrerenderRoutes` : jamais pré-rendue, jamais indexable.
     path: '/styleguide',
     name: 'styleguide',

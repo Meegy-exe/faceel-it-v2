@@ -1,6 +1,6 @@
 import { createApp } from './app'
 
-// Désactive la restauration native du scroll — ViteSSG/Vue Router reprend
+// Désactive la restauration native du scroll - ViteSSG/Vue Router reprend
 // la main via scrollBehavior, sinon le navigateur force le snap sur la
 // deuxième section après un rechargement (F5).
 if ('scrollRestoration' in history) {
@@ -18,7 +18,7 @@ async function bootstrap() {
   }
 
   // `createApp()` (fabriqué par `ViteSSG` dans `app.ts`) monte lui-même
-  // l'application dans le navigateur une fois prête — aucun `app.mount()`
+  // l'application dans le navigateur une fois prête - aucun `app.mount()`
   // à rappeler ici, à la différence de l'ancien bootstrap manuel.
   await createApp()
 }

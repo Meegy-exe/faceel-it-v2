@@ -7,7 +7,7 @@ import { defineComponent, h, nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 // Sous-chemin `/client`, pas la racine du paquet : `@unhead/vue@2` n'expose
 // `createHead` que par environnement (`/client` en navigateur, `/server` en
-// SSR — c'est ce que `vite-ssg` utilise lui-même en interne). La racine du
+// SSR - c'est ce que `vite-ssg` utilise lui-même en interne). La racine du
 // paquet n'exporte que le noyau agnostique (`createUnhead`/`createHeadCore`).
 import { createHead } from '@unhead/vue/client'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -46,12 +46,12 @@ describe('useSeo', () => {
   it('pose titre, description, canonique et indexation', async () => {
     await renderWith({
       title: 'Accueil',
-      fullTitle: 'Faceel-IT — ESN experte en Data',
+      fullTitle: 'Faceel-IT - ESN experte en Data',
       description: 'Description de test.',
       image: '/og.png',
     })
 
-    expect(document.title).toBe('Faceel-IT — ESN experte en Data')
+    expect(document.title).toBe('Faceel-IT - ESN experte en Data')
     expect(content('meta[name="description"]')).toBe('Description de test.')
     expect(content('meta[name="robots"]')).toBe('index, follow')
     expect(document.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe(

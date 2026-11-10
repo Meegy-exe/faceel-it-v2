@@ -5,7 +5,7 @@ import 'vue-router'
 /**
  * Typage strict des variables d'environnement.
  * Toute nouvelle variable VITE_* doit être déclarée ici, sinon son accès
- * est une erreur de compilation — c'est volontaire.
+ * est une erreur de compilation - c'est volontaire.
  *
  * `import 'vue-router'` en tête rend ce fichier un module TypeScript :
  * les interfaces globales doivent donc être dans `declare global {}`,

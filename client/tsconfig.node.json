@@ -15,7 +15,7 @@
     "types": ["node"],
 
     /* `vite.config.ts` importe `./src/router/staticPrerenderRoutes.ts` avec
-       l'extension explicite — requis par le chargeur de config natif de
+       l'extension explicite - requis par le chargeur de config natif de
        Vite (résolution ESM stricte), refusé par tsc sans ce réglage. Sans
        risque ici : la précondition de `noEmit: true` est déjà remplie. */
     "allowImportingTsExtensions": true,

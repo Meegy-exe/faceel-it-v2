@@ -26,9 +26,9 @@ import { useSeo } from '@/composables/useSeo'
  * maintenir.
  */
 useSeo({
-  title: 'Je suis une entreprise - ESN à Wasquehal et Lille',
+  title: 'Je suis une entreprise - ESN à Wasquehal, dans la métropole lilloise',
   description:
-    'Faceel-IT, ESN à Wasquehal, accompagne les entreprises de Lille et des Hauts-de-France dans ' +
+    'Faceel-IT, ESN à Wasquehal, accompagne les entreprises de la métropole lilloise et des Hauts-de-France dans ' +
     'leurs projets stratégiques : régie de proximité, centre de services, 65 collaborateurs, ' +
     'plus de 170 projets réalisés.',
 })

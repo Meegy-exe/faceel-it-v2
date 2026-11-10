@@ -140,7 +140,7 @@ useSeo({
       : `Postuler - ${offer.value!.title} - Faceel-IT Wasquehal`,
   ),
   description:
-    'Déposez votre candidature chez Faceel-IT, ESN à Wasquehal près de Lille, en quelques minutes. CV, lettre de motivation et coordonnées - nous reviendrons vers vous rapidement.',
+    'Déposez votre candidature chez Faceel-IT, ESN à Wasquehal, dans la métropole lilloise, en quelques minutes. CV, lettre de motivation et coordonnées - nous reviendrons vers vous rapidement.',
 })
 
 const firstName = ref('')

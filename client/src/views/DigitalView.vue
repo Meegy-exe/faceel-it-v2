@@ -27,7 +27,7 @@ import { useSeo } from '@/composables/useSeo'
  */
 useSeo({
   // seo local
-  title: 'Développement web et mobile - ESN à Lille et Wasquehal',
+  title: 'Développement web et mobile - ESN à Wasquehal, dans la métropole lilloise',
   description:
     'La BU Digital de Faceel-IT, ESN basée à Wasquehal, conçoit vos applications web et ' +
     'mobile sur la métropole lilloise et dans les Hauts-de-France.',
@@ -321,7 +321,7 @@ function goToSelectedJobDetail() {
           <!-- fix contraste texte : vert accent trop sombre une fois rendu sur navy -->
           <p class="mb-3 font-bold uppercase tracking-widest text-blue-100 lg:mb-6">BU Digital</p>
           <h1 class="mb-4 font-display text-4xl font-black text-white lg:mb-8 lg:text-6xl">
-            Web & mobile, notre spécialité à Lille
+            Web & mobile, notre spécialité dans la métropole lilloise
           </h1>
           <p class="mb-6 text-lg text-white md:text-xl lg:mb-8">
             Description générique sur deux à trois lignes présentant la Business Unit, ses missions

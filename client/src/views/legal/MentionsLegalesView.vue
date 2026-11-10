@@ -4,7 +4,7 @@ import { useSeo } from '@/composables/useSeo'
 useSeo({
   title: "Mentions légales - Faceel-IT Wasquehal",
   description:
-    "Mentions légales de Faceel-IT, ESN à Wasquehal près de Lille : éditeur du site, hébergement et informations légales.",
+    "Mentions légales de Faceel-IT, ESN à Wasquehal, dans la métropole lilloise : éditeur du site, hébergement et informations légales.",
 })
 </script>
 

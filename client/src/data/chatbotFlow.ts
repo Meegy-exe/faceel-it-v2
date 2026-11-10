@@ -407,7 +407,7 @@ export const chatKeywords: KeywordEntry[] = [
   },
   {
     keys: ['adresse', 'agence', 'wasquehal', 'venir', 'lille'],
-    answer: "L'agence est au 10 allée du château blanc, 59290 Wasquehal, à deux pas de Lille.",
+    answer: "L'agence est au 10 allée du château blanc, 59290 Wasquehal, dans la métropole lilloise.",
     link: { label: "L'agence", url: '/contact-entreprise' },
   },
   {

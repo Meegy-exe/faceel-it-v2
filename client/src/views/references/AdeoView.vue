@@ -7,7 +7,7 @@ import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollRevea
 useSeo({
   title: 'Adeo - Référence client ESN à Wasquehal',
   description:
-    "Découvrez comment Faceel-IT, ESN à Wasquehal près de Lille, a accompagné Adeo dans la transformation de ses plateformes digitales : IA et automatisation des flux de données RH.",
+    "Découvrez comment Faceel-IT, ESN à Wasquehal, dans la métropole lilloise, a accompagné Adeo dans la transformation de ses plateformes digitales : IA et automatisation des flux de données RH.",
 })
 
 const heroTextEl = useTemplateRef<HTMLElement>('heroTextEl')

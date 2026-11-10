@@ -39,9 +39,9 @@ import photoLille from '@/assets/images/photos/lille.jpg'
  * sections 3-5 provient de `CollectifView.vue`, où il est déjà validé.
  */
 useSeo({
-  title: 'Notre histoire - ESN née à Lille, basée à Wasquehal',
+  title: 'Notre histoire - ESN née dans la métropole lilloise, basée à Wasquehal',
   description:
-    'Née le 8 mars 2021 à Lille et basée à Wasquehal, Faceel-IT accompagne les entreprises des Hauts-de-France dans leurs projets informatiques. Une ESN 100 % indépendante, en croissance organique.',
+    'Née le 8 mars 2021 dans la métropole lilloise et basée à Wasquehal, Faceel-IT accompagne les entreprises des Hauts-de-France dans leurs projets informatiques. Une ESN 100 % indépendante, en croissance organique.',
 })
 
 const originesEl = useTemplateRef<HTMLElement>('originesEl')
@@ -125,7 +125,7 @@ const RSE_CARDS: RseCard[] = [
          section), mais la page a besoin d'un `<h1>` réel qui en résume le
          sujet pour l'a11y/le SEO  il reprend le titre déjà déclaré à
          `useSeo` ci-dessus, sans dupliquer visuellement du texte. -->
-      <h1 class="sr-only">Notre histoire, celle d'une ESN née à Lille et basée à Wasquehal</h1>
+      <h1 class="sr-only">Notre histoire, celle d'une ESN née dans la métropole lilloise et basée à Wasquehal</h1>
 
       <div
         ref="originesEl"

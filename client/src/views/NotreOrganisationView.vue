@@ -5,7 +5,7 @@ import { useSeo } from '@/composables/useSeo'
 useSeo({
   title: 'Notre vision & notre organisation - ESN à Wasquehal',
   description:
-    "Ce qui porte Faceel-IT, ESN à Wasquehal près de Lille, et la façon dont le collectif s'organise au quotidien dans les Hauts-de-France.",
+    "Ce qui porte Faceel-IT, ESN à Wasquehal, dans la métropole lilloise, et la façon dont le collectif s'organise au quotidien dans les Hauts-de-France.",
 })
 
 // TODO : contenu réel à fournir (vision d'entreprise, organigramme/organisation) -

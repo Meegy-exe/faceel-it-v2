@@ -17,7 +17,7 @@ const profileStore = useProfileStore()
 useSeo({
   title: 'Accueil',
   // maj seo local
-  fullTitle: 'Faceel-IT - ESN à Wasquehal (Lille) : Data, IA et Transformation digitale',
+  fullTitle: 'Faceel-IT - ESN à Wasquehal (métropole lilloise) : Data, IA et Transformation digitale',
   description:
     'ESN à Wasquehal, au coeur de la métropole lilloise, Faceel-IT accompagne les entreprises ' +
     'des Hauts-de-France : Data, Intelligence Artificielle, développement web et applications ' +
@@ -472,7 +472,7 @@ onBeforeUnmount(() => {
               class="flex max-w-7xl flex-col items-start gap-y-2 animate-fade-up motion-reduce:animate-none font-display text-5xl leading-[1.1] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl drop-shadow-xl max-sm:text-2xl max-sm:leading-tight"
             >
               <!-- seo local : contexte geo stable, hors phrase animee -->
-              <span class="sr-only">Faceel-IT, ESN à Wasquehal près de Lille, Hauts-de-France.</span>
+              <span class="sr-only">Faceel-IT, ESN à Wasquehal, dans la métropole lilloise, Hauts-de-France.</span>
               <span class="sr-only">{{ heroFullText }}</span>
               <span class="block text-white max-sm:whitespace-nowrap" aria-hidden="true">
                 {{ typedMain || '\u200B'
@@ -518,8 +518,8 @@ onBeforeUnmount(() => {
           <p
             class="mt-4 w-full text-lg leading-relaxed text-white [@media(max-height:568px)]:text-sm [@media(max-height:568px)]:leading-tight"
           >
-            Faceel-it est plus qu'une ESN française et indépendante, basée à Wasquehal près de
-            Lille, c'est une équipe qui se construit autour des valeurs du sport qui nous font
+            Faceel-it est plus qu'une ESN française et indépendante, basée à Wasquehal, dans la
+            métropole lilloise, c'est une équipe qui se construit autour des valeurs du sport qui nous font
             avancer ensemble.
           </p>
         </header>

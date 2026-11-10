@@ -7,7 +7,7 @@ import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollRevea
 useSeo({
   title: 'Boulanger - Référence client ESN à Wasquehal',
   description:
-    "Refonte complète de l'application Boulanger par Faceel-IT, ESN à Wasquehal près de Lille, pour moderniser l'interface et accompagner le lancement des projets stratégiques.",
+    "Refonte complète de l'application Boulanger par Faceel-IT, ESN à Wasquehal, dans la métropole lilloise, pour moderniser l'interface et accompagner le lancement des projets stratégiques.",
 })
 
 /** Un reveal par bloc de texte principal (même convention que HomeView) -

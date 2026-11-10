@@ -9,7 +9,7 @@ import { useWaveCanvas } from '@/composables/useWaveCanvas'
 useSeo({
   title: 'Politique RSE - ESN engagée à Wasquehal',
   description:
-    "Faceel-IT, ESN à Wasquehal près de Lille, s'engage au quotidien pour un numérique plus responsable, inclusif et respectueux de l'environnement dans les Hauts-de-France.",
+    "Faceel-IT, ESN à Wasquehal, dans la métropole lilloise, s'engage au quotidien pour un numérique plus responsable, inclusif et respectueux de l'environnement dans les Hauts-de-France.",
 })
 
 const waveCanvas = ref<HTMLCanvasElement | null>(null)

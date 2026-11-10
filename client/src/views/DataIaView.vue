@@ -19,7 +19,7 @@ import { useSeo } from '@/composables/useSeo'
  */
 useSeo({
   // seo local
-  title: 'Data & IA - ESN à Lille et Wasquehal',
+  title: 'Data & IA - ESN à Wasquehal, dans la métropole lilloise',
   description:
     'La BU Data & IA de Faceel-IT, ESN basée à Wasquehal, déploie vos projets Data et ' +
     'Intelligence Artificielle sur la métropole lilloise et dans les Hauts-de-France.',
@@ -238,7 +238,7 @@ function goToSelectedJobDetail() {
         <h1
           class="animate-fade-up font-display text-4xl font-extrabold tracking-tight text-white motion-reduce:animate-none sm:text-6xl xl:text-7xl"
         >
-          BU Data & IA, votre expertise à Lille
+          BU Data & IA, votre expertise dans la métropole lilloise
         </h1>
         <p
           class="hero-lede mx-auto mt-6 max-w-3xl animate-fade-up text-base font-semibold leading-relaxed text-[#12D80A] motion-reduce:animate-none sm:text-xl xl:text-2xl [animation-delay:200ms]"

@@ -40,7 +40,7 @@ import photoCourseGroupe from '@/assets/images/photos/course-groupe.jpg'
 useSeo({
   title: 'Je suis candidat - Rejoindre une ESN à Wasquehal',
   description:
-    'Rejoignez Faceel-IT, ESN à Wasquehal près de Lille : savoir-être, savoir-faire, formation, ' +
+    'Rejoignez Faceel-IT, ESN à Wasquehal, dans la métropole lilloise : savoir-être, savoir-faire, formation, ' +
     'coaching et mentorat au sein d’un collectif de passionnés des Hauts-de-France. ' +
     'Découvrez notre process de recrutement et nos offres.',
 })

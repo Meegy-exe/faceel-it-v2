@@ -27,7 +27,7 @@ import { useSeo } from '@/composables/useSeo'
 useSeo({
   title: 'Notre collectif',
   description:
-    'Les femmes et les hommes de Faceel-IT, ESN à Wasquehal près de Lille : Staff, BU Digital, Data & IA, Cyber. Des rôles, des missions, un collectif au service des entreprises des Hauts-de-France.',
+    'Les femmes et les hommes de Faceel-IT, ESN à Wasquehal, dans la métropole lilloise : Staff, BU Digital, Data & IA, Cyber. Des rôles, des missions, un collectif au service des entreprises des Hauts-de-France.',
 })
 
 /* -------------------------------------------------------------------------- */

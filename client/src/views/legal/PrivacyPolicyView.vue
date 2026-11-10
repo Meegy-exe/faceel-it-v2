@@ -4,7 +4,7 @@ import { useSeo } from '@/composables/useSeo'
 useSeo({
   title: "Politique de confidentialité - Faceel-IT Wasquehal",
   description:
-    "Politique de confidentialité de Faceel-IT, ESN à Wasquehal près de Lille : traitement et protection de vos données personnelles.",
+    "Politique de confidentialité de Faceel-IT, ESN à Wasquehal, dans la métropole lilloise : traitement et protection de vos données personnelles.",
 })
 </script>
 

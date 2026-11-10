@@ -8,7 +8,7 @@ import teamPhoto from '@/assets/images/padel-equipe.jpg'
 useSeo({
   title: 'Discutons - Faceelbot, ESN à Wasquehal',
   description:
-    "Deux minutes de questions valent mieux qu'un formulaire de contact. Discutez avec Faceelbot, l'assistant de Faceel-IT, ESN à Wasquehal près de Lille.",
+    "Deux minutes de questions valent mieux qu'un formulaire de contact. Discutez avec Faceelbot, l'assistant de Faceel-IT, ESN à Wasquehal, dans la métropole lilloise.",
 })
 
 interface Message {

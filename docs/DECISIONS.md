@@ -1,7 +1,7 @@
 # Architecture Decision Records
 
 *Mode Lean (cf. `CLAUDE.md`) : seuls les choix d'architecture lourds sont
-conservés ici — plus d'ADR pour l'UI/CSS/composants. Historique complet
+conservés ici - plus d'ADR pour l'UI/CSS/composants. Historique complet
 (ADR 01-29) archivé dans `docs/archive/DECISIONS.pre-lean.md`.*
 
 ## Vite-SSG
@@ -31,6 +31,6 @@ L'arbitrage n°3 (« pas de back-office ni d'auth en V1 », cf.
 gérer une partie de son contenu en autonomie plus tôt que prévu. Une route
 parente `/admin` (layout dédié `AdminLayout.vue` : sidebar + topbar) est
 protégée par un guard (`router.beforeEach` dans `app.ts`) qui s'appuie sur un
-`useAuthStore` Pinia — authentification simulée en mémoire, sans backend
+`useAuthStore` Pinia - authentification simulée en mémoire, sans backend
 d'auth réel pour l'instant. `/admin` est volontairement absent de
 `staticPrerenderRoutes` : contenu authentifié, jamais pré-rendu ni indexé.

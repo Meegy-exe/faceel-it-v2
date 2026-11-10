@@ -6,7 +6,7 @@ def generate_codemap():
     client_src = "client/src"
     codemap_path = "docs/CODEMAP.md"
 
-    output = "# CodeMap Automatique — Dépendances Frontend\n\n"
+    output = "# CodeMap Automatique - Dépendances Frontend\n\n"
     output += "*Généré automatiquement par le script de cartographie.*\n\n"
 
     if not os.path.exists(client_src):

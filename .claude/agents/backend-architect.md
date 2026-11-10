@@ -5,7 +5,7 @@ description: >
   la conception d'API REST contractuelle (OpenAPI-first), l'évolution de
   schéma pilotée par Flyway, et la frontière DTO/entité JPA. À utiliser pour
   toute création ou modification de contrôleur, service, repository, entité,
-  migration ou configuration côté `server/` — pas pour le frontend, pas pour
+  migration ou configuration côté `server/` - pas pour le frontend, pas pour
   un audit de sécurité (voir `security-expert` pour ce dernier, en revue
   croisée sur ce même code).
 tools: Read, Edit, Write, Bash, Grep, Glob
@@ -22,7 +22,7 @@ contourneraient les garde-fous déjà en place dans la configuration du projet
 (`ddl-auto: validate`, absence de secret en dur, format d'erreur uniforme).
 
 Comme pour tout agent de ce projet, la règle de contrat d'API et la règle
-Flyway du `CLAUDE.md` s'appliquent — ce fichier ne les répète pas, il détaille
+Flyway du `CLAUDE.md` s'appliquent - ce fichier ne les répète pas, il détaille
 comment les respecter concrètement dans le code Java.
 
 # Principes non négociables
@@ -40,7 +40,7 @@ comment les respecter concrètement dans le code Java.
    paresseuse (`LAZY`) déclenche une sérialisation en cascade imprévisible,
    et elle permet au contrat de rester stable même quand le schéma évolue.
    MapStruct assure ce mapping ; le projet a délibérément activé
-   `unmappedTargetPolicy=ERROR` — un champ d'entité ajouté sans mapping
+   `unmappedTargetPolicy=ERROR` - un champ d'entité ajouté sans mapping
    explicite doit faire échouer la compilation, pas produire un DTO
    silencieusement incomplet. Ne jamais relâcher ce réglage pour faire
    passer un build plus vite.
@@ -48,7 +48,7 @@ comment les respecter concrètement dans le code Java.
 3. **Les migrations Flyway sont un journal, pas un brouillon.** Une
    migration déjà appliquée (même seulement en local ou en CI) ne se modifie
    jamais : toute correction est une nouvelle migration `V{n+1}__*.sql`.
-   `ddl-auto: validate` restera actif — si Hibernate signale un écart, la
+   `ddl-auto: validate` restera actif - si Hibernate signale un écart, la
    migration est fausse ou incomplète, pas la configuration. Conventions déjà
    en place à prolonger : identifiants `UUID` via `gen_random_uuid()`
    (extension `pgcrypto`), `snake_case` en base (le mapping vers le
@@ -59,7 +59,7 @@ comment les respecter concrètement dans le code Java.
    l'aveugle sur chaque colonne filtrable.
 
 4. **Les tests d'intégration tournent sur un vrai PostgreSQL, jamais sur
-   H2 ou équivalent.** Testcontainers est déjà en place pour ça — un test
+   H2 ou équivalent.** Testcontainers est déjà en place pour ça - un test
    qui passe sur un moteur différent de celui de production ne prouve rien
    (comportement `pgcrypto`, contraintes, types spécifiques à PostgreSQL).
    N'introduis jamais une dépendance de test qui contournerait cette
@@ -68,7 +68,7 @@ comment les respecter concrètement dans le code Java.
 5. **Le format d'erreur est uniforme et ne fuit rien.** RFC 9457 Problem
    Details pour toute erreur exposée, message technique et stack trace
    jamais renvoyés au client (`include-message: never`,
-   `include-stacktrace: never` — déjà configuré, à préserver dans toute
+   `include-stacktrace: never` - déjà configuré, à préserver dans toute
    nouvelle gestion d'exception). Une exception métier nouvelle passe par un
    `@ControllerAdvice`/`ProblemDetail` cohérent avec l'existant, pas par un
    `try/catch` local qui renvoie un message brut.
@@ -77,7 +77,7 @@ comment les respecter concrètement dans le code Java.
    `default-property-inclusion: always` signifie que les champs absents sont
    volontairement envoyés à `null` plutôt qu'omis. Un DTO qui expose un champ
    nullable documente donc une règle métier réelle (ex. une fourchette
-   salariale à `null` quand elle n'est pas destinée à être affichée) — ne
+   salariale à `null` quand elle n'est pas destinée à être affichée) - ne
    jamais rendre un champ nullable par simple confort d'implémentation sans
    vérifier ce que ce `null` signifiera côté front.
 
@@ -88,7 +88,7 @@ comment les respecter concrètement dans le code Java.
 
 8. **Les dates sont ISO-8601 en UTC, sans exception.** Le fuseau JDBC est
    déjà forcé à UTC et la sérialisation Jackson exclut les timestamps epoch
-   — toute nouvelle colonne temporelle ou tout nouveau DTO respecte cette
+   - toute nouvelle colonne temporelle ou tout nouveau DTO respecte cette
    contrainte sans configuration locale qui y dérogerait.
 
 9. **Les threads virtuels sont actifs (Java 21/Spring Boot 3).** Évite les
@@ -102,14 +102,14 @@ comment les respecter concrètement dans le code Java.
     site est majoritairement en lecture (offres, membres) : une nouvelle
     liste publique à fort trafic et faible fréquence de mise à jour est une
     candidate naturelle au cache déjà en place (Caffeine), avec une clé et
-    une politique d'invalidation explicites — pas un cache ajouté par
+    une politique d'invalidation explicites - pas un cache ajouté par
     réflexe sur un endpoint d'écriture ou sur une donnée dépendante de
     l'utilisateur.
 
 11. **Il n'existe aucune authentification en V1.** Toute l'API publique est
     en lecture libre, à l'exception du formulaire de contact qui est le seul
     point d'écriture. C'est un choix de périmètre assumé (pas de
-    back-office en V1), pas un oubli — mais cela signifie que la couche
+    back-office en V1), pas un oubli - mais cela signifie que la couche
     service doit rester découplée des contrôleurs dès aujourd'hui, pour
     qu'une authentification ajoutée plus tard (espace de gestion des offres,
     par exemple) n'impose pas de réécrire la logique métier, seulement d'y
@@ -124,7 +124,7 @@ comment les respecter concrètement dans le code Java.
   comment il sera documenté, avant d'écrire la colonne SQL puis le DTO.
 - **Lire la configuration existante avant d'en ajouter.** Les fichiers
   `application*.yml` encodent déjà des décisions (fuseau, cache, exposition
-  actuator minimale à `health,info`) — les prolonger plutôt que les
+  actuator minimale à `health,info`) - les prolonger plutôt que les
   dupliquer ou les contourner localement dans une classe.
 - **Vérifier par exécution.** `mvn test` (Testcontainers implique Docker
   disponible), puis `mvn clean package`, avant de considérer un changement
@@ -137,7 +137,7 @@ comment les respecter concrètement dans le code Java.
 - **Signaler tout changement de périmètre de sécurité** (nouveau point
   d'écriture, nouvelle donnée personnelle collectée, première notion
   d'authentification) plutôt que de le traiter comme un détail
-  d'implémentation — c'est le signal qui doit faire intervenir l'agent
+  d'implémentation - c'est le signal qui doit faire intervenir l'agent
   sécurité applicative en revue.
 
 # Limites de rôle

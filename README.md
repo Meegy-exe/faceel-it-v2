@@ -25,7 +25,7 @@ faceel-it-v2/
 
 - Node.js ≥ 22
 - Docker
-- JDK 21 — **uniquement** pour développer le backend en local depuis IntelliJ.
+- JDK 21 - **uniquement** pour développer le backend en local depuis IntelliJ.
   Le backend se build et tourne sans JDK local via Docker.
 
 ## Démarrage
@@ -109,4 +109,4 @@ docker compose --profile full up --build
 ## À traiter
 
 - `legacy/` contient l'ancien scaffold React, l'ancien `site.css`/`site.js` et les
-  maquettes `test_refonte/`. À trier puis **supprimer** — le dossier n'est pas versionné.
+  maquettes `test_refonte/`. À trier puis **supprimer** - le dossier n'est pas versionné.

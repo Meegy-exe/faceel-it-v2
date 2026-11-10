@@ -28,8 +28,8 @@
         <a href="Accueil.dc.html#expertises" onClick="{{ closeMenu }}" style="{{ ovLink }}" style-hover="color:#0bd904;padding-left:12px">Tech &amp; Data</a>
         <a href="Accueil.dc.html#ia" onClick="{{ closeMenu }}" style="{{ ovLink }}" style-hover="color:#0bd904;padding-left:12px">Discutons IA</a>
         <a href="Realisations.dc.html" onClick="{{ closeMenu }}" style="{{ ovLink }}" style-hover="color:#0bd904;padding-left:12px">Réalisations</a>
-        <a href="Cas-Boulanger.dc.html" onClick="{{ closeMenu }}" style="{{ ovLink }}" style-hover="color:#0bd904;padding-left:12px">— Boulanger</a>
-        <a href="Cas-Adeo.dc.html" onClick="{{ closeMenu }}" style="{{ ovLink }}" style-hover="color:#0bd904;padding-left:12px">— Adeo</a>
+        <a href="Cas-Boulanger.dc.html" onClick="{{ closeMenu }}" style="{{ ovLink }}" style-hover="color:#0bd904;padding-left:12px">- Boulanger</a>
+        <a href="Cas-Adeo.dc.html" onClick="{{ closeMenu }}" style="{{ ovLink }}" style-hover="color:#0bd904;padding-left:12px">- Adeo</a>
         <a href="Recrutement.dc.html" onClick="{{ closeMenu }}" style="{{ ovLink }}" style-hover="color:#0bd904;padding-left:12px">Nous rejoindre</a>
         <a href="Offres.dc.html" onClick="{{ closeMenu }}" style="{{ ovLink }}" style-hover="color:#0bd904;padding-left:12px">Consulter nos offres</a>
       </div>
@@ -56,7 +56,7 @@ class Component extends DCLogic {
   state = { scrolled: false, narrow: false, open: false };
 
   componentDidMount(){
-    // scroll events are unreliable in embedded previews — use a sentinel
+    // scroll events are unreliable in embedded previews - use a sentinel
     this.sentinel = document.createElement("div");
     this.sentinel.style.cssText = "position:absolute;top:70px;left:0;width:1px;height:1px;pointer-events:none";
     document.body.appendChild(this.sentinel);

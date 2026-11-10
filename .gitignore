@@ -28,7 +28,7 @@ client/test-results/
 server/target/
 
 # --- Claude Code -------------------------------------------------------------
-# Paramètres locaux (tokens, préférences personnelles) — ne pas partager.
+# Paramètres locaux (tokens, préférences personnelles) - ne pas partager.
 # CLAUDE.md, .claude/agents/ et .claude/skills/ SONT versionnés (partagés équipe).
 .claude/settings.local.json
 .claude

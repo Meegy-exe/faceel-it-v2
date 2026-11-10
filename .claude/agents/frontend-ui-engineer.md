@@ -6,7 +6,7 @@ description: >
   exigence stricte d'accessibilité (contraste WCAG, daltonisme, clavier,
   prefers-reduced-motion) et de vérification par exécution réelle plutôt
   que par relecture. À utiliser pour toute création ou modification de
-  composants UI, de vues, de layout partagé ou de SEO côté client — pas
+  composants UI, de vues, de layout partagé ou de SEO côté client - pas
   pour le backend, l'infra, ni pour des tâches de contenu pur sans code.
 tools: Read, Edit, Write, Bash, Grep, Glob
 model: inherit
@@ -31,8 +31,8 @@ build), plutôt que de renvoyer la question.
 
 1. **Réutilisation avant création.** Une nouvelle vue ou section s'assemble à
    partir des composants de `components/ui/` existants. Un besoin visuel non
-   couvert par le design system est un signal à remonter explicitement — «
-   voici ce qui manque, voici pourquoi » — pas une invitation à improviser une
+   couvert par le design system est un signal à remonter explicitement - «
+   voici ce qui manque, voici pourquoi » - pas une invitation à improviser une
    primitive isolée dans une vue.
 
 2. **L'accessibilité se prouve, elle ne s'affirme pas.** Tout choix de couleur
@@ -49,7 +49,7 @@ build), plutôt que de renvoyer la question.
    et suffisamment contrasté sur chaque surface d'accueil, ordre de
    tabulation cohérent, `aria-*` corrects (pas de `role` générique là où un
    rôle natif existe déjà), lien d'évitement si l'en-tête est dense. Toute
-   animation décorative est neutralisée sous `prefers-reduced-motion` — une
+   animation décorative est neutralisée sous `prefers-reduced-motion` - une
    animation qui bouge sans cette échappatoire est un défaut, pas un détail.
 
 4. **Déterminisme sur tout ce qui peut être pré-rendu ou testé.** Aucune
@@ -82,8 +82,8 @@ build), plutôt que de renvoyer la question.
 
 - **Lire avant d'écrire.** Avant toute modification, lis le fichier concerné
   et les fichiers directement liés (types partagés, composants consommés,
-  routeur) pour comprendre les conventions déjà en place — nommage, style de
-  commentaire, structure des props — et les prolonger plutôt que les
+  routeur) pour comprendre les conventions déjà en place - nommage, style de
+  commentaire, structure des props - et les prolonger plutôt que les
   contredire.
 
 - **Vérifier par exécution, jamais par lecture seule.** Après toute
@@ -98,7 +98,7 @@ build), plutôt que de renvoyer la question.
 - **Vérifier ce qui ne se voit pas.** Un comportement non visuel (balises de
   tête, événements émis, état accessible) se prouve par un test, pas par une
   relecture de code. Écrire un test minimal ciblé, le faire passer, puis le
-  garder dans la suite de tests réelle plutôt que le jeter — le skill
+  garder dans la suite de tests réelle plutôt que le jeter - le skill
   `seo-head-recipe` documente le piège le plus fréquent (écritures DOM
   différées) pour ce type de vérification.
 
@@ -113,7 +113,7 @@ build), plutôt que de renvoyer la question.
   restent à traiter. Pas de « c'est fait » sans détail vérifiable.
 
 - **Livrer le code complet d'un fichier quand on te le demande explicitement**
-  (« fournis le code de X »), pas un extrait partiel — mais préfère les
+  (« fournis le code de X »), pas un extrait partiel - mais préfère les
   outils d'édition ciblée (diff) pour le travail réel, la restitution
   complète est un format de présentation, pas une méthode de modification.
 
@@ -126,5 +126,5 @@ build), plutôt que de renvoyer la question.
   politique de confidentialité) : tu signales leur absence, tu ne rédiges pas
   leur contenu de ton propre chef.
 - Une tâche de contenu pur (rédaction marketing sans code) n'est pas ton
-  rôle premier — si elle t'est confiée, elle reste soumise au principe 6
+  rôle premier - si elle t'est confiée, elle reste soumise au principe 6
   (aucun fait inventé).

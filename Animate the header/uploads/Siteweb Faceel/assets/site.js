@@ -1,4 +1,4 @@
-/* Faceel-it — shared site behaviour */
+/* Faceel-it - shared site behaviour */
 (function () {
   "use strict";
   var doc = document, body = doc.body;

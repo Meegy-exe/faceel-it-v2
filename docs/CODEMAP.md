@@ -1,4 +1,4 @@
-# CodeMap Automatique — Dépendances Frontend
+# CodeMap Automatique - Dépendances Frontend
 
 *Généré automatiquement par le script de cartographie.*
 
@@ -37,16 +37,20 @@
 
 ### `src/views/DataIaView.vue`
  ├─→ `@/assets/images/photos/lille.jpg`
+ ├─→ `@/assets/images/photos/faceel_04.jpeg`
  ├─→ `@/components/icons/IconGcp.vue`
  ├─→ `@/components/icons/IconOmni.vue`
  ├─→ `@/components/icons/IconPowerBi.vue`
  ├─→ `@/components/icons/IconSnowflake.vue`
+ ├─→ `@/components/home/UseCasesSection.vue`
  ├─→ `@/components/layout/TheFooter.vue`
+ ├─→ `@/composables/useScrollReveal`
  ├─→ `@/composables/useSeo`
 
 ### `src/views/SportView.vue`
  ├─→ `@/components/layout/TheFooter.vue`
  ├─→ `@/composables/useSeo`
+ ├─→ `@/composables/useScrollReveal`
  ├─→ `@/assets/images/photos/velo-equipe.jpg`
  ├─→ `@/assets/images/padel-equipe.jpg`
  ├─→ `@/assets/images/photos/f-it-01.jpg`
@@ -76,8 +80,23 @@
  ├─→ `@/composables/useSeo`
 
 ### `src/views/DigitalView.vue`
- ├─→ `@/components/ui/BaseButton.vue`
+ ├─→ `@/assets/images/photos/f-it-01.jpg`
+ ├─→ `@/assets/images/photos/bus/digital/noemie.jpeg`
+ ├─→ `@/assets/images/photos/bus/digital/stephanie.jpeg`
+ ├─→ `@/assets/images/stacks/angular.svg`
+ ├─→ `@/assets/images/stacks/docker.svg`
+ ├─→ `@/assets/images/stacks/java.svg`
+ ├─→ `@/assets/images/stacks/mysql.svg`
+ ├─→ `@/assets/images/stacks/next-js.svg`
+ ├─→ `@/assets/images/stacks/node-js.svg`
+ ├─→ `@/assets/images/stacks/postgresql.svg`
+ ├─→ `@/assets/images/stacks/python.svg`
+ ├─→ `@/assets/images/stacks/spring.svg`
+ ├─→ `@/assets/images/stacks/typescript.svg`
+ ├─→ `@/assets/images/stacks/vue-js.svg`
+ ├─→ `@/components/home/UseCasesSection.vue`
  ├─→ `@/components/layout/TheFooter.vue`
+ ├─→ `@/composables/useScrollReveal`
  ├─→ `@/composables/useSeo`
 
 ### `src/views/HomeView.vue`
@@ -87,16 +106,9 @@
  ├─→ `@/components/ui/CarouselSlideContent.vue`
  ├─→ `@/components/ui/ReferencesSection.vue`
  ├─→ `@/components/home/BuSection.vue`
+ ├─→ `@/components/home/EventsSection.vue`
  ├─→ `@/components/home/LocationMapSection.vue`
  ├─→ `@/composables/useScrollReveal`
- ├─→ `@/assets/images/photos/afterwork.jpg`
- ├─→ `@/assets/images/photos/paintball.jpg`
- ├─→ `@/assets/images/photos/course-groupe.jpg`
- ├─→ `@/assets/images/photos/course-solo.jpg`
- ├─→ `@/assets/images/padel-equipe.jpg`
- ├─→ `@/assets/images/photos/f-it-01.jpg`
- ├─→ `@/assets/images/photos/f-it-02.jpg`
- ├─→ `@/assets/images/photos/f-it-03.jpg`
  ├─→ `@/composables/useSeo`
  ├─→ `@/stores/useProfileStore`
 
@@ -105,6 +117,10 @@
  ├─→ `@/composables/useSeo`
  ├─→ `@/components/layout/TheFooter.vue`
  ├─→ `@/assets/images/padel-equipe.jpg`
+
+### `src/views/ProductView.vue`
+ ├─→ `@/components/layout/TheFooter.vue`
+ ├─→ `@/composables/useSeo`
 
 ### `src/views/HistoireView.vue`
  ├─→ `@/components/layout/TheFooter.vue`
@@ -116,6 +132,7 @@
 
 ### `src/views/ContactView.vue`
  ├─→ `@/components/layout/TheFooter.vue`
+ ├─→ `@/composables/useSeo`
  ├─→ `@/assets/images/photos/lille.jpg`
 
 ### `src/views/PartenairesView.vue`
@@ -125,16 +142,12 @@
 
 ### `src/views/CandidateView.vue`
  ├─→ `@/components/ui/BaseButton.vue`
- ├─→ `@/components/ui/CoverCarousel.vue`
  ├─→ `@/components/layout/TheFooter.vue`
+ ├─→ `@/components/home/EventsSection.vue`
  ├─→ `@/composables/useScrollReveal`
  ├─→ `@/composables/useSeo`
  ├─→ `@/assets/images/photos/velo-equipe.jpg`
  ├─→ `@/assets/images/photos/course-groupe.jpg`
- ├─→ `@/assets/images/photos/afterwork.jpg`
- ├─→ `@/assets/images/photos/paintball.jpg`
- ├─→ `@/assets/images/photos/course-solo.jpg`
- ├─→ `@/assets/images/photos/fondateurs.jpg`
 
 ### `src/views/OfferDetailView.vue`
  ├─→ `@/composables/useSeo`
@@ -144,7 +157,7 @@
  ├─→ `@/assets/images/photos/afterwork.jpg`
 
 ### `src/views/EnterpriseView.vue`
- ├─→ `@/components/ui/PartnerCarousel.vue`
+ ├─→ `@/components/ui/ReferencesSection.vue`
  ├─→ `@/components/layout/TheFooter.vue`
  ├─→ `@/composables/useScrollReveal`
  ├─→ `@/composables/useSeo`
@@ -163,7 +176,6 @@
 
 ### `src/views/references/AdeoView.vue`
  ├─→ `@/components/layout/TheFooter.vue`
- ├─→ `@/components/layout/TickerBand.vue`
  ├─→ `@/composables/useSeo`
  ├─→ `@/composables/useScrollReveal`
 
@@ -212,12 +224,26 @@
  ├─→ `@/stores/useAdminStore`
  ├─→ `@/stores/useAuthStore`
 
+### `src/views/legal/CookiesPolicyView.vue`
+ ├─→ `@/composables/useSeo`
+ ├─→ `@/components/ui/CookieManagerModal.vue`
+
+### `src/views/legal/PrivacyPolicyView.vue`
+ ├─→ `@/composables/useSeo`
+
+### `src/views/legal/AccessibilityView.vue`
+ ├─→ `@/composables/useSeo`
+
+### `src/views/legal/MentionsLegalesView.vue`
+ ├─→ `@/composables/useSeo`
+
 ### `src/components/layout/TheFooter.vue`
  ├─→ `@/components/ui/CookieManagerModal.vue`
  ├─→ `@/assets/images/2.svg`
  ├─→ `@/assets/notations/glassdoor.svg`
  ├─→ `@/assets/notations/google.svg`
  ├─→ `@/composables/useScrollReveal`
+ ├─→ `@/stores/useProfileStore`
 
 ### `src/components/ui/AnimatedBackground.vue`
  ├─→ `./types`
@@ -250,6 +276,24 @@
 
 ### `src/components/home/LocationMapSection.vue`
  ├─→ `@/composables/useScrollReveal`
+
+### `src/components/home/EventsSection.vue`
+ ├─→ `@/composables/useScrollReveal`
+ ├─→ `@/assets/images/photos/afterwork.jpg`
+ ├─→ `@/assets/images/photos/paintball.jpg`
+ ├─→ `@/assets/images/photos/course-groupe.jpg`
+ ├─→ `@/assets/images/photos/course-solo.jpg`
+ ├─→ `@/assets/images/padel-equipe.jpg`
+ ├─→ `@/assets/images/photos/f-it-01.jpg`
+ ├─→ `@/assets/images/photos/f-it-02.jpg`
+ ├─→ `@/assets/images/photos/f-it-03.jpg`
+
+### `src/components/home/UseCasesSection.vue`
+ ├─→ `@/composables/useScrollReveal`
+
+### `src/components/home/BuSection.vue`
+ ├─→ `@/assets/images/photos/bus/digital/noemie.jpeg`
+ ├─→ `@/assets/images/photos/bus/digital/stephanie.jpeg`
 
 ### `src/layouts/AdminLayout.vue`
  ├─→ `@/stores/useAuthStore`

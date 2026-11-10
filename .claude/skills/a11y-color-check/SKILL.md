@@ -12,8 +12,8 @@ description: >
 
 Une couleur qui « a l'air » lisible à l'écran peut échouer objectivement le
 seuil WCAG, et une couleur de marque saturée qui fonctionne très bien en
-texte sur fond sombre peut devenir illisible — ou indiscernable en
-daltonisme — dès qu'elle devient l'aplat de fond d'une grande surface. La
+texte sur fond sombre peut devenir illisible - ou indiscernable en
+daltonisme - dès qu'elle devient l'aplat de fond d'une grande surface. La
 décision ne doit pas se prendre à l'œil : elle se calcule.
 
 # Règle de décision
@@ -35,7 +35,7 @@ décision ne doit pas se prendre à l'œil : elle se calcule.
    - Aucune couleur de texte ne reste confortable dessus (le texte sombre
      vibre visuellement, le texte clair échoue souvent le ratio) ;
    - Une couleur saturée unique devient indiscernable d'un fond neutre en
-     deutéranopie/protanopie — les daltoniens perdent le signal entièrement,
+     deutéranopie/protanopie - les daltoniens perdent le signal entièrement,
      pas partiellement.
 
    Réserver les couleurs de marque vives à des éléments de petite taille :
@@ -52,7 +52,7 @@ décision ne doit pas se prendre à l'œil : elle se calcule.
 4. **Réutiliser la palette et les ratios déjà validés dans le projet** avant
    de recalculer à l'aveugle : si un fichier de tokens de design documente
    déjà des couples couleur/fond avec leurs ratios (souvent en commentaire
-   au-dessus de la déclaration des couleurs), c'est la source de vérité —
+   au-dessus de la déclaration des couleurs), c'est la source de vérité -
    citer le ratio existant plutôt que de le renégocier.
 
 # Utilisation
@@ -67,6 +67,6 @@ décision ne doit pas se prendre à l'œil : elle se calcule.
 # Sortie attendue
 
 Toujours citer le ratio calculé et le seuil visé dans le commentaire ou la
-réponse (« blanc sur navy 15,9:1 AAA », « navy sur accent 9,1:1 AAA — décor
+réponse (« blanc sur navy 15,9:1 AAA », « navy sur accent 9,1:1 AAA - décor
 uniquement, jamais de texte accent sur fond clair sous 4,9:1 »), pas une
 affirmation de lisibilité sans le chiffre.

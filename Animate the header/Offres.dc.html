@@ -37,7 +37,7 @@
           <span style="display:inline-flex;align-items:center;gap:.7em;font-size:.72rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#0bd904"><span style="width:28px;height:2px;background:#0bd904"></span>Nos offres</span>
           <h1 style="margin-top:20px;font-size:clamp(2.2rem,5vw,3.6rem);max-width:20ch">Un CDI à la clé, en Métropole Lilloise.</h1>
         </div>
-        <p style="color:rgba(244,243,238,.7);line-height:1.75;max-width:52ch">Nos recrutements s'articulent autour de trois offres&nbsp;: Conseil, Digital Experience, Data &amp; IA — en régie chez nos clients ou en centre de services dans nos locaux. Une partie de nos locaux est à Wasquehal, et nous sommes également présents sur Paris et sa périphérie.</p>
+        <p style="color:rgba(244,243,238,.7);line-height:1.75;max-width:52ch">Nos recrutements s'articulent autour de trois offres&nbsp;: Conseil, Digital Experience, Data &amp; IA - en régie chez nos clients ou en centre de services dans nos locaux. Une partie de nos locaux est à Wasquehal, et nous sommes également présents sur Paris et sa périphérie.</p>
       </div>
       <div style="margin-top:36px;padding:18px 22px;border:1px solid rgba(11,217,4,.35);border-radius:14px;background:rgba(11,217,4,.06);display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center">
         <span style="font-size:.9rem;color:rgba(244,243,238,.8);line-height:1.6">Les postes ci-dessous reprennent nos annonces publiées. La liste complète et à jour est tenue sur notre job board&nbsp;:</span>
@@ -182,10 +182,10 @@ class Component extends DCLogic {
       family: "Conseil",
       contract: "CDI",
       place: "Lille (59)",
-      meta: " · 30 – 40 K€ brut annuel",
+      meta: " · 30 - 40 K€ brut annuel",
       pitch: "Un poste de conseil UX / UI sur des parcours à fort trafic, chez des clients du retail, du luxe, de la banque et de l'assurance.",
       stack: [],
-      context: "ESN et fiers de l'être, nous souhaitons mettre l'humain au centre de l'entreprise : engagés dans une démarche Green IT, à taille humaine — c'est notre meilleur atout pour garantir une qualité d'accompagnement et un management horizontal — et locaux, à proximité de nos clients comme de nos équipes. Une partie de nos locaux est à Wasquehal et tes missions s'effectueront en Métropole Lilloise ; nous sommes également présents sur Paris et sa périphérie."
+      context: "ESN et fiers de l'être, nous souhaitons mettre l'humain au centre de l'entreprise : engagés dans une démarche Green IT, à taille humaine - c'est notre meilleur atout pour garantir une qualité d'accompagnement et un management horizontal - et locaux, à proximité de nos clients comme de nos équipes. Une partie de nos locaux est à Wasquehal et tes missions s'effectueront en Métropole Lilloise ; nous sommes également présents sur Paris et sa périphérie."
     },
     {
       slug: "fullstack",
@@ -251,7 +251,7 @@ class Component extends DCLogic {
       ? Object.assign({}, s, {
           hasStack: s.stack.length > 0,
           mailto: "mailto:recrutement@faceel-it.com?subject="
-            + encodeURIComponent("Candidature — " + s.title)
+            + encodeURIComponent("Candidature - " + s.title)
             + "&body=" + encodeURIComponent("Bonjour,\n\nJe souhaite candidater au poste de " + s.title + " (" + s.contract + ", " + s.place + ").\n\nEn deux phrases, mon parcours :\n\n\nMes coordonnées :\nNom :\nTéléphone :\n\nMerci !\n")
         })
       : { family: "", contract: "", title: "", place: "", meta: "", context: "", stack: [], hasStack: false, mailto: "#" };

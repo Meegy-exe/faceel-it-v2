@@ -3,13 +3,13 @@
 /**
  * Poppins auto-hébergée (`@fontsource/poppins`, npm), pas un lien
  * `fonts.googleapis.com` : ce site collecte des candidatures/contacts
- * (RGPD, cf. CLAUDE.md) — un CDN de police tiers enverrait l'IP de chaque
+ * (RGPD, cf. CLAUDE.md) - un CDN de police tiers enverrait l'IP de chaque
  * visiteur à Google à chaque chargement de page, et ajouterait un domaine
  * externe à autoriser dans la CSP stricte déjà en place (Nginx, cf.
  * README). L'auto-hébergement évite les deux. Seuls les 4 poids réellement
  * utilisés par le site sont importés (`font-normal` implicite du corps de
  * texte, `font-semibold`/`font-bold`/`font-extrabold` des titres et
- * boutons — vérifié par grep des classes `font-*` avant de choisir cette
+ * boutons - vérifié par grep des classes `font-*` avant de choisir cette
  * liste) : chaque fichier déclare des `@font-face` pour plusieurs
  * écritures (latin, latin-ext, cyrillic…) mais le navigateur ne télécharge
  * que le sous-ensemble dont l'`unicode-range` correspond aux caractères
@@ -22,7 +22,7 @@
 @import '@fontsource/poppins/800.css';
 
 /**
- * TOKENS DE DESIGN — Faceel-IT v2
+ * TOKENS DE DESIGN - Faceel-IT v2
  *
  * Tailwind v4 : la configuration se fait ici, en CSS. Il n'y a plus de
  * `tailwind.config.js` (le plugin `@tailwindcss/vite` ne le lit pas, sauf
@@ -78,7 +78,7 @@
   /**
    * Poppins verrouillée en V0.1.10 (cf. ADR 14) : exigence
    * client explicite d'une police unique sur tout le site. `--font-mono`
-   * n'est PAS concernée — rôle sémantique distinct (extraits de code,
+   * n'est PAS concernée - rôle sémantique distinct (extraits de code,
    * raccourcis clavier dans `StyleguideView.vue`), jamais utilisée pour du
    * texte de site réel (titres, paragraphes, boutons).
    */
@@ -122,7 +122,7 @@
   --ease-snap: cubic-bezier(0.2, 0.9, 0.2, 1);
   --ease-out-back: cubic-bezier(0.34, 1.4, 0.64, 1);
   /**
-   * V0.1.23 (cf. ADR 27) — courbe « départ rapide, atterrissage en douceur »
+   * V0.1.23 (cf. ADR 27) - courbe « départ rapide, atterrissage en douceur »
    * (accélération quasi immédiate, décélération longue sans dépassement),
    * distincte d'`--ease-snap` (micro-interactions courtes, ~200-300ms :
    * survols, ouvertures de menu) : pensée pour un déplacement AMPLE
@@ -135,7 +135,7 @@
    */
   --ease-premium: cubic-bezier(0.25, 1, 0.5, 1);
   /**
-   * V0.1.30 — courbe « départ canon, arrivée très douce » (accélération
+   * V0.1.30 - courbe « départ canon, arrivée très douce » (accélération
    * encore plus brutale qu'`--ease-premium` en sortie de course, mais une
    * décélération tout aussi longue) : demande client explicite pour l'effet
    * « stack swipe » de `CoverCarousel` (la carte entrante doit clairement
@@ -162,7 +162,7 @@
    * déterministe dans ce projet (pré-rendu `vite-ssg`), une constante l'est
    * par construction. La translation ne va que jusqu'à -50 % : le contenu
    * de la piste est dupliqué à l'identique par `PartnerCarousel`, donc -50 %
-   * correspond exactement à la fin de la première copie — la boucle
+   * correspond exactement à la fin de la première copie - la boucle
    * redémarre sans saut visible.
    */
   --animate-marquee: marquee 32s linear infinite;
@@ -254,14 +254,14 @@
  * `@utility` et non une classe posée dans `@layer components` : c'est la
  * primitive Tailwind v4 pour déclarer un utilitaire, elle le place dans la
  * bonne couche de cascade et le rend composable avec les variantes
- * (`sm:`, `hover:`…) — une classe écrite à la main perdrait les deux.
+ * (`sm:`, `hover:`…) - une classe écrite à la main perdrait les deux.
  *
  * Trois déclarations pour un seul effet : `scrollbar-width` (standard, Firefox
  * et Chromium récents), `-ms-overflow-style` (anciens Edge/IE) et le
  * pseudo-élément WebKit (Safari, qui n'implémente toujours pas la propriété
  * standard). Aucune n'est redondante à ce jour.
  *
- * ACCESSIBILITÉ — le défilement reste possible au doigt, à la molette ET au
+ * ACCESSIBILITÉ - le défilement reste possible au doigt, à la molette ET au
  * clavier : seule la barre est masquée, jamais `overflow`. Les cartes de la
  * piste sont des `<button>` focusables, donc atteignables à la tabulation, et
  * le navigateur fait défiler la piste jusqu'à l'élément focalisé tout seul.
@@ -284,7 +284,7 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
-    /* Hauteur réelle de la navbar fixe (`MegaMenu.vue` : `h-16 lg:h-20`) —
+    /* Hauteur réelle de la navbar fixe (`MegaMenu.vue` : `h-16 lg:h-20`) -
        utilisée par les vues qui verrouillent leur propre hauteur sous la nav
        plutôt que de la faire flotter par-dessus (ex. `ChatbotView.vue`). */
     --navbar-height: 4rem;

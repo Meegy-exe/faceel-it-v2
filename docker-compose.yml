@@ -38,7 +38,7 @@ services:
       MAIL_USER: ""
       MAIL_PASSWORD: ""
       # hébergé temporairement
-      FACEEL_CORS_ORIGINS: https://starter-tamper-laurel.ngrok-free.dev
+      FACEEL_CORS_ORIGINS: http://localhost:5173,http://localhost:8081
 
 
   client:
@@ -59,7 +59,6 @@ services:
       - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
     command:
       - "http"
-      - "--domain=starter-tamper-laurel.ngrok-free.dev"
       - "client:80"
 
 

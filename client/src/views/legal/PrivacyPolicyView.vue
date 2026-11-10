@@ -1,3 +1,13 @@
+<script setup lang="ts">
+import { useSeo } from '@/composables/useSeo'
+
+useSeo({
+  title: "Politique de confidentialité - Faceel-IT Wasquehal",
+  description:
+    "Politique de confidentialité de Faceel-IT, ESN à Wasquehal près de Lille : traitement et protection de vos données personnelles.",
+})
+</script>
+
 <template>
   <article class="min-h-screen h-auto snap-start bg-white px-4 pt-32 pb-20 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-4xl">

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'
-import type { RouteLocationRaw } from 'vue-router'
 import photoLille from '@/assets/images/photos/lille.jpg'
 import imgFaceel04 from '@/assets/images/photos/faceel_04.jpeg'
 import IconGcp from '@/components/icons/IconGcp.vue'
 import IconOmni from '@/components/icons/IconOmni.vue'
 import IconPowerBi from '@/components/icons/IconPowerBi.vue'
 import IconSnowflake from '@/components/icons/IconSnowflake.vue'
+import UseCasesSection from '@/components/home/UseCasesSection.vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import { useScrollReveal } from '@/composables/useScrollReveal'
 import { useSeo } from '@/composables/useSeo'
@@ -18,8 +18,11 @@ import { useSeo } from '@/composables/useSeo'
  * BU, pas un contenu final à publier tel quel.
  */
 useSeo({
-  title: 'Data & IA - Modèle de page BU',
-  description: 'Page modèle pour la Business Unit Data & IA.',
+  // seo local
+  title: 'Data & IA - ESN à Lille et Wasquehal',
+  description:
+    'La BU Data & IA de Faceel-IT, ESN basée à Wasquehal, déploie vos projets Data et ' +
+    'Intelligence Artificielle sur la métropole lilloise et dans les Hauts-de-France.',
 })
 
 const router = useRouter()
@@ -39,15 +42,6 @@ const executionEl = useTemplateRef<HTMLElement>('executionEl')
 const executionReveal = useScrollReveal(executionEl)
 const isExecutionVisible = computed(() => executionReveal.value !== 'hidden')
 
-// anim realisations
-const realisationsEl = useTemplateRef<HTMLElement>('realisationsEl')
-const realisationsReveal = useScrollReveal(realisationsEl)
-const isRealisationsVisible = computed(() => realisationsReveal.value !== 'hidden')
-
-// anim leadership
-const leadershipEl = useTemplateRef<HTMLElement>('leadershipEl')
-const leadershipReveal = useScrollReveal(leadershipEl)
-const isLeadershipVisible = computed(() => leadershipReveal.value !== 'hidden')
 
 // anim temoignage
 const temoignageEl = useTemplateRef<HTMLElement>('temoignageEl')
@@ -64,10 +58,29 @@ const jobsEl = useTemplateRef<HTMLElement>('jobsEl')
 const jobsReveal = useScrollReveal(jobsEl)
 const isJobsVisible = computed(() => jobsReveal.value !== 'hidden')
 
-/** Retournement au clic des deux grandes cartes 3D de la section Leadership
- *  (même mécanique que DigitalView.vue, cf. commentaire sur cette section). */
-const isRRFlipped = ref(false)
-const isLLFlipped = ref(false)
+/** Profils de la section Équipe BU, repris de l'ancienne section Leadership.
+ *  La citation reste un placeholder : aucun texte réel n'existait dans la
+ *  source, on n'en invente pas (cf. CLAUDE.md, intégrité du contenu). */
+const leadershipTeam = [
+  {
+    name: 'Robin Rins',
+    role: 'Directeur BU Data & IA',
+    quote: '[Citation à venir]',
+    linkedin: 'https://www.linkedin.com/in/robin-rins/',
+  },
+  {
+    name: 'Lena Lebecq',
+    role: 'Responsable RH',
+    quote: '[Citation à venir]',
+    linkedin: 'https://www.linkedin.com/in/l%C3%A9na-lebecq-795242201/',
+  },
+]
+
+/** Profil affiché dans le carrousel de la section Équipe. Pas de défilement
+ *  automatique : un contenu qui bouge seul impose un bouton pause (WCAG 2.2.2),
+ *  la navigation par points laisse la main au visiteur. */
+const activeProfileIndex = ref(0)
+const activeProfile = computed(() => leadershipTeam[activeProfileIndex.value]!)
 
 /** Carrousel des deux photos de gauche du Hero, actif uniquement entre `md`
  *  et `xl` (cf. template : au-delà de `xl`, les deux cartes s'affichent côte
@@ -122,63 +135,6 @@ const EXPERTISE_OFFERS: ExpertiseOffer[] = [
     description:
       'Maintenance, évolutions et supervision de vos solutions, pour un patrimoine data fiable et aligné sur vos usages.',
     iconPath: 'M4 5h16v5H4Z M4 14h16v5H4Z M8 7.5h.01 M8 16.5h.01',
-  },
-]
-
-interface CaseStudy {
-  name: string
-  description: string
-  /** Graine picsum.photos  déterministe (même visuel à chaque rendu/build),
-   *  pas d'image aléatoire. Absente quand `image` est fourni (cas réel, ex.
-   *  Boulanger) : pas besoin d'un visuel de substitution. */
-  seed?: string
-  /** Image de fond réelle (remplace le picsum)  uniquement pour les cas
-   *  clients réels, documentés, avec un visuel propre. */
-  image?: string
-  /** Logo blanc affiché à la place du nom en texte uniquement pour les cas
-   *  clients réels disposant d'un logo officiel (ex. Boulanger). */
-  logo?: string
-  /** Présent uniquement pour les cas clients réels, documentés par une page
-   *  de référence dédiée : la carte entière devient un lien. */
-  to?: RouteLocationRaw
-  /** Fond de marque (ex. orange Boulanger) remplace le fond neutre par
-   *  défaut de la carte ; pilote aussi le cadrage de l'image (cf. template :
-   *  `object-contain` diminué plutôt que `object-cover` plein cadre). */
-  bgColor?: string
-}
-
-const CASE_STUDIES: CaseStudy[] = [
-  {
-    name: 'Boulanger',
-    description:
-      "Refonte complète de l'application Boulanger pour moderniser l'interface et accompagner le lancement des projets stratégiques.",
-    image: '/images/partners/boulanger/tel.png',
-    logo: '/images/partners/boulanger-white.svg',
-    to: { name: 'reference-boulanger' },
-    bgColor: 'bg-[#ff6200]',
-  },
-  {
-    name: 'Adeo',
-    description:
-      'Déploiement de solutions IA et automatisation des flux de données RH pour garantir une vision globale et fiable des applications internes.',
-    /** `/images/references/adeo.svg` : seul fichier logo Adeo du dépôt, déjà
-     *  utilisé tel quel (logo multicolore, pas de variante blanche) dans
-     *  AdeoView.vue pas de fichier `adeo-white.svg`. Couleur de marque
-     *  `#059dab` reprise de ce même fichier (teal), pas `#004f9f`. */
-    image: '/images/partners/adeo/tt.png',
-    logo: '/images/references/adeo.svg',
-    to: { name: 'reference-adeo' },
-    bgColor: 'bg-[#059dab]',
-  },
-  {
-    name: 'Réf 3',
-    description: 'Description courte du projet mené pour ce secteur, sur deux lignes maximum.',
-    bgColor: 'bg-[#000066]',
-  },
-  {
-    name: 'Réf 4',
-    description: 'Description courte du projet mené pour ce client, sur deux lignes maximum.',
-    bgColor: 'bg-[#000066]',
   },
 ]
 
@@ -282,7 +238,7 @@ function goToSelectedJobDetail() {
         <h1
           class="animate-fade-up font-display text-4xl font-extrabold tracking-tight text-white motion-reduce:animate-none sm:text-6xl xl:text-7xl"
         >
-          BU Data & IA
+          BU Data & IA, votre expertise à Lille
         </h1>
         <p
           class="hero-lede mx-auto mt-6 max-w-3xl animate-fade-up text-base font-semibold leading-relaxed text-[#12D80A] motion-reduce:animate-none sm:text-xl xl:text-2xl [animation-delay:200ms]"
@@ -351,7 +307,7 @@ function goToSelectedJobDetail() {
           <div
             class="partners-card flex h-full flex-col justify-center rounded-3xl border-l-4 border-accent-500 bg-white/10 backdrop-blur-sm p-4 sm:p-8 text-left xl:flex-1"
           >
-            <p class="font-display font-bold text-white mb-4 sm:mb-6">Partenaires stratégiques</p>
+            <p class="font-display font-bold text-white mb-4 sm:mb-6">Expertises stratégiques</p>
             <!-- Les 4 logos en `currentColor` pour l'icône qui peut se le
                permettre (Snowflake, mono-couleur) et pour le TEXTE
                seulement des deux logos multicolores (GCP, Power BI) leurs
@@ -363,7 +319,7 @@ function goToSelectedJobDetail() {
 
                Paires alternées (même `activeSlide` que le carrousel photo,
                cf. script) plutôt que la grille statique à 4 logos : sur les
-               hauteurs mobiles compactes (568–630px), 4 logos + le titre ne
+               hauteurs mobiles compactes (568-630px), 4 logos + le titre ne
                tenaient plus dans une carte à hauteur fixe/symétrique du
                carrousel photo sans déborder. 2 logos à la fois réduit assez
                le contenu réel de la carte pour que cette symétrie redevienne
@@ -589,305 +545,99 @@ function goToSelectedJobDetail() {
       </div>
     </section>
 
-    <!-- SECTION 4 (Cas d'usage) galerie (portfolio immersif, image + overlay). -->
-    <section
-      id="realisations"
-      ref="realisationsEl"
-      data-theme="light"
-      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-white flex flex-col justify-center py-20"
-    >
-      <!-- en tete, fondu vers le haut -->
-      <div
-        class="mx-auto max-w-3xl px-4 text-center"
-        :class="
-          isRealisationsVisible
-            ? 'translate-y-0 opacity-100 transition-all duration-700 ease-out'
-            : 'translate-y-8 opacity-0'
-        "
-      >
-        <h2 class="font-display text-4xl font-extrabold text-[#000066] sm:text-5xl">
-          Nos références
-        </h2>
-        <p class="mx-auto mt-4 max-w-2xl text-gray-600">
-          Un aperçu des projets menés aux côtés de nos clients, tous secteurs confondus.
-        </p>
-      </div>
+    <!-- SECTION 4 (Cas d'usage) : composant partage avec DigitalView.vue -->
+    <UseCasesSection />
 
-      <div
-        class="mx-auto mt-10 grid w-full max-w-6xl grid-cols-1 gap-6 px-4 md:grid-cols-2 lg:gap-8"
-      >
-        <!-- `study.to` : cas client réel documenté par sa propre page (ex.
-             Boulanger) la carte entière devient un lien ; absent pour les
-             autres (mockups), qui restent de simples `<div>`. -->
-        <!-- cascade cartes -->
-        <component
-          :is="study.to ? 'RouterLink' : 'div'"
-          v-for="(study, index) in CASE_STUDIES"
-          :key="study.name"
-          v-bind="study.to ? { to: study.to } : {}"
-          :style="{ transitionDelay: isRealisationsVisible ? `${index * 150}ms` : '0ms' }"
-          :class="[
-            study.bgColor || 'bg-gray-900',
-            'group relative aspect-video overflow-hidden rounded-3xl',
-            isRealisationsVisible
-              ? 'translate-y-0 opacity-100 transition-all duration-700 ease-out'
-              : 'translate-y-8 opacity-0 transition-none',
-          ]"
-        >
-          <!-- `v-if` : Télécom/EDF n'ont plus ni `image` ni `seed` (fond
-               blanc uni demandé) sans ce garde-fou, l'`<img>` pointerait
-               vers une URL picsum invalide (`seed` undefined). -->
-          <img
-            v-if="study.image || study.seed"
-            :src="study.image ?? `https://picsum.photos/seed/${study.seed}/800/600`"
-            :alt="study.name"
-            loading="lazy"
-            decoding="async"
-            :class="[
-              'absolute transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100',
-              study.bgColor
-                ? 'inset-0 h-full w-full object-contain object-right p-4'
-                : 'inset-0 h-full w-full object-cover',
-            ]"
-          />
-          <!-- Dégradé navy prévu pour assombrir une photo de fond : sur les
-               cartes à fond blanc uni, il ne ferait que ternir ce blanc sans
-               raison (pas de photo à estomper dessous). -->
-          <div
-            v-if="study.bgColor !== 'bg-white'"
-            class="absolute inset-0 bg-gradient-to-t from-[#000066]/90 via-[#000066]/40 to-transparent"
-            aria-hidden="true"
-          />
-          <div class="absolute bottom-0 left-0 p-6">
-            <img
-              v-if="study.logo"
-              :src="study.logo"
-              :alt="study.name"
-              class="h-8 w-auto object-contain"
-            />
-            <p
-              v-else
-              class="font-display font-bold"
-              :class="study.bgColor === 'bg-white' ? 'text-[#000066]' : 'text-white'"
-            >
-              {{ study.name }}
-            </p>
-            <p
-              class="mt-1 line-clamp-2 text-sm"
-              :class="study.bgColor === 'bg-white' ? 'text-[#000066]' : 'text-white/80'"
-            >
-              {{ study.description }}
-            </p>
-          </div>
-        </component>
-      </div>
-    </section>
-
-    <!-- SECTION 5 (Leadership) présentation équipe, cartes 3D massives reprises
-         à l'identique de DigitalView.vue (section « equipe ») : mêmes classes
-         de perspective/transform/transition, mêmes paliers responsive. -->
+    <!-- SECTION 5 (Équipe BU) grille 50/50 sur desktop : profils à gauche sur fond
+         sombre, photo à droite (masquée sous `lg`, en attendant la photo
+         définitive : elle prenait trop de place sur mobile). Remplace l'ancienne section
+         « leadership » (cartes 3D) ; les profils en reprennent les données. -->
     <section
       id="leadership"
-      ref="leadershipEl"
       data-theme="dark"
-      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden flex flex-col bg-[#000066] px-4 pt-36 [@media(max-height:850px)]:pt-16 pb-8 sm:px-6 lg:px-8 xl:px-12"
+      class="w-full shrink-0 snap-start snap-always min-h-dvh grid grid-cols-1 lg:grid-cols-2"
     >
-      <!-- degrade fond, effet deep ambient -->
       <div
-        aria-hidden="true"
-        class="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-gradient-to-t from-primary-700/40 to-transparent"
-      />
-
-      <!-- en tete, fondu vers le haut -->
-      <header
-        class="max-w-5xl px-4 md:px-24 2xl:px-28"
-        :class="
-          isLeadershipVisible
-            ? 'translate-y-0 opacity-100 transition-all duration-700 ease-out'
-            : 'translate-y-8 opacity-0'
-        "
+        class="flex flex-col justify-center bg-[#000066] p-8 pt-28 text-white sm:p-12 sm:pt-28 lg:p-16 lg:pt-28"
       >
-        <h2
-          class="mt-4 [@media(max-height:850px)]:mt-2 font-display text-display min-[1030px]:whitespace-nowrap text-white"
-        >
-          Nos BUs, Expertes de vos besoins.
-        </h2>
-        <p
-          class="mt-4 min-[1030px]:whitespace-nowrap text-sm md:text-base min-[1030px]:text-lg leading-relaxed text-white/80"
-        >
-          Une organisation interne adaptée au marché pour une réponse sur-mesure à nos clients
+        <p class="font-mono text-sm font-bold uppercase tracking-widest text-accent-500">
+          [ÉQUIPE BU]
         </p>
-      </header>
+        <h2 class="mt-3 font-display text-4xl font-black text-balance md:text-5xl">
+          Les experts Data &amp; IA
+        </h2>
+        <p class="mt-4 max-w-xl text-base leading-relaxed text-gray-300">
+          Nos BUs, expertes de vos besoins, vous accompagnent depuis notre ESN à Wasquehal
+          (métropole lilloise, Hauts-de-France).
+        </p>
 
-      <!-- `accent-500` (pas `accent-700`) : sur fond sombre, c'est la variante
-           WCAG-safe du vert (9,1:1, cf. règle de contraste de main.css)
-           `accent-700` est la variante pour fond clair, devenue terne sur ce
-           bleu marine. -->
-      <div
-        class="flex w-full justify-center items-end mt-8 mb-8 px-4 md:px-24 2xl:px-28 max-[459px]:hidden"
-      >
-        <h3 class="font-display font-bold text-3xl md:text-4xl text-accent-500 text-center">
-          Data & IA
-        </h3>
-      </div>
-
-      <div
-        class="relative flex w-full flex-1 items-stretch max-[984px]:justify-center min-[985px]:justify-between gap-4 min-[985px]:gap-8 px-4 md:px-24 2xl:px-28 max-[459px]:hidden"
-      >
-        <!-- Combattant gauche : Robin Rins -->
-        <div
-          class="flex w-auto shrink-0 flex-col items-center justify-center min-[630px]:max-[984px]:-translate-x-16"
-        >
-          <div class="mb-4 max-w-32 text-center min-[985px]:hidden">
-            <p class="text-sm font-bold text-white">Robin Rins</p>
-            <p class="text-[11px] font-medium text-white/70">Directeur BU Data & IA</p>
-            <p class="mt-1 min-h-[72px] text-xs italic leading-snug text-white/70">
-              <span class="block">[Citation à venir]</span>
-            </p>
-          </div>
-          <div class="flex flex-col items-center">
-            <div
-              class="w-32 h-48 min-[985px]:w-48 min-[985px]:h-72 2xl:w-[320px] 2xl:h-[480px] [perspective:1000px] transform-gpu border-0 ring-0 outline-none cursor-pointer"
-              role="button"
-              tabindex="0"
-              aria-label="Retourner la carte de Robin Rins"
-              @click="isRRFlipped = !isRRFlipped"
-              @keydown.enter="isRRFlipped = !isRRFlipped"
-              @keydown.space.prevent="isRRFlipped = !isRRFlipped"
-            >
-              <div
-                class="relative w-full h-full [transform-style:preserve-3d] rounded-2xl shadow-[-40px_20px_50px_-15px_rgba(0,0,50,0.4)] will-change-transform transition-transform duration-700 ease-in-out border-0 ring-0 outline-none"
-                :class="isRRFlipped ? '[transform:rotateY(195deg)]' : '[transform:rotateY(15deg)]'"
+        <!-- hauteur minimale : évite que la section saute quand le profil change -->
+        <div class="mt-12 min-h-[220px] lg:mt-16" aria-live="polite">
+          <Transition
+            mode="out-in"
+            enter-active-class="transition-opacity duration-300 motion-reduce:transition-none"
+            leave-active-class="transition-opacity duration-300 motion-reduce:transition-none"
+            enter-from-class="opacity-0"
+            leave-to-class="opacity-0"
+          >
+            <div :key="activeProfile.name" class="flex flex-col">
+              <a
+                :href="activeProfile.linkedin"
+                target="_blank"
+                rel="noopener noreferrer"
+                :aria-label="'Profil LinkedIn de ' + activeProfile.name"
+                class="inline-flex w-fit rounded-sm text-white/70 transition-colors duration-300 motion-reduce:transition-none hover:text-accent-500 focus-visible:text-accent-500 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-500"
               >
-                <!-- Face avant -->
-                <div
-                  class="absolute inset-0 h-full w-full backface-hidden antialiased translate-z-[1px] bg-white rounded-2xl flex items-center justify-center overflow-hidden border-0 border-transparent"
-                >
-                  <span
-                    class="font-display text-3xl min-[985px]:text-5xl 2xl:text-7xl font-extrabold text-[#000066]/10 border-0 border-transparent"
-                    >RR</span
-                  >
-                </div>
-                <!-- Face arrière basique, prête à accueillir du contenu plus tard. -->
-                <div
-                  class="absolute inset-0 h-full w-full [transform:rotateY(180deg)] backface-hidden antialiased bg-white border border-gray-200 rounded-2xl overflow-hidden"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Citations centrales permanentes, en diagonale franche. -->
-        <div class="hidden min-[985px]:flex flex-1 items-center px-4">
-          <div class="relative w-full h-48 min-[985px]:h-72 2xl:h-[480px]">
-            <div class="-mt-2 absolute inset-x-0 top-0 w-full px-4 text-left">
-              <p class="text-base 2xl:text-2xl font-bold text-white mb-1">Robin Rins</p>
-              <p class="text-sm font-medium text-white/70 mb-2">Directeur BU Data & IA</p>
-              <p
-                class="min-h-[100px] 2xl:min-h-[120px] w-full max-w-full overflow-hidden text-xs 2xl:text-lg italic text-white/70 leading-relaxed"
-              >
-                <span class="block whitespace-normal break-words">[Citation à venir]</span>
+                <svg class="size-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"
+                  />
+                </svg>
+              </a>
+              <h4 class="mt-6 font-display text-xl font-bold text-white">
+                {{ activeProfile.name }}
+              </h4>
+              <p class="mt-2 text-sm text-white/60">{{ activeProfile.role }}</p>
+              <p class="mt-6 text-sm italic leading-relaxed text-white/70">
+                {{ activeProfile.quote }}
               </p>
             </div>
-            <div class="-mb-2 absolute inset-x-0 bottom-0 w-full px-4 text-right">
-              <p class="text-base 2xl:text-2xl font-bold text-white mb-1">Lena Lebecq</p>
-              <p class="text-sm font-medium text-white/70 mb-2">Responsable RH</p>
-              <p
-                class="min-h-[100px] 2xl:min-h-[120px] w-full max-w-full overflow-hidden text-xs 2xl:text-lg italic text-white/70 leading-relaxed"
-              >
-                <span class="block whitespace-normal break-words">[Citation à venir]</span>
-              </p>
-            </div>
-          </div>
+          </Transition>
         </div>
 
-        <!-- Combattant droit : Lena Lebecq -->
-        <div
-          class="flex w-auto shrink-0 flex-col items-center justify-center min-[630px]:max-[984px]:translate-x-16"
-        >
-          <div class="flex flex-col items-center">
-            <div
-              class="w-32 h-48 min-[985px]:w-48 min-[985px]:h-72 2xl:w-[320px] 2xl:h-[480px] [perspective:1000px] transform-gpu border-0 ring-0 outline-none cursor-pointer"
-              role="button"
-              tabindex="0"
-              aria-label="Retourner la carte de Lena Lebecq"
-              @click="isLLFlipped = !isLLFlipped"
-              @keydown.enter="isLLFlipped = !isLLFlipped"
-              @keydown.space.prevent="isLLFlipped = !isLLFlipped"
-            >
-              <div
-                class="relative w-full h-full [transform-style:preserve-3d] rounded-2xl shadow-[40px_20px_50px_-15px_rgba(0,0,50,0.4)] will-change-transform transition-transform duration-700 ease-in-out border-0 ring-0 outline-none"
-                :class="
-                  isLLFlipped ? '[transform:rotateY(-195deg)]' : '[transform:rotateY(-15deg)]'
-                "
-              >
-                <!-- Face avant -->
-                <div
-                  class="absolute inset-0 h-full w-full backface-hidden antialiased translate-z-[1px] bg-white rounded-2xl flex items-center justify-center overflow-hidden border-0 border-transparent"
-                >
-                  <span
-                    class="font-display text-3xl min-[985px]:text-5xl 2xl:text-7xl font-extrabold text-[#000066]/10 border-0 border-transparent"
-                    >LL</span
-                  >
-                </div>
-                <!-- Face arrière basique, prête à accueillir du contenu plus tard. -->
-                <div
-                  class="absolute inset-0 h-full w-full [transform:rotateY(180deg)] backface-hidden antialiased bg-white border border-gray-200 rounded-2xl overflow-hidden"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="mt-4 max-w-32 text-center min-[985px]:hidden">
-            <p class="text-sm font-bold text-white">Lena Lebecq</p>
-            <p class="text-[11px] font-medium text-white/70">Responsable RH</p>
-            <p class="mt-1 min-h-[72px] text-xs italic leading-snug text-white/70">
-              <span class="block">[Citation à venir]</span>
-            </p>
-          </div>
+        <!-- points de navigation : zone cliquable de 32 px autour d'un point de 10 px -->
+        <div class="mt-6 flex gap-1">
+          <button
+            v-for="(member, index) in leadershipTeam"
+            :key="member.name"
+            type="button"
+            :aria-label="'Afficher le profil de ' + member.name"
+            :aria-current="index === activeProfileIndex ? 'true' : undefined"
+            class="group flex size-8 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
+            @click="activeProfileIndex = index"
+          >
+            <span
+              class="size-2.5 rounded-full transition-colors duration-300 motion-reduce:transition-none"
+              :class="
+                index === activeProfileIndex
+                  ? 'bg-accent-500'
+                  : 'bg-white/30 group-hover:bg-white/60'
+              "
+            />
+          </button>
         </div>
       </div>
 
-      <!-- Sous 460px, l'arène à deux cartes ne tient plus : les deux profils
-           sont empilés statiquement. -->
+      <!-- TODO : photo d'équipe de la BU à fournir (aucune image dans l'ancienne
+           section) ; remplacer ce bloc par une <img> object-cover h-full w-full
+           avec alt="L'équipe Data et IA de Faceel-IT". En attendant, role="img" +
+           aria-label porte le même nom accessible. -->
       <div
-        class="hidden max-[459px]:flex w-full flex-1 flex-col items-center justify-center gap-10 px-4"
+        class="hidden h-full w-full items-center justify-center bg-primary-700 text-lg font-medium text-white/60 lg:flex"
+        role="img"
+        aria-label="L'équipe Data et IA de Faceel-IT"
       >
-        <div class="flex flex-col items-center">
-          <div
-            class="flex h-[clamp(200px,40dvh,350px)] w-52 shrink min-h-0 items-center justify-center overflow-hidden rounded-2xl bg-white [@media(max-height:690px)]:max-h-[25dvh]"
-          >
-            <span class="font-display text-6xl font-extrabold text-[#000066]/10">RR</span>
-          </div>
-          <div
-            class="mt-4 [@media(max-height:690px)]:mt-2 min-h-[160px] w-full max-w-[18rem] flex flex-col justify-start text-center"
-          >
-            <p class="text-xl font-bold text-white">Robin Rins</p>
-            <p class="text-sm font-medium text-white/70">Directeur BU Data & IA</p>
-            <p
-              class="mt-1 text-base italic leading-snug text-white/70 [@media(max-height:690px)]:text-sm [@media(max-height:690px)]:leading-tight"
-            >
-              <span class="block">[Citation à venir]</span>
-            </p>
-          </div>
-        </div>
-        <div class="flex flex-col items-center">
-          <div
-            class="flex h-[clamp(200px,40dvh,350px)] w-52 shrink min-h-0 items-center justify-center overflow-hidden rounded-2xl bg-white [@media(max-height:690px)]:max-h-[25dvh]"
-          >
-            <span class="font-display text-6xl font-extrabold text-[#000066]/10">LL</span>
-          </div>
-          <div
-            class="mt-4 [@media(max-height:690px)]:mt-2 min-h-[160px] w-full max-w-[18rem] flex flex-col justify-start text-center"
-          >
-            <p class="text-xl font-bold text-white">Lena Lebecq</p>
-            <p class="text-sm font-medium text-white/70">Responsable RH</p>
-            <p
-              class="mt-1 text-base italic leading-snug text-white/70 [@media(max-height:690px)]:text-sm [@media(max-height:690px)]:leading-tight"
-            >
-              <span class="block">[Citation à venir]</span>
-            </p>
-          </div>
-        </div>
+        Placeholder Image
       </div>
     </section>
 
@@ -902,14 +652,15 @@ function goToSelectedJobDetail() {
          des thèmes avec la section suivante (Parlons IA, elle aussi
          `data-theme="light"`) signalé tel quel, Parlons IA n'a pas été
          touchée (hors du périmètre demandé). -->
+    <!-- compense hauteur navbar -->
     <section
       id="temoignage"
       ref="temoignageEl"
       data-theme="light"
-      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-white grid grid-cols-1 lg:grid-cols-2"
+      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-white grid grid-cols-1 pt-24 lg:grid-cols-2 lg:pt-0"
     >
-      <!-- Colonne gauche : témoignage (texte), à la place de la photo dans l'original -->
-      <div class="flex flex-col justify-center px-8 py-12 lg:px-24">
+      <!-- fix hauteur temoignages -->
+      <div class="flex flex-col justify-center px-8 pb-6 lg:px-24 lg:py-12">
         <p
           class="text-sm font-bold uppercase tracking-widest text-accent-500"
           :class="
@@ -986,14 +737,14 @@ function goToSelectedJobDetail() {
 
       <!-- Colonne droite : photo (effet d'empilement), glisse depuis la droite -->
       <div
-        class="flex items-center justify-center px-8 py-12 lg:px-24"
+        class="flex items-center justify-center px-8 pb-6 lg:px-24 lg:py-12"
         :class="
           isTemoignageVisible
             ? 'translate-x-0 opacity-100 transition-all duration-700 ease-out'
             : 'translate-x-8 opacity-0'
         "
       >
-        <div class="relative aspect-square w-full max-w-md">
+        <div class="relative aspect-square max-h-[150px] w-full max-w-md lg:max-h-none">
           <div
             class="absolute inset-0 translate-x-3 translate-y-3 rounded-3xl bg-[#000066]"
             aria-hidden="true"
@@ -1015,11 +766,12 @@ function goToSelectedJobDetail() {
          convention du projet. Ça crée par ailleurs une nouvelle rupture
          d'alternance stricte des thèmes avec la section suivante (Offres,
          déjà `dark`) : signalé tel quel, Offres n'a pas été touchée. -->
+    <!-- compense hauteur navbar -->
     <section
       id="parlons-ia"
       ref="parlonsIaEl"
       data-theme="dark"
-      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-[#000066] flex flex-col justify-center py-20"
+      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-[#000066] flex flex-col justify-center pt-24 pb-6 sm:py-20"
     >
       <!-- halo central derriere la grille de cartes -->
       <div
@@ -1028,7 +780,8 @@ function goToSelectedJobDetail() {
       />
 
       <div class="mx-auto w-full max-w-[1400px] px-6">
-        <div class="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2">
+        <!-- ajuste hauteur mobile -->
+        <div class="mb-4 grid grid-cols-1 gap-3 sm:mb-16 sm:gap-8 md:grid-cols-2">
           <!-- glisse depuis la gauche -->
           <div
             :class="
@@ -1038,7 +791,7 @@ function goToSelectedJobDetail() {
             "
           >
             <p class="font-bold tracking-widest text-accent-500 uppercase">Parlons IA</p>
-            <h2 class="mt-2 font-display text-4xl font-black text-white md:text-6xl">
+            <h2 class="mt-2 font-display text-[28px] font-black text-white sm:text-4xl md:text-6xl">
               Vos projets, accélérés par l'intelligence artificielle.
             </h2>
           </div>
@@ -1051,18 +804,20 @@ function goToSelectedJobDetail() {
                 : 'translate-x-8 opacity-0'
             "
           >
-            <p class="text-lg leading-relaxed text-white">
-              Des agents conversationnels à l'automatisation des tâches répétitives, les
-              possibilités qu'ouvre l'IA pour transformer vos processus sont quasi infinies à
-              condition de les cadrer avec les bons experts.
+            <!-- texte raccourci -->
+            <p class="text-base leading-relaxed text-white sm:text-lg">
+              De l'automatisation aux agents sur mesure, l'IA transforme vos processus métier.
+              Explorez ce potentiel avec nos experts.
             </p>
           </div>
         </div>
 
-        <!-- cascade cartes, delai manuel (pas de v-for ici) -->
-        <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <!-- defilement horizontal ia -->
+        <div
+          class="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 hide-scrollbar md:grid md:grid-cols-3 md:gap-8 md:overflow-visible md:pb-0"
+        >
           <div
-            class="rounded-[2rem] border-2 border-accent-500 bg-white p-8 md:p-10"
+            class="w-[85vw] shrink-0 snap-center rounded-[2rem] border-2 border-accent-500 bg-white p-5 md:w-auto md:p-10"
             :class="
               isParlonsIaVisible
                 ? 'translate-y-0 opacity-100 transition-all duration-700 ease-out'
@@ -1070,10 +825,15 @@ function goToSelectedJobDetail() {
             "
           >
             <div
-              class="flex size-14 items-center justify-center rounded-2xl bg-accent-500"
+              class="flex size-12 items-center justify-center rounded-2xl bg-accent-500 md:size-14"
               aria-hidden="true"
             >
-              <svg class="size-6 text-white" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <svg
+                class="size-5 text-white md:size-6"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
                 <path
                   d="M12 3v2m0 14v2m9-9h-2M5 12H3m14.95-6.95-1.414 1.414M7.464 16.536l-1.414 1.414m0-11.314 1.414 1.414m9.072 9.072 1.414 1.414M12 8a4 4 0 100 8 4 4 0 000-8Z"
                   stroke="currentColor"
@@ -1083,17 +843,17 @@ function goToSelectedJobDetail() {
                 />
               </svg>
             </div>
-            <p class="mt-8 font-display text-xl font-bold text-[#000066] md:text-2xl">
+            <p class="mt-5 font-display text-lg font-bold text-[#000066] md:mt-8 md:text-2xl">
               Création d'agents
             </p>
-            <p class="mt-4 leading-relaxed text-gray-800">
+            <p class="mt-3 text-sm leading-relaxed text-gray-800 md:text-base">
               Conception d'assistants sur mesure, connectés à vos données et à vos outils métier,
               pour automatiser les tâches à faible valeur ajoutée.
             </p>
           </div>
 
           <div
-            class="rounded-[2rem] border-2 border-accent-500 bg-white p-8 md:p-10 delay-150"
+            class="w-[85vw] shrink-0 snap-center rounded-[2rem] border-2 border-accent-500 bg-white p-5 delay-150 md:w-auto md:p-10"
             :class="
               isParlonsIaVisible
                 ? 'translate-y-0 opacity-100 transition-all duration-700 ease-out'
@@ -1101,10 +861,15 @@ function goToSelectedJobDetail() {
             "
           >
             <div
-              class="flex size-14 items-center justify-center rounded-2xl bg-accent-500"
+              class="flex size-12 items-center justify-center rounded-2xl bg-accent-500 md:size-14"
               aria-hidden="true"
             >
-              <svg class="size-6 text-white" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <svg
+                class="size-5 text-white md:size-6"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
                 <path
                   d="M17 2.1l4 4-4 4M3 12.6v-2a4 4 0 014-4h14M7 21.9l-4-4 4-4M21 11.4v2a4 4 0 01-4 4H3"
                   stroke="currentColor"
@@ -1114,10 +879,10 @@ function goToSelectedJobDetail() {
                 />
               </svg>
             </div>
-            <p class="mt-8 font-display text-xl font-bold text-[#000066] md:text-2xl">
+            <p class="mt-5 font-display text-lg font-bold text-[#000066] md:mt-8 md:text-2xl">
               Amélioration continue
             </p>
-            <p class="mt-4 leading-relaxed text-gray-800">
+            <p class="mt-3 text-sm leading-relaxed text-gray-800 md:text-base">
               Suivi, évaluation et optimisation des solutions déployées pour qu'elles gagnent en
               pertinence au fil des usages réels.
             </p>
@@ -1127,7 +892,7 @@ function goToSelectedJobDetail() {
                grille à 3 colonnes de la maquette (les 2 premières reprennent
                le contenu déjà existant). -->
           <div
-            class="rounded-[2rem] border-2 border-accent-500 bg-white p-8 md:p-10 delay-300"
+            class="w-[85vw] shrink-0 snap-center rounded-[2rem] border-2 border-accent-500 bg-white p-5 delay-300 md:w-auto md:p-10"
             :class="
               isParlonsIaVisible
                 ? 'translate-y-0 opacity-100 transition-all duration-700 ease-out'
@@ -1135,10 +900,15 @@ function goToSelectedJobDetail() {
             "
           >
             <div
-              class="flex size-14 items-center justify-center rounded-2xl bg-accent-500"
+              class="flex size-12 items-center justify-center rounded-2xl bg-accent-500 md:size-14"
               aria-hidden="true"
             >
-              <svg class="size-6 text-white" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <svg
+                class="size-5 text-white md:size-6"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
                 <path
                   d="M12 14l9-5-9-5-9 5 9 5Zm0 0v7m-9-5.5V16a9 3 0 0018 0v-4.5"
                   stroke="currentColor"
@@ -1148,17 +918,17 @@ function goToSelectedJobDetail() {
                 />
               </svg>
             </div>
-            <p class="mt-8 font-display text-xl font-bold text-[#000066] md:text-2xl">
+            <p class="mt-5 font-display text-lg font-bold text-[#000066] md:mt-8 md:text-2xl">
               Formation &amp; adoption
             </p>
-            <p class="mt-4 leading-relaxed text-gray-800">
+            <p class="mt-3 text-sm leading-relaxed text-gray-800 md:text-base">
               Montée en compétences de vos équipes pour qu'elles s'approprient durablement les
               nouveaux outils et usages IA au quotidien.
             </p>
           </div>
         </div>
 
-        <div class="mt-12 flex justify-center">
+        <div class="mt-4 flex justify-center sm:mt-12">
           <RouterLink
             to="/contact-entreprise"
             class="rounded-full bg-[#12D80A] px-8 py-4 font-bold text-white transition-colors hover:bg-accent-400"
@@ -1169,12 +939,13 @@ function goToSelectedJobDetail() {
       </div>
     </section>
 
+    <!-- compense hauteur navbar -->
     <!-- section offres, fond blanc -->
     <section
       id="offres"
       ref="jobsEl"
       data-theme="light"
-      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-white flex flex-col justify-center px-8 py-24 text-center md:py-32 lg:px-24"
+      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-white flex flex-col justify-center px-8 pt-24 pb-6 text-center sm:py-24 md:py-32 lg:px-24"
     >
       <!-- en tete, fondu vers le haut -->
       <div
@@ -1188,24 +959,26 @@ function goToSelectedJobDetail() {
           REJOIGNEZ LA BU DATA & IA
         </p>
         <h2
-          class="mt-2 mb-6 font-display text-5xl font-black text-[#000066] md:text-6xl xl:text-7xl"
+          class="mt-2 mb-3 font-display text-3xl font-black text-[#000066] sm:mb-6 md:text-6xl xl:text-7xl"
         >
           Façonnez l'avenir de l'intelligence artificielle
         </h2>
-        <p class="mx-auto mt-4 max-w-2xl text-lg text-gray-600 md:text-xl">
+        <p class="mx-auto mt-2 max-w-2xl text-lg text-gray-600 sm:mt-4 md:text-xl">
           Envie de concevoir des modèles innovants et de valoriser la donnée au cœur de nos projets
           ? Découvrez nos opportunités.
         </p>
       </div>
 
-      <!-- grille des cartes, cascade -->
+      <!-- defilement horizontal offres -->
       <div
-        class="mx-auto mt-10 grid w-full max-w-[1400px] grid-cols-1 gap-8 md:grid-cols-3 md:gap-12"
+        v-if="dataJobs.length > 0"
+        class="mx-auto mt-4 flex w-full max-w-[1400px] snap-x snap-mandatory gap-4 overflow-x-auto pb-4 hide-scrollbar sm:mt-10 md:grid md:grid-cols-3 md:gap-12 md:overflow-visible md:pb-0"
       >
+        <!-- cache ombre mobile -->
         <div
           v-for="(job, index) in dataJobs"
           :key="index"
-          class="relative flex min-h-[350px] cursor-pointer flex-col justify-between rounded-[2rem] border border-gray-100 bg-white p-10 text-left shadow-2xl md:min-h-[400px] md:p-12"
+          class="relative flex w-[85vw] min-h-[260px] shrink-0 cursor-pointer snap-center flex-col justify-between rounded-[2rem] border border-gray-100 bg-white p-6 text-left shadow-none md:w-auto md:min-h-[400px] md:p-12 md:shadow-2xl"
           :style="{ transitionDelay: isJobsVisible ? `${index * 150}ms` : '0ms' }"
           :class="
             isJobsVisible
@@ -1215,7 +988,14 @@ function goToSelectedJobDetail() {
           @click="openModal(job)"
         >
           <div>
-            <p class="text-2xl font-bold text-[#000066] md:text-3xl">{{ job.title }}</p>
+            <!-- lien sur titre -->
+            <router-link
+              :to="{ name: 'offre-detail', params: { id: job.id } }"
+              class="block text-2xl font-bold text-[#000066] transition-colors hover:text-accent-500 md:text-3xl"
+              @click.stop
+            >
+              {{ job.title }}
+            </router-link>
             <p class="mt-2 text-sm text-gray-700">{{ job.contract }} - {{ job.location }}</p>
           </div>
 
@@ -1235,11 +1015,11 @@ function goToSelectedJobDetail() {
             </span>
           </div>
 
-          <!-- fleche qui redirige vers la fiche complete, stop du clic de la carte -->
+          <!-- masque fleche mobile -->
           <button
             type="button"
             aria-label="Voir la fiche complete de l'offre"
-            class="absolute bottom-6 right-6 flex size-10 items-center justify-center rounded-full bg-[#000066] text-white transition-colors hover:bg-primary-700"
+            class="absolute bottom-6 right-6 hidden size-10 items-center justify-center rounded-full bg-[#000066] text-white transition-colors hover:bg-primary-700 md:flex"
             @click.stop="goToJob(job.id)"
           >
             <svg
@@ -1255,8 +1035,13 @@ function goToSelectedJobDetail() {
           </button>
         </div>
       </div>
+      <!-- fallback zero offre -->
+      <p v-else class="mt-4 text-center text-primary-900/80 sm:mt-10">
+        Aucune offre spécifique pour le moment. N'hésitez pas à nous envoyer une candidature
+        spontanée !
+      </p>
 
-      <div class="mt-12 flex w-full justify-center">
+      <div class="mt-4 flex w-full justify-center sm:mt-12">
         <button
           type="button"
           class="inline-flex items-center gap-2 rounded-full bg-[#12D80A] px-10 py-4 text-lg font-bold text-[#000066] shadow-[0_10px_30px_rgba(18,216,10,0.3)] transition-transform hover:scale-105 md:text-xl"
@@ -1361,7 +1146,7 @@ function goToSelectedJobDetail() {
 /* Les 2 paires de logos partenaires (`.partner-pair`) sont toujours dans le
    DOM, basculées par `v-show`/`activeSlide` comme le carrousel photo mais
    l'alternance ne doit être visible QUE sur la plage mobile compacte ciblée
-   plus bas (568–630px de hauteur, en dessous de 767px de largeur). Partout
+   plus bas (568-630px de hauteur, en dessous de 767px de largeur). Partout
    ailleurs, on neutralise `v-show` et on force l'affichage simultané des 2
    paires (4 logos ensemble, comportement identique à l'ancienne grille
    statique) via `@media not` l'exact inverse de la plage compacte. */
@@ -1537,7 +1322,7 @@ function goToSelectedJobDetail() {
    son propre contenu tout en partageant un gabarit minimal cohérent.
    `position: relative`/`inset: auto` sur `.bento-photo-card` : nécessaire ici
    aussi (pas seulement dans la media query `max-height: 800px` au-dessus,
-   dont la plage ne couvre pas entièrement 568–830px) pour que `height: auto`
+   dont la plage ne couvre pas entièrement 568-830px) pour que `height: auto`
    ait un effet réel sur les cartes-slide du carrousel, normalement
    `absolute inset-0`. */
 @media (max-width: 767px) and (max-height: 830px) {
@@ -1574,7 +1359,7 @@ function goToSelectedJobDetail() {
    ci-dessus reste trop grand sur ce segment. Ce bloc est ajouté APRÈS
    (et non à la place de) celui du dessus même logique de paliers
    progressifs que côté desktop (`max-height: 900px` puis `max-height:
-   650px`) : 745–830px garde le plancher 210px, 568–744px descend à 180px
+   650px`) : 745-830px garde le plancher 210px, 568-744px descend à 180px
    via celui-ci, qui l'emporte en cascade (même `!important`, déclaré plus
    loin dans la feuille de style). */
 @media (max-width: 767px) and (max-height: 744px) {
@@ -1602,7 +1387,7 @@ function goToSelectedJobDetail() {
   }
 }
 
-/* Palier dédié à la symétrie carrousel photo / carte partenaires (568–630px) :
+/* Palier dédié à la symétrie carrousel photo / carte partenaires (568-630px) :
    avec seulement 2 logos affichés à la fois (`.partner-pair`, cf. template
    et règle `@media not` plus haut), le contenu de `.partners-card` est enfin
    assez compact pour lui donner, comme au carrousel, une hauteur FIXE
@@ -1650,7 +1435,7 @@ function goToSelectedJobDetail() {
   }
 }
 
-/* sm–md (640–767px) : les 2 cartes sont côte à côte sur UNE ligne le
+/* sm-md (640-767px) : les 2 cartes sont côte à côte sur UNE ligne le
    remplissage ci-dessus leur donnait toute la hauteur restante (~500px à
    800px de haut), rendu étiré. Hauteur modérée + section centrée à la
    place. Pas appliqué < sm : empilées, 2 × 240px minimum + l'en-tête
@@ -1695,7 +1480,7 @@ function goToSelectedJobDetail() {
 }
 
 /* Dernier palier, pour les hauteurs mobiles extrêmes (ex. 568px) : les
-   168–210px de plancher des paliers précédents restent trop grands une
+   168-210px de plancher des paliers précédents restent trop grands une
    fois cumulés avec le padding et la typographie de base. */
 @media (max-width: 767px) and (max-height: 580px) {
   #hero .carousel-wrapper,

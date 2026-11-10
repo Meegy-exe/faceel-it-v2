@@ -6,12 +6,12 @@ import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollRevea
 import { useSeo } from '@/composables/useSeo'
 
 /**
- * Page « Discutons IA » — V1.1.
+ * Page « Discutons IA »  V1.1.
  *
- * ROUTE DÉDIÉE — `router/routes.ts`/`staticPrerenderRoutes.ts` et
+ * ROUTE DÉDIÉE  `router/routes.ts`/`staticPrerenderRoutes.ts` et
  * `mainNav.ts` mis à jour dans le même mouvement (même mécanisme
  * `meta.fullPageScroll` qu'ADR 26, déjà réutilisé pour `/notre-histoire`,
- * `/je-suis-une-entreprise` et `/je-suis-candidat` — rien de nouveau dans
+ * `/je-suis-une-entreprise` et `/je-suis-candidat`  rien de nouveau dans
  * `App.vue`).
  *
  * CTA « Vous souhaitez en discuter… » ET « Discutons-en » → `mailto` de
@@ -19,15 +19,15 @@ import { useSeo } from '@/composables/useSeo'
  * `App.vue`, commentaire « MESURE TEMPORAIRE ») : aucune page de prise de
  * rendez-vous n'existe encore dans `routes.ts`.
  *
- * LOGOS TECHNO EN TEXTE, PAS EN SVG — le brief propose explicitement
+ * LOGOS TECHNO EN TEXTE, PAS EN SVG  le brief propose explicitement
  * « Textes/Icônes » pour LangGraph, LangChain, FastAPI, OpenAI, TensorFlow.
  * Aucun fichier de marque officiel de ces outils n'existe dans ce dépôt ;
  * en reconstituer un à la main serait à la fois un risque de marque déposée
  * mal reproduite et un contenu visuel inventé (cf. CLAUDE.md, intégrité du
- * contenu) — le texte seul, en typographie du design system, est la lecture
+ * contenu)  le texte seul, en typographie du design system, est la lecture
  * la plus sûre de « Textes/Icônes ».
  *
- * SCHÉMAS RAG/MCP — de VRAIS PLACEHOLDERS, pas des diagrammes inventés : le
+ * SCHÉMAS RAG/MCP  de VRAIS PLACEHOLDERS, pas des diagrammes inventés : le
  * brief demande explicitement un « placeholder », jamais un schéma réel non
  * fourni. Un encart annoté comme tel remplit la demande sans fabriquer un
  * contenu qui n'existe pas encore.
@@ -55,7 +55,7 @@ const ctaReveal = useScrollReveal(ctaEl)
 const CONTACT_HREF = 'mailto:contact@faceel-it.com'
 
 /* -------------------------------------------------------------------------- */
-/* Offres — deux cartes                                                       */
+/* Offres  deux cartes                                                       */
 /* -------------------------------------------------------------------------- */
 
 interface Offer {
@@ -97,7 +97,7 @@ const OFFERS: Offer[] = [
 ]
 
 /* -------------------------------------------------------------------------- */
-/* Atouts — 3 cartes + tech stack                                             */
+/* Atouts  3 cartes + tech stack                                             */
 /* -------------------------------------------------------------------------- */
 
 interface StrengthCard {
@@ -134,7 +134,7 @@ const STRENGTHS: StrengthCard[] = [
 const TECH_STACK = ['LangGraph', 'LangChain', 'FastAPI', 'OpenAI', 'TensorFlow']
 
 /* -------------------------------------------------------------------------- */
-/* Méthode — timeline 4 étapes                                                */
+/* Méthode  timeline 4 étapes                                                */
 /* -------------------------------------------------------------------------- */
 
 interface MethodStep {
@@ -174,7 +174,7 @@ const METHOD_STEPS: MethodStep[] = [
 ]
 
 /* -------------------------------------------------------------------------- */
-/* RAG vs MCP — onglets                                                       */
+/* RAG vs MCP  onglets                                                       */
 /* -------------------------------------------------------------------------- */
 
 type TechTab = 'rag' | 'mcp'
@@ -213,13 +213,13 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
   <!-- Pas de `<main>` ici : la coquille (`App.vue`) le fournit déjà. -->
 
   <!-- CONTENEUR SNAP OPT-IN : isole le scroll magnétique de cette vue sans
-       dépendre de la hauteur flexée de <main> (cf. HomeView.vue) — le
+       dépendre de la hauteur flexée de <main> (cf. HomeView.vue)  le
        `meta.fullPageScroll` évoqué plus haut n'existe nulle part ailleurs
        dans le dépôt (routes.ts / App.vue), ce conteneur local est donc le
        seul mécanisme réel de snap sur cette page. -->
   <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
     <!-- ==================================================================
-       1. HERO — sombre.
+       1. HERO  sombre.
        ================================================================== -->
     <section
       id="hero"
@@ -254,7 +254,7 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
     </section>
 
     <!-- ==================================================================
-       2. OFFRES — clair, deux cartes.
+       2. OFFRES  clair, deux cartes.
        ================================================================== -->
     <section
       id="offres"
@@ -303,7 +303,7 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
     </section>
 
     <!-- ==================================================================
-       3. ATOUTS & TECH STACK — sombre.
+       3. ATOUTS & TECH STACK  sombre.
        ================================================================== -->
     <section
       id="atouts"
@@ -329,7 +329,7 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
           </article>
         </div>
 
-        <!-- Bandeau techno — texte seul, cf. commentaire d'en-tête « LOGOS
+        <!-- Bandeau techno  texte seul, cf. commentaire d'en-tête « LOGOS
            TECHNO EN TEXTE ». -->
         <ul
           class="mt-12 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 border-t border-white/10 pt-10"
@@ -346,7 +346,7 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
     </section>
 
     <!-- ==================================================================
-       4. MÉTHODOLOGIE — clair, titre + timeline verticale.
+       4. MÉTHODOLOGIE  clair, titre + timeline verticale.
        ================================================================== -->
     <section
       id="methode"
@@ -385,7 +385,7 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
               >
                 {{ index + 1 }}
               </span>
-              <!-- Trait de liaison — absent après la dernière étape. -->
+              <!-- Trait de liaison  absent après la dernière étape. -->
               <span
                 v-if="index < METHOD_STEPS.length - 1"
                 aria-hidden="true"
@@ -406,7 +406,7 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
     </section>
 
     <!-- ==================================================================
-       5. PRÉSENTATION TECHNIQUE — sombre, onglets RAG / MCP.
+       5. PRÉSENTATION TECHNIQUE  sombre, onglets RAG / MCP.
        ================================================================== -->
     <section
       id="rag-mcp"
@@ -466,7 +466,7 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
             />
           </div>
 
-          <!-- Placeholder de schéma — cf. commentaire d'en-tête « SCHÉMAS
+          <!-- Placeholder de schéma  cf. commentaire d'en-tête « SCHÉMAS
              RAG/MCP » : annoncé comme tel, pas un diagramme inventé. -->
           <div
             aria-hidden="true"
@@ -479,7 +479,7 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
     </section>
 
     <!-- ==================================================================
-       6. CALL TO ACTION — clair, encart doux.
+       6. CALL TO ACTION  clair, encart doux.
        ================================================================== -->
     <section
       id="cta"
@@ -503,7 +503,7 @@ const TABS: Record<TechTab, { label: string; title: string; description: string 
     </section>
 
     <!-- ==================================================================
-       7. FOOTER — repris dans le flux snap local (cf. HomeView.vue) ;
+       7. FOOTER repris dans le flux snap local (cf. HomeView.vue) ;
        App.vue masque son footer global pour cette route pour éviter le
        doublon.
        ================================================================== -->

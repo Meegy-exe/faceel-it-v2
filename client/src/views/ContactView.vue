@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
+import { useSeo } from '@/composables/useSeo'
 import contactHeroImg from '@/assets/images/photos/lille.jpg'
+
+// seo local contact
+useSeo({
+  title: 'Contact',
+  description:
+    'Contactez Faceel-IT, ESN à Wasquehal : un projet IT, Data, IA ou développement web dans la ' +
+    'métropole lilloise et les Hauts-de-France ? Échangeons.',
+})
 
 const form = ref({
   nom: '',
@@ -44,7 +53,7 @@ function handleSubmit() {
         <div>
           <p class="mb-2 font-bold uppercase tracking-wider text-accent-500">Contactez-nous</p>
           <h1 class="mb-6 text-5xl font-extrabold leading-tight text-white lg:text-6xl">
-            Vous êtes une entreprise et vous avez un projet ?
+            Vous êtes une entreprise et vous avez un projet IT dans les Hauts-de-France ?
           </h1>
           <p class="text-xl text-white/80">
             Contactez-nous via le formulaire ci-dessous ou échangez avec notre chatBot.
@@ -81,20 +90,34 @@ function handleSubmit() {
     </section>
 
     <!-- ══════════════════════════════════════════════
-         SECTION 3 : FORMULAIRE & ENCART LINKEDIN
+         SECTION 2 : FORMULAIRE & ENCART LINKEDIN
+         fusion form desktop : un seul form standard, un seul bloc desktop.
+         mobile scroll imbrique : simule la scission via un conteneur interne.
          ══════════════════════════════════════════════ -->
     <section
-      class="min-h-screen w-full snap-start snap-always flex flex-col justify-center bg-white py-16"
+      data-theme="light"
+      class="block h-dvh w-full p-0 overflow-hidden bg-white snap-start snap-always md:relative md:min-h-screen md:w-full md:flex md:items-center md:justify-center md:py-20"
     >
-      <div class="mx-auto max-w-6xl px-4">
-        <div class="grid grid-cols-1 gap-12 md:grid-cols-3">
-          <!-- Formulaire (col-span-2) -->
-          <div class="md:col-span-2">
+      <div
+        class="h-dvh w-full overflow-y-auto snap-y snap-mandatory md:h-auto md:overflow-visible md:snap-none md:mx-auto md:max-w-6xl md:grid md:grid-cols-3 md:gap-12"
+      >
+        <!-- form display contents : le form s'efface sur mobile, ses
+             enfants directs deviennent les cibles du snap-y parent -->
+        <form
+          class="contents md:block md:col-span-2"
+          @submit.prevent="handleSubmit"
+        >
+          <!-- form split 1 -->
+          <div
+            class="h-dvh w-full shrink-0 snap-start flex flex-col justify-center px-4 pt-24 md:h-auto md:shrink md:snap-none md:p-0 md:block"
+          >
             <h2 class="font-display text-3xl font-extrabold tracking-tight text-primary-900">
               Écrivez-nous
             </h2>
-            <p class="mt-2 text-sm text-primary-900/50">
-              Notre équipe étudiera votre demande et reviendra vers vous dans les plus brefs délais.
+            <!-- fix contrast -->
+            <p class="mt-2 text-sm text-primary-900/70">
+              Notre équipe étudiera votre demande et reviendra vers vous dans les plus brefs
+              délais.
             </p>
 
             <div
@@ -105,7 +128,7 @@ function handleSubmit() {
               <p class="mt-1 text-sm">Notre équipe vous contactera très prochainement.</p>
             </div>
 
-            <form v-else class="mt-8 space-y-5" @submit.prevent="handleSubmit">
+            <div v-else class="mt-8 space-y-5">
               <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
                   <label for="prenom" class="block text-sm font-medium text-primary-900"
@@ -121,7 +144,9 @@ function handleSubmit() {
                   />
                 </div>
                 <div>
-                  <label for="nom" class="block text-sm font-medium text-primary-900">Nom *</label>
+                  <label for="nom" class="block text-sm font-medium text-primary-900"
+                    >Nom *</label
+                  >
                   <input
                     id="nom"
                     v-model="form.nom"
@@ -159,6 +184,15 @@ function handleSubmit() {
                   />
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- form split 2 -->
+          <div
+            v-if="!submitted"
+            class="h-dvh w-full shrink-0 snap-start flex flex-col justify-center px-4 pt-24 md:h-auto md:shrink md:snap-none md:p-0 md:block md:mt-5"
+          >
+            <div class="space-y-5">
               <div>
                 <label for="email" class="block text-sm font-medium text-primary-900"
                   >Email professionnel *</label
@@ -225,42 +259,42 @@ function handleSubmit() {
               >
                 Envoyer le message
               </button>
-            </form>
-          </div>
-
-          <!-- Encart LinkedIn (col-span-1) -->
-          <div class="flex flex-col gap-6">
-            <div class="rounded-xl bg-blue-50 p-8">
-              <div
-                class="flex size-12 items-center justify-center rounded-xl bg-[#0A66C2] text-white"
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                  <path
-                    d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.1 1.43-2.1 2.9V21h-4V9Z"
-                  />
-                </svg>
-              </div>
-              <h3 class="mt-5 font-display text-xl font-bold text-primary-900">
-                Retrouvez-nous sur LinkedIn
-              </h3>
-              <p class="mt-3 text-sm leading-relaxed text-primary-900/70">
-                Notre équipe est très réactive sur LinkedIn. Offres d'emploi, actualités, événements
-                et coulisses de l'agence — suivez-nous pour ne rien manquer.
-              </p>
-              <a
-                href="https://www.linkedin.com/company/faceel-it/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#0A66C2] px-5 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor" class="size-4">
-                  <path
-                    d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.1 1.43-2.1 2.9V21h-4V9Z"
-                  />
-                </svg>
-                Suivre Faceel-IT
-              </a>
             </div>
+          </div>
+        </form>
+
+        <!-- bloc linkedin -->
+        <div
+          class="h-dvh w-full shrink-0 snap-start flex flex-col justify-center pt-24 px-4 md:h-auto md:shrink md:snap-none md:pt-0 md:px-0 md:col-span-1"
+        >
+          <div class="rounded-xl bg-blue-50 p-8">
+            <div class="flex size-12 items-center justify-center rounded-xl bg-[#0A66C2] text-white">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                <path
+                  d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.1 1.43-2.1 2.9V21h-4V9Z"
+                />
+              </svg>
+            </div>
+            <h3 class="mt-5 font-display text-xl font-bold text-primary-900">
+              Retrouvez-nous sur LinkedIn
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-primary-900/70">
+              Notre équipe est très réactive sur LinkedIn. Offres d'emploi, actualités, événements
+              et coulisses de l'agence - suivez-nous pour ne rien manquer.
+            </p>
+            <a
+              href="https://www.linkedin.com/company/faceel-it/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#0A66C2] px-5 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 sm:w-auto"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" class="size-4">
+                <path
+                  d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.1 1.43-2.1 2.9V21h-4V9Z"
+                />
+              </svg>
+              Suivre Faceel-IT
+            </a>
           </div>
         </div>
       </div>
@@ -268,16 +302,26 @@ function handleSubmit() {
 
     <!-- ══════════════════════════════════════════════
          SECTION 4 : CONTACT & AVIS CLIENTS (fusionnées)
+         mobile snap only : une seule section, reset desktop layout
+         restaure la grille d'origine a partir de md.
          ══════════════════════════════════════════════ -->
     <section
       data-theme="dark"
-      class="relative min-h-screen w-full snap-start snap-always flex items-center justify-center bg-primary-950 px-4 py-20"
+      class="block h-dvh w-full p-0 overflow-hidden bg-primary-950 snap-start snap-always md:relative md:min-h-screen md:w-full md:flex md:items-center md:justify-center md:px-4 md:py-20"
     >
+      <!-- scroll snap imbrique sur mobile seulement : le conteneur devient
+           lui meme un mini conteneur snap-y pour que les deux colonnes
+           deviennent chacune un arret plein ecran, sans toucher au
+           decoupage en <section> (qui casserait la grille desktop). a
+           partir de md, retour au flux normal flex/grid, sans scroll ni
+           snap propre a ce conteneur. -->
       <div
-        class="mx-auto w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-8 items-center divide-y md:divide-y-0 md:divide-x divide-white/10"
+        class="h-dvh w-full overflow-y-auto snap-y snap-mandatory divide-y-0 md:h-auto md:overflow-visible md:mx-auto md:w-full md:max-w-7xl md:grid md:grid-cols-2 md:gap-8 md:items-center md:divide-x md:divide-y-0 md:divide-white/10"
       >
-        <!-- Colonne Gauche : Infos de contact -->
-        <div class="flex flex-col items-center text-center pt-8 md:pt-0">
+        <!-- infos contact -->
+        <div
+          class="h-dvh w-full shrink-0 snap-start flex flex-col items-center justify-center text-center px-4 pt-24 md:h-auto md:shrink md:snap-none md:pt-0 md:flex md:flex-col md:items-center"
+        >
           <h2 class="font-display text-3xl font-bold text-white mb-10">
             Besoin d'un contact&nbsp;?
           </h2>
@@ -331,8 +375,10 @@ function handleSubmit() {
           </div>
         </div>
 
-        <!-- Colonne Droite : Avis Google -->
-        <div class="flex flex-col items-center text-center pt-12 md:pt-0">
+        <!-- section avis -->
+        <div
+          class="h-dvh w-full shrink-0 snap-start flex flex-col items-center justify-center text-center px-4 pt-24 md:h-auto md:shrink md:snap-none md:pt-0 md:flex md:flex-col md:items-center"
+        >
           <p class="text-sm font-semibold uppercase tracking-widest text-yellow-300">
             Avis clients
           </p>
@@ -353,7 +399,8 @@ function handleSubmit() {
               ><span class="text-[#FBBC05]">o</span><span class="text-[#4285F4]">g</span
               ><span class="text-[#34A853]">l</span><span class="text-[#EA4335]">e</span>
             </p>
-            <div class="flex gap-1 text-yellow-400" aria-label="5 étoiles sur 5">
+            <!-- fix aria role : aria-label exige un role explicite sur une div -->
+            <div class="flex gap-1 text-yellow-400" role="img" aria-label="5 étoiles sur 5">
               <svg v-for="i in 5" :key="i" class="size-8" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292Z"
@@ -363,8 +410,9 @@ function handleSubmit() {
             <p class="text-5xl font-extrabold text-white">5 / 5</p>
           </div>
 
+          <!-- lien google avis -->
           <a
-            href="#"
+            href="https://share.google/hgl6jClIyQcKgjxSD"
             target="_blank"
             rel="noopener noreferrer"
             class="mt-10 inline-flex items-center gap-2 rounded-xl border-2 border-white px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white hover:text-[#000066]"
@@ -382,8 +430,8 @@ function handleSubmit() {
       </div>
     </section>
 
-    <section class="w-full snap-start snap-always">
-      <TheFooter />
-    </section>
+    <!-- footer home : repris ici (App.vue masque son footer global pour
+         cette route pour eviter le doublon) -->
+    <TheFooter full-page-scroll />
   </div>
 </template>

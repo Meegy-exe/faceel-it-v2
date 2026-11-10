@@ -4,10 +4,10 @@ import { useSeo } from '@/composables/useSeo'
 
 useSeo({
   title: 'Événements tech',
-  description: 'Retrouvez les meetups, conférences et hackathons auxquels participe Faceel-IT.',
+  description: 'Retrouvez les meetups, conférences et hackathons tech auxquels participe Faceel-IT, ESN à Wasquehal, dans la métropole lilloise et les Hauts-de-France.',
 })
 
-// TODO : brancher la liste réelle des événements (API ou CMS) — aucun événement
+// TODO : brancher la liste réelle des événements (API ou CMS) - aucun événement
 // n'est inventé ici, cf. CLAUDE.md « Intégrité du contenu ».
 interface TechEvent {
   title: string
@@ -63,7 +63,7 @@ const events: TechEvent[] = []
             {{ event.type }}
           </p>
           <h3 class="text-xl font-bold mb-2">{{ event.title }}</h3>
-          <p class="text-primary-950/70 text-sm">{{ event.date }} — {{ event.location }}</p>
+          <p class="text-primary-950/70 text-sm">{{ event.date }} - {{ event.location }}</p>
         </article>
       </div>
       <p v-else class="text-primary-950/60 max-w-xl">

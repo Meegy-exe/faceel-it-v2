@@ -1,10 +1,26 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useSeo } from '@/composables/useSeo'
+import CookieManagerModal from '@/components/ui/CookieManagerModal.vue'
+
+useSeo({
+  title: "Politique de cookies - Faceel-IT Wasquehal",
+  description:
+    "Politique de cookies de Faceel-IT, ESN à Wasquehal : cookies utilisés sur le site et gestion de vos préférences.",
+})
+
+// meme pattern que TheFooter
+const isCookieModalOpen = ref(false)
+</script>
+
 <template>
   <article class="min-h-screen h-auto snap-start bg-white px-4 pt-32 pb-20 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-4xl">
       <h1 class="font-display text-4xl font-extrabold tracking-tight text-primary-900">
         Politique de gestion des cookies
       </h1>
-      <p class="mt-3 text-sm text-primary-900/50">Dernière mise à jour : [À VENIR]</p>
+      <!-- maj texte cookies -->
+      <p class="mt-3 text-sm text-primary-900/50">Dernière mise à jour : 5 Novembre 2026</p>
 
       <div class="mt-12 space-y-12 text-base leading-relaxed text-primary-900/80">
         <section>
@@ -15,7 +31,7 @@
             Un cookie est un petit fichier texte déposé sur votre terminal (ordinateur, tablette,
             téléphone) lors de la visite d'un site web. Il permet au site de mémoriser des
             informations sur votre navigation (préférences d'affichage, session de connexion) afin
-            de vous offrir une expérience cohérente à chaque visite.
+            de vous offrir une expérience fluide et cohérente à chaque visite.
           </p>
           <p class="mt-3">
             Les cookies ne contiennent pas de virus et ne peuvent pas accéder aux fichiers stockés
@@ -28,66 +44,41 @@
             2. Les cookies utilisés sur ce site
           </h2>
           <p class="mt-4">
-            Nous utilisons différents types de cookies pour assurer le fonctionnement du site,
-            mesurer son audience et personnaliser votre expérience. Voici les catégories de cookies
-            que nous sommes susceptibles d'utiliser&nbsp;:
+            Dans une démarche de respect de la vie privée et de minimisation des données, le site de
+            Faceel-IT n'utilise aucun cookie de traçage publicitaire, ni aucun outil de mesure
+            d'audience intrusif.
+          </p>
+          <p class="mt-3">
+            Nous utilisons exclusivement des cookies strictement nécessaires au bon fonctionnement
+            technique et ergonomique de la plateforme. Ils ne peuvent pas être désactivés, car le
+            site ne pourrait pas fonctionner correctement sans eux.
           </p>
 
+          <!-- cookies techniques uniquement -->
           <div class="mt-8">
             <h3 class="text-xl font-bold text-primary-900">Cookies strictement nécessaires</h3>
             <p class="mt-3">
-              Ces cookies sont indispensables au bon fonctionnement du site. Ils permettent
-              notamment de mémoriser votre choix relatif aux cookies, de gérer la sécurité et
-              d'assurer la navigation de base. Ils ne peuvent pas être désactivés.
+              <strong>Consentement requis&nbsp;:</strong> Non (exemptés selon l'Article 82 de la loi
+              Informatique et Libertés).
             </p>
-            <ul class="mt-3 space-y-1 pl-6 list-disc text-sm">
-              <li>
-                <strong>Consentement requis&nbsp;:</strong> Non (Article 82 de la loi Informatique
-                et Libertés).
-              </li>
-              <li>
-                <strong>Exemple&nbsp;:</strong>
-                <code class="rounded bg-gray-100 px-1 text-sm">faceel-cookie-consent</code> —
-                mémorise votre choix de consentement (durée&nbsp;: 6 mois).
-              </li>
-            </ul>
-          </div>
-
-          <div class="mt-8">
-            <h3 class="text-xl font-bold text-primary-900">
-              Cookies analytiques et de mesure d'audience
-            </h3>
             <p class="mt-3">
-              Ces cookies nous permettent d'analyser la fréquentation du site (pages visitées, durée
-              des sessions) afin d'améliorer l'expérience globale et nos services. Les données
-              collectées sont agrégées.
+              Voici les seules données mémorisées localement lors de votre navigation&nbsp;:
             </p>
-            <ul class="mt-3 space-y-1 pl-6 list-disc text-sm">
+            <ul class="mt-3 space-y-2 pl-6 list-disc">
               <li>
-                <strong>Consentement requis&nbsp;:</strong> Oui. Ils ne sont déposés qu'après votre
-                accord explicite (sauf exemption légale spécifique).
+                <strong>Mémorisation du profil&nbsp;:</strong> Un cookie enregistre votre choix de
+                parcours ("Je suis un candidat" ou "Je suis une entreprise") pour adapter le contenu
+                lors de votre navigation et de vos prochaines visites.
               </li>
               <li>
-                <strong>Outils utilisés&nbsp;:</strong> [À VENIR — ex&nbsp;: Matomo, Google
-                Analytics…]
-              </li>
-            </ul>
-          </div>
-
-          <div class="mt-8">
-            <h3 class="text-xl font-bold text-primary-900">Cookies marketing et réseaux sociaux</h3>
-            <p class="mt-3">
-              Ces cookies peuvent être déposés par des services tiers intégrés au site (vidéos,
-              réseaux sociaux) pour vous proposer des contenus personnalisés ou mesurer l'efficacité
-              de campagnes ciblées.
-            </p>
-            <ul class="mt-3 space-y-1 pl-6 list-disc text-sm">
-              <li>
-                <strong>Consentement requis&nbsp;:</strong> Oui. En l'absence de consentement, ces
-                fonctionnalités tierces seront désactivées.
+                <strong>Gestion de l'animation&nbsp;:</strong> Un cookie technique retient si vous
+                avez déjà visionné l'animation d'introduction de la page d'accueil afin de ne pas la
+                rejouer à chaque changement de page.
               </li>
               <li>
-                <strong>Services concernés&nbsp;:</strong> [À VENIR — ex&nbsp;: LinkedIn, YouTube…]
+                <strong>Choix de consentement&nbsp;:</strong> Un cookie
+                (<code class="rounded bg-gray-100 px-1 text-sm">faceel-cookie-consent</code>)
+                mémorise vos préférences quant à l'affichage du bandeau d'information lui-même.
               </li>
             </ul>
           </div>
@@ -95,70 +86,67 @@
 
         <section>
           <h2 class="font-display text-2xl font-bold text-primary-900">
-            3. Gérer ou retirer votre consentement
+            3. Gérer vos préférences
           </h2>
           <p class="mt-4">
-            Vous pouvez modifier vos choix à tout moment. Plusieurs options s'offrent à vous&nbsp;:
+            Puisque nous n'utilisons que des cookies techniques indispensables, le fonctionnement de
+            notre site n'implique pas de gestion complexe de traceurs tiers.
           </p>
-
-          <h3 class="mt-6 text-lg font-bold text-primary-900">Via notre module de gestion</h3>
           <p class="mt-3">
-            Un lien intitulé "Gestion des cookies" est disponible en permanence dans le pied de page
-            du site. Il vous permet de réafficher le bandeau de consentement et de mettre à jour vos
-            préférences instantanément.
+            Si vous souhaitez néanmoins bloquer ces cookies techniques, vous devez configurer
+            directement votre navigateur internet. Notez que ce blocage réinitialisera votre choix
+            de profil et rejouera l'animation à chaque visite.
           </p>
-          <button
-            class="mt-4 rounded-lg border border-primary-900/20 bg-gray-100 px-4 py-2 text-sm font-medium text-primary-900 transition-colors duration-200 hover:bg-gray-200"
-          >
-            Ouvrir le panneau de gestion des cookies
-          </button>
-
-          <h3 class="mt-8 text-lg font-bold text-primary-900">
-            Via les paramètres de votre navigateur
-          </h3>
-          <p class="mt-3">
-            Vous pouvez également configurer votre navigateur pour bloquer ou supprimer les cookies.
-            Notez que le blocage des cookies strictement nécessaires peut altérer le fonctionnement
-            du site. Voici les pages d'aide des principaux navigateurs&nbsp;:
-          </p>
+          <p class="mt-3">Voici les pages d'aide des principaux navigateurs&nbsp;:</p>
           <ul class="mt-3 space-y-2 pl-6 list-disc">
             <li>
+              <strong>Google Chrome&nbsp;:</strong>
               <a
                 href="https://support.google.com/chrome/answer/95647"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
-                >Google Chrome</a
+                class="font-medium text-[#000066] underline underline-offset-2 break-all hover:opacity-80"
+                >https://support.google.com/chrome/answer/95647</a
               >
             </li>
             <li>
+              <strong>Mozilla Firefox&nbsp;:</strong>
               <a
                 href="https://support.mozilla.org/fr/kb/protection-renforcee-contre-pistage-firefox-ordinateur"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
-                >Mozilla Firefox</a
+                class="font-medium text-[#000066] underline underline-offset-2 break-all hover:opacity-80"
+                >https://support.mozilla.org/fr/kb/protection-renforcee-contre-pistage-firefox-ordinateur</a
               >
             </li>
             <li>
+              <strong>Apple Safari&nbsp;:</strong>
               <a
                 href="https://support.apple.com/fr-fr/guide/safari/sfri11471/mac"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
-                >Apple Safari</a
+                class="font-medium text-[#000066] underline underline-offset-2 break-all hover:opacity-80"
+                >https://support.apple.com/fr-fr/guide/safari/sfri11471/mac</a
               >
             </li>
             <li>
+              <strong>Microsoft Edge&nbsp;:</strong>
               <a
                 href="https://support.microsoft.com/fr-fr/windows/supprimer-et-g%C3%A9rer-les-cookies-168dab11-0753-043d-7c16-ede5947fc64d"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
-                >Microsoft Edge</a
+                class="font-medium text-[#000066] underline underline-offset-2 break-all hover:opacity-80"
+                >https://support.microsoft.com/fr-fr/windows/supprimer-et-gérer-les-cookies-168dab11-0753-043d-7c16-ede5947fc64d</a
               >
             </li>
           </ul>
+          <button
+            type="button"
+            class="mt-6 rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-primary-900 transition-colors duration-200 hover:bg-gray-200"
+            @click="isCookieModalOpen = true"
+          >
+            Ouvrir le panneau de gestion des cookies
+          </button>
         </section>
 
         <section>
@@ -176,4 +164,5 @@
       </div>
     </div>
   </article>
+  <CookieManagerModal :is-open="isCookieModalOpen" @close="isCookieModalOpen = false" />
 </template>

@@ -20,16 +20,17 @@ import { useSeo } from '@/composables/useSeo'
  * mécanisme qu'`ADR 26`/`docs/DECISIONS.md`, déjà réutilisé pour
  * `/qui-sommes-nous/notre-histoire`  aucune troisième variante inventée ici).
  *
- * REFERENCES CLIENTS — section ref home (V1) : reprend `ReferencesSection.vue`
+ * REFERENCES CLIENTS - section ref home (V1) : reprend `ReferencesSection.vue`
  * telle qu'utilisée par `HomeView.vue`, plutot que le bandeau de logos ecrit
  * en dur ici auparavant. Memes logos, meme comportement, un seul endroit a
  * maintenir.
  */
 useSeo({
-  title: 'Je suis une entreprise',
+  title: 'Je suis une entreprise - ESN à Wasquehal et Lille',
   description:
-    'Faceel-IT accompagne les entreprises dans leurs projets stratégiques : régie de proximité, ' +
-    'centre de services à Lille, 65 collaborateurs, plus de 170 projets réalisés.',
+    'Faceel-IT, ESN à Wasquehal, accompagne les entreprises de Lille et des Hauts-de-France dans ' +
+    'leurs projets stratégiques : régie de proximité, centre de services, 65 collaborateurs, ' +
+    'plus de 170 projets réalisés.',
 })
 
 /* -------------------------------------------------------------------------- */
@@ -196,7 +197,7 @@ const VALUE_BLOCKS: ValueBlock[] = [
 ]
 
 /**
- * Courbe de croissance — vraies donnees ca, 2021 a 2027 (realise jusqu'en
+ * Courbe de croissance - vraies donnees ca, 2021 a 2027 (realise jusqu'en
  * 2025, prevision 2026, objectif 2027). Le trace relie chaque point par un
  * segment droit (pas de courbe lissee) : la pente de chaque segment reste
  * donc mathematiquement fidele a l'ecart reel entre deux annees, plutot que
@@ -323,7 +324,7 @@ const CA_HIGHLIGHTS: CaHighlight[] = [
           >
             service
           </span>
-          de nos clients
+          de nos clients des Hauts-de-France
         </h1>
 
         <div
@@ -331,7 +332,7 @@ const CA_HIGHLIGHTS: CaHighlight[] = [
           :class="scrollRevealClass(introReveal, 'right')"
         >
           <p class="text-lg leading-relaxed text-white sm:text-xl">
-            Depuis notre création en 2020, de nombreuses entreprises nous confient leurs projets les
+            Depuis notre création en 2021, de nombreuses entreprises nous confient leurs projets les
             plus stratégiques&nbsp;: grandes enseignes, PME innovantes ou startups ambitieuses.
             Toutes partagent une même exigence de qualité, de proximité et de performance.
           </p>
@@ -359,9 +360,9 @@ const CA_HIGHLIGHTS: CaHighlight[] = [
     <section
       id="offres"
       data-theme="light"
-      class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
+      class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 pt-24 pb-16 md:pt-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
     >
-      <div ref="offresEl" class="mx-auto grid w-full max-w-6xl gap-6 sm:grid-cols-2">
+      <div ref="offresEl" class="mx-auto grid w-full max-w-6xl gap-8 sm:grid-cols-2">
         <article
           class="group relative isolate min-h-[22rem] overflow-hidden rounded-3xl bg-primary-900 p-8 shadow-lift transition-all duration-700 ease-out motion-reduce:transition-none sm:p-10"
           :class="scrollRevealClass(offresReveal, 'left')"
@@ -493,13 +494,14 @@ const CA_HIGHLIGHTS: CaHighlight[] = [
           <div
             class="flex flex-col justify-center rounded-card bg-white p-6 ring-1 ring-primary-900/8 shadow-soft sm:p-8"
           >
-            <p class="text-eyebrow uppercase text-primary-900/45">Croissance</p>
+            <!-- fix contraste texte -->
+            <p class="text-eyebrow uppercase text-primary-700">Croissance</p>
 
             <!-- grille de lecture : colonne d'axe a gauche, svg + axe annees a droite -->
             <div class="mt-4 grid grid-cols-[3rem_1fr] gap-2">
-              <!-- axe vertical ca -->
+              <!-- axe vertical ca : couleurs solides wcag -->
               <div class="flex flex-col justify-between py-1 text-right">
-                <span v-for="tick in Y_AXIS_TICKS" :key="tick" class="text-xs text-primary-900/50">
+                <span v-for="tick in Y_AXIS_TICKS" :key="tick" class="text-xs text-primary-700">
                   {{ tick === 0 ? '0' : `${tick} M€` }}
                 </span>
               </div>
@@ -553,8 +555,8 @@ const CA_HIGHLIGHTS: CaHighlight[] = [
                   />
                 </svg>
 
-                <!-- axe horizontal annees : meme repartition que chartX -->
-                <div class="mt-1 flex justify-between px-[5%] text-xs text-primary-900/50">
+                <!-- axe horizontal annees : meme repartition que chartX, couleurs solides wcag -->
+                <div class="mt-1 flex justify-between px-[5%] text-xs text-primary-700">
                   <span v-for="point in CHART_POINTS" :key="point.year">{{ point.year }}</span>
                 </div>
               </div>

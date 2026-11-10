@@ -15,7 +15,7 @@ const TABS: { slug: BuSlug; label: string; description: string; buttonText: stri
     slug: 'data-ia',
     label: 'Data & IA',
     description:
-      "Collecte, qualité, modélisation, restitution — puis les modèles et les agents qui s'appuient dessus. La chaîne complète, ou rien de fiable.",
+      "Collecte, qualité, modélisation, restitution - puis les modèles et les agents qui s'appuient dessus. La chaîne complète, ou rien de fiable.",
     buttonText: 'Voir nos projets data',
   },
   {

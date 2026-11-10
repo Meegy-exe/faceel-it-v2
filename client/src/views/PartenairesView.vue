@@ -7,7 +7,7 @@ import { useWaveCanvas } from '@/composables/useWaveCanvas'
 useSeo({
   title: 'Nos partenaires',
   description:
-    "Faceel-IT s'entoure des meilleurs acteurs technologiques pour construire des plateformes solides, fiables et innovantes.",
+    "Faceel-IT, ESN à Wasquehal, s'entoure des meilleurs acteurs technologiques pour construire des plateformes solides, fiables et innovantes pour les entreprises de la métropole lilloise et des Hauts-de-France.",
 })
 
 const waveCanvas = ref<HTMLCanvasElement | null>(null)
@@ -114,14 +114,14 @@ onUnmounted(stopTimer)
       data-theme="dark"
       class="relative min-h-screen w-full snap-start snap-always flex flex-col items-start justify-center overflow-hidden px-4 py-20 text-left"
     >
-      <!-- Canvas vague — fond animé, désactivé si motion-reduce (DA standard, cf. HomeView/OffersView). -->
+      <!-- Canvas vague - fond animé, désactivé si motion-reduce (DA standard, cf. HomeView/OffersView). -->
       <canvas
         ref="waveCanvas"
         aria-hidden="true"
         class="absolute inset-0 h-full w-full pointer-events-none opacity-60 motion-reduce:hidden"
       />
 
-      <!-- Cercle décoratif vert — touche d'accent sur fond sombre. -->
+      <!-- Cercle décoratif vert - touche d'accent sur fond sombre. -->
       <div
         aria-hidden="true"
         class="pointer-events-none absolute -right-40 top-1/2 h-[560px] w-[560px] -translate-y-1/2 rounded-full bg-accent-500/15 blur-3xl"
@@ -156,20 +156,23 @@ onUnmounted(stopTimer)
           leave-to-class="opacity-0 -translate-y-4"
           mode="out-in"
         >
+          <!-- fix hauteur slide -->
           <div
             :key="activePartner.name"
-            class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+            class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[480px] lg:min-h-[360px]"
           >
-            <!-- Visuel / Logo : fond transparent, logo seul sur le blanc de la page -->
-            <div class="flex items-center justify-center p-12 aspect-video lg:aspect-square">
+            <!-- debride taille logo -->
+            <div
+              class="flex items-center justify-start py-4 lg:justify-center lg:p-12 aspect-video lg:aspect-square"
+            >
               <img
                 :src="activePartner.logo"
                 :alt="activePartner.name"
-                class="h-16 md:h-24 w-auto max-w-[220px] object-contain"
+                class="w-auto max-w-[240px] h-24 lg:max-w-[300px] object-contain object-left lg:object-center"
               />
             </div>
-            <!-- Contenu textuel -->
-            <div>
+            <!-- fix hauteur stricte -->
+            <div class="flex h-[320px] lg:h-auto flex-col justify-center">
               <h3 class="text-4xl font-bold text-primary-950 mb-6">{{ activePartner.name }}</h3>
               <p class="text-lg text-primary-900/80 leading-relaxed mb-8">
                 {{ activePartner.description }}
@@ -250,12 +253,7 @@ onUnmounted(stopTimer)
       </div>
     </section>
 
-    <!-- Footer : pousse footer en bas meme si son contenu est plus court qu'un ecran -->
-    <section
-      data-theme="dark"
-      class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
-    >
-      <TheFooter />
-    </section>
+    <!-- importe footer home -->
+    <TheFooter full-page-scroll />
   </div>
 </template>

@@ -3,11 +3,12 @@ import TheFooter from '@/components/layout/TheFooter.vue'
 import { useSeo } from '@/composables/useSeo'
 
 useSeo({
-  title: 'Notre vision & notre organisation',
-  description: "Ce qui porte Faceel-IT et la façon dont le collectif s'organise au quotidien.",
+  title: 'Notre vision & notre organisation - ESN à Wasquehal',
+  description:
+    "Ce qui porte Faceel-IT, ESN à Wasquehal près de Lille, et la façon dont le collectif s'organise au quotidien dans les Hauts-de-France.",
 })
 
-// TODO : contenu réel à fournir (vision d'entreprise, organigramme/organisation) —
+// TODO : contenu réel à fournir (vision d'entreprise, organigramme/organisation) -
 // aucun contenu fictif tant que la matière n'est pas communiquée, cf. CLAUDE.md,
 // intégrité du contenu.
 </script>
@@ -28,7 +29,7 @@ useSeo({
       <h1
         class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight max-w-4xl"
       >
-        Notre vision
+        Notre vision d'une ESN à Wasquehal
       </h1>
       <p class="mt-6 text-lg text-white/60 max-w-xl">Contenu à venir.</p>
     </section>

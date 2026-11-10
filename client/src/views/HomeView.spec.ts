@@ -5,7 +5,7 @@
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
-import { mount } from '@vue/test-utils'
+import { mount, RouterLinkStub } from '@vue/test-utils'
 // Sous-chemin `/client`, pas la racine du paquet : voir la même remarque
 // dans `useSeo.spec.ts`, `HomeView` appelle `useSeo` en profondeur et a donc
 // besoin d'une instance `unhead` réelle, pas d'un simple stub.
@@ -15,25 +15,29 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from './HomeView.vue'
 
 /**
- * Le Hero simule une frappe sur la DERNIÈRE ligne du titre — « On rejoint une
+ * Le Hero simule une frappe sur la DERNIÈRE ligne du titre - « On rejoint une
  * équipe. » depuis la refonte V0.3 (auparavant « votre passion »). L'effet
  * homonyme de la Navbar est couvert séparément par `MegaMenu.spec.ts` : ce
  * sont deux animations indépendantes, chacune avec ses propres minuteurs.
  *
  * Deux garanties d'accessibilité ne peuvent pas se vérifier à la relecture :
- *   — le `<h1>` ne perd jamais son nom accessible pendant la phase
+ *   - le `<h1>` ne perd jamais son nom accessible pendant la phase
  *     d'effacement : un span `sr-only` stable porte la phrase complète en
  *     permanence, à côté du span animé (`aria-hidden="true"`) qui, lui,
  *     se vide puis se retape ;
- *   — sous `prefers-reduced-motion: reduce`, aucune frappe n'est jamais
+ *   - sous `prefers-reduced-motion: reduce`, aucune frappe n'est jamais
  *     simulée (pas seulement raccourcie) : le texte reste affiché
  *     intégralement, bien au-delà du délai de premier lancement.
  */
-describe('HomeView — Hero, effet machine à écrire', () => {
+describe('HomeView - Hero, effet machine à écrire', () => {
   const PHRASE = 'On rejoint une équipe.'
-  /** Le span animé est le seul `aria-hidden` PORTEUR DE TEXTE du titre — le
+  /** Le span animé est le seul `aria-hidden` PORTEUR DE TEXTE du titre - le
    *  curseur, lui, est vide. `:not(:empty)` évite de le confondre avec lui. */
-  const TYPED_SELECTOR = 'h1 span[aria-hidden="true"]:not(:empty)'
+  const TYPED_SELECTOR = 'h1 span.text-accent-500[aria-hidden="true"]:not(:empty)'
+  /** Le H1 porte deux `sr-only` : le contexte géo SEO (1er), puis la phrase
+   *  complète du Hero (2e), seule à porter le nom accessible de l'animation. */
+  const SR_PHRASE_SELECTOR = 'h1 .sr-only:nth-of-type(2)'
+  const FULL_PHRASE = 'On ne rejoint pas une ESN. On rejoint une équipe.'
 
   async function mountHome(prefersReducedMotion: boolean) {
     const mediaQueryList = {
@@ -50,7 +54,15 @@ describe('HomeView — Hero, effet machine à écrire', () => {
     await router.push('/')
     await router.isReady()
 
-    return mount(HomeView, { global: { plugins: [router, createHead(), createPinia()] } })
+    // `RouterLink` est stubbé : le Footer pointe vers des routes nommées
+    // (`histoire`, `collectif`...) que le routeur catch-all de ce test ne
+    // déclare pas, d'où un `No match for {"name":"histoire"}` à la résolution.
+    return mount(HomeView, {
+      global: {
+        plugins: [router, createHead(), createPinia()],
+        stubs: { RouterLink: RouterLinkStub },
+      },
+    })
   }
 
   afterEach(() => {
@@ -63,24 +75,15 @@ describe('HomeView — Hero, effet machine à écrire', () => {
     const wrapper = await mountHome(false)
 
     // Le nom accessible ne dépend que du span `sr-only`, jamais du span
-    // animé — vrai dès le montage, avant même le délai de 2 s qui précède
-    // le tout premier lancement.
-    expect(wrapper.find('h1 .sr-only').text()).toBe(PHRASE)
+    // animé - vrai dès le montage.
+    expect(wrapper.find(SR_PHRASE_SELECTOR).text()).toBe(FULL_PHRASE)
 
-    // Avant l'écoulement du délai de premier lancement, le span animé ne
-    // doit pas encore avoir bougé : le délai de 2 s n'est pas un détail
-    // d'implémentation, c'est la garantie que le titre reste stable pendant
-    // les animations d'entrée du Hero.
-    await vi.advanceTimersByTimeAsync(1_900)
-    await nextTick()
-    expect(wrapper.find(TYPED_SELECTOR).text()).toBe(PHRASE)
-
-    // Une fois le délai de 2 s dépassé, le premier cycle (effacement) a
-    // commencé.
-    await vi.advanceTimersByTimeAsync(200)
+    // Le délai de premier lancement est nul (`HERO_TYPEWRITER_START_DELAY_MS`) :
+    // le cycle d'effacement démarre dès le montage, sans attente préalable.
+    await vi.advanceTimersByTimeAsync(300)
     await nextTick()
 
-    expect(wrapper.find('h1 .sr-only').text()).toBe(PHRASE)
+    expect(wrapper.find(SR_PHRASE_SELECTOR).text()).toBe(FULL_PHRASE)
     expect(wrapper.find(TYPED_SELECTOR).text()).not.toBe(PHRASE)
   })
 

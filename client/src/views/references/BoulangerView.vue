@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { useTemplateRef } from 'vue'
+import { computed, ref, useTemplateRef } from 'vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import { useSeo } from '@/composables/useSeo'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
 
 useSeo({
-  title: 'Boulanger',
+  title: 'Boulanger - Référence client ESN à Wasquehal',
   description:
-    "Refonte complète de l'application Boulanger pour moderniser l'interface et accompagner le lancement des projets stratégiques.",
+    "Refonte complète de l'application Boulanger par Faceel-IT, ESN à Wasquehal près de Lille, pour moderniser l'interface et accompagner le lancement des projets stratégiques.",
 })
 
-/** Un reveal par bloc de texte principal (même convention que HomeView) —
+/** Un reveal par bloc de texte principal (même convention que HomeView) -
  *  chaque conteneur entre en fondu + translate-y au moment où il entre dans
  *  le viewport, pas tous en même temps au montage. */
 const heroTextEl = useTemplateRef<HTMLElement>('heroTextEl')
@@ -19,11 +19,23 @@ const heroTextReveal = useScrollReveal(heroTextEl)
 const s2TextEl = useTemplateRef<HTMLElement>('s2TextEl')
 const s2TextReveal = useScrollReveal(s2TextEl)
 
+// texte et image : second bloc issu du split mobile de la section 2
+const s2bTextEl = useTemplateRef<HTMLElement>('s2bTextEl')
+const s2bTextReveal = useScrollReveal(s2bTextEl)
+
 const s3TextEl = useTemplateRef<HTMLElement>('s3TextEl')
 const s3TextReveal = useScrollReveal(s3TextEl)
 
+// scinde section orange : second bloc mobile de la section valeur ajoutee
+const s3bTextEl = useTemplateRef<HTMLElement>('s3bTextEl')
+const s3bTextReveal = useScrollReveal(s3bTextEl)
+
 const s4TextEl = useTemplateRef<HTMLElement>('s4TextEl')
 const s4TextReveal = useScrollReveal(s4TextEl)
+
+// scinde section resultats : second bloc mobile avec image equipe
+const s4bTextEl = useTemplateRef<HTMLElement>('s4bTextEl')
+const s4bTextReveal = useScrollReveal(s4bTextEl)
 
 const s5HeaderEl = useTemplateRef<HTMLElement>('s5HeaderEl')
 const s5HeaderReveal = useScrollReveal(s5HeaderEl)
@@ -33,40 +45,110 @@ const s6HeaderReveal = useScrollReveal(s6HeaderEl)
 
 const testimonialEl = useTemplateRef<HTMLElement>('testimonialEl')
 const testimonialReveal = useScrollReveal(testimonialEl)
+
+// affichage 1 techno : carrousel mobile, grille statique conservee sur bureau
+interface TechItem {
+  icon: string
+  title: string
+  description: string
+}
+
+const TECHS_1: TechItem[] = [
+  {
+    icon: '/images/partners/boulanger/techs/kotlin.png',
+    title: 'Kotlin Multiplatform',
+    description:
+      "Permet de mutualiser la logique métier entre iOS et Android tout en conservant des performances et des interfaces natives.",
+  },
+  {
+    icon: '/images/partners/boulanger/techs/swift.png',
+    title: 'Swift UI',
+    description:
+      "L'outil d'Apple pour concevoir des interfaces iOS modernes, déclaratives et parfaitement intégrées à l'écosystème.",
+  },
+  {
+    icon: '/images/partners/boulanger/techs/jetpack.png',
+    title: 'Jetpack compose',
+    description:
+      'Le framework moderne de Google pour créer des interfaces Android fluides et réactives avec moins de code.',
+  },
+]
+
+const TECHS_2: TechItem[] = [
+  {
+    icon: '/images/partners/boulanger/techs/spring.png',
+    title: 'Java SpringBoot',
+    description:
+      'La solution de référence pour bâtir des architectures backend puissantes, sécurisées et évolutives.',
+  },
+  {
+    icon: '/images/partners/boulanger/techs/jira.png',
+    title: 'Jira',
+    description:
+      "L'outil incontournable pour le pilotage de projet agile, garantissant un suivi transparent et une collaboration efficace de l'équipe.",
+  },
+  {
+    icon: '/images/partners/boulanger/techs/graphql.png',
+    title: 'GraphQL',
+    description:
+      "Langage de requête qui permet aux applications de demander les données dont elles ont besoin, améliorant ainsi l'efficacité et la rapidité des échanges.",
+  },
+]
+
+const activeTechIndex1 = ref(0)
+const activeTech1 = computed(() => TECHS_1[activeTechIndex1.value]!)
+function prevTech1() {
+  activeTechIndex1.value = (activeTechIndex1.value - 1 + TECHS_1.length) % TECHS_1.length
+}
+function nextTech1() {
+  activeTechIndex1.value = (activeTechIndex1.value + 1) % TECHS_1.length
+}
+
+const activeTechIndex2 = ref(0)
+const activeTech2 = computed(() => TECHS_2[activeTechIndex2.value]!)
+function prevTech2() {
+  activeTechIndex2.value = (activeTechIndex2.value - 1 + TECHS_2.length) % TECHS_2.length
+}
+function nextTech2() {
+  activeTechIndex2.value = (activeTechIndex2.value + 1) % TECHS_2.length
+}
 </script>
 
 <template>
+  <!-- fix overflow scroll : h-dvh au lieu de h-screen (100vh deborde sur mobile) -->
   <div
-    class="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-white"
+    class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-white"
   >
     <!-- 1. Section Hero -->
     <section
       data-theme="light"
-      class="relative min-h-screen w-full snap-start snap-always flex items-center bg-[#ff6200] overflow-hidden"
+      class="relative min-h-dvh w-full snap-start snap-always flex items-center bg-[#ff6200] overflow-hidden py-12 md:py-24"
     >
       <!-- Wrapper pleine largeur avec padding gauche minimal (calqué sur l'accueil) -->
       <div
         class="relative z-10 w-full pl-6 md:pl-12 lg:pl-20 pr-4 sm:pr-6 lg:pr-8 flex flex-col lg:flex-row items-center justify-between gap-12"
       >
         <!-- Colonne gauche : Texte forcé à gauche -->
+        <!-- fix navbar overlap -->
         <div
           ref="heroTextEl"
-          class="w-full lg:w-3/5 flex flex-col items-start text-left pt-20 lg:pt-0 shrink-0"
+          class="w-full lg:w-3/5 flex flex-col items-start text-left pt-24 lg:pt-0 shrink-0"
         >
           <h1
             class="font-display text-6xl lg:text-7xl font-medium text-white mb-6"
             :class="scrollRevealClass(heroTextReveal)"
           >
-            Boulanger
+            Boulanger<span class="sr-only"> - référence client de notre ESN à Wasquehal</span>
           </h1>
           <!-- Utilisation de whitespace-nowrap sur desktop pour interdire le retour à la ligne automatique -->
+          <!-- typo lancement -->
           <p
             class="text-xl lg:text-[22px] text-white font-light leading-relaxed lg:whitespace-nowrap"
             :class="scrollRevealClass(heroTextReveal, 'up', { delayClass: 'delay-150' })"
           >
             Refonte complète de l'application pour moderniser l'interface et accompagner le<br
               class="hidden lg:block"
-            />lancement des projets stratégiques.
+            /> lancement des projets stratégiques.
           </p>
         </div>
 
@@ -82,16 +164,17 @@ const testimonialReveal = useScrollReveal(testimonialEl)
     </section>
 
     <!-- 2. Section Contenu : Réussir la refonte -->
+    <!-- scinde section mobile -->
     <section
       data-theme="light"
-      class="relative min-h-screen w-full snap-start snap-always flex items-center bg-white overflow-visible"
+      class="relative min-h-dvh w-full snap-start snap-always flex items-center bg-white overflow-visible py-12 md:py-24"
     >
       <!-- Wrapper pleine largeur avec paddings latéraux proportionnels pour repousser au maximum vers les bords -->
       <div
         class="relative z-10 w-full px-6 md:px-16 lg:px-24 xl:px-32 flex flex-col lg:flex-row items-center justify-between gap-12 xl:gap-20"
       >
-        <!-- Colonne gauche : Prend ses 50% complets et aligne son contenu à gauche -->
-        <div class="w-full lg:w-1/2 flex flex-col items-start text-left shrink-0">
+        <!-- fix navbar overlap -->
+        <div class="w-full lg:w-1/2 flex flex-col items-start text-left pt-24 lg:pt-0 shrink-0">
           <!-- Conteneur interne pour limiter la largeur du texte SANS rétrécir la colonne Flex -->
           <div ref="s2TextEl" class="max-w-[560px]">
             <!-- Mini Logo brut -->
@@ -108,38 +191,29 @@ const testimonialReveal = useScrollReveal(testimonialEl)
               />
             </a>
 
+            <!-- titre tasse sur mobile -->
             <h2
-              class="font-display text-4xl lg:text-[44px] xl:text-[50px] font-medium text-[#d14600] mb-8 leading-[1.2]"
+              class="font-display text-3xl leading-tight md:text-5xl lg:text-[44px] xl:text-[50px] font-medium text-[#d14600] mb-8"
               :class="scrollRevealClass(s2TextReveal)"
             >
               Réussir la refonte de l'application mobile afin d'élever l'expérience client
             </h2>
 
             <p
-              class="text-[17px] lg:text-[19px] text-primary-950/80 mb-6 leading-relaxed"
+              class="text-[17px] lg:text-[19px] text-primary-950/80 leading-relaxed"
               :class="scrollRevealClass(s2TextReveal, 'up', { delayClass: 'delay-150' })"
             >
               Pour y parvenir, l'enseigne avait besoin de renforcer son équipe mobile, et plus
               particulièrement le pôle Android et IOS tout en structurant le projet avec
               l'intervention d'un Business Analyst.
             </p>
-            <p
-              class="text-[17px] lg:text-[19px] text-primary-950/80 leading-relaxed"
-              :class="scrollRevealClass(s2TextReveal, 'up', { delayClass: 'delay-300' })"
-            >
-              L'objectif était clair : améliorer la qualité globale de l'application, moderniser
-              l'interface, fluidifier les parcours utilisateurs et intégrer de nouvelles
-              fonctionnalités à forte valeur ajoutée, comme l'<strong>IA conversationnelle</strong>,
-              au cœur de l'expérience client.
-            </p>
           </div>
         </div>
 
-        <!-- Colonne droite : Prend ses 50% complets et s'aligne à fond à droite -->
+        <!-- desktop seulement : la colonne image originale reste collee au premier bloc -->
         <div
-          class="w-full lg:w-1/2 flex justify-end mt-24 lg:mt-0 relative h-[400px] lg:h-[500px] xl:h-[600px]"
+          class="hidden lg:flex w-full lg:w-1/2 justify-end mt-24 lg:mt-0 relative h-[400px] lg:h-[500px] xl:h-[600px]"
         >
-          <!-- Fond Orange collé à l'extrémité droite (right-0) -->
           <div
             class="absolute top-1/2 right-0 -translate-y-1/2 w-[320px] h-[260px] sm:w-[400px] sm:h-[300px] lg:w-[480px] lg:h-[380px] xl:w-[550px] xl:h-[440px] bg-[#ff6200] rounded-2xl shadow-lg"
           ></div>
@@ -154,18 +228,58 @@ const testimonialReveal = useScrollReveal(testimonialEl)
       </div>
     </section>
 
-    <!-- 3. Section Contenu : Valeur ajoutée -->
+    <!-- 2bis. Section mobile uniquement : texte et image -->
     <section
       data-theme="light"
-      class="relative min-h-screen w-full snap-start snap-always flex items-center bg-[#ff6200] overflow-visible"
+      class="lg:hidden relative min-h-dvh w-full snap-start snap-always flex items-center bg-white overflow-visible py-12"
+    >
+      <div
+        ref="s2bTextEl"
+        class="relative z-10 w-full px-6 pt-24 flex flex-col items-start text-left gap-8"
+      >
+        <div class="max-w-[560px]">
+          <p
+            class="text-[17px] text-primary-950/80 leading-relaxed"
+            :class="scrollRevealClass(s2bTextReveal)"
+          >
+            L'objectif était clair : améliorer la qualité globale de l'application, moderniser
+            l'interface, fluidifier les parcours utilisateurs et intégrer de nouvelles
+            fonctionnalités à forte valeur ajoutée, comme l'<strong>IA conversationnelle</strong>,
+            au cœur de l'expérience client.
+          </p>
+        </div>
+
+        <!-- texte et image -->
+        <div
+          class="w-full flex justify-end relative h-[300px]"
+          :class="scrollRevealClass(s2bTextReveal, 'up', { delayClass: 'delay-150' })"
+        >
+          <div
+            class="absolute top-1/2 right-0 -translate-y-1/2 w-[260px] h-[220px] bg-[#ff6200] rounded-2xl shadow-lg"
+          ></div>
+
+          <img
+            src="/images/partners/boulanger/tel.png"
+            alt="Application Boulanger"
+            class="absolute top-1/2 right-4 -translate-y-1/2 z-10 max-h-[40vh] w-[90%] max-w-[220px] object-contain drop-shadow-2xl animate-float motion-reduce:animate-none"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Section Contenu : Valeur ajoutée -->
+    <!-- scinde section orange : padding navbar orange -->
+    <section
+      data-theme="light"
+      class="relative min-h-dvh w-full snap-start snap-always flex items-center bg-[#ff6200] overflow-visible py-12 md:py-24"
     >
       <!-- Wrapper pleine largeur avec paddings latéraux -->
       <div
         class="relative z-10 w-full px-6 md:px-16 lg:px-24 xl:px-32 flex flex-col-reverse lg:flex-row items-center justify-between gap-12 xl:gap-20"
       >
-        <!-- Colonne gauche : Visuel parfaitement centré -->
+        <!-- image masquee sur mobile, repasse dans la section orange suivante -->
         <div
-          class="w-full lg:w-1/2 flex justify-center items-center relative h-[450px] sm:h-[550px] lg:h-[650px] mt-16 lg:mt-0 shrink-0"
+          class="hidden lg:flex w-full lg:w-1/2 justify-center items-center relative h-[450px] sm:h-[550px] lg:h-[650px] mt-16 lg:mt-0 shrink-0"
         >
           <!-- Fond blanc (Plus large, moins haut pour un effet paysage/carré) -->
           <div
@@ -183,7 +297,7 @@ const testimonialReveal = useScrollReveal(testimonialEl)
         <!-- Colonne droite : Texte contraint en largeur et sans icône -->
         <div
           ref="s3TextEl"
-          class="w-full lg:w-1/2 max-w-[680px] flex flex-col items-start text-left text-white shrink-0 lg:-translate-x-24"
+          class="w-full lg:w-1/2 max-w-[680px] flex flex-col items-start text-left text-white shrink-0 pt-24 lg:pt-0 lg:-translate-x-24"
         >
           <h2
             class="font-display text-4xl lg:text-[44px] xl:text-[50px] font-medium mb-8 leading-[1.2]"
@@ -213,12 +327,12 @@ const testimonialReveal = useScrollReveal(testimonialEl)
               Kotlin Multiplatform pour une structure technique robuste, évolutive et une
               maintenance optimisée de vos apps mobiles.
             </li>
-            <li class="leading-relaxed">
+            <li class="hidden lg:list-item leading-relaxed">
               <strong>Performance Native (Jetpack &amp; SwiftUI) :</strong> Développement intégral
               du front-end mobile natif pour garantir une navigation fluide, une interface moderne
               et une expérience utilisateur (UX) haut de gamme.
             </li>
-            <li class="leading-relaxed">
+            <li class="hidden lg:list-item leading-relaxed">
               <strong>Innovation IA &amp; Agilité :</strong> Intégration d'une IA conversationnelle
               personnalisée pour booster l'engagement, avec un pilotage de projet transparent et
               réactif via Jira.
@@ -228,17 +342,57 @@ const testimonialReveal = useScrollReveal(testimonialEl)
       </div>
     </section>
 
+    <!-- 3bis. Section mobile uniquement : suite valeur ajoutee, meme fond orange -->
+    <section
+      data-theme="light"
+      class="lg:hidden relative min-h-dvh w-full snap-start snap-always flex items-center bg-[#ff6200] overflow-visible pt-24 pb-12"
+    >
+      <div ref="s3bTextEl" class="relative z-10 w-full px-6 flex flex-col items-start text-left text-white gap-8">
+        <ul
+          class="space-y-6 text-[17px] text-white/90 list-disc list-inside marker:text-white"
+          :class="scrollRevealClass(s3bTextReveal)"
+        >
+          <li class="leading-relaxed">
+            <strong>Performance Native (Jetpack &amp; SwiftUI) :</strong> Développement intégral du
+            front-end mobile natif pour garantir une navigation fluide, une interface moderne et
+            une expérience utilisateur (UX) haut de gamme.
+          </li>
+          <li class="leading-relaxed">
+            <strong>Innovation IA &amp; Agilité :</strong> Intégration d'une IA conversationnelle
+            personnalisée pour booster l'engagement, avec un pilotage de projet transparent et
+            réactif via Jira.
+          </li>
+        </ul>
+
+        <!-- image bridee pour ne pas deborder -->
+        <div
+          class="w-full flex justify-center items-center relative h-[300px]"
+          :class="scrollRevealClass(s3bTextReveal, 'up', { delayClass: 'delay-150' })"
+        >
+          <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[260px] h-[220px] bg-white rounded-2xl shadow-xl"
+          ></div>
+
+          <img
+            src="/images/partners/boulanger/tel-front.png"
+            alt="Application Boulanger Assistant IA"
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 max-h-[40vh] w-full max-w-[220px] object-contain drop-shadow-2xl animate-float motion-reduce:animate-none"
+          />
+        </div>
+      </div>
+    </section>
+
     <!-- 4. Section Contenu : Résultats -->
     <section
       data-theme="light"
-      class="relative min-h-screen w-full snap-start snap-always flex items-center bg-white overflow-visible"
+      class="relative min-h-dvh w-full snap-start snap-always flex items-center bg-white overflow-visible py-12 md:py-24"
     >
       <!-- Wrapper panoramique (strictement identique à la Section 2) -->
       <div
         class="relative z-10 w-full px-6 md:px-16 lg:px-24 xl:px-32 flex flex-col lg:flex-row items-center justify-between gap-12 xl:gap-20"
       >
-        <!-- Colonne gauche : Texte contraint -->
-        <div class="w-full lg:w-1/2 flex flex-col items-start text-left shrink-0">
+        <!-- fix navbar overlap -->
+        <div class="w-full lg:w-1/2 flex flex-col items-start text-left pt-24 lg:pt-0 shrink-0">
           <div ref="s4TextEl" class="max-w-[560px]">
             <!-- Icône circulaire (Graphique) -->
             <div
@@ -288,14 +442,14 @@ const testimonialReveal = useScrollReveal(testimonialEl)
                   <strong>TOP 7 de l'App Store</strong>.
                 </span>
               </li>
-              <li class="leading-relaxed flex items-start">
+              <li class="hidden lg:flex leading-relaxed items-start">
                 <span class="mr-3 mt-2 block w-1.5 h-1.5 bg-primary-950 shrink-0"></span>
                 <span
                   >Un parcours plus fluide et intuitif, largement plébiscité par les retours
                   clients.</span
                 >
               </li>
-              <li class="leading-relaxed flex items-start">
+              <li class="hidden lg:flex leading-relaxed items-start">
                 <span class="mr-3 mt-2 block w-1.5 h-1.5 bg-primary-950 shrink-0"></span>
                 <span
                   >Une stabilité et des performances solides, même durant les pics d'activité
@@ -306,8 +460,8 @@ const testimonialReveal = useScrollReveal(testimonialEl)
           </div>
         </div>
 
-        <!-- Colonne droite : Forcée à droite pour coller au bord -->
-        <div class="w-full lg:w-1/2 flex justify-end mt-16 lg:mt-0">
+        <!-- image equipe masquee sur mobile, repasse dans la section suivante -->
+        <div class="hidden lg:flex w-full lg:w-1/2 justify-end mt-16 lg:mt-0">
           <!-- Conteneur de la composition décalée -->
           <div
             class="relative w-[300px] h-[300px] sm:w-[450px] sm:h-[400px] lg:w-[500px] lg:h-[450px] xl:w-[560px] xl:h-[500px]"
@@ -326,10 +480,59 @@ const testimonialReveal = useScrollReveal(testimonialEl)
       </div>
     </section>
 
+    <!-- 4bis. Section mobile uniquement : suite resultats, meme fond blanc -->
+    <section
+      data-theme="light"
+      class="lg:hidden relative min-h-dvh w-full snap-start snap-always flex items-center bg-white overflow-visible pt-24 pb-12"
+    >
+      <div
+        ref="s4bTextEl"
+        class="relative z-10 w-full px-6 flex flex-col items-start text-left gap-8"
+      >
+        <ul
+          class="space-y-4 text-[17px] text-primary-950/80 list-square list-inside marker:text-primary-950"
+          :class="scrollRevealClass(s4bTextReveal)"
+        >
+          <li class="leading-relaxed flex items-start">
+            <span class="mr-3 mt-2 block w-1.5 h-1.5 bg-primary-950 shrink-0"></span>
+            <span
+              >Un parcours plus fluide et intuitif, largement plébiscité par les retours
+              clients.</span
+            >
+          </li>
+          <li class="leading-relaxed flex items-start">
+            <span class="mr-3 mt-2 block w-1.5 h-1.5 bg-primary-950 shrink-0"></span>
+            <span
+              >Une stabilité et des performances solides, même durant les pics d'activité
+              majeurs.</span
+            >
+          </li>
+        </ul>
+
+        <!-- image equipe bridee pour ne pas deborder -->
+        <div
+          class="w-full flex justify-center relative h-[280px]"
+          :class="scrollRevealClass(s4bTextReveal, 'up', { delayClass: 'delay-150' })"
+        >
+          <div
+            class="relative h-full w-full max-w-[280px]"
+          >
+            <div class="absolute top-0 right-0 w-[80%] h-[80%] bg-[#ff6200] shadow-lg"></div>
+
+            <img
+              src="/images/partners/boulanger/people-b.jpg"
+              alt="Équipe travaillant sur le projet Boulanger"
+              class="absolute bottom-0 left-0 z-10 w-[85%] max-h-[40vh] object-cover shadow-2xl"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 5. Section Contenu : Technologies (Partie 1) -->
     <section
       data-theme="light"
-      class="relative min-h-screen w-full flex flex-col justify-center py-24 lg:py-32 bg-[#faf9f6] snap-start snap-always"
+      class="relative min-h-dvh w-full flex flex-col justify-center py-24 lg:py-32 bg-[#faf9f6] snap-start snap-always"
     >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <!-- En-tête de section -->
@@ -345,8 +548,65 @@ const testimonialReveal = useScrollReveal(testimonialEl)
           <div class="w-48 h-1 bg-green-500"></div>
         </div>
 
-        <!-- Grille des technologies (Ligne 1) -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-16">
+        <!-- affichage 1 techno : carrousel mobile, circulaire -->
+        <div class="md:hidden flex flex-col items-center">
+          <Transition mode="out-in" name="fade">
+            <div
+              :key="activeTech1.title"
+              class="flex min-h-[250px] w-full flex-col items-center text-center"
+            >
+              <img
+                :src="activeTech1.icon"
+                :alt="activeTech1.title"
+                class="h-32 object-contain mb-8 drop-shadow-sm"
+              />
+              <h3 class="text-xl font-bold text-[#0b0c10] mb-2">{{ activeTech1.title }}</h3>
+              <div class="w-12 h-[3px] bg-green-500 mb-4"></div>
+              <p class="text-[16px] text-primary-950/80 leading-relaxed">
+                {{ activeTech1.description }}
+              </p>
+            </div>
+          </Transition>
+
+          <!-- fleches navigation techno -->
+          <div class="mt-8 flex items-center gap-6">
+            <button
+              type="button"
+              aria-label="Techno précédente"
+              class="inline-flex size-11 items-center justify-center rounded-full bg-primary-950/5 text-primary-950 transition-colors duration-200 hover:bg-primary-950/10 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-950"
+              @click="prevTech1"
+            >
+              <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path
+                  d="m12 15-5-5 5-5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              aria-label="Techno suivante"
+              class="inline-flex size-11 items-center justify-center rounded-full bg-primary-950/5 text-primary-950 transition-colors duration-200 hover:bg-primary-950/10 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-950"
+              @click="nextTech1"
+            >
+              <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path
+                  d="m8 5 5 5-5 5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Grille des technologies (Ligne 1) : statique a partir de md -->
+        <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-16">
           <!-- Item 1 : Kotlin -->
           <div class="flex flex-col items-center text-center">
             <img
@@ -398,7 +658,7 @@ const testimonialReveal = useScrollReveal(testimonialEl)
     <!-- 6. Section Contenu : Technologies (Partie 2) -->
     <section
       data-theme="light"
-      class="relative min-h-screen w-full flex flex-col justify-center py-24 lg:py-32 bg-[#faf9f6] snap-start snap-always"
+      class="relative min-h-dvh w-full flex flex-col justify-center py-24 lg:py-32 bg-[#faf9f6] snap-start snap-always"
     >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <!-- En-tête de section (répété) -->
@@ -413,8 +673,65 @@ const testimonialReveal = useScrollReveal(testimonialEl)
           <div class="w-48 h-1 bg-green-500"></div>
         </div>
 
-        <!-- Grille des technologies (Ligne 2) -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-16">
+        <!-- affichage 1 techno : carrousel mobile, circulaire -->
+        <div class="md:hidden flex flex-col items-center">
+          <Transition mode="out-in" name="fade">
+            <div
+              :key="activeTech2.title"
+              class="flex min-h-[250px] w-full flex-col items-center text-center"
+            >
+              <img
+                :src="activeTech2.icon"
+                :alt="activeTech2.title"
+                class="h-32 object-contain mb-8 drop-shadow-sm"
+              />
+              <h3 class="text-xl font-bold text-[#0b0c10] mb-2">{{ activeTech2.title }}</h3>
+              <div class="w-12 h-[3px] bg-green-500 mb-4"></div>
+              <p class="text-[16px] text-primary-950/80 leading-relaxed">
+                {{ activeTech2.description }}
+              </p>
+            </div>
+          </Transition>
+
+          <!-- fleches navigation techno -->
+          <div class="mt-8 flex items-center gap-6">
+            <button
+              type="button"
+              aria-label="Techno précédente"
+              class="inline-flex size-11 items-center justify-center rounded-full bg-primary-950/5 text-primary-950 transition-colors duration-200 hover:bg-primary-950/10 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-950"
+              @click="prevTech2"
+            >
+              <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path
+                  d="m12 15-5-5 5-5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              aria-label="Techno suivante"
+              class="inline-flex size-11 items-center justify-center rounded-full bg-primary-950/5 text-primary-950 transition-colors duration-200 hover:bg-primary-950/10 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-950"
+              @click="nextTech2"
+            >
+              <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path
+                  d="m8 5 5 5-5 5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Grille des technologies (Ligne 2) : statique a partir de md -->
+        <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-16">
           <!-- Item 4 : SpringBoot -->
           <div class="flex flex-col items-center text-center">
             <img
@@ -464,9 +781,10 @@ const testimonialReveal = useScrollReveal(testimonialEl)
     </section>
 
     <!-- 6. Section Témoignage -->
+    <!-- fix navbar overlap -->
     <section
       data-theme="light"
-      class="relative min-h-screen w-full snap-start snap-always flex flex-col items-center justify-center bg-[#ff6200] px-4 sm:px-6 lg:px-8 overflow-hidden"
+      class="relative min-h-dvh w-full snap-start snap-always flex flex-col items-center justify-center bg-[#ff6200] px-4 sm:px-6 lg:px-8 overflow-hidden py-12 md:py-24"
     >
       <h2
         class="font-display text-3xl md:text-4xl font-bold text-white text-center mb-8 md:mb-12"
@@ -505,18 +823,26 @@ const testimonialReveal = useScrollReveal(testimonialEl)
       </div>
     </section>
 
-    <!-- 7. Footer, conteneur final verrouille en hauteur ecran -->
-    <!-- bloc bleu en flex-1 pousse deja le footer en bas -->
-    <section
-      data-theme="dark"
-      class="relative h-dvh w-full shrink-0 snap-start snap-always flex flex-col bg-white"
-    >
-      <TheFooter />
-    </section>
+    <!-- aligne footer home : repris ici (App.vue masque son footer global
+         pour cette route pour eviter le doublon) -->
+    <TheFooter full-page-scroll />
   </div>
 </template>
 
 <style scoped>
+/* anim transition fade : carrousel techno mobile */
+@media (prefers-reduced-motion: no-preference) {
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.3s ease;
+  }
+
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
+  }
+}
+
 @keyframes float {
   0% {
     transform: translateY(0px);

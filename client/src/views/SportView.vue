@@ -12,7 +12,7 @@ import photoFit03 from '@/assets/images/photos/f-it-03.jpg'
 useSeo({
   title: 'Sport & sponsoring',
   description:
-    'Padel, vélo, course, tennis : chez Faceel-IT, le sport façonne le collectif, le recrutement et nos partenariats avec la région.',
+    'Padel, vélo, course, tennis : chez Faceel-IT, ESN à Wasquehal, le sport façonne le collectif, le recrutement et nos partenariats dans la métropole lilloise et les Hauts-de-France.',
 })
 
 // anim texte : une ref + un etat par section, meme mecanique que HistoireView.vue
@@ -27,6 +27,21 @@ const partnersReveal = useScrollReveal(partnersEl)
 
 // cascade sur les 3 cartes partenariats
 const CARD_DELAYS = ['delay-0', 'delay-150', 'delay-300']
+
+// fleches carrousel partenaires
+const partnersCarouselEl = useTemplateRef<HTMLElement>('partnersCarouselEl')
+
+function scrollPartnersPrev() {
+  const el = partnersCarouselEl.value
+  if (!el) return
+  el.scrollBy({ left: -el.clientWidth, behavior: 'smooth' })
+}
+
+function scrollPartnersNext() {
+  const el = partnersCarouselEl.value
+  if (!el) return
+  el.scrollBy({ left: el.clientWidth, behavior: 'smooth' })
+}
 </script>
 
 <template>
@@ -37,22 +52,24 @@ const CARD_DELAYS = ['delay-0', 'delay-150', 'delay-300']
     <!-- ==================================================================
          1. HERO 50/50, texte à gauche / photo cyclistes à droite.
          ================================================================== -->
+    <!-- fix responsive sport -->
     <section
       data-theme="dark"
-      class="w-full shrink-0 snap-start snap-always h-dvh flex flex-col lg:grid lg:grid-cols-2 bg-primary-950"
+      class="w-full shrink-0 snap-start snap-always h-dvh overflow-hidden flex flex-col lg:grid lg:grid-cols-2 bg-primary-950"
     >
       <div
         ref="heroEl"
-        class="flex flex-col justify-center px-6 lg:px-16 xl:px-24 h-[50vh] lg:h-full transition-all duration-700 ease-out motion-reduce:transition-none"
+        class="flex flex-col justify-center px-6 pt-24 lg:px-16 lg:pt-0 xl:px-24 h-[50vh] lg:h-full transition-all duration-700 ease-out motion-reduce:transition-none"
         :class="scrollRevealClass(heroReveal)"
       >
-        <p class="text-white/60 mb-6 font-medium">
+        <!-- fix contraste ariane -->
+        <p class="text-white/80 mb-3 font-medium sm:mb-6">
           Accueil / <span class="text-accent-500">Sport &amp; sponsoring</span>
         </p>
-        <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight">
+        <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight">
           Le sport, notre terrain d'entraînement.
         </h1>
-        <p class="mt-6 text-lg text-white/80 max-w-lg">
+        <p class="mt-3 text-base sm:mt-6 sm:text-lg text-white/80 max-w-lg">
           Padel, vélo, course, tennis. Chez nous le sport n'est pas un avantage sur une plaquette :
           c'est la façon dont l'équipe se connaît, dont nous recrutons, et dont nous soutenons notre
           région.
@@ -74,11 +91,12 @@ const CARD_DELAYS = ['delay-0', 'delay-150', 'delay-300']
     <!-- ==================================================================
          2. LA VIE D'ÉQUIPE fond bleu foncé, texte + grille d'images.
          ================================================================== -->
+    <!-- fix responsive sport -->
     <section
       data-theme="light"
-      class="w-full shrink-0 snap-start snap-always h-dvh flex items-center bg-white text-primary-950 px-6 lg:px-12"
+      class="w-full shrink-0 snap-start snap-always h-dvh overflow-hidden flex items-center bg-white text-primary-950 px-6 pt-24 lg:px-12 lg:pt-0"
     >
-      <div ref="teamEl" class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div ref="teamEl" class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center">
         <div
           class="transition-all duration-700 ease-out motion-reduce:transition-none"
           :class="scrollRevealClass(teamReveal, 'left')"
@@ -86,18 +104,20 @@ const CARD_DELAYS = ['delay-0', 'delay-150', 'delay-300']
           <!-- accent-700, pas accent-500 : sur fond blanc, accent-500 ne tient
                que 1,9:1 (décor uniquement) contre 4,9:1 pour accent-700
                (cf. main.css, tokens de couleur). -->
-          <p class="text-accent-700 text-sm font-bold tracking-widest uppercase mb-4">
+          <p class="text-accent-700 text-sm font-bold tracking-widest uppercase mb-2 sm:mb-4">
             La vie d'équipe
           </p>
-          <h2 class="text-4xl md:text-5xl font-extrabold mb-6 text-primary-900">
+          <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3 sm:mb-6 text-primary-900">
             Un rendez-vous par mois, un séminaire par an.
           </h2>
-          <p class="text-gray-600 mb-8">
+          <p class="text-gray-600 mb-4 sm:mb-8">
             L'activité change, padel, escalade, tennis, le principe reste : sortir du cadre du
             bureau pour que les équipes se connaissent vraiment. Deux séances hebdomadaires sont
             aussi ouvertes à distance, pour ne pas exclure celles et ceux en mission ailleurs.
           </p>
-          <div class="flex flex-wrap gap-3">
+          <!-- force badges en ligne -->
+          <div class="w-full flex flex-wrap items-center gap-2">
+            <!-- w-fit badges -->
             <span
               v-for="badge in [
                 'Afterwork mensuel',
@@ -106,15 +126,16 @@ const CARD_DELAYS = ['delay-0', 'delay-150', 'delay-300']
                 'Sorties vélo',
               ]"
               :key="badge"
-              class="border border-gray-200 rounded-full px-4 py-2 text-sm text-primary-900"
+              class="w-fit shrink-0 inline-flex items-center border border-gray-200 rounded-full px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm text-primary-900"
             >
               {{ badge }}
             </span>
           </div>
         </div>
 
+        <!-- bride image mobile -->
         <div
-          class="grid grid-cols-2 grid-rows-2 gap-4 h-[500px] transition-all duration-700 ease-out motion-reduce:transition-none"
+          class="grid grid-cols-2 grid-rows-2 gap-4 h-[200px] lg:h-[500px] transition-all duration-700 ease-out motion-reduce:transition-none"
           :class="scrollRevealClass(teamReveal, 'right')"
         >
           <div class="col-span-2 overflow-hidden rounded-2xl">
@@ -151,22 +172,23 @@ const CARD_DELAYS = ['delay-0', 'delay-150', 'delay-300']
     <!-- ==================================================================
          3. SPORT & RECRUTEMENT fond bleu foncé, texte + image.
          ================================================================== -->
+    <!-- fix responsive sport -->
     <section
       data-theme="dark"
-      class="w-full shrink-0 snap-start snap-always h-dvh flex items-center bg-primary-950 text-white px-6 lg:px-12"
+      class="w-full shrink-0 snap-start snap-always h-dvh overflow-hidden flex items-center bg-primary-950 text-white px-6 pt-24 lg:px-12 lg:pt-0"
     >
-      <div ref="recruitEl" class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div ref="recruitEl" class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center">
         <div
           class="transition-all duration-700 ease-out motion-reduce:transition-none"
           :class="scrollRevealClass(recruitReveal, 'left')"
         >
-          <p class="text-accent-500 text-sm font-bold uppercase tracking-widest mb-4">
+          <p class="text-accent-500 text-sm font-bold uppercase tracking-widest mb-2 sm:mb-4">
             Sport &amp; recrutement
           </p>
-          <h2 class="text-4xl md:text-5xl font-extrabold mb-6">
+          <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3 sm:mb-6">
             Ce qu'un terrain montre en dix minutes.
           </h2>
-          <p class="text-white/70 mb-8">
+          <p class="text-white/70 mb-4 sm:mb-8">
             Une partie de padel s'invite souvent dans nos recrutements. Le score n'a aucune
             importance : la façon de se parler, de gérer un mauvais point et de jouer avec
             quelqu'un, si.
@@ -179,8 +201,9 @@ const CARD_DELAYS = ['delay-0', 'delay-150', 'delay-300']
           </RouterLink>
         </div>
 
+        <!-- bride image mobile -->
         <div
-          class="h-[500px] overflow-hidden rounded-2xl transition-all duration-700 ease-out motion-reduce:transition-none"
+          class="h-[200px] lg:h-[500px] overflow-hidden rounded-2xl transition-all duration-700 ease-out motion-reduce:transition-none"
           :class="scrollRevealClass(recruitReveal, 'right')"
         >
           <img
@@ -197,33 +220,37 @@ const CARD_DELAYS = ['delay-0', 'delay-150', 'delay-300']
     <!-- ==================================================================
          4. NOS PARTENARIATS fond beige clair, 3 cartes.
          ================================================================== -->
+    <!-- fix responsive sport -->
     <section
       data-theme="light"
-      class="w-full shrink-0 snap-start snap-always min-h-dvh flex flex-col justify-center bg-gray-50 text-primary-950 px-6 lg:px-12 py-12"
+      class="w-full shrink-0 snap-start snap-always min-h-dvh flex flex-col justify-center bg-gray-50 text-primary-950 px-6 pt-24 pb-12 lg:px-12 lg:pt-12"
     >
       <div
         ref="partnersEl"
         class="transition-all duration-700 ease-out motion-reduce:transition-none"
         :class="scrollRevealClass(partnersReveal)"
       >
-        <p class="text-accent-600 text-sm font-bold uppercase tracking-widest mb-4">
+        <p class="text-accent-600 text-sm font-bold uppercase tracking-widest mb-2 sm:mb-4">
           Nos partenariats
         </p>
-        <h2 class="text-4xl md:text-5xl font-extrabold mb-6">
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3 sm:mb-6">
           Ce que nous soutenons autour de nous.
         </h2>
-        <p class="text-primary-950/70 mb-12 text-lg max-w-3xl">
+        <p class="text-primary-950/70 mb-6 text-lg max-w-3xl sm:mb-12">
           Nous préférons financer ce qui se passe près de nous plutôt que de la publicité : des
           clubs locaux, un joueur professionnel, et les rendez-vous qui font vivre la communauté
           tech des Hauts-de-France.
         </p>
       </div>
 
+      <!-- carrousel partenariats -->
       <div
-        class="grid grid-cols-1 md:grid-cols-3 rounded-2xl border border-gray-200 overflow-hidden"
+        ref="partnersCarouselEl"
+        class="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 shadow-none hide-scrollbar md:grid md:grid-cols-3 md:gap-0 md:overflow-hidden md:pb-0 md:rounded-2xl md:border md:border-gray-200 md:shadow-xl"
       >
+        <!-- supprime ombre carree -->
         <article
-          class="bg-white p-8 md:border-r border-gray-200 transition-all duration-700 ease-out motion-reduce:transition-none"
+          class="w-[85vw] shrink-0 snap-center rounded-2xl border border-gray-200 bg-white p-6 transition-all duration-700 ease-out motion-reduce:transition-none md:w-auto md:rounded-none md:border-0 md:border-r md:p-8"
           :class="[scrollRevealClass(partnersReveal), CARD_DELAYS[0]]"
         >
           <p class="text-accent-600 text-sm font-bold uppercase tracking-widest mb-3">
@@ -236,7 +263,7 @@ const CARD_DELAYS = ['delay-0', 'delay-150', 'delay-300']
         </article>
 
         <article
-          class="bg-white p-8 transition-all duration-700 ease-out motion-reduce:transition-none"
+          class="w-[85vw] shrink-0 snap-center rounded-2xl border border-gray-200 bg-white p-6 transition-all duration-700 ease-out motion-reduce:transition-none md:w-auto md:rounded-none md:border-0 md:p-8"
           :class="[scrollRevealClass(partnersReveal), CARD_DELAYS[1]]"
         >
           <p class="text-accent-600 text-sm font-bold uppercase tracking-widest mb-3">
@@ -249,7 +276,7 @@ const CARD_DELAYS = ['delay-0', 'delay-150', 'delay-300']
         </article>
 
         <article
-          class="bg-primary-950 text-white p-8 transition-all duration-700 ease-out motion-reduce:transition-none"
+          class="w-[85vw] shrink-0 snap-center rounded-2xl border border-gray-200 bg-primary-950 p-6 text-white transition-all duration-700 ease-out motion-reduce:transition-none md:w-auto md:rounded-none md:border-0 md:p-8"
           :class="[scrollRevealClass(partnersReveal), CARD_DELAYS[2]]"
         >
           <p class="text-accent-500 text-sm font-bold uppercase tracking-widest mb-3">
@@ -263,22 +290,46 @@ const CARD_DELAYS = ['delay-0', 'delay-150', 'delay-300']
         </article>
       </div>
 
-      <p class="mt-8 text-primary-950/70 max-w-3xl">
-        Nous invitons régulièrement des sportifs de haut niveau à échanger avec les équipes. Ce
-        qu'ils racontent de la préparation, de l'échec et du collectif parle directement de nos
-        métiers.
-      </p>
+      <!-- fleches carrousel partenaires -->
+      <div class="mt-6 flex justify-center gap-4 md:hidden">
+        <button
+          type="button"
+          aria-label="Partenaire précédent"
+          class="inline-flex size-11 items-center justify-center rounded-full border border-gray-200 text-primary-900 transition-colors duration-200 hover:bg-primary-900/5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-700"
+          @click="scrollPartnersPrev"
+        >
+          <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path
+              d="m12 15-5-5 5-5"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          aria-label="Partenaire suivant"
+          class="inline-flex size-11 items-center justify-center rounded-full border border-gray-200 text-primary-900 transition-colors duration-200 hover:bg-primary-900/5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent-700"
+          @click="scrollPartnersNext"
+        >
+          <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path
+              d="m8 5 5 5-5 5"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
     </section>
 
-    <!-- ==================================================================
-         5. FOOTER — pousse footer en bas meme si son contenu est plus court
-         qu'un ecran (meme recette que HistoireView.vue/LoginView.vue).
-         ================================================================== -->
-    <section
-      data-theme="dark"
-      class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
-    >
-      <TheFooter />
-    </section>
+    <!-- aligne footer home : repris ici (App.vue masque son footer global
+         pour cette route pour eviter le doublon) -->
+    <TheFooter full-page-scroll />
   </div>
 </template>

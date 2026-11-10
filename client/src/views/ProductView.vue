@@ -3,13 +3,16 @@ import TheFooter from '@/components/layout/TheFooter.vue'
 import { useSeo } from '@/composables/useSeo'
 
 /**
- * Page modèle (template) pour une Business Unit — squelette minimal en
+ * Squelette minimal d'une Business Unit en
  * attendant le contenu réel, sur le même gabarit que DataIaView.vue/
  * DigitalView.vue (Full Page Snap Scroll, cf. CLAUDE.md).
  */
 useSeo({
-  title: 'Product — En construction',
-  description: 'Page modèle pour la Business Unit Product.',
+  // seo local, texte d'attente
+  title: 'BU Product - Faceel-IT Wasquehal',
+  description:
+    "Découvrez prochainement l'expertise Product de Faceel-IT, ESN basée à Wasquehal, " +
+    'au service des entreprises de la métropole lilloise.',
 })
 </script>
 
@@ -21,7 +24,7 @@ useSeo({
       class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden flex items-center justify-center bg-[#000066] px-4 text-center"
     >
       <h1 class="font-display text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
-        BU Product - En construction
+        BU Product - Faceel-IT Wasquehal
       </h1>
     </section>
 

@@ -8,8 +8,10 @@ import { useSeo } from '@/composables/useSeo'
 useSeo({
   title: 'Consulter nos offres',
   description:
-    "Explorez les offres d'emploi Faceel-IT : CDI, CDD et stages dans les métiers du numérique. " +
-    'Consultants SAP, Data Engineers, Architectes, Développeurs — trouvez votre mission.',
+    // seo local
+    "Offres d'emploi IT de Faceel-IT, ESN à Wasquehal : CDI, CDD et stages dans les métiers du " +
+    'numérique en métropole lilloise et Hauts-de-France. Consultants SAP, Data Engineers, ' +
+    'Architectes, Développeurs - trouvez votre mission.',
 })
 
 const router = useRouter()
@@ -27,7 +29,7 @@ function goToSelectedOfferDetail() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Données mock — à remplacer par un appel API une fois le back disponible.   */
+/* Données mock  à remplacer par un appel API une fois le back disponible.   */
 /* -------------------------------------------------------------------------- */
 
 interface JobOffer {
@@ -40,7 +42,7 @@ interface JobOffer {
   metier: string
   description: string
   date: string
-  /** Technologies citées par l'offre — vide pour les postes sans stack
+  /** Technologies citées par l'offre  vide pour les postes sans stack
    *  technique propre (conseil, architecture SI, Scrum Master…). */
   stack: string[]
 }
@@ -191,7 +193,7 @@ const OFFERS: JobOffer[] = [
   },
   {
     id: 12,
-    title: 'Alternance – Développeur Fullstack',
+    title: 'Alternance - Développeur Fullstack',
     location: 'Lille',
     category: 'Digital',
     contract: 'Alternance',
@@ -258,7 +260,7 @@ const METIERS = [
   'Data Engineer',
   'Data Analyst',
 ]
-/** Liste stricte des BUs officielles — fixée indépendamment des valeurs
+/** Liste stricte des BUs officielles  fixée indépendamment des valeurs
  *  libres de `category` sur les offres mock. BU Cloud retirée. */
 const CATEGORIES = ['Data & IA', 'Product', 'Digital']
 
@@ -272,7 +274,7 @@ const selectedMetiers = ref<string[]>([])
 // recupere le filtre bu de l'url
 const activeBuFilter = typeof route.query.bu === 'string' ? route.query.bu : ''
 const selectedCategories = ref<string[]>(activeBuFilter ? [activeBuFilter] : [])
-/** Filtre par stack technique — sélection unique, '' = « Toutes ». */
+/** Filtre par stack technique  sélection unique, '' = « Toutes ». */
 const selectedStack = ref('')
 
 const isLevelsOpen = ref(false)
@@ -290,7 +292,7 @@ const suggestions = computed(() => {
     pool.add(o.category)
     pool.add(o.metier)
     o.location.split(/,\s*/).forEach((loc) => pool.add(loc.trim()))
-    o.title.split(/[\s–\-/()+]+/).forEach((w) => {
+    o.title.split(/[\s-\-/()+]+/).forEach((w) => {
       if (w.length > 3) pool.add(w)
     })
   })
@@ -359,23 +361,28 @@ watch(
   },
   { deep: true },
 )
+
+// scroll top : remonte en haut a chaque changement de page
+watch(currentPage, () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+})
 </script>
 
 <template>
   <!-- Pas de <main> ici : App.vue le fournit déjà. -->
 
   <!-- Scroll libre (page dédiée, hors du régime snap-scroll des autres
-       vues principales, cf. CLAUDE.md) — exception demandée pour cette page. -->
+       vues principales, cf. CLAUDE.md) exception demandée pour cette page. -->
   <div class="flex flex-col min-h-screen w-full overflow-x-hidden">
     <!-- ==================================================================
-       1. HERO — sombre
+       1. HERO  sombre
        ================================================================== -->
     <section
       id="hero"
       data-theme="dark"
       class="relative w-full h-auto min-h-[40vh] flex flex-col justify-center overflow-hidden px-4 pt-32 pb-16 sm:px-6 lg:px-8 xl:px-12 bg-[#000066] text-white"
     >
-      <!-- Fond vivant — remplace la vague animée d'origine (hors format pour
+      <!-- Fond vivant  remplace la vague animée d'origine (hors format pour
          un Hero réduit h-auto) : lignes filaires ondulantes + halos
          respirants, statiques sous prefers-reduced-motion. -->
       <div
@@ -419,7 +426,7 @@ watch(
         :class="scrollRevealClass(heroReveal)"
       >
         <h1 class="font-display text-display text-balance text-white">
-          Intégrer un collectif où ton
+          Intégrer un collectif tech à Wasquehal où ton
           <span class="relative inline-block">
             talent
             <svg
@@ -449,7 +456,7 @@ watch(
     </section>
 
     <!-- ==================================================================
-       2. JOB BOARD — clair
+       2. JOB BOARD  clair
        ================================================================== -->
     <section id="job-board" data-theme="light" class="w-full flex flex-col bg-light">
       <div class="px-4 pt-28 pb-8 sm:px-6 lg:px-8 xl:px-12">
@@ -500,16 +507,251 @@ watch(
             </ul>
           </div>
 
-          <!-- ② Grille : offres + filtres -->
-          <div class="grid gap-8 lg:grid-cols-[1fr_272px]">
-            <!-- Colonne gauche : liste + pagination. `min-h-[60vh]` : un filtre
+          <!-- ② filtres en haut, liste en dessous -->
+          <div class="flex flex-col gap-6">
+            <!-- filtres en haut : bloc pleine largeur au-dessus de la liste -->
+            <aside
+              aria-label="Filtres"
+              class="w-full rounded-2xl bg-white p-5 ring-1 ring-gray-200 sm:p-6"
+            >
+              <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <h2 class="font-display text-lg font-bold text-primary-900">Filtres</h2>
+                <RouterLink
+                  :to="{ name: 'candidature-spontanee' }"
+                  class="flex w-full items-center justify-center gap-2 rounded-xl bg-accent-500 px-5 py-3 text-sm font-bold text-primary-950 transition-colors hover:bg-accent-400 sm:w-auto"
+                >
+                  Candidature spontanée
+                </RouterLink>
+              </div>
+
+              <!-- grille plutot qu'empilement : limite la hauteur sur desktop -->
+              <div
+                class="mt-5 grid grid-cols-1 gap-5 border-t border-gray-200 pt-5 sm:grid-cols-2 lg:grid-cols-4"
+              >
+                <!-- Métiers -->
+                <div>
+                  <button
+                    type="button"
+                    class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
+                    :aria-expanded="isMetiersOpen"
+                    @click="isMetiersOpen = !isMetiersOpen"
+                  >
+                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                      Métiers
+                    </span>
+                    <svg
+                      class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
+                      :class="isMetiersOpen ? 'rotate-180' : ''"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="m5 7 5 5 5-5"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+                  <div v-show="isMetiersOpen">
+                    <button
+                      v-if="selectedMetiers.length"
+                      class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
+                      @click="clearGroup('metiers')"
+                    >
+                      Effacer
+                    </button>
+                    <ul class="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
+                      <li v-for="metier in METIERS" :key="metier">
+                        <label
+                          class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
+                        >
+                          <input
+                            v-model="selectedMetiers"
+                            type="checkbox"
+                            :value="metier"
+                            class="h-4 w-4 rounded accent-accent-500"
+                          />
+                          {{ metier }}
+                        </label>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- BUs -->
+                <div>
+                  <button
+                    type="button"
+                    class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
+                    :aria-expanded="isCategoriesOpen"
+                    @click="isCategoriesOpen = !isCategoriesOpen"
+                  >
+                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                      BUSINESS UNITS
+                    </span>
+                    <svg
+                      class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
+                      :class="isCategoriesOpen ? 'rotate-180' : ''"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="m5 7 5 5 5-5"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+                  <div v-show="isCategoriesOpen">
+                    <button
+                      v-if="selectedCategories.length"
+                      class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
+                      @click="clearGroup('categories')"
+                    >
+                      Effacer
+                    </button>
+                    <ul class="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
+                      <li v-for="category in CATEGORIES" :key="category">
+                        <label
+                          class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
+                        >
+                          <input
+                            v-model="selectedCategories"
+                            type="checkbox"
+                            :value="category"
+                            class="h-4 w-4 rounded accent-accent-500"
+                          />
+                          {{ category }}
+                        </label>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Niveau d'expérience -->
+                <div>
+                  <button
+                    type="button"
+                    class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
+                    :aria-expanded="isLevelsOpen"
+                    @click="isLevelsOpen = !isLevelsOpen"
+                  >
+                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                      Niveau d'expérience
+                    </span>
+                    <svg
+                      class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
+                      :class="isLevelsOpen ? 'rotate-180' : ''"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="m5 7 5 5 5-5"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+                  <div v-show="isLevelsOpen">
+                    <button
+                      v-if="selectedLevels.length"
+                      class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
+                      @click="clearGroup('levels')"
+                    >
+                      Effacer
+                    </button>
+                    <ul class="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
+                      <li v-for="level in LEVELS" :key="level">
+                        <label
+                          class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
+                        >
+                          <input
+                            v-model="selectedLevels"
+                            type="checkbox"
+                            :value="level"
+                            class="h-4 w-4 rounded accent-accent-500"
+                          />
+                          {{ level }}
+                        </label>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Stack technique : sélection unique (pas de v-model array comme
+                   les groupes ci-dessus), affichée en badges empilés plutôt
+                   qu'en cases à cocher. -->
+                <div>
+                  <button
+                    type="button"
+                    class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
+                    :aria-expanded="isStackOpen"
+                    @click="isStackOpen = !isStackOpen"
+                  >
+                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                      Stack technique
+                    </span>
+                    <svg
+                      class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
+                      :class="isStackOpen ? 'rotate-180' : ''"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="m5 7 5 5 5-5"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+                  <div v-show="isStackOpen">
+                    <button
+                      v-if="selectedStack"
+                      class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
+                      @click="selectedStack = ''"
+                    >
+                      Effacer
+                    </button>
+                    <div class="mt-3 flex max-h-60 flex-wrap gap-2 overflow-y-auto pr-1">
+                      <button
+                        v-for="stack in availableStacks"
+                        :key="stack"
+                        type="button"
+                        class="rounded-full px-3 py-1 text-xs font-medium transition-colors"
+                        :class="
+                          selectedStack === stack
+                            ? 'bg-accent-500 text-white'
+                            : 'border border-gray-300 bg-white text-primary-900/70 hover:border-accent-500'
+                        "
+                        @click="selectedStack = selectedStack === stack ? '' : stack"
+                      >
+                        {{ stack }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </aside>
+
+            <!-- liste + pagination. `min-h-[60vh]` : un filtre
                très restrictif (ex. une seule offre) ne doit pas faire
-               s'effondrer la hauteur totale de la page — sinon, si l'utilisateur
+               s'effondrer la hauteur totale de la page  sinon, si l'utilisateur
                était déjà scrollé plus bas que la nouvelle hauteur (plus courte),
                le navigateur borne (clamp) sa position de scroll au nouveau
                maximum, ce qui se perçoit comme un saut/recentrage automatique
-               alors qu'aucun code ne pilote de scroll ici (vérifié : aucun
-               `window.scrollTo`/`scrollIntoView`/`scrollTop` dans ce fichier). -->
+               independant du `window.scrollTo` de changement de page ci-dessous. -->
             <div class="min-h-[60vh]">
               <p class="mb-4 text-sm text-primary-900/50">
                 {{ filteredOffers.length }}
@@ -647,235 +889,6 @@ watch(
                 </button>
               </nav>
             </div>
-
-            <!-- Colonne droite : filtres -->
-            <aside aria-label="Filtres">
-              <RouterLink
-                :to="{ name: 'candidature-spontanee' }"
-                class="mb-6 flex w-full items-center justify-center gap-2 rounded-xl bg-accent-500 px-5 py-3 text-sm font-bold text-primary-950 transition-colors hover:bg-accent-400"
-              >
-                Candidature spontanée
-              </RouterLink>
-
-              <h2 class="font-display text-lg font-bold text-primary-900">Filtres</h2>
-
-              <!-- Métiers -->
-              <div class="mt-5 border-t border-gray-200 pt-5">
-                <button
-                  type="button"
-                  class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
-                  :aria-expanded="isMetiersOpen"
-                  @click="isMetiersOpen = !isMetiersOpen"
-                >
-                  <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                    Métiers
-                  </span>
-                  <svg
-                    class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
-                    :class="isMetiersOpen ? 'rotate-180' : ''"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="m5 7 5 5 5-5"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </button>
-                <div v-show="isMetiersOpen">
-                  <button
-                    v-if="selectedMetiers.length"
-                    class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
-                    @click="clearGroup('metiers')"
-                  >
-                    Effacer
-                  </button>
-                  <ul class="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
-                    <li v-for="metier in METIERS" :key="metier">
-                      <label
-                        class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
-                      >
-                        <input
-                          v-model="selectedMetiers"
-                          type="checkbox"
-                          :value="metier"
-                          class="h-4 w-4 rounded accent-accent-500"
-                        />
-                        {{ metier }}
-                      </label>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <!-- BUs -->
-              <div class="mt-5 border-t border-gray-200 pt-5">
-                <button
-                  type="button"
-                  class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
-                  :aria-expanded="isCategoriesOpen"
-                  @click="isCategoriesOpen = !isCategoriesOpen"
-                >
-                  <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                    BUSINESS UNITS
-                  </span>
-                  <svg
-                    class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
-                    :class="isCategoriesOpen ? 'rotate-180' : ''"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="m5 7 5 5 5-5"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </button>
-                <div v-show="isCategoriesOpen">
-                  <button
-                    v-if="selectedCategories.length"
-                    class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
-                    @click="clearGroup('categories')"
-                  >
-                    Effacer
-                  </button>
-                  <ul class="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
-                    <li v-for="category in CATEGORIES" :key="category">
-                      <label
-                        class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
-                      >
-                        <input
-                          v-model="selectedCategories"
-                          type="checkbox"
-                          :value="category"
-                          class="h-4 w-4 rounded accent-accent-500"
-                        />
-                        {{ category }}
-                      </label>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <!-- Niveau d'expérience -->
-              <div class="mt-5 border-t border-gray-200 pt-5">
-                <button
-                  type="button"
-                  class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
-                  :aria-expanded="isLevelsOpen"
-                  @click="isLevelsOpen = !isLevelsOpen"
-                >
-                  <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                    Niveau d'expérience
-                  </span>
-                  <svg
-                    class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
-                    :class="isLevelsOpen ? 'rotate-180' : ''"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="m5 7 5 5 5-5"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </button>
-                <div v-show="isLevelsOpen">
-                  <button
-                    v-if="selectedLevels.length"
-                    class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
-                    @click="clearGroup('levels')"
-                  >
-                    Effacer
-                  </button>
-                  <ul class="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
-                    <li v-for="level in LEVELS" :key="level">
-                      <label
-                        class="flex cursor-pointer items-center gap-3 text-sm text-primary-900/70 hover:text-primary-900 transition-colors"
-                      >
-                        <input
-                          v-model="selectedLevels"
-                          type="checkbox"
-                          :value="level"
-                          class="h-4 w-4 rounded accent-accent-500"
-                        />
-                        {{ level }}
-                      </label>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <!-- Stack technique : sélection unique (pas de v-model array comme
-                 les groupes ci-dessus), affichée en badges empilés plutôt
-                 qu'en cases à cocher — cohérent avec la disposition verticale
-                 de la barre latérale, sans le défilement horizontal du
-                 placement précédent. -->
-              <div class="mt-5 border-t border-gray-200 pt-5">
-                <button
-                  type="button"
-                  class="flex w-full items-center justify-between gap-2 bg-transparent text-left"
-                  :aria-expanded="isStackOpen"
-                  @click="isStackOpen = !isStackOpen"
-                >
-                  <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                    Stack technique
-                  </span>
-                  <svg
-                    class="size-4 shrink-0 text-primary-950 transition-transform duration-200 motion-reduce:transition-none"
-                    :class="isStackOpen ? 'rotate-180' : ''"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="m5 7 5 5 5-5"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </button>
-                <div v-show="isStackOpen">
-                  <button
-                    v-if="selectedStack"
-                    class="mt-3 text-xs text-primary-900/60 hover:text-primary-900 hover:underline"
-                    @click="selectedStack = ''"
-                  >
-                    Effacer
-                  </button>
-                  <div class="mt-3 flex max-h-60 flex-wrap gap-2 overflow-y-auto pr-1">
-                    <button
-                      v-for="stack in availableStacks"
-                      :key="stack"
-                      type="button"
-                      class="rounded-full px-3 py-1 text-xs font-medium transition-colors"
-                      :class="
-                        selectedStack === stack
-                          ? 'bg-accent-500 text-white'
-                          : 'border border-gray-300 bg-white text-primary-900/70 hover:border-accent-500'
-                      "
-                      @click="selectedStack = selectedStack === stack ? '' : stack"
-                    >
-                      {{ stack }}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </aside>
           </div>
           <!-- fin grille -->
         </div>
@@ -884,7 +897,7 @@ watch(
     </section>
 
     <!-- ==================================================================
-       3. FOOTER — App.vue masque son footer global pour cette route pour
+       3. FOOTER  App.vue masque son footer global pour cette route pour
        éviter le doublon ; il est repris ici dans le flux normal de la page.
        ================================================================== -->
     <section data-theme="dark" class="w-full bg-[#000066]">
@@ -894,7 +907,7 @@ watch(
   <!-- /conteneur en flux normal (pas de snap-scroll, cf. commentaire plus haut) -->
 
   <!-- ==================================================================
-       MODALE — aperçu rapide d'une offre
+       MODALE  aperçu rapide d'une offre
        ================================================================== -->
   <Teleport to="body">
     <div
@@ -966,13 +979,13 @@ watch(
             <span
               class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-primary-900/70"
             >
-              <!-- Télétravail : TODO — à récupérer depuis l'API -->
+              <!-- Télétravail : TODO  à récupérer depuis l'API -->
               Hybride
             </span>
             <span
               class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-primary-900/70"
             >
-              <!-- Salaire : TODO — à récupérer depuis l'API -->
+              <!-- Salaire : TODO  à récupérer depuis l'API -->
               Salaire selon profil
             </span>
           </div>
@@ -1020,7 +1033,7 @@ watch(
             </li>
             <li class="flex items-start gap-2">
               <span class="mt-1 size-1.5 shrink-0 rounded-full bg-[#12D80A]" aria-hidden="true" />
-              Autonomie, rigueur et excellent relationnel client — vous êtes à l'aise en prise de
+              Autonomie, rigueur et excellent relationnel client vous êtes à l'aise en prise de
               parole.
             </li>
             <li class="flex items-start gap-2">
@@ -1057,7 +1070,7 @@ watch(
 </template>
 
 <style scoped>
-/* Fond animé du Hero (mosaïque de tuiles + halos respirants) — neutralisé
+/* Fond animé du Hero (mosaïque de tuiles + halos respirants) neutralisé
    sous prefers-reduced-motion, cf. CLAUDE.md. Rien de ceci n'anime le
    layout, donc zéro impact sur le CLS. */
 @media (prefers-reduced-motion: no-preference) {

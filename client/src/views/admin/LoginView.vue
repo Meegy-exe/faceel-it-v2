@@ -16,7 +16,7 @@ function handleLogin() {
     <div class="w-full max-w-sm rounded-2xl border border-white/10 bg-primary-950 p-8 text-center">
       <h1 class="font-display text-2xl font-bold text-white">Connexion back-office</h1>
       <p class="mt-2 text-sm text-white/60">
-        Authentification simulée — aucun backend d'auth pour l'instant.
+        Authentification simulée - aucun backend d'auth pour l'instant.
       </p>
       <button
         type="button"

@@ -7,16 +7,16 @@ import { useSeo } from '@/composables/useSeo'
 import { useWaveCanvas } from '@/composables/useWaveCanvas'
 
 useSeo({
-  title: 'Politique RSE',
+  title: 'Politique RSE - ESN engagée à Wasquehal',
   description:
-    'Nous nous engageons au quotidien pour un numérique plus responsable, inclusif et respectueux de notre environnement.',
+    "Faceel-IT, ESN à Wasquehal près de Lille, s'engage au quotidien pour un numérique plus responsable, inclusif et respectueux de l'environnement dans les Hauts-de-France.",
 })
 
 const waveCanvas = ref<HTMLCanvasElement | null>(null)
 useWaveCanvas(waveCanvas)
 
 /* -------------------------------------------------------------------------- */
-/* Politique RSE — récupéré depuis l'ancienne section de HomeView.vue        */
+/* Politique RSE - récupéré depuis l'ancienne section de HomeView.vue        */
 /* (retirée depuis, cf. historique git) : contenu repris tel quel.           */
 /* -------------------------------------------------------------------------- */
 
@@ -49,7 +49,7 @@ const RSE_CARDS: RseCard[] = [
     description:
       "Nous participons activement à la structuration de la filière numérique française. Ce partenariat nous permet d'être au cœur des enjeux du secteur.",
   },
-  // TODO : cartes Opquast et Gifteo — titre + description réels à fournir
+  // TODO : cartes Opquast et Gifteo - titre + description réels à fournir
   // avant publication ; aucun contenu fictif sur ces engagements, cf.
   // CLAUDE.md, intégrité du contenu.
 ]
@@ -68,14 +68,14 @@ function activeRse(index: number): RseCard {
       data-theme="dark"
       class="relative min-h-screen w-full snap-start snap-always flex flex-col items-start justify-center overflow-hidden px-4 py-20 text-left"
     >
-      <!-- Canvas vague — fond animé, désactivé si motion-reduce (DA standard). -->
+      <!-- Canvas vague - fond animé, désactivé si motion-reduce (DA standard). -->
       <canvas
         ref="waveCanvas"
         aria-hidden="true"
         class="absolute inset-0 h-full w-full pointer-events-none opacity-60 motion-reduce:hidden"
       />
 
-      <!-- Cercle décoratif vert — touche d'accent sur fond sombre. -->
+      <!-- Cercle décoratif vert - touche d'accent sur fond sombre. -->
       <div
         aria-hidden="true"
         class="pointer-events-none absolute -right-40 top-1/2 h-[560px] w-[560px] -translate-y-1/2 rounded-full bg-accent-500/15 blur-3xl"
@@ -84,7 +84,7 @@ function activeRse(index: number): RseCard {
       <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-start text-left px-4">
         <p class="text-accent-500 font-bold tracking-wider uppercase mb-4">Engagement</p>
         <h1 class="text-5xl lg:text-7xl font-extrabold text-white leading-tight max-w-4xl">
-          Politique RSE
+          Politique RSE d'une ESN engagée dans les Hauts-de-France
         </h1>
         <p class="mt-6 max-w-2xl text-xl text-white/70">
           Nous nous engageons au quotidien pour un numérique plus responsable, inclusif et

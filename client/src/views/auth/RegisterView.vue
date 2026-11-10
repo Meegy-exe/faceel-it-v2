@@ -21,7 +21,7 @@ function handleSubmit() {
     data-theme="dark"
     class="h-full w-full snap-start snap-always flex flex-col lg:flex-row bg-[#000066]"
   >
-    <!-- Colonne gauche — réassurance -->
+    <!-- Colonne gauche - réassurance -->
     <div class="relative hidden lg:flex lg:w-1/2 items-center justify-center overflow-hidden">
       <img
         :src="photoLille"
@@ -76,7 +76,7 @@ function handleSubmit() {
       </div>
     </div>
 
-    <!-- Colonne droite — formulaire -->
+    <!-- Colonne droite - formulaire -->
     <div
       class="flex w-full flex-col items-center justify-center px-6 py-16 lg:w-1/2 lg:px-16 pt-24 lg:pt-16 overflow-y-auto"
     >

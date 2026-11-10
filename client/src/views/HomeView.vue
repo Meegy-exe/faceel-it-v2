@@ -16,10 +16,12 @@ const profileStore = useProfileStore()
 
 useSeo({
   title: 'Accueil',
-  fullTitle: 'Faceel-IT - ESN experte en Data, IA et Transformation digitale',
+  // maj seo local
+  fullTitle: 'Faceel-IT - ESN à Wasquehal (Lille) : Data, IA et Transformation digitale',
   description:
-    'ESN à Wasquehal, Faceel-IT accompagne vos projets Data, Intelligence Artificielle, ' +
-    'applications métier, Cloud et Cybersécurité.',
+    'ESN à Wasquehal, au coeur de la métropole lilloise, Faceel-IT accompagne les entreprises ' +
+    'des Hauts-de-France : Data, Intelligence Artificielle, développement web et applications ' +
+    'métier, Cloud et Cybersécurité.',
 })
 
 /* -------------------------------------------------------------------------- */
@@ -469,6 +471,8 @@ onBeforeUnmount(() => {
             <h1
               class="flex max-w-7xl flex-col items-start gap-y-2 animate-fade-up motion-reduce:animate-none font-display text-5xl leading-[1.1] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl drop-shadow-xl max-sm:text-2xl max-sm:leading-tight"
             >
+              <!-- seo local : contexte geo stable, hors phrase animee -->
+              <span class="sr-only">Faceel-IT, ESN à Wasquehal près de Lille, Hauts-de-France.</span>
               <span class="sr-only">{{ heroFullText }}</span>
               <span class="block text-white max-sm:whitespace-nowrap" aria-hidden="true">
                 {{ typedMain || '\u200B'
@@ -494,10 +498,11 @@ onBeforeUnmount(() => {
 
     <BuSection />
 
+    <!-- aere titre mobile -->
     <section
       id="valeurs"
       data-theme="dark"
-      class="relative overflow-hidden h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-[#000066] px-4 pt-36 [@media(max-height:850px)]:pt-16 [@media(max-height:568px)]:pt-10 pb-8 [@media(max-height:568px)]:pb-4 text-white sm:px-6 lg:px-8 xl:px-12"
+      class="relative overflow-hidden h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-[#000066] px-4 pt-36 [@media(max-height:850px)]:pt-24 [@media(max-height:568px)]:pt-10 pb-8 [@media(max-height:568px)]:pb-4 text-white sm:px-6 lg:px-8 xl:px-12"
     >
       <div class="relative z-10 flex flex-1 flex-col w-full">
         <header
@@ -513,8 +518,9 @@ onBeforeUnmount(() => {
           <p
             class="mt-4 w-full text-lg leading-relaxed text-white [@media(max-height:568px)]:text-sm [@media(max-height:568px)]:leading-tight"
           >
-            Faceel-it est plus qu'une ESN française et indépendante, c'est une équipe qui se
-            construit autour des valeurs du sport qui nous font avancer ensemble.
+            Faceel-it est plus qu'une ESN française et indépendante, basée à Wasquehal près de
+            Lille, c'est une équipe qui se construit autour des valeurs du sport qui nous font
+            avancer ensemble.
           </p>
         </header>
 
@@ -595,7 +601,7 @@ onBeforeUnmount(() => {
           "
         >
           <p
-            class="text-lg sm:text-xl md:text-2xl font-bold tracking-wide uppercase text-accent-500"
+            class="text-lg sm:text-xl md:text-2xl font-bold tracking-wide uppercase text-white underline decoration-[#12d80a] decoration-4 underline-offset-8"
           >
             Nos chiffres clés
           </p>
@@ -622,6 +628,7 @@ onBeforeUnmount(() => {
             >
               {{ countUpStarted ? animatedValues[i] : stat.target }}{{ stat.suffix }}
             </p>
+            <span class="mt-2 block h-1 w-12 rounded-full bg-[#12d80a]" aria-hidden="true"></span>
             <p class="mt-3 [@media(max-height:650px)]:mt-1 text-eyebrow leading-snug text-white">
               {{ stat.label }}
             </p>

@@ -1,10 +1,21 @@
+<script setup lang="ts">
+import { useSeo } from '@/composables/useSeo'
+
+useSeo({
+  title: "Mentions légales - Faceel-IT Wasquehal",
+  description:
+    "Mentions légales de Faceel-IT, ESN à Wasquehal près de Lille : éditeur du site, hébergement et informations légales.",
+})
+</script>
+
 <template>
   <article class="min-h-screen h-auto snap-start bg-white px-4 pt-32 pb-20 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-4xl">
       <h1 class="font-display text-4xl font-extrabold tracking-tight text-primary-900">
         Mentions légales
       </h1>
-      <p class="mt-3 text-sm text-primary-900/50">Dernière mise à jour : [À VENIR]</p>
+      <!-- donnees legales a jour -->
+      <p class="mt-3 text-sm text-primary-900/50">Dernière mise à jour : Novembre 2026</p>
 
       <div class="mt-12 space-y-12 text-base leading-relaxed text-primary-900/80">
         <section>
@@ -18,11 +29,12 @@
           </p>
           <ul class="mt-4 space-y-2 pl-6 list-disc">
             <li><strong>Raison sociale&nbsp;:</strong> Faceel-IT</li>
-            <li><strong>Forme juridique&nbsp;:</strong> [À VENIR — ex&nbsp;: SAS, SARL]</li>
-            <li><strong>Capital social&nbsp;:</strong> [À VENIR — ex&nbsp;: XXX Euros]</li>
+            <li><strong>Forme juridique&nbsp;:</strong> SAS (société par actions simplifiée)</li>
+            <li><strong>Capital social&nbsp;:</strong> 8 500,00 Euros</li>
             <li><strong>Siège social&nbsp;:</strong> 10 allée du Château Blanc, 59290 Wasquehal</li>
-            <li><strong>SIRET&nbsp;:</strong> [À VENIR]</li>
-            <li><strong>RCS&nbsp;:</strong> [À VENIR — ex&nbsp;: RCS Lille Métropole]</li>
+            <li><strong>SIRET&nbsp;:</strong> 895 087 880 00046</li>
+            <li><strong>RCS&nbsp;:</strong> 895 087 880 R.C.S. Lille metropole</li>
+            <li><strong>Numéro de TVA Intracommunautaire&nbsp;:</strong> FR42895087880</li>
             <li>
               <strong>Téléphone&nbsp;:</strong>
               <a
@@ -41,7 +53,10 @@
                 contact@faceel-it.com
               </a>
             </li>
-            <li><strong>Directeur de la publication&nbsp;:</strong> [À VENIR — nom et qualité]</li>
+            <li>
+              <strong>Directeur de la publication&nbsp;:</strong> Laurent Descleves, en qualité de
+              Président
+            </li>
           </ul>
         </section>
 
@@ -49,9 +64,19 @@
           <h2 class="font-display text-2xl font-bold text-primary-900">2. Hébergement</h2>
           <p class="mt-4">L'hébergement du site est assuré par&nbsp;:</p>
           <ul class="mt-4 space-y-2 pl-6 list-disc">
-            <li><strong>Hébergeur&nbsp;:</strong> [À VENIR — nom]</li>
-            <li><strong>Adresse&nbsp;:</strong> [À VENIR — adresse postale]</li>
-            <li><strong>Contact&nbsp;:</strong> [À VENIR — téléphone/courriel]</li>
+            <li><strong>Hébergeur&nbsp;:</strong> OVH SAS</li>
+            <li><strong>Adresse&nbsp;:</strong> 2 rue Kellermann, 59100 Roubaix, France</li>
+            <li>
+              <strong>Contact&nbsp;:</strong> 1007 (numéro unique gratuit) / Site web&nbsp;:
+              <a
+                href="https://www.ovh.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
+              >
+                www.ovh.com
+              </a>
+            </li>
           </ul>
         </section>
 

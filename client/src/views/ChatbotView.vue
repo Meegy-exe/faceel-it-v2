@@ -6,9 +6,9 @@ import TheFooter from '@/components/layout/TheFooter.vue'
 import teamPhoto from '@/assets/images/padel-equipe.jpg'
 
 useSeo({
-  title: 'Discutons',
+  title: 'Discutons - Faceelbot, ESN à Wasquehal',
   description:
-    "Deux minutes de questions valent mieux qu'un formulaire de contact. Discutez avec Faceelbot.",
+    "Deux minutes de questions valent mieux qu'un formulaire de contact. Discutez avec Faceelbot, l'assistant de Faceel-IT, ESN à Wasquehal près de Lille.",
 })
 
 interface Message {
@@ -22,7 +22,7 @@ const stepHistory = ref<string[]>([])
 const chatHistory = ref<Message[]>([])
 const chatContainer = ref<HTMLElement | null>(null)
 /** Contexte utilisateur mémorisé tout au long du tunnel (cf. `chatbotFlow.ts`) :
- *  Nom, Email, Téléphone, Projet — réutilisé pour personnaliser les messages
+ *  Nom, Email, Téléphone, Projet réutilisé pour personnaliser les messages
  *  et pour construire le `mailto:` final. */
 const userName = ref('')
 const userEmail = ref('')
@@ -77,7 +77,7 @@ const dynamicAction = computed(() => {
   const action = currentStep.value?.action
   if (!action) return undefined
   if (!action.url.startsWith('mailto:')) return action
-  const subject = encodeURIComponent(`[Faceelbot] ${currentSubject.value} — ${userName.value}`)
+  const subject = encodeURIComponent(`[Faceelbot] ${currentSubject.value} - ${userName.value}`)
   const body = encodeURIComponent(
     `Nom : ${userName.value}\nE-mail : ${userEmail.value}\nTéléphone : ${userPhone.value || 'non renseigné'}\nSujet : ${currentSubject.value}\nProjet : ${userProjet.value || 'non renseigné'}`,
   )
@@ -130,6 +130,7 @@ async function handleTextSubmit() {
 }
 
 function resetConversation() {
+  // evite doublon reset : le watch sur chatHistory relance deja le message de depart
   chatHistory.value = []
   stepHistory.value = []
   currentStepId.value = 'start'
@@ -139,23 +140,20 @@ function resetConversation() {
   userProjet.value = ''
   currentSubject.value = ''
   userInput.value = ''
-  simulateBotTyping(chatFlow['start']?.messages ?? [])
 }
 </script>
 
 <template>
-  <!-- CONTENEUR SNAP OPT-IN : isole le scroll magnétique de cette vue sans
-       dépendre de la hauteur flexée de <main> (cf. HomeView.vue). -->
+  <!-- snap retabli : footer rejoue son effet d'apparition au scroll -->
   <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
-    <!-- Section split-screen : presentation + chatbot, un seul ecran -->
     <!-- espace navbar -->
     <section
-      class="h-[100dvh] w-full shrink-0 snap-start snap-always overflow-hidden pt-[var(--navbar-height)] flex flex-col lg:flex-row"
+      class="relative flex h-dvh w-full shrink-0 snap-start snap-always flex-col overflow-hidden pt-[var(--navbar-height)] lg:flex-row"
     >
-      <!-- Colonne gauche : zone institutionnelle (image & branding) -->
+      <!-- masque intro mobile : bandeau institutionnel reserve au desktop -->
       <section
         data-theme="dark"
-        class="relative flex h-1/3 w-full flex-col justify-end overflow-hidden bg-primary-950 bg-cover bg-center p-8 md:p-16 lg:h-full lg:w-1/2"
+        class="relative hidden h-1/3 w-full flex-col justify-end overflow-hidden bg-primary-950 bg-cover bg-center p-8 md:p-16 lg:flex lg:h-full lg:w-1/2"
         :style="{ backgroundImage: `url(${teamPhoto})` }"
       >
         <div class="absolute inset-0 bg-blue-950/70" aria-hidden="true" />
@@ -167,7 +165,7 @@ function resetConversation() {
             TRAVAILLER CHEZ FACEEL-IT
           </p>
           <h1 class="mt-4 font-display text-4xl font-bold text-white">
-            On recrute d'abord le profil. La mission vient après.
+            Dans notre ESN à Wasquehal, on recrute d'abord le profil. La mission vient après.
           </h1>
           <p class="mt-4 text-lg font-medium text-gray-100 drop-shadow-md">
             Près de 70 % de CDI, 100 % de replacés en intercontrat. Discutez avec Faceelbot pour
@@ -176,9 +174,17 @@ function resetConversation() {
         </div>
       </section>
 
-      <!-- Colonne droite : chat, prend l'espace restant -->
-      <section class="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-blue-950 lg:w-1/2">
-        <div class="p-8 pb-0 md:p-16 md:pb-0">
+      <!-- Chat, occupe tout l'espace restant -->
+      <section class="relative flex min-h-0 w-full flex-1 flex-col overflow-hidden bg-blue-950 lg:w-1/2">
+        <!-- halo lumineux -->
+        <div
+          class="pointer-events-none absolute inset-0 z-0 flex items-center justify-center"
+          aria-hidden="true"
+        >
+          <div class="h-[40vw] w-[40vw] max-w-[600px] rounded-full bg-accent-500/25 blur-[100px]" />
+        </div>
+
+        <div class="relative z-10 p-8 pb-0 md:p-16 md:pb-0">
           <div class="flex items-center gap-3">
             <span
               class="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-500 font-bold text-black"
@@ -194,8 +200,8 @@ function resetConversation() {
           <h2 class="mt-6 font-display text-2xl font-bold text-white">Bonjour, on discute ?</h2>
         </div>
 
-        <div class="mt-6 flex flex-1 flex-col overflow-hidden">
-          <!-- Historique — seule zone scrollable -->
+        <div class="relative z-10 mt-6 flex flex-1 flex-col overflow-hidden">
+          <!-- Historique seule zone scrollable -->
           <div
             ref="chatContainer"
             class="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain p-4 md:p-8"
@@ -323,15 +329,7 @@ function resetConversation() {
           </div>
 
           <!-- Footer du bot -->
-          <div
-            class="flex items-center justify-between gap-4 border-t border-white/10 px-4 py-4 md:px-8"
-          >
-            <a
-              href="mailto:contact@faceel-it.com"
-              class="text-xs text-gray-400 transition-colors hover:text-white"
-            >
-              Parler à un humain
-            </a>
+          <div class="flex items-center justify-center border-t border-white/10 px-4 py-4 md:px-8">
             <button
               type="button"
               class="text-xs text-gray-400 transition-colors hover:text-white"
@@ -344,14 +342,9 @@ function resetConversation() {
       </section>
     </section>
 
-    <!-- Footer repris dans le flux snap local (cf. HomeView.vue) ; App.vue
-       masque son footer global pour cette route pour éviter le doublon. -->
-    <section
-      data-theme="dark"
-      class="h-dvh w-full shrink-0 snap-start snap-always flex flex-col justify-end bg-[#000066]"
-    >
-      <TheFooter />
-    </section>
+    <!-- calque structure home : repris ici (App.vue masque son footer
+       global pour cette route pour eviter le doublon) -->
+    <TheFooter full-page-scroll />
   </div>
   <!-- /conteneur snap -->
 </template>

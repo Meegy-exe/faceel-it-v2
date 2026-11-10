@@ -39,7 +39,7 @@ const OFFERS: JobOffer[] = [
   },
   {
     id: 2,
-    title: 'Consultante / Consultant fonctionnel – Expert S4HANA SAP SD',
+    title: 'Consultante / Consultant fonctionnel - Expert S4HANA SAP SD',
     location: 'Lille, Toulouse, Paris',
     category: 'Solutions SaaS',
     contract: 'CDI',
@@ -56,7 +56,7 @@ const OFFERS: JobOffer[] = [
   },
   {
     id: 3,
-    title: 'Architecte solutions – Microsoft Azure',
+    title: 'Architecte solutions - Microsoft Azure',
     location: 'Lyon, Remote',
     category: 'Cloud & Infrastructure',
     contract: 'CDI',
@@ -73,7 +73,7 @@ const OFFERS: JobOffer[] = [
   },
   {
     id: 4,
-    title: 'Business Analyst – Transformation digitale retail',
+    title: 'Business Analyst - Transformation digitale retail',
     location: 'Lille',
     category: 'Conseil',
     contract: 'CDD',
@@ -90,7 +90,7 @@ const OFFERS: JobOffer[] = [
   },
   {
     id: 5,
-    title: 'Développeur fullstack – React / Node.js',
+    title: 'Développeur fullstack - React / Node.js',
     location: 'Toulouse',
     category: 'Développement',
     contract: 'CDI',
@@ -107,7 +107,7 @@ const OFFERS: JobOffer[] = [
   },
   {
     id: 6,
-    title: 'Stage – Data Scientist junior IA générative',
+    title: 'Stage - Data Scientist junior IA générative',
     location: 'Paris',
     category: 'Data & IA',
     contract: 'Stage',
@@ -136,11 +136,11 @@ const offer = computed(() =>
 useSeo({
   title: computed(() =>
     isSpontaneous.value
-      ? 'Candidature spontanée – Faceel-IT'
-      : `Postuler – ${offer.value!.title} – Faceel-IT`,
+      ? 'Candidature spontanée - ESN Faceel-IT à Wasquehal'
+      : `Postuler - ${offer.value!.title} - Faceel-IT Wasquehal`,
   ),
   description:
-    'Déposez votre candidature en quelques minutes. CV, lettre de motivation et coordonnées — nous reviendrons vers vous rapidement.',
+    'Déposez votre candidature chez Faceel-IT, ESN à Wasquehal près de Lille, en quelques minutes. CV, lettre de motivation et coordonnées - nous reviendrons vers vous rapidement.',
 })
 
 const firstName = ref('')
@@ -209,17 +209,22 @@ function handleSubmit() {
   <!-- Pas de <main> ici : App.vue le fournit déjà. Scroll-snap local : cette
        route n'est pas dans `LOCAL_SNAP_FOOTER_ROUTES` (chemin dynamique
        `/offres/:id/postuler`, pas compatible avec le `Set` de chemins exacts
-       d'App.vue) — exclue via les noms de route à la place, cf. App.vue. -->
-  <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth">
+       d'App.vue) - exclue via les noms de route à la place, cf. App.vue. -->
+  <!-- flux standard mobile : pas de snap avant md -->
+  <div
+    class="flex flex-col h-auto min-h-screen w-full overflow-x-hidden overflow-y-visible snap-none scroll-smooth md:block md:h-dvh md:overflow-y-auto md:snap-y md:snap-mandatory"
+  >
+    <!-- fix top gap : pt navbar deplace sur le bloc bleu en mobile -->
     <div
-      class="h-dvh w-full shrink-0 snap-start snap-always flex flex-col lg:flex-row pt-20 lg:pt-0"
+      class="flex-1 h-auto min-h-dvh w-full shrink-0 snap-none flex flex-col pt-0 md:pt-20 md:h-dvh md:snap-start md:snap-always lg:flex-row lg:pt-0"
     >
       <!-- ============================================================
-         COLONNE GAUCHE — Résumé de l'offre (ou message spontané)
+         COLONNE GAUCHE - Résumé de l'offre (ou message spontané)
          ============================================================ -->
+      <!-- espace jointure blue -->
       <div
         data-theme="dark"
-        class="w-full lg:w-1/2 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] bg-gradient-to-b from-[#000066] via-[#000066] via-65% to-blue-800 text-white p-8 md:p-12 flex flex-col justify-center overflow-y-auto"
+        class="w-full lg:w-1/2 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] bg-gradient-to-b from-[#000066] via-[#000066] via-65% to-blue-800 text-white px-8 pt-24 pb-8 md:p-12 flex flex-col justify-center overflow-y-auto"
       >
         <template v-if="isSpontaneous">
           <!-- Retour -->
@@ -245,7 +250,7 @@ function handleSubmit() {
           </p>
 
           <h1 class="font-display text-3xl font-bold text-white leading-tight mb-6 lg:text-4xl">
-            Un profil, pas encore une offre ?
+            Un profil, pas encore une offre ? Rejoignez notre ESN à Wasquehal
           </h1>
 
           <p class="text-base leading-relaxed text-white/75">
@@ -280,7 +285,7 @@ function handleSubmit() {
 
           <!-- Titre -->
           <h1 class="font-display text-3xl font-bold text-white leading-tight mb-6 lg:text-4xl">
-            {{ offer!.title }}
+            {{ offer!.title }}<span class="sr-only"> - ESN à Wasquehal</span>
           </h1>
 
           <!-- Badges -->
@@ -334,11 +339,12 @@ function handleSubmit() {
       </div>
 
       <!-- ============================================================
-         COLONNE DROITE — Formulaire
+         COLONNE DROITE - Formulaire
          ============================================================ -->
+      <!-- padding haut blanc -->
       <div
         data-theme="light"
-        class="w-full lg:w-1/2 max-h-screen bg-white p-8 pt-32 md:p-12 md:pt-40 flex flex-col justify-center overflow-y-auto pb-4"
+        class="w-full lg:w-1/2 max-h-none overflow-y-visible bg-white px-8 pt-8 pb-4 md:max-h-screen md:overflow-y-auto md:p-12 md:pt-40 flex flex-col justify-center"
       >
         <!-- Confirmation envoi -->
         <div
@@ -505,10 +511,16 @@ function handleSubmit() {
                     cvFile.name
                   }}</span>
                   <span v-else class="text-sm text-gray-500">
-                    Glissez votre CV ici ou
-                    <span class="font-semibold text-[#000066]">parcourir</span>
+                    <!-- texte cv mobile -->
+                    <span class="block font-semibold text-[#000066] md:hidden"
+                      >Ajouter votre CV</span
+                    >
+                    <span class="hidden md:inline">
+                      Glissez votre CV ici ou
+                      <span class="font-semibold text-[#000066]">parcourir</span>
+                    </span>
                   </span>
-                  <span class="text-xs text-gray-400">Format PDF uniquement</span>
+                  <span class="hidden text-xs text-gray-400 md:block">Format PDF uniquement</span>
                 </span>
                 <input
                   id="cvFile"
@@ -556,16 +568,19 @@ function handleSubmit() {
                   required
                   class="mt-0.5 h-4 w-4 shrink-0 rounded accent-[#000066]"
                 />
-                Vous déclarez avoir lu et accepté
-                <button
-                  type="button"
-                  class="font-bold text-blue-600 underline transition-colors hover:text-blue-800"
-                  @click.prevent.stop="openPrivacyModal"
-                >
-                  l'avis de confidentialité
-                </button>
-                de Faceel IT.
-                <span class="text-red-500">*</span>
+                <!-- texte rgpd en un seul bloc : evite la casse en flex items -->
+                <span>
+                  Vous déclarez avoir lu et accepté
+                  <button
+                    type="button"
+                    class="font-bold text-blue-600 underline transition-colors hover:text-blue-800"
+                    @click.prevent.stop="openPrivacyModal"
+                  >
+                    l'avis de confidentialité
+                  </button>
+                  de Faceel IT.
+                  <span class="text-red-500">*</span>
+                </span>
               </label>
             </div>
 
@@ -582,8 +597,9 @@ function handleSubmit() {
       </div>
     </div>
 
+    <!-- supprime bande bleue bas -->
     <section
-      class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
+      class="h-auto shrink-0 w-full snap-none flex flex-col justify-end bg-[#000066] md:h-dvh md:snap-start md:snap-always"
     >
       <TheFooter />
     </section>

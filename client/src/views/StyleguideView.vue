@@ -195,7 +195,7 @@ useSeo({
         <p class="mt-3 max-w-2xl text-primary-900/65">
           Déclarés dans <code class="font-mono text-sm">assets/styles/main.css</code> via
           <code class="font-mono text-sm">@theme</code>. Rappel de contraste :
-          <span class="font-semibold">accent-500 sur fond clair est décoratif uniquement</span> —
+          <span class="font-semibold">accent-500 sur fond clair est décoratif uniquement</span> -
           pour du texte accentué sur blanc, c’est accent-700.
         </p>
 
@@ -221,7 +221,7 @@ useSeo({
           <p class="font-display text-display text-primary-900">Display</p>
           <p class="font-display text-title text-primary-900">Title</p>
           <p class="text-base text-primary-900/70">
-            Base — corps de texte courant, 16px, interlignage confortable.
+            Base - corps de texte courant, 16px, interlignage confortable.
           </p>
           <p class="font-mono text-sm text-primary-900/70">Mono - JetBrains Mono, 14px.</p>
         </div>
@@ -582,7 +582,7 @@ useSeo({
         </div>
 
         <h3 class="mt-10 font-display text-lg font-bold text-primary-900">
-          Densité — variante <code class="font-mono text-base">pixels</code>
+          Densité - variante <code class="font-mono text-base">pixels</code>
         </h3>
         <p class="mt-2 max-w-2xl text-sm text-primary-900/60">
           Bornée à 60 par le composant. Les positions sont dérivées de l’index par une fonction
@@ -601,7 +601,7 @@ useSeo({
         </div>
 
         <h3 class="mt-10 font-display text-lg font-bold text-primary-900">
-          En situation — bandeau d’accroche
+          En situation - bandeau d’accroche
         </h3>
         <div
           class="relative isolate mt-4 overflow-hidden rounded-panel bg-primary-900 px-6 py-20 text-center sm:px-12"
@@ -624,7 +624,7 @@ useSeo({
       </section>
 
       <!-- ================================================================
-           5. MegaMenu — rappel du protocole de test (tiroir latéral, V0.1.24)
+           5. MegaMenu - rappel du protocole de test (tiroir latéral, V0.1.24)
            ================================================================ -->
       <section id="composants" class="scroll-mt-24 pt-20">
         <p class="text-eyebrow uppercase text-accent-700">05</p>
@@ -660,7 +660,7 @@ useSeo({
                 <span>
                   <kbd class="font-mono text-sm font-semibold text-primary-900">Tab</kbd> atteint
                   chaque lien un par un dans l’ordre du document : c’est toujours le motif
-                  <em>disclosure</em>, pas <code class="font-mono text-sm">role="menu"</code> — une
+                  <em>disclosure</em>, pas <code class="font-mono text-sm">role="menu"</code> - une
                   entrée à sous-liens (« Secteurs ») est un accordéon, pas un sous-menu.
                 </span>
               </li>
@@ -672,7 +672,7 @@ useSeo({
                 <span>
                   <kbd class="font-mono text-sm font-semibold text-primary-900">Tab</kbd> sur le
                   DERNIER élément focusable du tiroir revient au premier (piège de focus maison,
-                  <code class="font-mono text-sm">trapFocus</code>) — le contenu de la page, masqué
+                  <code class="font-mono text-sm">trapFocus</code>) - le contenu de la page, masqué
                   sous le fond assombri, ne doit jamais être atteignable au clavier tant que le
                   tiroir est ouvert.
                   <kbd class="font-mono text-sm font-semibold text-primary-900">Maj+Tab</kbd>
@@ -722,7 +722,7 @@ useSeo({
                 />
                 <span>
                   Cliquer un lien du tiroir navigue et referme automatiquement (changement de route)
-                  — sans rendre le focus au burger cette fois : l’utilisateur vient de choisir une
+                  - sans rendre le focus au burger cette fois : l’utilisateur vient de choisir une
                   destination, le focus doit rester disponible pour la suite de sa lecture, pas
                   revenir en arrière.
                 </span>
@@ -734,7 +734,7 @@ useSeo({
                 />
                 <span>
                   Cliquer « Secteurs » déplie un accordéon sous l’entrée (plusieurs entrées peuvent
-                  rester dépliées à la fois) — même mécanique que l’ex-tiroir mobile d’avant
+                  rester dépliées à la fois) - même mécanique que l’ex-tiroir mobile d’avant
                   V0.1.24, désormais seul mode d’affichage, à toutes les tailles d’écran.
                 </span>
               </li>
@@ -752,10 +752,10 @@ useSeo({
           </p>
           <ul class="mt-4 space-y-2 text-white/70">
             <li>
-              <strong class="text-white">Expertises</strong> — lien simple, icône « mallette ».
+              <strong class="text-white">Expertises</strong> - lien simple, icône « mallette ».
             </li>
             <li>
-              <strong class="text-white">Secteurs</strong> — 1 colonne de 4 sous-liens en accordéon,
+              <strong class="text-white">Secteurs</strong> - 1 colonne de 4 sous-liens en accordéon,
               icône « bâtiment ».
             </li>
           </ul>

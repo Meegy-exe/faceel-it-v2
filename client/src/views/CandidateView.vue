@@ -9,9 +9,9 @@ import photoVeloEquipe from '@/assets/images/photos/velo-equipe.jpg'
 import photoCourseGroupe from '@/assets/images/photos/course-groupe.jpg'
 
 /**
- * Page « Je suis candidat » — V0.9.
+ * Page « Je suis candidat »  V0.9.
  *
- * ROUTE DÉDIÉE — `router/routes.ts`/`staticPrerenderRoutes.ts` mis à jour
+ * ROUTE DÉDIÉE  `router/routes.ts`/`staticPrerenderRoutes.ts` mis à jour
  * dans le même mouvement (même mécanisme `meta.fullPageScroll` qu'ADR 26,
  * déjà réutilisé pour `/notre-histoire` et `/je-suis-une-entreprise`, rien de
  * nouveau dans `App.vue`). CONTRAIREMENT À `EnterpriseView.vue`, `mainNav.ts`
@@ -22,26 +22,27 @@ import photoCourseGroupe from '@/assets/images/photos/course-groupe.jpg'
  * template et le script »). La page est fonctionnelle et indexable
  * (pré-rendue) mais n'apparaît pour l'instant dans aucun menu.
  *
- * IMAGES — `picsum.photos` explicitement demandé par le brief, exclu comme
+ * IMAGES  `picsum.photos` explicitement demandé par le brief, exclu comme
  * pour les autres pages : le CSP de production
  * (`client/security-headers.conf`) déclare `img-src 'self'` sans exception.
  * Photos déjà présentes dans `assets/images/photos/` (dépôt client) servent
  * de substitut, décoratives (`alt=""`).
  *
- * CTA FINAL — « Voir nos offres » pointe vers la route `offres` (V1).
+ * CTA FINAL  « Voir nos offres » pointe vers la route `offres` (V1).
  *
- * EVENT ACCUEIL — la section « Nos événements » réutilise `EventsSection.vue`
+ * EVENT ACCUEIL  la section « Nos événements » réutilise `EventsSection.vue`
  * (`components/home/`), le même composant que `HomeView.vue`, plutôt qu'un
  * bloc propre à cette page (V1).
  *
- * TÉMOIGNAGES — refonte V1 : carrousel plein ecran (full bleed) a defilement
+ * TÉMOIGNAGES  refonte V1 : carrousel plein ecran (full bleed) a defilement
  * natif, cf. la section plus bas pour le detail des classes.
  */
 useSeo({
-  title: 'Je suis candidat',
+  title: 'Je suis candidat - Rejoindre une ESN à Wasquehal',
   description:
-    'Rejoignez Faceel-IT : savoir-être, savoir-faire, formation, coaching et mentorat au sein ' +
-    'd’un collectif de passionnés. Découvrez notre process de recrutement et nos offres.',
+    'Rejoignez Faceel-IT, ESN à Wasquehal près de Lille : savoir-être, savoir-faire, formation, ' +
+    'coaching et mentorat au sein d’un collectif de passionnés des Hauts-de-France. ' +
+    'Découvrez notre process de recrutement et nos offres.',
 })
 
 const savoirEtreEl = useTemplateRef<HTMLElement>('savoirEtreEl')
@@ -79,7 +80,7 @@ function scrollNext() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Le Collectif — 3 avantages                                                 */
+/* Le Collectif  3 avantages                                                 */
 /* -------------------------------------------------------------------------- */
 
 interface Advantage {
@@ -108,7 +109,7 @@ const ADVANTAGES: Advantage[] = [
 ]
 
 /* -------------------------------------------------------------------------- */
-/* Processus de recrutement — timeline                                       */
+/* Processus de recrutement  timeline                                       */
 /* -------------------------------------------------------------------------- */
 
 interface ProcessStep {
@@ -127,7 +128,7 @@ const PROCESS_STEPS: ProcessStep[] = [
 ]
 
 /* -------------------------------------------------------------------------- */
-/* Paroles de collaborateurs — témoignages                                   */
+/* Paroles de collaborateurs  témoignages                                   */
 /* -------------------------------------------------------------------------- */
 
 interface Testimonial {
@@ -136,7 +137,7 @@ interface Testimonial {
   role: string
 }
 
-/** Témoignages fournis tels quels par le brief — aucun n'est inventé
+/** Témoignages fournis tels quels par le brief  aucun n'est inventé
  *  (cf. CLAUDE.md, intégrité du contenu). */
 const TESTIMONIALS: Testimonial[] = [
   {
@@ -170,13 +171,13 @@ const TESTIMONIALS: Testimonial[] = [
   <!-- Pas de `<main>` ici : la coquille (`App.vue`) le fournit déjà. -->
 
   <!-- CONTENEUR SNAP OPT-IN : isole le scroll magnétique de cette vue sans
-       dépendre de la hauteur flexée de <main> (cf. HomeView.vue) — le
+       dépendre de la hauteur flexée de <main> (cf. HomeView.vue)  le
        `meta.fullPageScroll` évoqué plus haut n'existe nulle part ailleurs
        dans le dépôt (routes.ts / App.vue), ce conteneur local est donc le
        seul mécanisme réel de snap sur cette page. -->
   <div class="h-dvh w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory">
     <!-- ==================================================================
-       1. SAVOIR-ÊTRE — sombre, image « mask » à gauche / texte à droite.
+       1. SAVOIR-ÊTRE  sombre, image « mask » à gauche / texte à droite.
 
        « Mask » plutôt que « parallax » (le brief laisse le choix) : un
        parallaxe lié au scroll exige un écouteur JS mesuré en continu, plus
@@ -187,7 +188,7 @@ const TESTIMONIALS: Testimonial[] = [
     <section
       id="savoir-etre"
       data-theme="dark"
-      class="relative min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center overflow-hidden px-4 py-16 text-white sm:px-6 lg:px-8 xl:px-12 bg-[#000066]"
+      class="relative min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center overflow-hidden px-4 py-10 text-white sm:px-6 sm:py-16 lg:px-8 xl:px-12 bg-[#000066]"
     >
       <!-- effet core glow -->
       <div
@@ -199,8 +200,9 @@ const TESTIMONIALS: Testimonial[] = [
          sujet pour l'a11y/le SEO (même parti que `HistoireView.vue`). -->
       <div
         ref="savoirEtreEl"
-        class="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16"
+        class="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-6 lg:grid-cols-2 lg:gap-16"
       >
+        <!-- fix overflow mobile : image bridee en hauteur sur mobile -->
         <div
           aria-hidden="true"
           class="overflow-hidden rounded-3xl shadow-lift transition-all duration-700 ease-out motion-reduce:transition-none"
@@ -212,7 +214,7 @@ const TESTIMONIALS: Testimonial[] = [
             loading="eager"
             fetchpriority="high"
             decoding="async"
-            class="aspect-[4/5] w-full object-cover transition-[clip-path] duration-1000 ease-out motion-reduce:transition-none"
+            class="aspect-[16/10] max-h-[200px] w-full object-cover transition-[clip-path] duration-1000 ease-out motion-reduce:transition-none sm:aspect-[4/5] sm:max-h-none"
             :style="{
               clipPath: savoirEtreReveal !== 'hidden' ? 'inset(0 0 0 0)' : 'inset(0 100% 0 0)',
             }"
@@ -226,23 +228,24 @@ const TESTIMONIALS: Testimonial[] = [
           <h1 class="font-display text-display text-balance">
             D’abord un
             <!-- Effet outline demandé par le brief : bordure blanche, repli
-               (`supports-[...]`) — sans support, le mot reste en plein blanc,
+               (`supports-[...]`)  sans support, le mot reste en plein blanc,
                jamais invisible. -->
             <span
               class="text-white supports-[-webkit-text-stroke:1px]:text-transparent supports-[-webkit-text-stroke:1px]:[-webkit-text-stroke:2px_white]"
             >
               savoir être
             </span>
+            chez notre ESN à Wasquehal
           </h1>
-          <p class="mt-6 text-lg leading-relaxed text-white/75 sm:text-xl">
+          <p class="mt-3 text-lg leading-relaxed text-white/75 sm:mt-6 sm:text-xl">
             Chez Faceel-it nous cherchons avant tout des collaborateurs passionnés par leur métier
             et capables de s’ouvrir à de nouveaux projets.
           </p>
-          <p class="mt-4 text-lg leading-relaxed text-white/75 sm:text-xl">
+          <p class="mt-2 text-lg leading-relaxed text-white/75 sm:mt-4 sm:text-xl">
             Sortir de sa zone de confort et se challenger sont deux qualités essentielles si vous
             voulez nous rejoindre.
           </p>
-          <p class="mt-4 text-lg leading-relaxed text-white/75 sm:text-xl">
+          <p class="mt-2 text-lg leading-relaxed text-white/75 sm:mt-4 sm:text-xl">
             C’est pour cette raison que nous serons toujours à votre écoute et privilégierons vos
             souhaits d’évolution.
           </p>
@@ -251,16 +254,16 @@ const TESTIMONIALS: Testimonial[] = [
     </section>
 
     <!-- ==================================================================
-       2. SAVOIR-FAIRE — clair, texte à gauche / image à droite (hover scale).
+       2. SAVOIR-FAIRE  clair, texte à gauche / image à droite (hover scale).
        ================================================================== -->
     <section
       id="savoir-faire"
       data-theme="light"
-      class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-light"
+      class="min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 xl:px-12 bg-light"
     >
       <div
         ref="savoirFaireEl"
-        class="mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16"
+        class="mx-auto grid w-full max-w-6xl items-center gap-6 lg:grid-cols-2 lg:gap-16"
       >
         <div
           class="order-2 lg:order-1 transition-all duration-700 ease-out motion-reduce:transition-none"
@@ -274,16 +277,17 @@ const TESTIMONIALS: Testimonial[] = [
               savoir faire
             </span>
           </h2>
-          <p class="mt-6 text-lg leading-relaxed text-primary-900/80 sm:text-xl">
+          <p class="mt-3 text-lg leading-relaxed text-primary-900/80 sm:mt-6 sm:text-xl">
             Nous vous accompagnons tout au long de votre carrière au sein de Faceel-it sur le
             développement de vos compétences.
           </p>
-          <p class="mt-4 text-lg leading-relaxed text-primary-900/80 sm:text-xl">
+          <p class="mt-2 text-lg leading-relaxed text-primary-900/80 sm:mt-4 sm:text-xl">
             Diversité des missions, programmes de formation, meetups sont autant de leviers qui nous
             permettrons de vous faire progresser pour atteindre vos ambitions.
           </p>
         </div>
 
+        <!-- fix overflow mobile : image bridee en hauteur sur mobile -->
         <div
           class="group order-1 lg:order-2 overflow-hidden rounded-3xl shadow-lift transition-all duration-700 ease-out motion-reduce:transition-none [animation-delay:120ms]"
           :class="scrollRevealClass(savoirFaireReveal, 'right')"
@@ -293,14 +297,14 @@ const TESTIMONIALS: Testimonial[] = [
             alt=""
             loading="lazy"
             decoding="async"
-            class="aspect-[4/5] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110 motion-reduce:transition-none"
+            class="aspect-[16/10] max-h-[200px] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110 motion-reduce:transition-none sm:aspect-[4/5] sm:max-h-none"
           />
         </div>
       </div>
     </section>
 
     <!-- ==================================================================
-       3. LE COLLECTIF — sombre, texte décoratif géant + 3 avantages.
+       3. LE COLLECTIF  sombre, texte décoratif géant + 3 avantages.
        ================================================================== -->
     <section
       id="collectif"
@@ -324,7 +328,7 @@ const TESTIMONIALS: Testimonial[] = [
         <div class="mt-12 grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
           <!-- Texte décoratif géant, purement atmosphérique : le vrai titre de
              section est le `<h2>` ci-dessus, celui-ci n'apporte aucune
-             information supplémentaire — `aria-hidden` évite le bruit pour
+             information supplémentaire  `aria-hidden` évite le bruit pour
              un lecteur d'écran. -->
           <p
             aria-hidden="true"
@@ -357,7 +361,7 @@ const TESTIMONIALS: Testimonial[] = [
     </section>
 
     <!-- ==================================================================
-       4. PROCESSUS DE RECRUTEMENT — clair, timeline verticale.
+       4. PROCESSUS DE RECRUTEMENT  clair, timeline verticale.
        ================================================================== -->
     <section
       id="process"
@@ -373,7 +377,7 @@ const TESTIMONIALS: Testimonial[] = [
         </h2>
 
         <!-- Reprise verbatim de la section #independance de HistoireView.vue :
-           même fait, pas une reformulation — cf. CLAUDE.md, intégrité du
+           même fait, pas une reformulation  cf. CLAUDE.md, intégrité du
            contenu. -->
         <p class="mt-4 font-display text-xl font-bold text-primary-900 sm:text-2xl">
           <span class="text-accent-700">100&nbsp;%</span> indépendante ·
@@ -381,7 +385,7 @@ const TESTIMONIALS: Testimonial[] = [
         </p>
 
         <!-- `<ol>`, pas `<ul>` : c'est un ORDRE, une entrée n'a de sens qu'après
-           la précédente — un lecteur d'écran doit l'entendre comme tel. -->
+           la précédente  un lecteur d'écran doit l'entendre comme tel. -->
         <ol class="mt-12 space-y-8">
           <li
             v-for="(step, index) in PROCESS_STEPS"
@@ -407,13 +411,13 @@ const TESTIMONIALS: Testimonial[] = [
     <EventsSection />
 
     <!-- ==================================================================
-       5. PAROLES DE COLLABORATEURS — clair, carrousel de témoignages.
+       5. PAROLES DE COLLABORATEURS  clair, carrousel de témoignages.
        ================================================================== -->
     <!-- carrousel temoignages : defilement natif plutot qu'une grille figee -->
     <section
       id="temoignages"
       data-theme="dark"
-      class="relative min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center overflow-hidden px-4 py-16 sm:px-6 lg:px-8 xl:px-12 bg-primary-950"
+      class="relative min-h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-center overflow-hidden px-4 py-10 sm:px-6 sm:py-16 lg:px-8 xl:px-12 bg-primary-950"
     >
       <!-- effet core glow -->
       <div
@@ -432,7 +436,8 @@ const TESTIMONIALS: Testimonial[] = [
       </div>
 
       <!-- conteneur 3 cartes : boite max-w-6xl, plus de bleed ni de calc complexe -->
-      <div class="relative z-10 mx-auto mt-12 w-full max-w-6xl">
+      <div class="relative z-10 mx-auto mt-8 w-full max-w-6xl sm:mt-12">
+        <!-- supprime scroll interne : overflow-x reste pour le swipe du carrousel, aucun overflow-y ici -->
         <div
           ref="carouselEl"
           class="flex snap-x snap-mandatory gap-8 overflow-x-auto pb-8 hide-scrollbar transition-all duration-700 ease-out motion-reduce:transition-none"
@@ -442,12 +447,12 @@ const TESTIMONIALS: Testimonial[] = [
           <blockquote
             v-for="testimonial in TESTIMONIALS"
             :key="testimonial.author"
-            class="w-[85vw] shrink-0 snap-center rounded-xl border-l-4 border-accent-500 bg-primary-900 p-6 md:w-[340px] lg:w-[calc(33.333%-1.5rem)]"
+            class="w-[85vw] shrink-0 snap-center rounded-xl border-l-4 border-accent-500 bg-primary-900 p-5 sm:p-6 md:w-[340px] lg:w-[calc(33.333%-1.5rem)]"
           >
             <p class="text-sm leading-relaxed text-white/80 sm:text-base">
               « {{ testimonial.quote }} »
             </p>
-            <footer class="mt-4 text-sm">
+            <footer class="mt-3 text-sm sm:mt-4">
               <span class="font-bold text-accent-500">{{ testimonial.author }}</span>
               <span class="text-white/60"> - {{ testimonial.role }}</span>
             </footer>
@@ -494,7 +499,7 @@ const TESTIMONIALS: Testimonial[] = [
     </section>
 
     <!-- ==================================================================
-       6. CALL TO ACTION — clair, encart final impactant.
+       6. CALL TO ACTION  clair, encart final impactant.
        ================================================================== -->
     <section
       id="cta"
@@ -520,17 +525,9 @@ const TESTIMONIALS: Testimonial[] = [
       </div>
     </section>
 
-    <!-- ==================================================================
-       7. FOOTER — repris dans le flux snap local (cf. HomeView.vue) ;
-       App.vue masque son footer global pour cette route pour éviter le
-       doublon.
-       ================================================================== -->
-    <section
-      data-theme="dark"
-      class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col justify-end bg-[#000066]"
-    >
-      <TheFooter />
-    </section>
+    <!-- structure footer home : repris ici (App.vue masque son footer
+       global pour cette route pour eviter le doublon) -->
+    <TheFooter full-page-scroll />
   </div>
   <!-- /conteneur snap -->
 </template>

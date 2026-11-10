@@ -15,18 +15,22 @@ import imgPython from '@/assets/images/stacks/python.svg'
 import imgSpring from '@/assets/images/stacks/spring.svg'
 import imgTypescript from '@/assets/images/stacks/typescript.svg'
 import imgVueJs from '@/assets/images/stacks/vue-js.svg'
+import UseCasesSection from '@/components/home/UseCasesSection.vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
 import { useSeo } from '@/composables/useSeo'
 
 /**
- * Page modèle (template) pour une Business Unit — textes volontairement
+ * Page modèle (template) pour une Business Unit - textes volontairement
  * génériques : sert de base que les RH dupliquent et complètent pour chaque
  * BU, pas un contenu final à publier tel quel.
  */
 useSeo({
-  title: 'BU Digital',
-  description: 'Page modèle pour la Business Unit Digital.',
+  // seo local
+  title: 'Développement web et mobile - ESN à Lille et Wasquehal',
+  description:
+    'La BU Digital de Faceel-IT, ESN basée à Wasquehal, conçoit vos applications web et ' +
+    'mobile sur la métropole lilloise et dans les Hauts-de-France.',
 })
 
 const router = useRouter()
@@ -36,6 +40,33 @@ const heroTextEl = useTemplateRef<HTMLElement>('heroTextEl')
 const heroTextReveal = useScrollReveal(heroTextEl)
 const heroImageEl = useTemplateRef<HTMLElement>('heroImageEl')
 const heroImageReveal = useScrollReveal(heroImageEl)
+
+// chiffres cles hero, affiches par deux sur mobile (grille complete des 4 sur desktop)
+const KPIS = [
+  { label: 'Collaborateurs', value: 'XX' },
+  { label: 'Dédiés au web', value: 'XX%' },
+  { label: 'Taux de turnover', value: '3%' },
+  { label: "Développeurs certifiés sur l'IA", value: '100%' },
+]
+
+// cycle stats
+const kpiIndex = ref(0)
+let kpiInterval: ReturnType<typeof setInterval> | undefined
+
+const visibleKpis = computed(() => [
+  KPIS[kpiIndex.value]!,
+  KPIS[(kpiIndex.value + 1) % KPIS.length]!,
+])
+
+onMounted(() => {
+  kpiInterval = setInterval(() => {
+    kpiIndex.value = (kpiIndex.value + 1) % KPIS.length
+  }, 3500)
+})
+
+onUnmounted(() => {
+  clearInterval(kpiInterval)
+})
 
 // animations d'entree au scroll, en-tete section equipe
 const teamHeaderEl = useTemplateRef<HTMLElement>('teamHeaderEl')
@@ -127,9 +158,61 @@ onUnmounted(() => {
   clearInterval(stackInterval)
 })
 
-/** Retournement au clic des deux grandes cartes de la Section 2 (« Équipe »). */
-const isSDFlipped = ref(false)
-const isNVFlipped = ref(false)
+// 4 logos mobile : rangee compacte, distincte de la grille desktop
+const mobileStacks = ref<Stack[]>(allStacks.slice(0, 4))
+let mobileStackInterval: ReturnType<typeof setInterval> | undefined
+
+function swapRandomMobileStack() {
+  const index = Math.floor(Math.random() * mobileStacks.value.length)
+  const used = mobileStacks.value.map((s) => s.name)
+  const options = allStacks.filter((s) => !used.includes(s.name))
+  const next = options[Math.floor(Math.random() * options.length)]
+  if (next) mobileStacks.value[index] = next
+}
+
+onMounted(() => {
+  mobileStacks.value = [...allStacks].sort(() => Math.random() - 0.5).slice(0, 4)
+  // rotation tech rapide
+  mobileStackInterval = setInterval(swapRandomMobileStack, 2500)
+})
+
+onUnmounted(() => {
+  clearInterval(mobileStackInterval)
+})
+
+// profils equipe, affiches un a un sur mobile (alterne profil mobile)
+const TEAM_PROFILES = [
+  {
+    initials: 'NV',
+    name: 'Noémie Vannoye',
+    role: 'Responsable RH BU Digital',
+    quote: [
+      "« Révéler les talents, valoriser les compétences et ouvrir de nouvelles perspectives : j'ai à cœur de contribuer à l'épanouissement professionnel de chacun, car le sourire de mes consultants est ma plus belle satisfaction. »",
+    ],
+  },
+  {
+    initials: 'SD',
+    name: 'Stéphanie Demarez',
+    role: 'Directrice BU Digital',
+    quote: [
+      '« Je ne cherche pas seulement un business',
+      'mais avant tout à créer une relation durable. »',
+    ],
+  },
+]
+
+const currentProfileIndex = ref(0)
+let profileInterval: ReturnType<typeof setInterval> | undefined
+
+onMounted(() => {
+  profileInterval = setInterval(() => {
+    currentProfileIndex.value = (currentProfileIndex.value + 1) % TEAM_PROFILES.length
+  }, 4500)
+})
+
+onUnmounted(() => {
+  clearInterval(profileInterval)
+})
 
 // fausses offres, toutes bu confondues
 const allJobs = [
@@ -220,14 +303,14 @@ function goToSelectedJobDetail() {
       />
 
       <!-- conteneur aligne sur la nav -->
-      <!-- espace genereux sous la navbar -->
+      <!-- tasser hero mobile -->
       <div
-        class="grid w-full flex-1 grid-cols-1 items-stretch gap-12 px-4 pt-32 pb-8 sm:px-6 lg:grid-cols-2 lg:px-8 xl:px-12"
+        class="grid w-full flex-1 grid-cols-1 items-stretch gap-4 px-4 pt-32 pb-4 sm:px-6 lg:gap-12 lg:px-8 lg:pb-8 lg:grid-cols-2 xl:px-12"
       >
         <!-- colonne texte, prend toute la hauteur, fondu au scroll -->
         <div
           ref="heroTextEl"
-          class="flex h-full max-w-2xl flex-col"
+          class="flex h-full max-w-2xl flex-col lg:max-w-none"
           :class="
             scrollRevealClass(heroTextReveal, 'up', {
               offsetClass: '',
@@ -235,17 +318,18 @@ function goToSelectedJobDetail() {
             })
           "
         >
-          <p class="mb-6 font-bold uppercase tracking-widest text-accent-500">BU Digital</p>
-          <h1 class="mb-8 font-display text-4xl font-black text-white lg:text-6xl">
-            Web & mobile notre spécialité
+          <!-- fix contraste texte : vert accent trop sombre une fois rendu sur navy -->
+          <p class="mb-3 font-bold uppercase tracking-widest text-blue-100 lg:mb-6">BU Digital</p>
+          <h1 class="mb-4 font-display text-4xl font-black text-white lg:mb-8 lg:text-6xl">
+            Web & mobile, notre spécialité à Lille
           </h1>
-          <p class="mb-8 text-base text-white">
+          <p class="mb-6 text-lg text-white md:text-xl lg:mb-8">
             Description générique sur deux à trois lignes présentant la Business Unit, ses missions
             et ce qui la distingue au sein de Faceel-IT.
           </p>
 
           <!-- liste d'arguments -->
-          <ul class="flex flex-col gap-4 text-sm">
+          <ul class="mt-6 flex flex-col gap-3 text-lg md:mt-8 md:text-xl lg:gap-4">
             <li class="flex items-center gap-3 text-white">
               <span class="text-accent-500" aria-hidden="true">&bull;</span>
               Expertise reconnue sur les technos du marché
@@ -260,9 +344,11 @@ function goToSelectedJobDetail() {
             </li>
           </ul>
 
+          <!-- masque btn mobile -->
+          <!-- fix wcag button : primary-950 restait a 4.29, noir pur passe 6.8:1 -->
           <button
             type="button"
-            class="mt-auto w-fit self-start rounded-full bg-accent-500 px-10 py-4 text-lg font-bold text-primary-900 shadow-soft transition-all duration-300 hover:scale-105 hover:shadow-glow"
+            class="mt-auto hidden w-fit self-start rounded-full bg-accent-500 px-10 py-4 text-lg font-bold text-black shadow-soft transition-all duration-300 hover:scale-105 hover:shadow-glow md:inline-flex"
             @click="router.push({ name: 'offres', query: { bu: 'Digital' } })"
           >
             Découvrir nos offres
@@ -270,11 +356,13 @@ function goToSelectedJobDetail() {
         </div>
 
         <!-- image de droite, aeree par rapport au texte, glissement au scroll -->
+        <!-- bride image hero -->
+        <!-- remonte image -->
         <img
           ref="heroImageEl"
           :src="imgHero"
           alt="Equipe Faceel-IT"
-          class="mt-8 h-full w-full rounded-[2rem] object-cover shadow-2xl transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-2xl lg:mt-0 lg:ml-10"
+          class="mt-2 max-h-[160px] w-full rounded-[2rem] object-cover shadow-2xl transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-2xl lg:mt-0 lg:ml-10 lg:h-full lg:max-h-none"
           :class="
             scrollRevealClass(heroImageReveal, 'right', {
               offsetClass: 'translate-x-16',
@@ -286,31 +374,44 @@ function goToSelectedJobDetail() {
 
       <!-- conteneur externe, juste le padding de la nav -->
       <div class="px-4 sm:px-6 lg:px-8 xl:px-12">
-        <!-- metriques bu digital -->
-        <div
-          class="mt-8 grid w-full grid-cols-2 gap-8 px-8 pb-8 text-center md:px-16 lg:grid-cols-4 lg:px-32"
+        <!-- metriques bu digital, cycle stats sur mobile -->
+        <!-- anim propre out-in -->
+        <Transition
+          mode="out-in"
+          enter-active-class="transition-all duration-300 ease-out"
+          leave-active-class="transition-all duration-300 ease-in"
+          enter-from-class="opacity-0 translate-x-4"
+          leave-to-class="opacity-0 -translate-x-4"
         >
-          <div>
-            <p class="font-display text-4xl font-bold text-accent-500 md:text-5xl">XX</p>
-            <p class="mt-2 text-sm text-white md:text-base">Collaborateurs</p>
+          <!-- fix hauteur saut : reserve l'espace entre les deux etats de l'animation -->
+          <!-- force premier plan, fix z-index couleur -->
+          <div
+            :key="kpiIndex"
+            class="relative z-20 mt-8 grid min-h-[140px] w-full grid-cols-2 gap-8 px-8 pb-8 text-center transform-gpu md:hidden"
+          >
+            <div v-for="kpi in visibleKpis" :key="kpi.label">
+              <p class="font-display text-4xl font-bold text-accent-500">{{ kpi.value }}</p>
+              <p class="mt-2 text-sm text-white">{{ kpi.label }}</p>
+            </div>
           </div>
-          <div>
-            <p class="font-display text-4xl font-bold text-accent-500 md:text-5xl">XX%</p>
-            <p class="mt-2 text-sm text-white md:text-base">Dédiés au mobile</p>
-          </div>
-          <div>
-            <p class="font-display text-4xl font-bold text-accent-500 md:text-5xl">3%</p>
-            <p class="mt-2 text-sm text-white md:text-base">Taux de turnover</p>
-          </div>
-          <div>
-            <p class="font-display text-4xl font-bold text-accent-500 md:text-5xl">XX</p>
-            <p class="mt-2 text-sm text-white md:text-base">Certifications obtenues</p>
+        </Transition>
+
+        <!-- grille complete, statique a partir de md -->
+        <!-- force premier plan -->
+        <div
+          class="relative z-20 mt-8 hidden w-full grid-cols-2 gap-8 px-8 pb-8 text-center md:grid md:px-16 lg:grid-cols-4 lg:px-32"
+        >
+          <div v-for="kpi in KPIS" :key="kpi.label">
+            <p class="font-display text-4xl font-bold text-accent-500 md:text-5xl">
+              {{ kpi.value }}
+            </p>
+            <p class="mt-2 text-sm text-white md:text-base">{{ kpi.label }}</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 2 (Wireframe 10) — présentation statique des BU, deux profils
+    <!-- SECTION 2 (Wireframe 10) - présentation statique des BU, deux profils
          de la BU Digital (pas de carrousel : juste un en-tête + un indicateur
          de position parmi les BU, et deux portraits avec un léger effet 3D
          statique, sans interaction). -->
@@ -349,11 +450,11 @@ function goToSelectedJobDetail() {
       <!-- Arène « Street Fighter », figée sur l'unique BU de la page : plus de
            flip au clic/survol (rien à révéler au dos, aucune autre BU à
            montrer), plus de minuteur. Tailles, marges et décalage conservés
-           à l'identique de `BuSection.vue` — le seul « décalage » réel du
+           à l'identique de `BuSection.vue` - le seul « décalage » réel du
            composant source est horizontal (`-translate-x-16`/`translate-x-16`,
            uniquement entre 630px et 984px), pas vertical : pas de stagger
            vertical entre les deux cartes dans le composant d'origine.
-           Noémie à gauche, Stéphanie à droite — photos réelles sur la face
+           Noémie à gauche, Stéphanie à droite - photos réelles sur la face
            avant des cartes à la place des initiales. -->
       <div
         class="relative flex w-full flex-1 items-stretch max-[984px]:justify-center min-[985px]:justify-between gap-4 min-[985px]:gap-8 px-4 md:px-24 2xl:px-28 max-[459px]:hidden"
@@ -364,57 +465,39 @@ function goToSelectedJobDetail() {
         >
           <div class="mb-4 max-w-32 text-center min-[985px]:hidden">
             <p class="text-sm font-bold text-primary-950">Noémie Vannoye</p>
-            <p class="text-[11px] font-medium text-primary-900/50">Responsable RH</p>
+            <p class="text-[11px] font-medium text-primary-900/80">Responsable RH BU Digital</p>
             <p class="mt-1 min-h-[72px] text-xs italic leading-snug text-primary-900/80">
-              <span class="block">« Écouter pour mieux suivre et accompagner</span>
-              <span class="block">mes collaborateurs dans leur montée en compétences. »</span>
+              <span class="block"
+                >« Révéler les talents, valoriser les compétences et ouvrir de nouvelles
+                perspectives : j'ai à cœur de contribuer à l'épanouissement professionnel de chacun,
+                car le sourire de mes consultants est ma plus belle satisfaction. »</span
+              >
             </p>
           </div>
           <div class="flex flex-col items-center">
             <div
-              class="w-32 h-48 min-[985px]:w-48 min-[985px]:h-72 2xl:w-[320px] 2xl:h-[480px] [perspective:1000px] transform-gpu border-0 ring-0 outline-none cursor-pointer"
-              role="button"
-              tabindex="0"
-              aria-label="Retourner la carte de Noémie Vannoye"
-              @click="isNVFlipped = !isNVFlipped"
-              @keydown.enter="isNVFlipped = !isNVFlipped"
-              @keydown.space.prevent="isNVFlipped = !isNVFlipped"
+              class="w-32 h-48 min-[985px]:w-48 min-[985px]:h-72 2xl:w-[320px] 2xl:h-[480px] bg-primary-950 rounded-2xl flex items-center justify-center overflow-hidden"
             >
-              <div
-                class="relative w-full h-full [transform-style:preserve-3d] rounded-2xl shadow-[-40px_20px_50px_-15px_rgba(0,0,50,0.4)] will-change-transform transition-transform duration-700 ease-in-out border-0 ring-0 outline-none"
-                :class="isNVFlipped ? '[transform:rotateY(195deg)]' : '[transform:rotateY(15deg)]'"
-              >
-                <!-- Face avant -->
-                <div
-                  class="absolute inset-0 h-full w-full backface-hidden antialiased translate-z-[1px] bg-primary-950 rounded-2xl flex items-center justify-center overflow-hidden border-0 border-transparent"
-                >
-                  <img :src="imgNoemie" class="h-full w-full object-cover" alt="Noémie" />
-                </div>
-                <!-- Face arrière — basique, prête à accueillir du contenu plus tard. -->
-                <div
-                  class="absolute inset-0 h-full w-full [transform:rotateY(180deg)] backface-hidden antialiased bg-white border border-gray-200 rounded-2xl overflow-hidden"
-                />
-              </div>
+              <img :src="imgNoemie" class="h-full w-full object-cover" alt="Noémie" />
             </div>
           </div>
         </div>
 
-        <!-- Citations centrales — permanentes, en diagonale franche. Masquées
+        <!-- Citations centrales - permanentes, en diagonale franche. Masquées
              sous 985px : le texte y est remplacé par les copies compactes
              attachées à chaque carte (cf. ci-dessus/dessous). -->
         <div class="hidden min-[985px]:flex flex-1 items-center px-4">
           <div class="relative w-full h-48 min-[985px]:h-72 2xl:h-[480px]">
             <div class="-mt-2 absolute inset-x-0 top-0 w-full px-4 text-left">
               <p class="text-base 2xl:text-2xl font-bold text-primary-950 mb-1">Noémie Vannoye</p>
-              <p class="text-sm font-medium text-primary-900/50 mb-2">Responsable RH</p>
+              <p class="text-sm font-medium text-primary-900/80 mb-2">Responsable RH BU Digital</p>
               <p
                 class="min-h-[100px] 2xl:min-h-[120px] w-full max-w-full overflow-hidden text-xs 2xl:text-lg italic text-primary-900/80 leading-relaxed"
               >
                 <span class="block whitespace-normal break-words"
-                  >« Écouter pour mieux suivre et accompagner</span
-                >
-                <span class="block whitespace-normal break-words"
-                  >mes collaborateurs dans leur montée en compétences. »</span
+                  >« Révéler les talents, valoriser les compétences et ouvrir de nouvelles
+                  perspectives : j'ai à cœur de contribuer à l'épanouissement professionnel de
+                  chacun, car le sourire de mes consultants est ma plus belle satisfaction. »</span
                 >
               </p>
             </div>
@@ -422,7 +505,9 @@ function goToSelectedJobDetail() {
               <p class="text-base 2xl:text-2xl font-bold text-primary-950 mb-1">
                 Stéphanie Demarez
               </p>
-              <p class="text-sm font-medium text-primary-900/50 mb-2">Directrice BU Digital</p>
+              <p class="text-sm font-medium text-primary-900/80 mb-2">
+                Directrice Commercial BU Digital
+              </p>
               <p
                 class="min-h-[100px] 2xl:min-h-[120px] w-full max-w-full overflow-hidden text-xs 2xl:text-lg italic text-primary-900/80 leading-relaxed"
               >
@@ -443,36 +528,14 @@ function goToSelectedJobDetail() {
         >
           <div class="flex flex-col items-center">
             <div
-              class="w-32 h-48 min-[985px]:w-48 min-[985px]:h-72 2xl:w-[320px] 2xl:h-[480px] [perspective:1000px] transform-gpu border-0 ring-0 outline-none cursor-pointer"
-              role="button"
-              tabindex="0"
-              aria-label="Retourner la carte de Stéphanie Demarez"
-              @click="isSDFlipped = !isSDFlipped"
-              @keydown.enter="isSDFlipped = !isSDFlipped"
-              @keydown.space.prevent="isSDFlipped = !isSDFlipped"
+              class="w-32 h-48 min-[985px]:w-48 min-[985px]:h-72 2xl:w-[320px] 2xl:h-[480px] bg-primary-950 rounded-2xl flex items-center justify-center overflow-hidden"
             >
-              <div
-                class="relative w-full h-full [transform-style:preserve-3d] rounded-2xl shadow-[40px_20px_50px_-15px_rgba(0,0,50,0.4)] will-change-transform transition-transform duration-700 ease-in-out border-0 ring-0 outline-none"
-                :class="
-                  isSDFlipped ? '[transform:rotateY(-195deg)]' : '[transform:rotateY(-15deg)]'
-                "
-              >
-                <!-- Face avant -->
-                <div
-                  class="absolute inset-0 h-full w-full backface-hidden antialiased translate-z-[1px] bg-primary-950 rounded-2xl flex items-center justify-center overflow-hidden border-0 border-transparent"
-                >
-                  <img :src="imgStephanie" class="h-full w-full object-cover" alt="Stéphanie" />
-                </div>
-                <!-- Face arrière — basique, prête à accueillir du contenu plus tard. -->
-                <div
-                  class="absolute inset-0 h-full w-full [transform:rotateY(180deg)] backface-hidden antialiased bg-white border border-gray-200 rounded-2xl overflow-hidden"
-                />
-              </div>
+              <img :src="imgStephanie" class="h-full w-full object-cover" alt="Stéphanie" />
             </div>
           </div>
           <div class="mt-4 max-w-32 text-center min-[985px]:hidden">
             <p class="text-sm font-bold text-primary-950">Stéphanie Demarez</p>
-            <p class="text-[11px] font-medium text-primary-900/50">Directrice BU Digital</p>
+            <p class="text-[11px] font-medium text-primary-900/80">Directrice Commercial BU Digital</p>
             <p class="mt-1 min-h-[72px] text-xs italic leading-snug text-primary-900/80">
               <span class="block">« Je ne cherche pas seulement un business</span>
               <span class="block">mais avant tout à créer une relation durable. »</span>
@@ -481,62 +544,60 @@ function goToSelectedJobDetail() {
         </div>
       </div>
 
-      <!-- Sous 460px, l'arène à deux cartes ne tient plus : les deux profils
-           sont empilés statiquement (pas de carrousel à une seule BU).
-           Noémie en premier (haut), Stéphanie ensuite (bas). -->
-      <div
-        class="hidden max-[459px]:flex w-full flex-1 flex-col items-center justify-center gap-10 px-4"
-      >
-        <div class="flex flex-col items-center">
+      <!-- transition carte unique : un seul profil a la fois sous 460px -->
+      <div class="hidden max-[459px]:block w-full flex-1 px-4">
+        <Transition
+          mode="out-in"
+          enter-active-class="transition-all duration-500 ease-out"
+          leave-active-class="transition-all duration-300 ease-in"
+          enter-from-class="opacity-0 translate-x-4"
+          leave-to-class="opacity-0 -translate-x-4"
+        >
           <div
-            class="flex h-[clamp(200px,40dvh,350px)] w-52 shrink min-h-0 items-center justify-center overflow-hidden rounded-2xl bg-primary-950 [@media(max-height:690px)]:max-h-[25dvh]"
+            :key="currentProfileIndex"
+            class="flex h-full w-full flex-col items-center justify-center gap-4"
           >
-            <span class="font-display text-6xl font-extrabold text-white/10">NV</span>
-          </div>
-          <div
-            class="mt-4 [@media(max-height:690px)]:mt-2 min-h-[160px] w-full max-w-[18rem] flex flex-col justify-start text-center"
-          >
-            <p class="text-xl font-bold text-primary-950">Noémie Vannoye</p>
-            <p class="text-sm font-medium text-primary-900/50">Responsable RH</p>
-            <p
-              class="mt-1 text-base italic leading-snug text-primary-900/80 [@media(max-height:690px)]:text-sm [@media(max-height:690px)]:leading-tight"
+            <div
+              class="flex h-40 w-52 shrink min-h-0 items-center justify-center overflow-hidden rounded-2xl bg-primary-950 [@media(max-height:690px)]:h-28"
             >
-              <span class="block">« Écouter pour mieux suivre et accompagner</span>
-              <span class="block">mes collaborateurs dans leur montée en compétences. »</span>
-            </p>
+              <span class="font-display text-6xl font-extrabold text-white/10">{{
+                TEAM_PROFILES[currentProfileIndex]!.initials
+              }}</span>
+            </div>
+            <div class="w-full max-w-[18rem] flex flex-col justify-start text-center">
+              <p class="text-xl font-bold text-primary-950">
+                {{ TEAM_PROFILES[currentProfileIndex]!.name }}
+              </p>
+              <p class="text-sm font-medium text-primary-900/80">
+                {{ TEAM_PROFILES[currentProfileIndex]!.role }}
+              </p>
+              <p
+                class="mt-1 text-base italic leading-snug text-primary-900/80 [@media(max-height:690px)]:text-sm [@media(max-height:690px)]:leading-tight"
+              >
+                <span
+                  v-for="line in TEAM_PROFILES[currentProfileIndex]!.quote"
+                  :key="line"
+                  class="block"
+                  >{{ line }}</span
+                >
+              </p>
+            </div>
           </div>
-        </div>
-        <div class="flex flex-col items-center">
-          <div
-            class="flex h-[clamp(200px,40dvh,350px)] w-52 shrink min-h-0 items-center justify-center overflow-hidden rounded-2xl bg-primary-950 [@media(max-height:690px)]:max-h-[25dvh]"
-          >
-            <span class="font-display text-6xl font-extrabold text-white/10">SD</span>
-          </div>
-          <div
-            class="mt-4 [@media(max-height:690px)]:mt-2 min-h-[160px] w-full max-w-[18rem] flex flex-col justify-start text-center"
-          >
-            <p class="text-xl font-bold text-primary-950">Stéphanie Demarez</p>
-            <p class="text-sm font-medium text-primary-900/50">Directrice BU Digital</p>
-            <p
-              class="mt-1 text-base italic leading-snug text-primary-900/80 [@media(max-height:690px)]:text-sm [@media(max-height:690px)]:leading-tight"
-            >
-              <span class="block">« Je ne cherche pas seulement un business</span>
-              <span class="block">mais avant tout à créer une relation durable. »</span>
-            </p>
-          </div>
-        </div>
+        </Transition>
       </div>
     </section>
 
-    <!-- SECTION 3 (Wireframe 7) — photo empilée à gauche, témoignage à droite. -->
+    <!-- SECTION 3 (Wireframe 7) - photo empilée à gauche, témoignage à droite. -->
+    <!-- compense hauteur navbar -->
     <section
       id="temoignage"
       data-theme="dark"
-      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-[#000066] grid grid-cols-1 lg:grid-cols-2"
+      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-[#000066] grid grid-cols-1 pt-24 lg:grid-cols-2 lg:pt-0"
     >
       <!-- Colonne gauche : photo (effet d'empilement) -->
-      <div class="flex items-center justify-center px-8 py-12 lg:px-24">
-        <div class="relative aspect-square w-full max-w-md">
+      <!-- fix hauteur temoignages -->
+      <div class="flex items-center justify-center px-8 pb-6 lg:px-24 lg:py-12">
+        <div class="relative aspect-square max-h-[150px] w-full max-w-md lg:max-h-none">
           <div
             class="absolute inset-0 translate-x-3 translate-y-3 rounded-3xl bg-gray-100"
             aria-hidden="true"
@@ -550,7 +611,9 @@ function goToSelectedJobDetail() {
       </div>
 
       <!-- Colonne droite : témoignage -->
-      <div class="relative z-10 flex flex-col justify-center overflow-hidden px-8 py-12 lg:px-24">
+      <div
+        class="relative z-10 flex flex-col justify-center overflow-hidden px-8 pb-6 lg:px-24 lg:py-12"
+      >
         <!-- halo core glow derriere la citation, contenu et discret -->
         <div
           class="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[80%] w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-[4rem] bg-primary-500/30 blur-[80px]"
@@ -613,11 +676,12 @@ function goToSelectedJobDetail() {
       id="expertises"
       ref="approcheEl"
       data-theme="light"
-      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-white flex flex-col justify-center py-24 md:py-32"
+      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-white flex flex-col justify-center pt-24 pb-10 sm:py-24 md:py-32"
     >
       <!-- en tete, fondu vers le haut -->
+      <!-- compense hauteur navbar -->
       <p
-        class="mb-6 text-center font-bold uppercase tracking-widest text-accent-500"
+        class="mb-3 text-center font-bold uppercase tracking-widest text-accent-500 sm:mb-6"
         :class="
           isApprocheVisible
             ? 'translate-y-0 opacity-100 transition-all duration-700 ease-out'
@@ -627,7 +691,7 @@ function goToSelectedJobDetail() {
         Notre approche
       </p>
       <h2
-        class="mx-auto mb-24 max-w-5xl text-center font-display text-4xl font-black leading-tight text-primary-900 md:text-5xl lg:text-6xl"
+        class="mx-auto mb-8 max-w-5xl text-center font-display text-3xl font-black leading-tight text-primary-900 sm:mb-24 sm:text-5xl lg:text-6xl"
         :class="
           isApprocheVisible
             ? 'translate-y-0 opacity-100 transition-all duration-700 delay-150 ease-out'
@@ -641,7 +705,9 @@ function goToSelectedJobDetail() {
       </h2>
 
       <!-- deux colonnes de texte, rassemblement lateral -->
-      <div class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-10 px-6 md:grid-cols-2 md:gap-16">
+      <div
+        class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-6 px-6 sm:gap-10 md:grid-cols-2 md:gap-16"
+      >
         <p
           class="text-lg leading-relaxed text-gray-700 md:text-xl"
           :class="
@@ -672,11 +738,11 @@ function goToSelectedJobDetail() {
       </div>
     </section>
 
-    <!-- SECTION 5 (Wireframe 8) — grille de 10 cartes "stack technique", la 3e mise en avant. -->
+    <!-- SECTION 5 (Wireframe 8) - grille de 10 cartes "stack technique", la 3e mise en avant. -->
     <section
       id="stack"
       data-theme="dark"
-      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-[#000066] flex flex-col justify-center px-8 py-12 text-center lg:px-24"
+      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-[#000066] flex flex-col justify-start px-8 pt-24 pb-6 text-center md:justify-center lg:px-24"
     >
       <!-- halo core glow derriere la grille de logos -->
       <div
@@ -684,22 +750,43 @@ function goToSelectedJobDetail() {
         aria-hidden="true"
       />
 
-      <!-- en tete massif -->
+      <!-- en tete massif, remonte en haut sur mobile -->
       <div class="text-center">
-        <p class="mb-4 text-center font-bold uppercase tracking-widest text-accent-500">
+        <p class="mb-2 text-center font-bold uppercase tracking-widest text-accent-500 sm:mb-4">
           Un écosystème technologique au service de vos ambitions digitales
         </p>
-        <h2 class="mb-16 font-display text-5xl font-black text-white md:text-7xl">
+        <h2
+          class="mb-6 font-display text-3xl font-black text-white sm:mb-16 sm:text-5xl md:text-7xl"
+        >
           Notre expertise technologique
         </h2>
       </div>
 
-      <!-- grille stacks -->
-      <div class="mx-auto grid w-full max-w-7xl grid-cols-2 gap-6 lg:grid-cols-3 md:gap-8">
+      <!-- grille 2x2 tech mobile -->
+      <div class="mx-auto grid w-full max-w-[280px] grid-cols-2 gap-4 md:hidden">
+        <div
+          v-for="(stack, index) in mobileStacks"
+          :key="index"
+          class="flex aspect-square w-full items-center justify-center rounded-2xl border border-transparent bg-white/10 p-4"
+        >
+          <Transition mode="out-in" name="fade">
+            <img
+              :key="stack.name"
+              :src="stack.icon"
+              :alt="stack.name"
+              class="h-20 w-20 object-contain"
+              :class="{ 'brightness-0 invert': stack.needsInvert }"
+            />
+          </Transition>
+        </div>
+      </div>
+
+      <!-- grille complete, statique a partir de md -->
+      <div class="mx-auto hidden w-full max-w-7xl md:grid md:grid-cols-3 md:gap-8">
         <div
           v-for="(stack, index) in displayedStacks"
           :key="index"
-          class="group flex h-64 cursor-pointer flex-col items-center justify-center gap-4 rounded-3xl border border-transparent bg-white/10 p-8 transition-colors hover:border-accent-500 active:scale-95 md:p-10"
+          class="group flex h-64 cursor-pointer flex-col items-center justify-center gap-4 rounded-3xl border border-transparent bg-white/10 p-10 transition-colors hover:border-accent-500 active:scale-95"
           @click="changeSpecificStack(index)"
         >
           <Transition mode="out-in" name="fade">
@@ -707,7 +794,7 @@ function goToSelectedJobDetail() {
               <img
                 :src="stack.icon"
                 :alt="stack.name"
-                class="h-32 w-32 object-contain md:h-40 md:w-40"
+                class="h-40 w-40 object-contain"
                 :class="{ 'brightness-0 invert': stack.needsInvert }"
               />
             </div>
@@ -716,37 +803,50 @@ function goToSelectedJobDetail() {
       </div>
     </section>
 
+    <!-- cas d'usage (Boulanger, Adeo), composant partage avec DataIaView.vue -->
+    <UseCasesSection />
+
     <!-- section offres d'emploi, structure identique a data ia -->
+    <!-- compense hauteur navbar -->
     <section
       id="offres"
       data-theme="light"
-      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-white flex flex-col justify-center px-8 py-24 text-center md:py-32 lg:px-24"
+      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-white flex flex-col justify-center px-8 pt-24 pb-6 text-center sm:py-24 md:py-32 lg:px-24"
     >
       <div>
         <p class="text-sm font-bold uppercase tracking-widest text-accent-500">Rejoignez-nous</p>
         <h2
-          class="mt-2 mb-6 font-display text-5xl font-black text-[#000066] md:text-6xl xl:text-7xl"
+          class="mt-2 mb-3 font-display text-3xl font-black text-[#000066] sm:mb-6 md:text-6xl xl:text-7xl"
         >
           Nos offres du moment
         </h2>
-        <p class="mx-auto mt-4 max-w-2xl text-lg text-gray-600 md:text-xl">
+        <p class="mx-auto mt-2 max-w-2xl text-lg text-gray-600 sm:mt-4 md:text-xl">
           Portez la vision produit, priorisez le backlog et faites le lien entre les besoins métiers
           et l'équipe technique.
         </p>
       </div>
 
-      <!-- grille des 3 cartes -->
+      <!-- calque data ia : carrousel horizontal mobile -->
       <div
-        class="mx-auto mt-10 grid w-full max-w-[1400px] grid-cols-1 gap-8 md:grid-cols-3 md:gap-12"
+        v-if="digitalJobs.length > 0"
+        class="mx-auto mt-4 flex w-full max-w-[1400px] snap-x snap-mandatory gap-4 overflow-x-auto pb-4 hide-scrollbar sm:mt-10 md:grid md:grid-cols-3 md:gap-12 md:overflow-visible md:pb-0"
       >
+        <!-- cache ombre mobile -->
         <div
           v-for="(job, index) in digitalJobs"
           :key="index"
-          class="relative flex min-h-[350px] cursor-pointer flex-col justify-between rounded-[2rem] border border-gray-100 bg-white p-10 text-left shadow-2xl md:min-h-[400px] md:p-12"
+          class="relative flex w-[85vw] min-h-[260px] shrink-0 cursor-pointer snap-center flex-col justify-between rounded-[2rem] border border-gray-100 bg-white p-6 text-left shadow-none md:w-auto md:min-h-[400px] md:p-12 md:shadow-2xl"
           @click="openModal(job)"
         >
           <div>
-            <p class="text-2xl font-bold text-[#000066] md:text-3xl">{{ job.title }}</p>
+            <!-- lien sur titre -->
+            <router-link
+              :to="{ name: 'offre-detail', params: { id: job.id } }"
+              class="block text-2xl font-bold text-[#000066] transition-colors hover:text-accent-500 md:text-3xl"
+              @click.stop
+            >
+              {{ job.title }}
+            </router-link>
             <p class="mt-2 text-sm text-gray-700">{{ job.contract }} - {{ job.location }}</p>
           </div>
 
@@ -755,22 +855,22 @@ function goToSelectedJobDetail() {
             {{ job.shortDescription }}
           </p>
 
-          <!-- badges stack tech, limite a 3 stacks -->
+          <!-- badges stack tech, limite a 3 stacks. couleurs opaques : texte blanc sur vert echouait -->
           <div class="mt-8 flex flex-wrap gap-3">
             <span
               v-for="(stack, stackIndex) in job.stacks.slice(0, 3)"
               :key="stackIndex"
-              class="rounded-full bg-accent-500 px-4 py-2 text-sm font-bold text-white"
+              class="rounded-full bg-accent-500 px-4 py-2 text-sm font-bold text-black"
             >
               {{ stack }}
             </span>
           </div>
 
-          <!-- flèche qui redirige vers la fiche complete, stop du clic de la carte -->
+          <!-- masque fleche mobile -->
           <button
             type="button"
             aria-label="Voir la fiche complete de l'offre"
-            class="absolute bottom-6 right-6 flex size-10 items-center justify-center rounded-full bg-[#000066] text-white transition-colors hover:bg-primary-700"
+            class="absolute bottom-6 right-6 hidden size-10 items-center justify-center rounded-full bg-[#000066] text-white transition-colors hover:bg-primary-700 md:flex"
             @click.stop="goToJob(job.id)"
           >
             <svg
@@ -786,8 +886,13 @@ function goToSelectedJobDetail() {
           </button>
         </div>
       </div>
+      <!-- fallback zero offre -->
+      <p v-else class="mt-4 text-center text-primary-900/80 sm:mt-10">
+        Aucune offre spécifique pour le moment. N'hésitez pas à nous envoyer une candidature
+        spontanée !
+      </p>
 
-      <div class="mt-12 flex w-full justify-center">
+      <div class="mt-4 flex w-full justify-center sm:mt-12">
         <button
           type="button"
           class="inline-flex items-center gap-2 rounded-full bg-[#12D80A] px-10 py-4 text-lg font-bold text-[#000066] shadow-[0_10px_30px_rgba(18,216,10,0.3)] transition-transform hover:scale-105 md:text-xl"
@@ -854,7 +959,7 @@ function goToSelectedJobDetail() {
             <span
               v-for="(stack, stackIndex) in selectedJob.stacks"
               :key="stackIndex"
-              class="rounded-full bg-accent-500 px-3 py-1 text-xs font-bold text-white"
+              class="rounded-full bg-accent-500 px-3 py-1 text-xs font-bold text-black"
             >
               {{ stack }}
             </span>

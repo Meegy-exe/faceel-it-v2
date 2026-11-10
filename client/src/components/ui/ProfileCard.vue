@@ -6,26 +6,26 @@ import { computed } from 'vue'
  *
  * Purement présentationnelle : elle ne possède PAS son état ouvert/fermé.
  * `expanded` est piloté par le parent (`CollectifView`), qui garantit qu'une
- * seule carte est ouverte à la fois — un état local ici rendrait ce
+ * seule carte est ouverte à la fois  un état local ici rendrait ce
  * « accordéon horizontal » impossible sans remonter l'information de toute
  * façon.
  *
- * DÉPLIAGE — POURQUOI DEUX MÉCANIQUES PLUTÔT QU'UNE
+ * DÉPLIAGE  POURQUOI DEUX MÉCANIQUES PLUTÔT QU'UNE
  * Le panneau de détail (Mission / Profil) ne peut pas s'ouvrir dans le même
  * axe sur toutes les tailles d'écran : à 375 px de large, élargir la carte de
  * 288 px à 600 px déborderait de l'écran et ne révélerait rien. D'où :
- *   — desktop (≥ sm) : la carte s'ÉLARGIT (`w-72` → `w-[38rem]`), le panneau
+ *    desktop (≥ sm) : la carte s'ÉLARGIT (`w-72` → `w-[38rem]`), le panneau
  *     est un `grid-cols-[0fr]` → `[1fr]` ;
- *   — mobile : la largeur ne bouge pas, la carte s'ALLONGE vers le bas, le
+ *    mobile : la largeur ne bouge pas, la carte s'ALLONGE vers le bas, le
  *     panneau est un `grid-rows-[0fr]` → `[1fr]`.
  * Les deux passent par la même propriété animable (`grid-template-*`), donc
- * une seule transition à déclarer — et surtout aucune hauteur/largeur en dur
+ * une seule transition à déclarer  et surtout aucune hauteur/largeur en dur
  * à calculer en JavaScript, qui casserait au moindre changement de contenu.
  *
  * Le contenu interne garde une largeur FIXE (`w-72`/`sm:w-[19rem]`) : sans
  * elle, le texte se re-justifierait à chaque image de l'animation (reflow
  * visible, saccadé). Le cadre `overflow-hidden` du parent le révèle
- * progressivement — même principe que la sidebar « push » d'`App.vue`.
+ * progressivement  même principe que la sidebar « push » d'`App.vue`.
  */
 interface Props {
   /** Identifiant stable : sert d'ancre `aria-controls`. Doit être unique. */
@@ -42,7 +42,7 @@ interface Props {
   /**
    * `| undefined` EXPLICITE, et non le simple `?` : `exactOptionalPropertyTypes`
    * est actif (cf. `tsconfig`), un appelant qui lie `:photo="profil.photo"`
-   * passe littéralement `undefined` quand la photo manque — ce que `photo?:
+   * passe littéralement `undefined` quand la photo manque  ce que `photo?:
    * string` seul refuse. Même forme que `SeoInput.image` dans `useSeo.ts`.
    */
   photo?: string | undefined
@@ -77,7 +77,7 @@ const initials = computed(() =>
     :class="expanded ? 'w-72 shadow-panel sm:w-[38rem]' : 'w-72 shadow-soft'"
   >
     <!-- Colonne « fermée » : photo + vague + identité. C'est elle qui porte
-         l'interaction — un `<button>` plutôt qu'un `@click` sur l'`<article>`
+         l'interaction  un `<button>` plutôt qu'un `@click` sur l'`<article>`
          pour être atteignable au clavier et annoncer son état (`aria-expanded`)
          sans avoir à recréer à la main le rôle, le focus et la touche Entrée. -->
     <button
@@ -94,7 +94,7 @@ const initials = computed(() =>
           :alt="`Portrait de ${name}`"
           class="size-full object-cover transition-transform duration-700 ease-premium group-hover:scale-105 motion-reduce:transition-none"
         />
-        <!-- Repli sans photo : monogramme sur fond navy. `aria-hidden` — le nom
+        <!-- Repli sans photo : monogramme sur fond navy. `aria-hidden`  le nom
              juste en dessous porte déjà l'information, la répéter créerait un
              doublon à la lecture d'écran. -->
         <span
@@ -106,7 +106,7 @@ const initials = computed(() =>
         </span>
 
         <!-- Séparation en vague : SVG étiré (`preserveAspectRatio="none"`)
-             plutôt qu'un `mask` ou une image bitmap — il suit n'importe quelle
+             plutôt qu'un `mask` ou une image bitmap  il suit n'importe quelle
              largeur de carte sans se pixelliser, et `currentColor` le raccorde
              automatiquement au fond de la partie basse. -->
         <svg
@@ -124,7 +124,7 @@ const initials = computed(() =>
         <h3 class="font-display text-title text-primary-900">{{ name }}</h3>
         <p class="text-sm font-semibold text-accent-700">{{ role }}</p>
 
-        <!-- Affordance du dépliage : le libellé change ET la flèche pivote —
+        <!-- Affordance du dépliage : le libellé change ET la flèche pivote
              deux signaux, dont un non chromatique. -->
         <span
           class="mt-3 inline-flex items-center gap-2 text-eyebrow uppercase text-primary-900/45"
@@ -167,7 +167,7 @@ const initials = computed(() =>
         >
           <!-- Décalage d'apparition (delay-300) : le texte n'entre qu'une fois
                la carte presque arrivée à sa taille finale, sinon il « pousse »
-               le regard avant que le cadre existe — c'est ce décalage qui rend
+               le regard avant que le cadre existe  c'est ce décalage qui rend
                le geste organique plutôt que mécanique. Le `delay` ne s'applique
                qu'à l'ouverture : à la fermeture, l'opacité tombe immédiatement
                pour ne pas laisser du texte flotter dans un cadre déjà refermé. -->

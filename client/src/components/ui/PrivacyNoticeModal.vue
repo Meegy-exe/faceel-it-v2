@@ -105,7 +105,7 @@ const emit = defineEmits<{ close: [] }>()
                 class="font-medium text-[#000066] underline underline-offset-2 hover:opacity-80"
                 >contact@faceel-it.com</a
               >
-              — ou par courrier : Faceel-IT, 10 allée du Château Blanc, 59290 Wasquehal.
+              - ou par courrier : Faceel-IT, 10 allée du Château Blanc, 59290 Wasquehal.
             </p>
             <p class="mt-2">
               Si vous estimez que vos droits ne sont pas respectés, vous pouvez adresser une

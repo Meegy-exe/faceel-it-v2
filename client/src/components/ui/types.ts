@@ -16,14 +16,14 @@ import type { RouteLocationRaw } from 'vue-router'
 /* -------------------------------------------------------------------------- */
 
 /**
- * `accent` est un aplat de vert plein — ce qui semble contredire la règle de
+ * `accent` est un aplat de vert plein - ce qui semble contredire la règle de
  * `CardTone` (l'accent jamais en surface). Ce n'est pas une contradiction :
  * la règle de `CardTone` protège contre le cas où plusieurs surfaces
  * colorées doivent se distinguer les unes des autres (une grille de cartes),
  * où la seule teinte ne suffit pas en daltonisme. Un bouton isolé n'a rien à
  * distinguer d'un autre bouton adjacent de même forme : c'est un texte navy
  * en gras sur un aplat, 9,1:1, parfaitement lisible. Réservé aux appels à
- * l'action de plus haute intention (ex. « Consulter nos offres ») — un excès
+ * l'action de plus haute intention (ex. « Consulter nos offres ») - un excès
  * l'affaiblirait comme n'importe quelle couleur de forte intensité.
  */
 export type ButtonVariant = 'primary' | 'outline' | 'ghost' | 'accent'
@@ -65,7 +65,7 @@ export interface MegaMenuColumn {
 
 /**
  * Colonne de liens du pied de page. Structurellement identique à une colonne
- * de méga-menu — même titre de groupe, même forme de liens — donc aliasée
+ * de méga-menu - même titre de groupe, même forme de liens - donc aliasée
  * plutôt que dupliquée. Si les deux divergent un jour, séparer les deux types.
  */
 export type FooterColumn = MegaMenuColumn
@@ -78,7 +78,7 @@ export type FooterColumn = MegaMenuColumn
  * déroulant desktop) a été retiré en V0.1.24 avec le pivot vers un menu
  * latéral (cf. `docs/DECISIONS.md`) : sans consommateur (`mainNav.ts` n'a
  * jamais posé ce champ) et sans plus aucun panneau desktop pour l'accueillir
- * — même principe que le retrait d'un composant entièrement orphelin
+ * - même principe que le retrait d'un composant entièrement orphelin
  * (`DataCore`/`WaveRibbon`…), appliqué ici à un champ de type plutôt qu'à un
  * composant entier.
  */
@@ -98,9 +98,9 @@ export interface MegaMenuEntry extends Navigable {
  *
  * L'accent (#12D80A) est volontairement ABSENT de cette liste : en aplat de
  * fond il ne laisse aucune couleur de texte confortable (navy 9,1:1 mais
- * vibration forte, blanc 1,9:1 — inutilisable), et il devient indiscernable
+ * vibration forte, blanc 1,9:1 - inutilisable), et il devient indiscernable
  * d'un fond clair en deutéranopie/protanopie. Le vert reste une couleur de
- * TOUCHE — pictogramme, filigrane, puce, trait, bordure au survol — jamais de
+ * TOUCHE - pictogramme, filigrane, puce, trait, bordure au survol - jamais de
  * surface. Ne pas réintroduire `'accent'` ici.
  */
 export type CardTone = 'light' | 'dark'
@@ -108,17 +108,17 @@ export type CardTone = 'light' | 'dark'
 /**
  * Gabarit de la carte (V0.1.15) : `md` pour une grille (plusieurs cartes
  * visibles à la fois, marges et titre calibrés pour partager l'espace),
- * `lg` pour une carte seule occupant toute l'attention — marges et
+ * `lg` pour une carte seule occupant toute l'attention - marges et
  * typographie de titre plus généreuses, rien d'autre ne change (tonalité,
  * survol, trait d'accent restent identiques quelle que soit la taille).
  *
  * Réutilisé par `CarouselSlideContent` (V0.1.18) pour la même échelle de
- * typographie (`title`/`body`), sans les marges — un texte libre n'a pas de
+ * typographie (`title`/`body`), sans les marges - un texte libre n'a pas de
  * padding de carte à faire varier. Jusqu'en V0.1.17, `lg` habillait la
  * carte unique de `CardCarousel` (Services/Secteurs/RSE) via `HighlightCard`
  * ; depuis V0.1.18 (« naked slider », cf. ADR 22), ces trois sections
  * passent par `CarouselSlideContent`, `HighlightCard` n'a donc plus de
- * consommateur en production (reste démontré dans `StyleguideView`) — ce
+ * consommateur en production (reste démontré dans `StyleguideView`) - ce
  * type sert désormais les deux composants, pas uniquement `HighlightCard`.
  */
 export type CardSize = 'md' | 'lg'

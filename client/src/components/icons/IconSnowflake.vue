@@ -1,12 +1,12 @@
 <script setup lang="ts">
 /**
  * Logo Snowflake, en version monochrome (`currentColor`) pour s'afficher en
- * blanc sur fond bleu foncé — contrairement à GCP/Power BI (multicolores,
+ * blanc sur fond bleu foncé - contrairement à GCP/Power BI (multicolores,
  * dégradés), ce logo n'utilise qu'une seule couleur de base (`#29B5E8`) sur
  * l'ensemble de ses tracés, substituable sans perte de lisibilité.
  *
  * Tracés copiés tels quels depuis `public/images/pa/Snowflake.svg` (lu en
- * texte, pas retranscrit depuis une image) — seul le `fill="#29B5E8"` du
+ * texte, pas retranscrit depuis une image) - seul le `fill="#29B5E8"` du
  * groupe racine est remplacé par `currentColor`.
  */
 </script>

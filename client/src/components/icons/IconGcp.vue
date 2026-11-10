@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
- * Logo Google Cloud Platform — Option A : l'icône (4 formes colorées qui se
+ * Logo Google Cloud Platform - Option A : l'icône (4 formes colorées qui se
  * chevauchent + surbrillance blanche interne) garde ses couleurs de marque
  * d'origine, SEUL le tracé du texte « GOOGLE CLOUD PLATFORM » (gris
  * `#777777` dans le fichier source) passe en `fill="currentColor"` pour
- * suivre `text-white` sur le composant — sans ce changement ciblé, le reste
+ * suivre `text-white` sur le composant - sans ce changement ciblé, le reste
  * de l'icône perdrait le contraste entre ses formes et deviendrait
  * indéchiffrable (cf. tour précédent).
  *

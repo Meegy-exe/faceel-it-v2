@@ -9,13 +9,13 @@ import type { BackgroundTone } from './types'
  * continu. On ne le fait pas : une animation qui ne s'arrête jamais est
  * exactement le genre de déclencheur vestibulaire que
  * `prefers-reduced-motion` sert à neutraliser ailleurs dans ce Design
- * System — l'appliquer partout sauf ici serait incohérent. Un bandeau qui
+ * System  l'appliquer partout sauf ici serait incohérent. Un bandeau qui
  * s'enroule (`flex-wrap`) affiche la même liste sans jamais bouger seul.
  *
  * `logoUrl` est optionnel : sans fichier de logo réel fourni par chaque
  * client, l'entrée retombe sur son nom en typographie de marque. Le composant
  * n'a donc pas besoin d'être retouché le jour où les vrais fichiers arrivent
- * — seule la donnée change.
+ * seule la donnée change.
  */
 export interface LogoWallItem {
   name: string

@@ -8,7 +8,7 @@ interface Logo {
 }
 
 /**
- * Logos uniquement — les liens externes ont été retirés : ils s'ouvraient
+ * Logos uniquement - les liens externes ont été retirés : ils s'ouvraient
  * accidentellement au moindre clic pendant une tentative de drag sur le
  * marquee (cf. correctif drag/momentum ci-dessous).
  */
@@ -77,7 +77,7 @@ function getTranslateX(el: HTMLElement): number {
 }
 
 /**
- * Ramène `tx` dans `(-halfWidth, 0]` — chaque piste contient le jeu de logos
+ * Ramène `tx` dans `(-halfWidth, 0]` - chaque piste contient le jeu de logos
  * en double (cf. `v-for="pass in 2"`), donc décaler d'exactement `halfWidth`
  * retombe sur un visuel identique. Appliqué à chaque frame de drag/inertie
  * pour empêcher de sortir du contenu dupliqué (espace blanc en bout de piste).
@@ -87,7 +87,7 @@ function wrapTranslateX(tx: number, halfWidth: number): number {
   return wrapped > 0 ? wrapped - halfWidth : wrapped
 }
 
-/** Point X de l'événement, souris ou tactile — le drag/momentum ci-dessous
+/** Point X de l'événement, souris ou tactile - le drag/momentum ci-dessous
  *  est écrit une seule fois et partagé par les deux familles d'événements. */
 function getClientX(e: MouseEvent | TouchEvent): number {
   return 'touches' in e ? (e.touches[0]?.clientX ?? e.changedTouches[0]?.clientX ?? 0) : e.clientX
@@ -267,8 +267,9 @@ onBeforeUnmount(() => {
 
     <!-- BLOC 2 : Texte central -->
     <div class="my-32 text-center md:my-40">
-      <p class="text-base font-semibold uppercase tracking-widest text-blue-500">
-        Ils nous ont fait confiance
+      <!-- fix contraste texte : bleu marine de la charte, plus solide que blue-500 -->
+      <p class="text-lg md:text-xl lg:text-2xl font-bold uppercase tracking-wider text-primary-900">
+        Ils nous font confiance dans les Hauts-de-France et au-delà
       </p>
       <h2
         class="mt-2 flex min-h-[88px] [@media(max-height:650px)]:min-h-[56px] items-center justify-center overflow-hidden pb-2 font-display text-4xl [@media(max-height:650px)]:text-2xl [@media(max-height:650px)]:leading-tight font-extrabold tracking-tight text-gray-900 md:min-h-[112px] md:text-5xl"

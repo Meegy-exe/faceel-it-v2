@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, useTemplateRef } from 'vue'
+import { useRoute } from 'vue-router'
 import CookieManagerModal from '@/components/ui/CookieManagerModal.vue'
 import logoSrc from '@/assets/images/2.svg'
 import glassdoorLogo from '@/assets/notations/glassdoor.svg'
@@ -8,22 +9,35 @@ import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollRevea
 import { useProfileStore } from '@/stores/useProfileStore'
 
 const isCookieModalOpen = ref(false)
+// ouvre la modale d'infos cookies (lien pied de page)
+function openCookieModal() {
+  isCookieModalOpen.value = true
+}
 // pilote l'affichage conditionnel des cta du footer
 const profileStore = useProfileStore()
+
+const route = useRoute()
 
 /**
  * `fullPageScroll` bascule entre deux rendus du MÊME contenu :
  *  - `true` (uniquement `HomeView.vue`) : deux sections `h-dvh snap-start`
  *    indépendantes, pour s'aimanter avec le reste du scroll-snap de l'accueil.
  *  - `false`/absent (toutes les autres pages, cf. `App.vue`) : rendu en flux
- *    normal, sans hauteur ni snap imposés — ces pages n'ont pas de conteneur
+ *    normal, sans hauteur ni snap imposés - ces pages n'ont pas de conteneur
  *    de scroll-snap ambiant, `h-dvh` y casserait la mise en page.
  */
-const props = defineProps<{
-  fullPageScroll?: boolean
-  columns?: unknown[]
-  description?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    fullPageScroll?: boolean
+    columns?: unknown[]
+    description?: string
+    disableAnimation?: boolean
+  }>(),
+  { disableAnimation: false },
+)
+
+// sans anim footer : prop explicite ou route marquee staticFooter (ex: offres)
+const isStaticFooter = computed(() => props.disableAnimation || route.meta.staticFooter === true)
 
 /**
  * `fullPageScroll` ne donne PAS le même rendu à toutes les tailles d'écran :
@@ -60,13 +74,17 @@ const whiteReveal = useScrollReveal(whiteEl)
     :class="fullPageScroll ? 'lg:flex lg:h-dvh lg:flex-col lg:snap-start lg:snap-always' : 'h-full'"
   >
     <!-- ═══════════════════════════════════════════════════════════════════════
-         SECTION 1 : Fond bleu — marque, notes de satisfaction, coordonnées
+         SECTION 1 : Fond bleu - marque, notes de satisfaction, coordonnées
          ═══════════════════════════════════════════════════════════════════════ -->
     <section data-theme="dark" :class="blueSectionClass">
       <div
         ref="blueEl"
         class="relative z-10 mx-auto w-full max-w-7xl px-4 py-8 [@media(max-height:568px)]:pt-20 [@media(max-height:568px)]:pb-2 transition-all duration-700 ease-out motion-reduce:transition-none sm:px-6 lg:px-8 lg:py-12 xl:px-12"
-        :class="scrollRevealClass(blueReveal, 'up', { durationClass: 'duration-1000' })"
+        :class="[
+          isStaticFooter ? '' : scrollRevealClass(blueReveal, 'up', { durationClass: 'duration-1000' }),
+          // pas d'anim mobile footer
+          'max-md:opacity-100 max-md:translate-y-0 max-md:transition-none',
+        ]"
       >
         <div
           class="flex flex-col items-center gap-6 text-center [@media(min-height:651px)_and_(max-height:760px)]:gap-4 [@media(min-height:569px)_and_(max-height:650px)]:gap-3 [@media(max-height:568px)]:gap-4 lg:flex-row lg:items-start lg:gap-16 lg:text-left"
@@ -88,7 +106,7 @@ const whiteReveal = useScrollReveal(whiteEl)
             </p>
           </div>
 
-          <!-- Contact — mobile/tablette uniquement (`lg:hidden`) : repositionné
+          <!-- Contact - mobile/tablette uniquement (`lg:hidden`) : repositionné
                ici (entre l'identité et les notes) pour suivre l'ordre de
                lecture demandé sur mobile ; invisible et donc sans effet sur
                la mise en page `lg:flex-row` du desktop. Mêmes coordonnées,
@@ -149,7 +167,7 @@ const whiteReveal = useScrollReveal(whiteEl)
           </div>
         </div>
 
-        <!-- Barre d'actions — mobile/tablette uniquement (`lg:hidden`) : copie
+        <!-- Barre d'actions - mobile/tablette uniquement (`lg:hidden`) : copie
              de la barre de la section blanche (réseaux sociaux + CTA),
              couleurs inversées pour ce fond bleu. La barre d'origine est
              masquée sur cette plage de largeur (`hidden lg:flex`, cf. plus
@@ -235,7 +253,7 @@ const whiteReveal = useScrollReveal(whiteEl)
               </svg>
             </a>
             <a
-              href="https://www.glassdoor.fr/Avis/Faceel-IT-Avis-E8791143.htm"
+              href="https://www.glassdoor.fr/Avis/Faceel-it-Lille-Avis-EI_IE4844076.0,9_IL.10,15_IM1111.htm"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Faceel-IT sur Glassdoor"
@@ -276,15 +294,19 @@ const whiteReveal = useScrollReveal(whiteEl)
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════════════════
-         SECTION 2 : Fond blanc — navigation + CTAs + réseaux sociaux + copyright
+         SECTION 2 : Fond blanc - navigation + CTAs + réseaux sociaux + copyright
          ═══════════════════════════════════════════════════════════════════════ -->
     <section data-theme="light" :class="whiteSectionClass">
       <div
         ref="whiteEl"
         class="mx-auto w-full max-w-7xl px-4 py-12 [@media(max-width:1023px)_and_(max-height:610px)]:pt-20 [@media(max-width:1023px)_and_(max-height:610px)]:pb-2 transition-all duration-700 ease-out motion-reduce:transition-none"
-        :class="scrollRevealClass(whiteReveal, 'up', { durationClass: 'duration-1000' })"
+        :class="[
+          isStaticFooter ? '' : scrollRevealClass(whiteReveal, 'up', { durationClass: 'duration-1000' }),
+          // pas d'anim mobile footer
+          'max-md:opacity-100 max-md:translate-y-0 max-md:transition-none',
+        ]"
       >
-        <!-- Grille de navigation — bascule en flex à partir de `lg:` pour
+        <!-- Grille de navigation - bascule en flex à partir de `lg:` pour
              accueillir le bloc contact (col-cadre à crochets) et son
              séparateur vertical en bout de ligne, cf. plus bas. -->
         <div
@@ -296,7 +318,7 @@ const whiteReveal = useScrollReveal(whiteEl)
             <ul class="mt-5 space-y-3 text-sm">
               <li>
                 <RouterLink
-                  to="/#business-units"
+                  to="/nos-bus/digital"
                   class="text-gray-700 transition-colors duration-200 hover:text-[#000066]"
                 >
                   Digital
@@ -304,7 +326,7 @@ const whiteReveal = useScrollReveal(whiteEl)
               </li>
               <li>
                 <RouterLink
-                  to="/#business-units"
+                  to="/nos-bus/product"
                   class="text-gray-700 transition-colors duration-200 hover:text-[#000066]"
                 >
                   Product
@@ -312,7 +334,7 @@ const whiteReveal = useScrollReveal(whiteEl)
               </li>
               <li>
                 <RouterLink
-                  to="/#business-units"
+                  to="/nos-bus/data-ia"
                   class="text-gray-700 transition-colors duration-200 hover:text-[#000066]"
                 >
                   Data & IA
@@ -380,19 +402,12 @@ const whiteReveal = useScrollReveal(whiteEl)
                 <a
                   href="#"
                   class="cursor-pointer text-gray-700 transition-colors duration-200 hover:text-[#000066]"
-                  @click.prevent="isCookieModalOpen = true"
+                  @click.prevent="openCookieModal"
                 >
                   Gestion des cookies
                 </a>
               </li>
-              <li>
-                <RouterLink
-                  to="/accessibilite"
-                  class="text-gray-700 transition-colors duration-200 hover:text-[#000066]"
-                >
-                  Déclaration d'accessibilité
-                </RouterLink>
-              </li>
+              <!-- retrait footer temporaire : lien /accessibilite -->
             </ul>
           </nav>
 
@@ -432,7 +447,7 @@ const whiteReveal = useScrollReveal(whiteEl)
           <div
             class="hidden flex-col items-center gap-6 sm:w-full sm:flex-row sm:justify-between lg:flex"
           >
-            <!-- Réseaux sociaux — mêmes SVG inline que la section bleue, couleurs
+            <!-- Réseaux sociaux - mêmes SVG inline que la section bleue, couleurs
                  inversées : ce fond est blanc (pas #000066), donc le rond
                  externe passe en primary-900 (+ hover accent-700, pas
                  accent-500 : 1,9:1 sur blanc, cf. main.css) et la couche
@@ -516,7 +531,7 @@ const whiteReveal = useScrollReveal(whiteEl)
                 </svg>
               </a>
               <a
-                href="https://www.glassdoor.fr/Avis/Faceel-IT-Avis-E8791143.htm"
+                href="https://www.glassdoor.fr/Avis/Faceel-it-Lille-Avis-EI_IE4844076.0,9_IL.10,15_IM1111.htm"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Faceel-IT sur Glassdoor"
@@ -551,7 +566,7 @@ const whiteReveal = useScrollReveal(whiteEl)
           <p
             class="mt-8 [@media(max-width:1023px)_and_(max-height:610px)]:mt-4 text-center text-sm text-gray-400"
           >
-            Faceel-IT — ESN, Wasquehal, Hauts-de-France.
+            Faceel-IT - ESN, Wasquehal, Hauts-de-France.
           </p>
         </div>
       </div>

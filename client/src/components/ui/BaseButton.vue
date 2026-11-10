@@ -91,7 +91,7 @@ const attrs = computed(() => {
 /**
  * `sm` seule est responsive : c'est la taille utilisée dans la navbar
  * (App.vue, slot `#actions`), toujours visible désormais jusqu'à 500px de
- * large (cf. MegaMenu.vue — plus de `hidden lg:flex` sur ce slot). `md`/`lg`
+ * large (cf. MegaMenu.vue  plus de `hidden lg:flex` sur ce slot). `md`/`lg`
  * ne sont jamais utilisées dans un contexte aussi contraint.
  */
 const SIZES: Record<ButtonSize, string> = {
@@ -118,7 +118,7 @@ interface VariantSkin {
  *
  * Le geste est le même partout : la couleur de repos est celle qui contraste
  * avec la surface, le survol bascule vers la couleur opposée. Seules les
- * valeurs changent — sur clair on va vers l'accent, sur sombre on s'en éloigne
+ * valeurs changent  sur clair on va vers l'accent, sur sombre on s'en éloigne
  * (l'accent est déjà la couleur de repos du bouton principal).
  *
  * Chaque couple couleur/fond ci-dessous est au-dessus de 4,5:1 :
@@ -127,7 +127,7 @@ interface VariantSkin {
  *
  * `accent` reprend le pair navy-sur-accent-500 (9,1:1) sur les deux surfaces :
  * seul un bouton isolé peut se le permettre (cf. `ButtonVariant` dans
- * types.ts) — jamais une carte, jamais une section entière.
+ * types.ts)  jamais une carte, jamais une section entière.
  */
 const SKINS: Record<Surface, Record<ButtonVariant, VariantSkin>> = {
   light: {
@@ -136,14 +136,15 @@ const SKINS: Record<Surface, Record<ButtonVariant, VariantSkin>> = {
       base: 'bg-primary-900 text-white shadow-soft hover:text-primary-900 hover:shadow-lift',
       sweep: 'bg-accent-500',
     },
-    // Bordure épaisse qui se remplit de navy.
+    // fix contraste btn : bg-transparent + backdrop-blur de la navbar faussait
+    // le calcul de contraste Lighthouse, fond blanc solide a la place.
     outline: {
-      base: 'border-2 border-primary-900 bg-transparent text-primary-900 hover:text-white',
+      base: 'border-2 border-primary-900 bg-white text-primary-900 hover:text-white',
       sweep: 'bg-primary-900',
     },
     // Discret : pas de remplissage, une barre d'accent se déploie sous le texte.
     ghost: { base: 'bg-transparent text-primary-900 hover:bg-primary-900/5', sweep: null },
-    // Aplat vert plein — cf. `ButtonVariant` dans types.ts pour la limite
+    // Aplat vert plein  cf. `ButtonVariant` dans types.ts pour la limite
     // d'usage (bouton isolé uniquement). Bascule vers le navy au survol.
     accent: {
       base: 'bg-accent-500 text-primary-900 shadow-soft hover:text-white hover:shadow-lift',
@@ -175,7 +176,7 @@ const SKINS: Record<Surface, Record<ButtonVariant, VariantSkin>> = {
 /**
  * Barre d'accent de la variante fantôme : accent-600 sur clair (4,9:1),
  * accent-500 sur sombre (9,1:1). Élément non textuel, mais il porte à lui seul
- * l'état de survol — il doit rester franchement visible.
+ * l'état de survol  il doit rester franchement visible.
  */
 const GHOST_BARS: Record<Surface, string> = {
   light: 'bg-accent-600',

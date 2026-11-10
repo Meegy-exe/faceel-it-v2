@@ -8,18 +8,18 @@ const props = withDefaults(
     autoplayMs?: number
     label: string
     /**
-     * Tonalité de la pagination (flèche + compteur) — ce composant ne connaît
+     * Tonalité de la pagination (flèche + compteur)  ce composant ne connaît
      * pas la tonalité du contenu qu'il encadre (`CarouselSlideContent` la
      * reçoit séparément), mais la pagination, elle, est peinte directement
      * ici. Sans ce prop, `text-primary-950` (pensé pour un fond clair)
      * devenait invisible sur une section à fond navy (`#valeurs` en
-     * `tone="dark"` depuis l'alternance stricte des sections de l'accueil) —
+     * `tone="dark"` depuis l'alternance stricte des sections de l'accueil)
      * même défaut, même correctif que `CardCarousel.vue` (`COUNTER_TONE`/
      * `ARROW_TONE`), reconduit ici à l'identique plutôt que réinventé.
      */
     tone?: CardTone
     /** Sous 460px, la flèche absolue (bord droit) chevauche le texte de la
-     *  diapositive faute de marge — bascule en flux normal, centrée sous la
+     *  diapositive faute de marge  bascule en flux normal, centrée sous la
      *  piste, uniquement pour l'instance qui l'active (pas de régression sur
      *  les autres carrousels du site). */
     arrowBelowOnMobile?: boolean
@@ -75,14 +75,14 @@ function getSlideStyle(index: number, activeIndex: number) {
   //
   // Masquée jusqu'à 1840px : la carte active en `scale-125` et les
   // slides adjacentes (`max-w-md`/`lg:max-w-lg` à 90%) n'ont pas assez de
-  // place pour coexister sans se chevaucher en dessous de cette largeur — le
+  // place pour coexister sans se chevaucher en dessous de cette largeur  le
   // contenu de `CarouselSlideContent` est volontairement sans fond
   // (cf. son propre commentaire d'en-tête), un chevauchement y est donc
   // du texte fantôme illisible, pas un simple détail visuel.
   if (diff === -1) {
     return 'z-10 left-0 translate-x-0 scale-90 opacity-40 origin-left pointer-events-none max-[1840px]:opacity-0 max-[1840px]:invisible'
   }
-  // NEXT (Ancrée exactement sur la ligne du padding droit) — même garde-fou.
+  // NEXT (Ancrée exactement sur la ligne du padding droit) même garde-fou.
   if (diff === 1) {
     return 'z-10 left-full -translate-x-full scale-90 opacity-40 origin-right pointer-events-none max-[1840px]:opacity-0 max-[1840px]:invisible'
   }

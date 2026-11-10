@@ -1,27 +1,26 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onUnmounted, watch } from 'vue'
 
-defineProps<{ isOpen: boolean }>()
+const props = defineProps<{ isOpen: boolean }>()
 const emit = defineEmits<{ close: [] }>()
 
-const analyticsConsent = ref(false)
-const marketingConsent = ref(false)
+watch(
+  () => props.isOpen,
+  (open) => {
+    if (open) {
+      // bloque scroll
+      document.body.classList.add('overflow-hidden')
+    } else {
+      // libere scroll
+      document.body.classList.remove('overflow-hidden')
+    }
+  },
+)
 
-function saveAndClose() {
-  emit('close')
-}
-
-function acceptAll() {
-  analyticsConsent.value = true
-  marketingConsent.value = true
-  emit('close')
-}
-
-function refuseAll() {
-  analyticsConsent.value = false
-  marketingConsent.value = false
-  emit('close')
-}
+onUnmounted(() => {
+  // libere scroll
+  document.body.classList.remove('overflow-hidden')
+})
 </script>
 
 <template>
@@ -50,7 +49,7 @@ function refuseAll() {
             <div class="flex-1 overflow-y-auto px-6 pt-8 pb-4">
               <div class="mb-6 flex items-start justify-between gap-4">
                 <h2 class="font-display text-2xl font-extrabold text-primary-900">
-                  Je veux choisir
+                  Informations sur les cookies
                 </h2>
                 <button
                   type="button"
@@ -66,12 +65,13 @@ function refuseAll() {
                 </button>
               </div>
 
+              <!-- cookies techniques uniquement -->
               <p class="mb-8 text-sm leading-relaxed text-gray-600">
-                Nous utilisons vos données pour améliorer votre expérience sur notre site. Vous
-                pouvez accepter ou refuser selon chaque finalité ci-dessous. Certaines données sont
-                nécessaires pour assurer la sécurité et le bon fonctionnement du site&nbsp;: elles
-                ne peuvent pas être désactivées. Cette exception ne s'applique pas à la publicité
-                ciblée.
+                Dans une démarche de respect de votre vie privée, Faceel-IT n'utilise aucun traceur
+                publicitaire ou analytique. Seuls les cookies techniques indispensables au
+                fonctionnement du site (choix du profil candidat/entreprise, gestion de
+                l'animation, mémorisation de ce message) sont déposés. Ils ne peuvent pas être
+                désactivés.
               </p>
 
               <div class="space-y-4">
@@ -81,9 +81,9 @@ function refuseAll() {
                     <div class="flex-1">
                       <p class="font-semibold text-primary-900">Strictement nécessaires</p>
                       <p class="mt-1 text-sm text-gray-500">
-                        Ces cookies assurent les fonctions essentielles du site&nbsp;: sécurité,
-                        gestion de session et mémorisation de vos préférences cookies. Ils ne
-                        peuvent pas être désactivés.
+                        Ces cookies assurent les fonctions essentielles du site (choix de votre
+                        profil de navigation Candidat/Entreprise, gestion de l'animation d'accueil
+                        et mémorisation de ce message). Ils ne peuvent pas être désactivés.
                       </p>
                     </div>
                     <span
@@ -93,89 +93,19 @@ function refuseAll() {
                     </span>
                   </div>
                 </div>
-
-                <!-- Catégorie 2 : Mesure d'audience -->
-                <div class="rounded-xl border border-gray-100 bg-gray-50 p-5">
-                  <div class="flex items-start justify-between gap-4">
-                    <div class="flex-1">
-                      <p class="font-semibold text-primary-900">Mesure d'audience (Analytique)</p>
-                      <p class="mt-1 text-sm text-gray-500">
-                        Ces cookies nous permettent de mesurer la fréquentation du site (pages
-                        visitées, durée de session) afin d'améliorer son contenu et ses
-                        performances. Les données sont agrégées et anonymisées.
-                      </p>
-                    </div>
-                    <!-- Toggle -->
-                    <button
-                      type="button"
-                      role="switch"
-                      :aria-checked="analyticsConsent"
-                      class="relative mt-0.5 shrink-0 h-6 w-11 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#000066] focus-visible:ring-offset-2"
-                      :class="analyticsConsent ? 'bg-[#000066]' : 'bg-gray-300'"
-                      @click="analyticsConsent = !analyticsConsent"
-                    >
-                      <span
-                        class="absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow-sm transition-transform duration-200"
-                        :class="analyticsConsent ? 'translate-x-5' : 'translate-x-0'"
-                      />
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Catégorie 3 : Publicités ciblées -->
-                <div class="rounded-xl border border-gray-100 bg-gray-50 p-5">
-                  <div class="flex items-start justify-between gap-4">
-                    <div class="flex-1">
-                      <p class="font-semibold text-primary-900">Publicités ciblées</p>
-                      <p class="mt-1 text-sm text-gray-500">
-                        Ces cookies nous permettent de vous proposer des publicités adaptées à vos
-                        centres d'intérêt, sur notre site et en dehors. Ils peuvent être déposés par
-                        des partenaires tiers.
-                      </p>
-                    </div>
-                    <!-- Toggle -->
-                    <button
-                      type="button"
-                      role="switch"
-                      :aria-checked="marketingConsent"
-                      class="relative mt-0.5 shrink-0 h-6 w-11 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#000066] focus-visible:ring-offset-2"
-                      :class="marketingConsent ? 'bg-[#000066]' : 'bg-gray-300'"
-                      @click="marketingConsent = !marketingConsent"
-                    >
-                      <span
-                        class="absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow-sm transition-transform duration-200"
-                        :class="marketingConsent ? 'translate-x-5' : 'translate-x-0'"
-                      />
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
 
-            <!-- Boutons fixes en bas -->
+            <!-- Bouton fixe en bas -->
             <div
-              class="shrink-0 space-y-3 rounded-b-2xl border-t border-gray-100 bg-gray-50 px-6 py-5"
+              class="shrink-0 rounded-b-2xl border-t border-gray-100 bg-gray-50 px-6 py-5"
             >
               <button
                 type="button"
                 class="w-full rounded-lg bg-[#000066] py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#000088]"
-                @click="saveAndClose"
+                @click="emit('close')"
               >
-                Je valide mon choix
-              </button>
-              <button
-                type="button"
-                class="w-full rounded-lg border border-[#000066] py-3 text-sm font-semibold text-[#000066] transition-colors duration-200 hover:bg-[#000066]/5"
-                @click="acceptAll"
-              >
-                Oui, j'accepte tout
-              </button>
-              <button
-                type="button"
-                class="w-full rounded-lg border border-gray-300 py-3 text-sm font-semibold text-gray-600 transition-colors duration-200 hover:bg-gray-100"
-                @click="refuseAll"
-              >
-                Non, je préfère refuser
+                Fermer
               </button>
             </div>
           </div>

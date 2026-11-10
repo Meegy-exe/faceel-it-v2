@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /**
- * Logo Power BI — Option A : les 3 barres à dégradé (icône) gardent leurs
+ * Logo Power BI - Option A : les 3 barres à dégradé (icône) gardent leurs
  * couleurs de marque d'origine (`<linearGradient>` du fichier source), SEUL
  * le tracé du texte « POWER BI » passe en `fill="currentColor"` pour suivre
- * `text-white` sur le composant — dans le fichier source, ce tracé n'avait
+ * `text-white` sur le composant - dans le fichier source, ce tracé n'avait
  * aucun `fill` explicite et héritait du noir SVG par défaut.
  *
  * Tracés copiés tels quels depuis `public/images/pa/power_bi.svg` (lu en
@@ -15,7 +15,7 @@
  * page : les id `SVGID_1_`/`SVGID_2_`/`SVGID_3_` ne sont pas garantis
  * uniques entre deux instances (collision de `<linearGradient id="...">`
  * dans le DOM). Pas un problème tant qu'il n'apparaît qu'une fois sur cette
- * page — à surveiller si réutilisé ailleurs.
+ * page - à surveiller si réutilisé ailleurs.
  */
 </script>
 

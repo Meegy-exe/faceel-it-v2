@@ -2,7 +2,7 @@
 import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
 
 /**
- * Bandeau événements — vit À L'INTÉRIEUR du conteneur de scroll propre à
+ * Bandeau événements - vit À L'INTÉRIEUR du conteneur de scroll propre à
  * chaque vue (le `h-screen overflow-y-auto snap-y` que chaque vue rend comme
  * racine, cf. CLAUDE.md "Full Page Snap Scroll"), posé dans la section Hero
  * elle-même (voir HomeView.vue / AdeoView.vue) pour partager son contexte de
@@ -12,7 +12,7 @@ import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
  * à snap : chaque événement occupe toute la largeur, les points sous le texte
  * indiquent la position et permettent d'y aller directement. La rotation
  * automatique (6 s, pause au survol/au drag) réutilise `scrollToEvent` pour
- * rester synchronisée avec les points — neutralisée sous
+ * rester synchronisée avec les points - neutralisée sous
  * `prefers-reduced-motion` et en SSR (même garde que les autres carrousels du
  * site, ex. CoverCarousel.vue).
  *

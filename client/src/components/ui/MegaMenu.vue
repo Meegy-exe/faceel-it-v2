@@ -22,7 +22,7 @@ defineSlots<{
    */
   chatButton?(props: { surface: 'light' | 'dark' }): unknown
   /**
-   * Lien vers le ChatBot, affiché UNIQUEMENT sous `md:` — remplace la bulle
+   * Lien vers le ChatBot, affiché UNIQUEMENT sous `md:`  remplace la bulle
    * flottante (`App.vue`) sur mobile, où elle prenait trop de place. Slot
    * distinct de `chatButton` (ci-dessus, lequel porte en réalité les réseaux
    * sociaux dans `App.vue` malgré son nom) pour ne pas réutiliser un nom déjà
@@ -31,7 +31,7 @@ defineSlots<{
   mobileChat?(): unknown
   /**
    * Rendu à DEUX endroits distincts (barre desktop + panneau mobile, cf.
-   * template) — jamais avec le même fond. `surface` est donc un paramètre du
+   * template)  jamais avec le même fond. `surface` est donc un paramètre du
    * SLOT, pas une prop lue une fois côté appelant : `App.vue` ne peut pas
    * deviner depuis l'extérieur sur quel fond chaque rendu va atterrir, seul
    * ce composant le sait à l'endroit où il pose chaque `<slot>`.
@@ -48,7 +48,7 @@ onClickOutside(headerRef, () => {
 })
 
 /* -------------------------------------------------------------------------- */
-/* Panneau gauche + zone droite — dynamiques au survol                        */
+/* Panneau gauche + zone droite  dynamiques au survol                        */
 /* -------------------------------------------------------------------------- */
 
 /** `null` tant qu'aucun onglet n'a été survolé/cliqué : le panneau de droite
@@ -67,7 +67,7 @@ function drillDown(id: string) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Clignotement des sous-liens (desktop) — un clic sur un onglet sans lien    */
+/* Clignotement des sous-liens (desktop)  un clic sur un onglet sans lien    */
 /* direct ne bascule plus toute l'interface (cf. VUE 2 drill-down, réservée   */
 /* au mobile) : la zone 3 est déjà révélée au survol, le clic ne fait que la  */
 /* mettre brièvement en évidence en vert pour indiquer où regarder.          */
@@ -267,7 +267,7 @@ const focusRingClass = computed(() =>
         <!-- Zone droite de la barre : chatButton (déjà `hidden min-[500px]:
              flex` dans son propre contenu, cf. App.vue) + actions, visibles
              dans la barre uniquement à partir de 500px. En dessous, les mêmes
-             boutons réapparaissent dans le panneau mobile (cf. plus bas) —
+             boutons réapparaissent dans le panneau mobile (cf. plus bas)
              d'où `hidden min-[500px]:flex` posé ICI, sur le wrapper, et non
              dans le slot lui-même : le même contenu est rendu aux deux
              endroits, seule la règle de visibilité diffère selon le wrapper.
@@ -303,7 +303,7 @@ const focusRingClass = computed(() =>
       <!-- max-[1315px]: plein écran (sous la navbar, h-16=4rem) plutôt que la
            hauteur fixe min-h-[400px] : en dessous de 1316px, le panneau doit
            occuper toute la page, pas rester une bande courte. Desktop
-           (min-[1316px]:) inchangé — min-h-[400px] reste la hauteur du
+           (min-[1316px]:) inchangé  min-h-[400px] reste la hauteur du
            mega-menu. Seuil aligné sur celui du burger (cf. plus bas). -->
       <nav
         aria-label="Navigation principale"
@@ -318,7 +318,7 @@ const focusRingClass = computed(() =>
           leave-to-class="opacity-0"
           mode="out-in"
         >
-          <!-- VUE 1 : MENU PRINCIPAL — layout 3 zones (desktop) -->
+          <!-- VUE 1 : MENU PRINCIPAL  layout 3 zones (desktop) -->
           <div
             v-if="!expandedEntry"
             key="main-menu"
@@ -354,14 +354,14 @@ const focusRingClass = computed(() =>
 
             <!-- ZONE 2 : Liste des entrées principales
                  - Mobile/tablette (<1316px) : menu plein écran premium, seule
-                   zone visible — v. bloc dédié ci-dessous.
+                   zone visible  v. bloc dédié ci-dessous.
                  - Desktop (≥1316px) : colonne étroite (fond gris clair),
-                   sépare zone 1 et zone 3 — présentation compacte inchangée. -->
+                   sépare zone 1 et zone 3  présentation compacte inchangée. -->
             <div
               class="flex-1 min-[1316px]:flex-none min-[1316px]:w-64 xl:w-72 min-[1316px]:shrink-0 min-[1316px]:bg-gray-50 min-[1316px]:border-r min-[1316px]:border-gray-100"
             >
               <!-- Présentation desktop : liste compacte. Le clic ne bascule
-                   plus vers VUE 2 (drill-down) — le survol révèle déjà la
+                   plus vers VUE 2 (drill-down)  le survol révèle déjà la
                    zone 3, le clic se contente de la faire clignoter en vert
                    (cf. `handleTabClick`/`flashingTab`). -->
               <ul class="hidden min-[1316px]:flex flex-col gap-1 py-6 min-[1316px]:py-8 px-3">
@@ -403,7 +403,7 @@ const focusRingClass = computed(() =>
               </ul>
 
               <!-- Présentation mobile/tablette (<1316px) : menu plein écran
-                   premium — contenu centré verticalement, typographie massive.
+                   premium  contenu centré verticalement, typographie massive.
                    `text-[#060241]`/`#12D80A` de la demande remplacés par les
                    tokens `primary-900`/`accent-700` du design system : couleur
                    quasi identique, et `accent-700` est la seule valeur
@@ -449,14 +449,17 @@ const focusRingClass = computed(() =>
                   </RouterLink>
                 </template>
 
-                <div class="mt-6 border-t border-primary-900/10 pt-6 min-[500px]:hidden">
+                <!-- centrer btns -->
+                <div
+                  class="mt-6 flex flex-wrap justify-center border-t border-primary-900/10 pt-6 min-[500px]:hidden"
+                >
                   <slot name="actions" surface="light" />
                 </div>
               </div>
             </div>
 
             <!-- ZONE 3 : Sous-liens de l'entrée survolée (desktop uniquement)
-                 — bandes verticales côte à côte, une colonne par entrée,
+                  bandes verticales côte à côte, une colonne par entrée,
                  séparées par un trait vertical (cf. maquette). -->
             <div
               class="max-[1315px]:hidden min-[1316px]:flex flex-1 items-stretch justify-start overflow-x-auto"
@@ -508,7 +511,7 @@ const focusRingClass = computed(() =>
                 </ul>
 
                 <!-- Entrée survolée sans subItems (ex. « Sport & sponsoring »,
-                     « Partenaires ») : lien direct, pas de sous-menu —
+                     « Partenaires ») : lien direct, pas de sous-menu
                      contenu neutre (sa propre description), jamais les
                      sous-liens d'une autre entrée (ex. les BU, affichées ici
                      par erreur avant cette correction). -->
@@ -556,31 +559,25 @@ const focusRingClass = computed(() =>
               </h2>
             </div>
 
+            <!-- style sous-menu -->
             <ul class="w-full max-w-md flex flex-col gap-2">
               <li v-for="sub in expandedEntry.subItems" :key="sub.label">
                 <component
                   :is="sub.to !== undefined ? 'RouterLink' : 'a'"
                   v-bind="sub.to !== undefined ? { to: sub.to } : { href: sub.href ?? '#' }"
-                  class="flex items-start gap-4 rounded-xl p-4 transition-colors duration-200 hover:bg-gray-50 focus-visible:outline-primary-900 motion-reduce:transition-none"
+                  class="flex w-full flex-col items-center rounded-xl p-4 text-center transition-colors duration-200 hover:bg-gray-50 focus-visible:outline-primary-900 motion-reduce:transition-none"
                   :tabindex="open ? undefined : -1"
                   @click="closeMenu()"
                 >
-                  <div class="flex-1">
-                    <p class="text-base font-semibold text-primary-900">{{ sub.label }}</p>
-                    <p v-if="sub.description" class="mt-0.5 text-sm text-primary-900/55">
-                      {{ sub.description }}
-                    </p>
-                  </div>
-                  <svg
-                    class="mt-1 size-4 shrink-0 text-primary-900/25"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    aria-hidden="true"
+                  <p class="block w-full text-center text-xl font-bold text-primary-900 md:text-2xl">
+                    {{ sub.label }}
+                  </p>
+                  <p
+                    v-if="sub.description"
+                    class="mt-0.5 block w-full text-center text-sm text-primary-900/55"
                   >
-                    <path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
+                    {{ sub.description }}
+                  </p>
                 </component>
               </li>
             </ul>

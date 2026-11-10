@@ -1,12 +1,12 @@
 <script setup lang="ts">
 /**
- * Logo Omni Analytics — PLACEHOLDER en attendant le vrai tracé SVG.
+ * Logo Omni Analytics  PLACEHOLDER en attendant le vrai tracé SVG.
  *
  * La capture d'écran de l'inspecteur fournie pour extraire ce logo contient
  * un `d` de plusieurs dizaines de coordonnées décimales denses, illisibles
  * de façon fiable à cette résolution (ex. confusion possible `1`/`7`,
  * `0`/`8`, bornes de nombres ambiguës). Une erreur de chiffre ne casse pas
- * la syntaxe SVG — elle déforme silencieusement le logo, sans moyen de le
+ * la syntaxe SVG elle déforme silencieusement le logo, sans moyen de le
  * vérifier sans rendu. Reproduire un tracé de marque officiel au pif serait
  * justement le genre de "fait produit" inventé à éviter (cf. CLAUDE.md).
  *

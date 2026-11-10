@@ -9,7 +9,7 @@ import type { CardSize, CardTone, Navigable } from './types'
  * numéroté, pastille de hiérarchisation).
  *
  * Purement présentationnel. La carte devient cliquable dans son ensemble dès
- * qu'on lui passe `to` ou `href` — on évite ainsi le lien imbriqué dans une
+ * qu'on lui passe `to` ou `href`  on évite ainsi le lien imbriqué dans une
  * carte déjà cliquable, qui produit deux cibles concurrentes pour un lecteur
  * d'écran.
  */
@@ -20,15 +20,15 @@ interface Props extends Navigable {
   /** Pastille superposée au bord supérieur. */
   badge?: string
   tone?: CardTone
-  /** Gabarit de la carte — cf. `CardSize` dans `types.ts`. */
+  /** Gabarit de la carte  cf. `CardSize` dans `types.ts`. */
   size?: CardSize
   /**
    * Ombre renforcée en permanence (`shadow-lift`, déjà le jeton utilisé au
-   * survol des cartes interactives) plutôt que la `shadow-soft` par défaut —
+   * survol des cartes interactives) plutôt que la `shadow-soft` par défaut
    * pour une carte mise en avant hors interaction. Introduit en V0.1.17 pour
    * la carte active de `CoverCarousel` ; depuis V0.1.18 (« naked slider »,
    * cf. ADR 22), cette section utilise `CarouselSlideContent` (aucun encart,
-   * donc aucune ombre) — `elevated` n'a plus de consommateur en production,
+   * donc aucune ombre)  `elevated` n'a plus de consommateur en production,
    * conservé pour un futur usage de `HighlightCard` hors carrousel (même
    * principe que le créneau `icon`, cf. ADR 15).
    */
@@ -89,20 +89,20 @@ const attrs = computed(() => {
 const heading = computed(() => `h${props.headingLevel}`)
 
 /**
- * Habillage par tonalité. Deux surfaces seulement — blanc et navy — et tous
+ * Habillage par tonalité. Deux surfaces seulement  blanc et navy  et tous
  * les survols convergent vers le navy : c'est le geste qui unifie une grille
  * de cartes hétérogènes.
  *
- * RÈGLE DE COULEUR — ne pas contourner
+ * RÈGLE DE COULEUR ne pas contourner
  * L'accent ne sert JAMAIS de surface de carte (cf. `CardTone` dans types.ts).
  * Il n'apparaît ici que par touches, sur des éléments de petite taille et
  * toujours sur fond navy, où il tient 9,1:1 :
- *   — le surtitre (`eyebrow`) au survol,
- *   — la vignette de pictogramme (`chip`) au survol,
- *   — le trait qui se déploie et le filigrane numéroté (dans le template),
- *   — la bague de mise en relief (`ring`) au survol.
- * Chacune de ces touches est doublée d'un signal non chromatique — bascule de
- * fond, agrandissement du trait, décalage de la flèche — pour rester lisible
+ *    le surtitre (`eyebrow`) au survol,
+ *    la vignette de pictogramme (`chip`) au survol,
+ *    le trait qui se déploie et le filigrane numéroté (dans le template),
+ *    la bague de mise en relief (`ring`) au survol.
+ * Chacune de ces touches est doublée d'un signal non chromatique  bascule de
+ * fond, agrandissement du trait, décalage de la flèche  pour rester lisible
  * en deutéranopie comme en protanopie.
  */
 const TONES: Record<CardTone, Record<'root' | 'eyebrow' | 'title' | 'body' | 'chip', string>> = {
@@ -129,7 +129,7 @@ const tone = computed(() => TONES[props.tone])
  * Marges et typographie de titre par gabarit (`CardSize`, cf. `types.ts`).
  * `md` reprend l'habillage d'origine (grille, plusieurs cartes visibles) ;
  * `lg` (V0.1.15, `CardCarousel`) agrandit les deux pour une carte seule qui
- * occupe toute l'attention — `text-display` est le palier immédiatement
+ * occupe toute l'attention `text-display` est le palier immédiatement
  * au-dessus de `text-title` dans l'échelle fluide de `main.css`, déjà
  * utilisé pour les titres de section (`<h2>`) : la carte devient le second
  * niveau de lecture le plus imposant de la page, jamais aussi massive que le

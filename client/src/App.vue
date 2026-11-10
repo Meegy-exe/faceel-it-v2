@@ -17,10 +17,10 @@ import imgEntreprise from '@/assets/images/padel-equipe.jpg'
  *
  * L'en-tête et le pied de page sont montés ICI, une seule fois, et non dans
  * chaque vue. Deux conséquences à connaître :
- *   — les vues ne doivent PAS déclarer de `<main>`, il est fourni ci-dessous ;
+ *    les vues ne doivent PAS déclarer de `<main>`, il est fourni ci-dessous ;
  *     deux `<main>` imbriqués sont invalides et désorientent les lecteurs
  *     d'écran, qui s'appuient dessus pour atteindre le contenu ;
- *   — le lien d'évitement est le premier élément focusable du document, donc
+ *    le lien d'évitement est le premier élément focusable du document, donc
  *     lui aussi ici, avant l'en-tête.
  *
  * `min-h-dvh` + `flex-col` + `flex-1` sur le contenu : le pied de page reste
@@ -35,15 +35,15 @@ import imgEntreprise from '@/assets/images/padel-equipe.jpg'
 const route = useRoute()
 
 /**
- * NAVBAR EN SUPERPOSITION (V0.3) — deux états possédés ici.
+ * NAVBAR EN SUPERPOSITION (V0.3)  deux états possédés ici.
  *
  * `scrollRoot` : le conteneur de défilement réel (ce n'est PAS le document,
  * cf. ADR 26). `MegaMenu` en a besoin comme `root` de son
- * `IntersectionObserver` — sans lui, l'observateur ne se déclencherait jamais,
+ * `IntersectionObserver`  sans lui, l'observateur ne se déclencherait jamais,
  * les sections ne quittant jamais la fenêtre.
  *
  * `isDarkTheme` : remonté depuis `MegaMenu` par `v-model:dark`, `App.vue` ne
- * le relit nulle part lui-même — seule la liaison `v-model` l'exige ici. Le
+ * le relit nulle part lui-même  seule la liaison `v-model` l'exige ici. Le
  * choix de `surface` des CTA (slot `#actions`) est calculé par `MegaMenu`
  * lui-même et transmis en paramètre de slot, PAS lu depuis cette variable :
  * le même bouton est rendu à deux endroits (barre, panneau mobile) qui n'ont
@@ -59,8 +59,8 @@ const isDarkTheme = ref(true)
  * un bandeau horizontal en superposition, rendu par `MegaMenu.vue` : le menu
  * n'a plus AUCUN effet sur le layout (il ne pousse plus `<main>`, il le
  * recouvre), donc plus aucune raison d'être possédé par la coquille. Tout ce
- * qui restait ici — accordéons dépliés, icônes par entrée, bouton de
- * fermeture — a suivi le balisage.
+ * qui restait ici accordéons dépliés, icônes par entrée, bouton de
+ * fermeture  a suivi le balisage.
  *
  * Seul l'état d'ouverture reste ici, parce que `App.vue` doit le remettre à
  * zéro au changement de route (cf. `watch` plus bas).
@@ -68,7 +68,7 @@ const isDarkTheme = ref(true)
 const menuOpen = ref(false)
 
 /**
- * Sélecteur de profil (onboarding) — s'affiche directement au montage si
+ * Sélecteur de profil (onboarding)  s'affiche directement au montage si
  * aucun profil n'est stocké. État possédé par `useProfileStore` (store
  * global Pinia) : `HomeView.vue` et la navigation (cf. `navEntries`
  * ci-dessous) doivent pouvoir y réagir sans dépendre de `App.vue`.
@@ -101,7 +101,7 @@ useHead({
   titleTemplate: (title?: string) => title ?? 'Faceel-IT',
 })
 
-/** Coordonnées officielles (V0.1.13, ticket #15, cf. ADR 17) — fournies par
+/** Coordonnées officielles (V0.1.13, ticket #15, cf. ADR 17)  fournies par
  * le client, reprises ici telles que transmises, pas des valeurs de
  * remplissage. */
 const PHONE_DISPLAY = '03 59 61 71 88'
@@ -111,7 +111,7 @@ const ADDRESS_LINE_1 = '10 allée du Château Blanc'
 const ADDRESS_LINE_2 = '59290 Wasquehal'
 
 /**
- * URLs des réseaux sociaux (V0.1.13, ticket #15) — fournies par le client.
+ * URLs des réseaux sociaux (V0.1.13, ticket #15)  fournies par le client.
  * Affichées dans le Footer (`#social`), plus dans le Header depuis V0.1.12
  * (ticket #14) : un pied de page est l'emplacement conventionnel pour ces
  * liens une fois qu'ils ne concurrencent plus les CTA de conversion.
@@ -130,17 +130,17 @@ const GLASSDOOR_HREF =
  * `HomeView.vue` en V0.1.13 (doublon avec ces mêmes CTA globaux). Un lien vers
  * une ancre qui n'existe plus ne provoquerait pas d'erreur visible (la page
  * resterait simplement sur place), mais romprait silencieusement la promesse
- * du bouton — pire qu'un lien mort visible. En l'absence de toute page dédiée
+ * du bouton  pire qu'un lien mort visible. En l'absence de toute page dédiée
  * « contact » ou « recrutement » (site limité à `/`), le mailto direct est la
  * seule destination réelle qui reste : à remplacer par une vraie route dès
  * qu'une page contact existera.
  */
-/** Remplace l'ancien mailto provisoire — page /contact désormais disponible. */
+/** Remplace l'ancien mailto provisoire  page /contact désormais disponible. */
 const CONTACT_TO = '/contact-entreprise'
 const REJOINDRE_TO = '/consulter-nos-offres'
 
 /** Routes dont la vue gère elle-même son conteneur snap local (HomeView.vue
- *  et consorts) et y intègre son propre `<TheFooter>` — le footer global
+ *  et consorts) et y intègre son propre `<TheFooter>`  le footer global
  *  rendu ci-dessous doit s'effacer sur ces routes pour éviter le doublon. */
 const LOCAL_SNAP_FOOTER_ROUTES = new Set([
   '/',
@@ -168,6 +168,14 @@ const LOCAL_SNAP_FOOTER_ROUTES = new Set([
  *  `offre-postuler` (`/offres/:id/postuler`), un chemin dynamique ne peut pas
  *  figurer dans un `Set` de chemins exacts. */
 const LOCAL_SNAP_FOOTER_ROUTE_NAMES = new Set(['offre-postuler', 'candidature-spontanee'])
+
+// sans anim footer : pages legales
+const NO_ANIM_FOOTER_ROUTE_NAMES = new Set([
+  'mentions-legales',
+  'politique-cookies',
+  'politique-confidentialite',
+  'accessibilite',
+])
 
 /** Flèche du CTA « Nous rejoindre », en composant fonctionnel local plutôt
  * qu'un `<svg>` recopié à chaque emplacement (Header desktop, menu mobile,
@@ -201,15 +209,16 @@ const ArrowRightIcon: FunctionalComponent = () =>
       leave-to-class="opacity-0 blur-md scale-105"
     >
       <div v-if="profileStore.showSelector" class="fixed inset-0 z-[100] flex flex-col bg-white">
-        <div class="flex h-full w-full flex-1 flex-row overflow-hidden">
+        <!-- flex col mobile -->
+        <div class="flex h-full w-full flex-1 flex-col md:flex-row overflow-hidden">
           <button
             type="button"
             :class="[
               profileStore.animatingSelection === 'candidat'
-                ? 'w-full z-50 text-5xl'
+                ? 'h-full w-full md:w-full md:h-full z-50 text-5xl'
                 : profileStore.animatingSelection === 'entreprise'
-                  ? 'w-0 opacity-0'
-                  : 'w-1/2 hover:scale-[1.02] z-10',
+                  ? 'h-0 w-full md:w-0 md:h-full opacity-0'
+                  : 'h-1/2 w-full md:w-1/2 md:h-full hover:scale-[1.02] z-10',
               'relative overflow-hidden transition-all duration-700 ease-in-out origin-left flex items-center justify-center cursor-pointer bg-primary-950 text-white',
             ]"
             @click="profileStore.setProfile('candidat')"
@@ -227,10 +236,10 @@ const ArrowRightIcon: FunctionalComponent = () =>
             type="button"
             :class="[
               profileStore.animatingSelection === 'entreprise'
-                ? 'w-full z-50 text-5xl'
+                ? 'h-full w-full md:w-full md:h-full z-50 text-5xl'
                 : profileStore.animatingSelection === 'candidat'
-                  ? 'w-0 opacity-0'
-                  : 'w-1/2 hover:scale-[1.02] z-10',
+                  ? 'h-0 w-full md:w-0 md:h-full opacity-0'
+                  : 'h-1/2 w-full md:w-1/2 md:h-full hover:scale-[1.02] z-10',
               'relative overflow-hidden transition-all duration-700 ease-in-out origin-right flex items-center justify-center cursor-pointer cursor-faceel-blue bg-white text-primary-950',
             ]"
             @click="profileStore.setProfile('entreprise')"
@@ -263,7 +272,7 @@ const ArrowRightIcon: FunctionalComponent = () =>
 
            `surface` REÇU DU SLOT, PAS CALCULÉ ICI : ce même template est
            rendu par `MegaMenu.vue` à DEUX endroits qui n'ont jamais le même
-           fond (barre, et panneau mobile — toujours blanc). Une seule
+           fond (barre, et panneau mobile  toujours blanc). Une seule
            `surface` calculée ici pour les deux aurait rendu l'un des deux
            illisible ; c'est exactement le bug que ce scoped slot corrige :
            `MegaMenu` connaît le fond réel de chaque rendu, `App.vue` non. -->
@@ -271,18 +280,19 @@ const ArrowRightIcon: FunctionalComponent = () =>
            plus bas) : même lien `/chat`, mêmes couleurs, en miniature pour
            tenir dans la barre sans en déformer la hauteur. -->
       <template #mobileChat>
+        <!-- fix wcag contrast + a11y label -->
         <router-link
           v-if="route.path !== '/chat'"
           to="/chat"
-          aria-label="Ouvrir le ChatBot"
+          aria-label="it - Ouvrir le ChatBot"
           class="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#12D80A]"
         >
-          <span class="text-xs font-bold leading-none tracking-tight text-white">it</span>
+          <span class="text-xs font-bold leading-none tracking-tight text-primary-950">it</span>
         </router-link>
       </template>
 
       <template #chatButton="{ surface }">
-        <!-- Réseaux sociaux — visibles en permanence (jusqu'à 500px de large,
+        <!-- Réseaux sociaux  visibles en permanence (jusqu'à 500px de large,
              au même titre que les boutons d'action, cf. MegaMenu.vue) :
              `surface` peut valoir 'light' (section claire), où text-white/70
              et accent-500 échoueraient le contraste (cf. main.css,
@@ -374,7 +384,7 @@ const ArrowRightIcon: FunctionalComponent = () =>
 
       <!-- Pas de classe `hidden`/`min-[500px]` ici : ce même slot est rendu à
            deux endroits (barre + panneau mobile, cf. MegaMenu.vue), chacun
-           avec sa propre règle de visibilité portée par SON wrapper — un seul
+           avec sa propre règle de visibilité portée par SON wrapper  un seul
            jeu de classes ici s'appliquerait identiquement aux deux. -->
       <template #actions="{ surface }">
         <div class="flex items-center gap-1 sm:gap-3">
@@ -429,7 +439,7 @@ const ArrowRightIcon: FunctionalComponent = () =>
       </template>
     </MegaMenu>
 
-    <!-- CRITICAL — LAISSER FLUIDE : aucune contrainte de hauteur ni overflow ici.
+    <!-- CRITICAL  LAISSER FLUIDE : aucune contrainte de hauteur ni overflow ici.
          Le scroll-snap est strictement géré localement dans les vues (ex: HomeView). -->
     <main id="contenu" class="flex-1">
       <RouterView />
@@ -447,6 +457,7 @@ const ArrowRightIcon: FunctionalComponent = () =>
       :full-page-scroll="false"
       :columns="footerColumns"
       :description="footerDescription"
+      :disable-animation="NO_ANIM_FOOTER_ROUTE_NAMES.has(String(route.name))"
     >
       <template #social>
         <a
@@ -557,7 +568,7 @@ const ArrowRightIcon: FunctionalComponent = () =>
     </TheFooter>
     <CookieBanner />
 
-    <!-- Bulle ChatBot flottante — remplace l'ancien bouton "ChatBot" de la
+    <!-- Bulle ChatBot flottante  remplace l'ancien bouton "ChatBot" de la
          navbar, reprend le rond vert/texte "it" du logo pour rester
          identifiable même retiré de la barre. `hidden md:flex` : sur mobile
          elle mangeait trop de place en bas d'écran, remplacée sous `md:` par
@@ -570,12 +581,13 @@ const ArrowRightIcon: FunctionalComponent = () =>
         class="bg-white/95 backdrop-blur-sm text-gray-800 text-sm md:text-base font-medium py-2.5 px-5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 cursor-default opacity-0 translate-x-2 pointer-events-none transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0"
         >Une question ?</span
       >
+      <!-- fix wcag contrast + a11y label -->
       <router-link
         to="/chat"
-        aria-label="Ouvrir le ChatBot"
+        aria-label="it - Ouvrir le ChatBot"
         class="flex size-14 items-center justify-center rounded-full bg-[#12D80A] shadow-2xl transition-all duration-300 hover:animate-wiggle hover:shadow-[0_10px_40px_-10px_rgba(18,216,10,0.6)] lg:size-16 motion-reduce:transition-none motion-reduce:hover:animate-none"
       >
-        <span class="text-2xl font-bold leading-none tracking-tight text-white lg:text-3xl"
+        <span class="text-2xl font-bold leading-none tracking-tight text-primary-950 lg:text-3xl"
           >it</span
         >
       </router-link>

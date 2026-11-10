@@ -7,7 +7,7 @@ export type UserProfileType = 'candidat' | 'entreprise'
 const PROFILE_STORAGE_KEY = 'faceel_user_profile'
 
 /**
- * Profil utilisateur (onboarding) — extrait de `App.vue` pour que d'autres
+ * Profil utilisateur (onboarding) - extrait de `App.vue` pour que d'autres
  * vues/composants (ex. `HomeView.vue`, la navigation) puissent y réagir sans
  * dépendre d'un state local à la coquille. `localStorage` n'est lu/écrit que
  * depuis `hydrate()`/`setProfile()`/`resetProfile()`, jamais à la création du

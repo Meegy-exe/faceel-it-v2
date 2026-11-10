@@ -1,7 +1,7 @@
 import type { RouteLocationRaw } from 'vue-router'
 
 /* -------------------------------------------------------------------------- */
-/* Types — chaque entrée porte ses infos de panneau gauche ET ses sous-liens. */
+/* Types - chaque entrée porte ses infos de panneau gauche ET ses sous-liens. */
 /* -------------------------------------------------------------------------- */
 
 export interface NavSubItem {
@@ -32,7 +32,7 @@ export interface NavItem {
   subItems?: NavSubItem[]
 }
 
-/* Panneau gauche par défaut — affiché quand aucun onglet n'est survolé. */
+/* Panneau gauche par défaut - affiché quand aucun onglet n'est survolé. */
 export const NAV_DEFAULT: NavItem = {
   id: '_default',
   label: '',
@@ -50,14 +50,14 @@ export const NAV_DEFAULT: NavItem = {
  * une donnée de page. Le jour où l'en-tête sera hissé dans un layout partagé
  * (dès qu'une deuxième page publique existera), seul l'import bougera.
  *
- * INTITULÉS COURTS (V0.1.12, ticket #14) — PARTIELLEMENT REVENU EN V1.0 :
+ * INTITULÉS COURTS (V0.1.12, ticket #14) - PARTIELLEMENT REVENU EN V1.0 :
  * cette entrée imposait initialement un libellé aligné sur l'identifiant de
  * section plutôt qu'une formule de phrase (« Expertises » pour « Je suis une
  * entreprise »), demande client explicite pour une navigation plus
  * scannable. Le client est revenu sur ce point précis en V1.0 : l'entrée
  * `entreprise` porte de nouveau sa formule longue d'origine.
  *
- * CIBLES PROVISOIRES — l'arborescence publique se limite pour l'instant à `/`.
+ * CIBLES PROVISOIRES - l'arborescence publique se limite pour l'instant à `/`.
  * Toutes les entrées pointent donc vers des ancres réelles de l'accueil : rien
  * ici ne mène à un 404. À l'ouverture des pages dédiées, remplacer les
  * `hash` par les `name` de route correspondants.
@@ -113,7 +113,7 @@ export const mainNavEntries: NavItem[] = [
     label: 'Consulter nos offres',
     title: 'Nos offres',
     description:
-      'Data, cloud, développement, conseil — des postes sur mesure qui correspondent à votre profil et à vos ambitions.',
+      'Data, cloud, développement, conseil - des postes sur mesure qui correspondent à votre profil et à vos ambitions.',
     ctaLabel: 'Explorer les offres',
     ctaTo: { name: 'offres' },
     to: { name: 'offres' },

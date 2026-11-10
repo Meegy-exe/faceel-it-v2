@@ -375,40 +375,40 @@ export const chatKeywords: KeywordEntry[] = [
     keys: ['offre', 'poste', 'recrut', 'candidat', 'emploi', 'alternance', 'stage', 'cv'],
     answer:
       'Six postes sont ouverts, et les candidatures spontanées comptent pour la majorité de nos recrutements.',
-    link: { label: 'Voir les offres', url: 'Recrutement.dc.html#offres' },
+    link: { label: 'Voir les offres', url: '/consulter-nos-offres' },
   },
   {
     keys: ['process', 'entretien', 'padel', 'sport'],
     answer:
       'Le process tient en une à deux semaines, avec un seul interlocuteur - et souvent une partie de padel.',
-    link: { label: 'Détail du process', url: 'Recrutement.dc.html' },
+    link: { label: 'Détail du process', url: '/consultant-chez-faceel-it' },
   },
   {
     keys: ['ia', 'intelligence', 'llm', 'agent', 'gpt'],
     answer:
       'Nous construisons des agents connectés aux données internes : assistants, automatisation, aide à la décision.',
-    link: { label: 'Discutons IA', url: 'Accueil.dc.html#ia' },
+    link: { label: 'Discutons IA', url: '/nos-bus/data-ia' },
   },
   {
     keys: ['data', 'donnée', 'donnee', 'snowflake', 'dbt', 'analytics'],
     answer: 'Côté data : pipelines, qualité, modélisation, restitution, puis machine learning.',
-    link: { label: 'Voir un projet data', url: 'Realisations.dc.html' },
+    link: { label: 'Voir un projet data', url: '/nos-bus/data-ia' },
   },
   {
     keys: ['cyber', 'rgpd', 'sécurit', 'securit', 'conformit'],
     answer: 'Sécurité SI, RGPD, gestion des accès et gouvernance de la donnée, traités en continu.',
-    link: { label: 'Nos expertises', url: 'Accueil.dc.html#expertises' },
+    link: { label: 'Nos expertises', url: '/' },
   },
   {
     keys: ['client', 'référence', 'reference', 'boulanger', 'adeo', 'decathlon', 'auchan', 'ovh'],
     answer:
       'Decathlon, Auchan, Boulanger, Crédit Agricole, OVHcloud, Adeo - deux cas sont détaillés.',
-    link: { label: 'Voir les réalisations', url: 'Realisations.dc.html' },
+    link: { label: 'Voir les réalisations', url: '/references/boulanger' },
   },
   {
     keys: ['adresse', 'agence', 'wasquehal', 'venir', 'lille'],
     answer: "L'agence est au 10 allée du château blanc, 59290 Wasquehal, à deux pas de Lille.",
-    link: { label: "L'agence", url: 'Contact.dc.html' },
+    link: { label: "L'agence", url: '/contact-entreprise' },
   },
   {
     keys: [
@@ -422,12 +422,12 @@ export const chatKeywords: KeywordEntry[] = [
     ],
     answer:
       'Deux jours de télétravail, horaires souples, budget de formation individuel, crèche financée, part variable sans plafond.',
-    link: { label: 'Nous rejoindre', url: 'Recrutement.dc.html' },
+    link: { label: 'Nous rejoindre', url: '/consultant-chez-faceel-it' },
   },
   {
     keys: ['qui', 'esn', 'entreprise', 'équipe', 'equipe', 'histoire'],
     answer:
       'ESN indépendante créée en 2021 à Wasquehal, une soixantaine de personnes, quatre expertises.',
-    link: { label: "L'agence", url: 'Contact.dc.html' },
+    link: { label: "L'agence", url: '/qui-sommes-nous/notre-histoire' },
   },
 ]

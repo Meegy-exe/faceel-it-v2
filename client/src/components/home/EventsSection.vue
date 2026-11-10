@@ -2,8 +2,7 @@
 import { onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
 import { useSwipe } from '@vueuse/core'
 import { scrollRevealClass, useScrollReveal } from '@/composables/useScrollReveal'
-// PHOTOS « NOS ÉVÉNEMENTS »  déjà présentes dans `assets/images/` (dépôt
-// client, dossier `Animate the header/assets/photos/`), aucune n'est encore
+// PHOTOS « NOS ÉVÉNEMENTS »  déjà présentes dans `client/src/assets/images/photos/`, aucune n'est encore
 // utilisée ailleurs sur le site : pas de nouveau fichier à importer, pas de
 // dépendance à un hébergeur d'images tiers. `picsum.photos` était exclu
 // d'office  le CSP de production (`client/security-headers.conf`) déclare

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
+import imgNoemie from '@/assets/images/photos/bus/digital/noemie.jpeg'
+import imgStephanie from '@/assets/images/photos/bus/digital/stephanie.jpeg'
 
 type BuSlug = 'data-ia' | 'digital' | 'product'
 
@@ -8,10 +10,12 @@ interface Member {
   id: string
   name: string
   role: string
-  /** TODO — citation réelle à fournir par le membre ; aucun témoignage
+  /** Photo réelle ; à défaut, les initiales servent de repli décoratif. */
+  photo?: string
+  /** TODO  citation réelle à fournir par le membre ; aucun témoignage
    *  fictif attribué à une personne réelle (cf. CLAUDE.md, intégrité du
    *  contenu). Découpée en segments pour un affichage sur un nombre de
-   *  lignes fixe (cf. template, <span class="block"> par segment) — un seul
+   *  lignes fixe (cf. template, <span class="block"> par segment)  un seul
    *  segment pour un placeholder, rien à couper en deux. */
   quote: string[]
 }
@@ -21,7 +25,7 @@ const TABS: { slug: BuSlug; label: string; description: string }[] = [
     slug: 'data-ia',
     label: 'Data & IA',
     description:
-      "Collecte, qualité, modélisation, restitution — puis les modèles et les agents qui s'appuient dessus. La chaîne complète, ou rien de fiable.",
+      "Collecte, qualité, modélisation, restitution - puis les modèles et les agents qui s'appuient dessus. La chaîne complète, ou rien de fiable.",
   },
   {
     slug: 'digital',
@@ -52,6 +56,7 @@ const MEMBERS: Record<BuSlug, [Member, Member]> = {
       id: 'd1',
       name: 'Stéphanie Demarez',
       role: 'Directrice BU Digital',
+      photo: imgStephanie,
       quote: [
         '« Je ne cherche pas seulement un business',
         'mais avant tout à créer une relation durable. »',
@@ -60,10 +65,10 @@ const MEMBERS: Record<BuSlug, [Member, Member]> = {
     {
       id: 'd2',
       name: 'Noémie Vannoye',
-      role: 'Responsable RH',
+      role: 'Responsable RH BU Digital',
+      photo: imgNoemie,
       quote: [
-        '« Écouter pour mieux suivre et accompagner',
-        'mes collaborateurs dans leur montée en compétences. »',
+        "« Révéler les talents, valoriser les compétences et ouvrir de nouvelles perspectives : j'ai à cœur de contribuer à l'épanouissement professionnel de chacun, car le sourire de mes consultants est ma plus belle satisfaction. »",
       ],
     },
   ],
@@ -87,8 +92,6 @@ const MEMBERS: Record<BuSlug, [Member, Member]> = {
 }
 
 const activeBUIndex = ref(0)
-const flippedLeft = ref(false)
-const flippedRight = ref(false)
 
 const activeBU = computed(() => TABS[activeBUIndex.value]!)
 const activeMembers = computed(() => MEMBERS[activeBU.value.slug])
@@ -97,45 +100,6 @@ const rightMember = computed(() => activeMembers.value[1])
 
 function nextBU() {
   activeBUIndex.value = (activeBUIndex.value + 1) % TABS.length
-  flippedLeft.value = false
-  flippedRight.value = false
-}
-
-/** `mouseenter`/`mouseleave` ne se déclenchent pas au tap sur mobile/tablette
- *  (pas de souris) : le flip y restait inaccessible. `@click` fonctionne sur
- *  les deux (souris ET tactile), d'où ce toggle en complément du survol. */
-function toggleLeftFlip() {
-  flippedLeft.value = !flippedLeft.value
-  if (flippedLeft.value) stopAutoSlide()
-  else startAutoSlide()
-}
-
-function toggleRightFlip() {
-  flippedRight.value = !flippedRight.value
-  if (flippedRight.value) stopAutoSlide()
-  else startAutoSlide()
-}
-
-// survol carte gauche : flip + pause/reprise auto
-function flipLeftIn() {
-  flippedLeft.value = true
-  stopAutoSlide()
-}
-
-function flipLeftOut() {
-  flippedLeft.value = false
-  startAutoSlide()
-}
-
-// survol carte droite : flip + pause/reprise auto
-function flipRightIn() {
-  flippedRight.value = true
-  stopAutoSlide()
-}
-
-function flipRightOut() {
-  flippedRight.value = false
-  startAutoSlide()
 }
 
 interface FlatProfile extends Member {
@@ -143,7 +107,7 @@ interface FlatProfile extends Member {
 }
 
 /** Carrousel mobile (<460px) : les 6 profils à plat, toutes BUs confondues,
- *  dans l'ordre réel de `TABS` (Data & IA, Digital, Product) — pas l'ordre
+ *  dans l'ordre réel de `TABS` (Data & IA, Digital, Product) - pas l'ordre
  *  donné en exemple, qui ne correspond pas à l'ordre existant du composant. */
 const ALL_PROFILES: FlatProfile[] = TABS.flatMap((tab) =>
   MEMBERS[tab.slug].map((member) => ({ ...member, buLabel: tab.label })),
@@ -196,7 +160,7 @@ function stopAutoSlide() {
 }
 
 /** Un clic manuel juste avant le déclenchement du timer ferait avancer la
- *  carte deux fois de suite — on relance un cycle complet de 10 s à chaque
+ *  carte deux fois de suite - on relance un cycle complet de 10 s à chaque
  *  interaction manuelle plutôt que de laisser l'ancien délai courir. */
 function resetTimer() {
   stopAutoSlide()
@@ -208,8 +172,6 @@ function resetTimer() {
  *  presque aussitôt si le clic tombe juste avant la fin du cycle en cours. */
 function selectBU(index: number) {
   activeBUIndex.value = index
-  flippedLeft.value = false
-  flippedRight.value = false
   stopAutoSlide()
   startAutoSlide()
 }
@@ -222,39 +184,39 @@ onBeforeUnmount(stopAutoSlide)
   <section
     id="business-units"
     data-theme="light"
-    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-light px-4 pt-36 [@media(max-height:850px)]:pt-28 pb-8 sm:px-6 lg:px-8 xl:px-12"
+    class="h-dvh shrink-0 w-full snap-start snap-always flex flex-col bg-light px-4 pt-20 md:pt-36 [@media(max-height:850px)]:pt-20 md:[@media(max-height:850px)]:pt-28 pb-8 sm:px-6 lg:px-8 xl:px-12"
   >
-    <header class="max-w-5xl px-4 md:px-24 2xl:px-28">
+    <header class="w-full max-w-5xl lg:max-w-none px-0 md:px-24 2xl:px-28">
       <h2
         class="mt-4 [@media(max-height:850px)]:mt-2 font-display text-display min-[1030px]:whitespace-nowrap text-primary-900"
       >
         Nos BUs, Expertes de vos besoins.
       </h2>
       <p
-        class="mt-4 min-[1030px]:whitespace-nowrap text-sm md:text-base min-[1030px]:text-lg leading-relaxed text-primary-900/60"
+        class="mt-2 md:mt-4 w-full md:text-balance lg:whitespace-nowrap text-sm md:text-base min-[1030px]:text-lg leading-relaxed text-primary-900/60"
       >
-        Une organisation interne adaptée au marché pour une réponse sur-mesure à nos clients
+        Une organisation adaptée au marché pour une réponse sur-mesure à nos clients de la métropole
+        lilloise.
       </p>
     </header>
 
     <!-- Rangée statique des 3 BUs, surplombant l'arène : gauche/centre/droite
          pour coïncider avec les cartes gauche/droite et la citation centrale
          en dessous (même padding horizontal que la rangée de l'arène,
-         cf. ci-dessous, pour un alignement exact). accent-700, pas
-         accent-500 — sur fond clair, accent-500 ne tient que 1,9:1 même en
-         grand gras (seuil large-text 3:1), accent-700 tient 4,9:1
-         (cf. main.css). -->
+         cf. ci-dessous, pour un alignement exact). Actif : texte primary
+         + trait vert DA en décor (accent-500 ne tient que 1,9:1 en texte sur
+         fond clair). Inactif : primary-900/70, solide sur fond clair. -->
     <div
       class="flex w-full justify-between items-end mt-8 mb-8 px-4 md:px-24 2xl:px-28 max-[459px]:hidden"
     >
       <h3
         v-for="(tab, index) in TABS"
         :key="tab.slug"
-        class="cursor-pointer font-display transition-all duration-300"
+        class="cursor-pointer pb-1 font-display transition-all duration-300"
         :class="[
           activeBUIndex === index
-            ? 'font-bold text-3xl md:text-4xl text-accent-700'
-            : 'font-normal text-xl md:text-2xl text-accent-700/60',
+            ? 'font-bold text-3xl md:text-4xl text-[#000066] border-b-4 border-[#12d80a]'
+            : 'font-normal text-xl md:text-2xl text-primary-900/70 border-b-4 border-transparent',
           index === 0 ? 'text-left' : index === TABS.length - 1 ? 'text-right' : 'text-center',
         ]"
         @click="selectBU(index)"
@@ -277,7 +239,8 @@ onBeforeUnmount(stopAutoSlide)
              (cf. zone centrale ci-dessous, cachée à cette largeur). -->
         <div class="mb-4 max-w-32 text-center min-[985px]:hidden">
           <p class="text-sm font-bold text-primary-950">{{ leftMember.name }}</p>
-          <p class="text-[11px] font-medium text-primary-900/50">{{ leftMember.role }}</p>
+          <!-- fix wcag contrast : /50 ne tenait pas le ratio 4.5 sur bg-light -->
+          <p class="text-[11px] font-medium text-primary-900/70">{{ leftMember.role }}</p>
           <Transition name="fade" mode="out-in">
             <p
               :key="leftMember.id"
@@ -300,44 +263,32 @@ onBeforeUnmount(stopAutoSlide)
         >
           <div :key="activeBUIndex" class="flex flex-col items-center">
             <div
-              class="w-32 h-48 min-[985px]:w-48 min-[985px]:h-72 2xl:w-[320px] 2xl:h-[480px] [perspective:1000px] transform-gpu border-0 ring-0 outline-none"
-              @mouseenter="flipLeftIn"
-              @mouseleave="flipLeftOut"
-              @click="toggleLeftFlip"
+              class="w-32 h-48 min-[985px]:w-48 min-[985px]:h-72 2xl:w-[320px] 2xl:h-[480px] bg-primary-950 rounded-2xl shadow-[-40px_20px_50px_-15px_rgba(0,0,50,0.4)] flex items-center justify-center overflow-hidden"
             >
-              <div
-                class="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] rounded-2xl shadow-[-40px_20px_50px_-15px_rgba(0,0,50,0.4)] transform-gpu will-change-transform border-0 ring-0 outline-none"
-                :style="{ transform: flippedLeft ? 'rotateY(195deg)' : 'rotateY(15deg)' }"
+              <img
+                v-if="leftMember.photo"
+                :src="leftMember.photo"
+                :alt="leftMember.name"
+                class="h-full w-full object-cover"
+              />
+              <!-- decoratif : masque aux lecteurs d'ecran, ignore le test de contraste -->
+              <span
+                v-else
+                aria-hidden="true"
+                class="font-display text-3xl min-[985px]:text-5xl 2xl:text-7xl font-extrabold text-white/10"
+                >{{ initials(leftMember.name) }}</span
               >
-                <!-- Face avant -->
-                <div
-                  class="absolute inset-0 h-full w-full backface-hidden antialiased translate-z-[1px] bg-primary-950 rounded-2xl flex items-center justify-center overflow-hidden border-0 border-transparent"
-                >
-                  <span
-                    class="font-display text-3xl min-[985px]:text-5xl 2xl:text-7xl font-extrabold text-white/10 border-0 border-transparent"
-                    >{{ initials(leftMember.name) }}</span
-                  >
-                </div>
-
-                <!-- Face arrière — description de la BU uniquement, pas de
-                     nom ni de citation (cf. zone centrale ci-dessous). -->
-                <div
-                  class="absolute inset-0 h-full w-full backface-hidden antialiased bg-primary-950 rounded-2xl [transform:rotateY(180deg)_translateZ(1px)] flex flex-col justify-center items-center overflow-hidden border-0 border-transparent p-3 min-[985px]:p-6 text-center text-[10px] leading-tight min-[985px]:text-sm 2xl:text-base text-white/90"
-                >
-                  {{ activeBU.description }}
-                </div>
-              </div>
             </div>
           </div>
         </Transition>
       </div>
 
-      <!-- Citations centrales — permanentes, en diagonale franche. Masquées
+      <!-- Citations centrales permanentes, en diagonale franche. Masquées
            sous 985px : le texte y est remplacé par les copies compactes
            attachées à chaque carte (cf. ci-dessus/dessous). -->
       <div class="hidden min-[985px]:flex flex-1 items-center px-4">
         <!-- Cadre de référence, hauteur calquée sur celle de la carte (pas
-             h-full : la colonne parente reste plus haute — `items-center`
+             h-full : la colonne parente reste plus haute  `items-center`
              ci-dessus centre ce cadre à hauteur fixe dans cet espace plutôt
              que de l'étirer dessus). Les deux blocs sont ancrés en `absolute`
              à ses coins plutôt que distribués en flex : élimine toute
@@ -348,7 +299,7 @@ onBeforeUnmount(stopAutoSlide)
             <p class="text-base 2xl:text-2xl font-bold text-primary-950 mb-1">
               {{ leftMember.name }}
             </p>
-            <p class="text-sm font-medium text-primary-900/50 mb-2">{{ leftMember.role }}</p>
+            <p class="text-sm font-medium text-primary-900/70 mb-2">{{ leftMember.role }}</p>
             <Transition name="fade" mode="out-in">
               <p
                 :key="leftMember.id"
@@ -367,7 +318,7 @@ onBeforeUnmount(stopAutoSlide)
             <p class="text-base 2xl:text-2xl font-bold text-primary-950 mb-1">
               {{ rightMember.name }}
             </p>
-            <p class="text-sm font-medium text-primary-900/50 mb-2">{{ rightMember.role }}</p>
+            <p class="text-sm font-medium text-primary-900/70 mb-2">{{ rightMember.role }}</p>
             <Transition name="fade" mode="out-in">
               <p
                 :key="rightMember.id"
@@ -400,40 +351,28 @@ onBeforeUnmount(stopAutoSlide)
         >
           <div :key="activeBUIndex" class="flex flex-col items-center">
             <div
-              class="w-32 h-48 min-[985px]:w-48 min-[985px]:h-72 2xl:w-[320px] 2xl:h-[480px] [perspective:1000px] transform-gpu border-0 ring-0 outline-none"
-              @mouseenter="flipRightIn"
-              @mouseleave="flipRightOut"
-              @click="toggleRightFlip"
+              class="w-32 h-48 min-[985px]:w-48 min-[985px]:h-72 2xl:w-[320px] 2xl:h-[480px] bg-primary-950 rounded-2xl shadow-[40px_20px_50px_-15px_rgba(0,0,50,0.4)] flex items-center justify-center overflow-hidden"
             >
-              <div
-                class="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] rounded-2xl shadow-[40px_20px_50px_-15px_rgba(0,0,50,0.4)] transform-gpu will-change-transform border-0 ring-0 outline-none"
-                :style="{ transform: flippedRight ? 'rotateY(-195deg)' : 'rotateY(-15deg)' }"
+              <img
+                v-if="rightMember.photo"
+                :src="rightMember.photo"
+                :alt="rightMember.name"
+                class="h-full w-full object-cover"
+              />
+              <!-- decoratif : masque aux lecteurs d'ecran, ignore le test de contraste -->
+              <span
+                v-else
+                aria-hidden="true"
+                class="font-display text-3xl min-[985px]:text-5xl 2xl:text-7xl font-extrabold text-white/10"
+                >{{ initials(rightMember.name) }}</span
               >
-                <!-- Face avant -->
-                <div
-                  class="absolute inset-0 h-full w-full backface-hidden antialiased translate-z-[1px] bg-primary-950 rounded-2xl flex items-center justify-center overflow-hidden border-0 border-transparent"
-                >
-                  <span
-                    class="font-display text-3xl min-[985px]:text-5xl 2xl:text-7xl font-extrabold text-white/10 border-0 border-transparent"
-                    >{{ initials(rightMember.name) }}</span
-                  >
-                </div>
-
-                <!-- Face arrière — description de la BU uniquement, pas de
-                     nom ni de citation (cf. zone centrale ci-dessus). -->
-                <div
-                  class="absolute inset-0 h-full w-full backface-hidden antialiased bg-primary-950 rounded-2xl [transform:rotateY(180deg)_translateZ(1px)] flex flex-col justify-center items-center overflow-hidden border-0 border-transparent p-3 min-[985px]:p-6 text-center text-[10px] leading-tight min-[985px]:text-sm 2xl:text-base text-white/90"
-                >
-                  {{ activeBU.description }}
-                </div>
-              </div>
             </div>
           </div>
         </Transition>
         <!-- Nom/poste/citation : copie compacte, sous la carte, sous 985px uniquement. -->
         <div class="mt-4 max-w-32 text-center min-[985px]:hidden">
           <p class="text-sm font-bold text-primary-950">{{ rightMember.name }}</p>
-          <p class="text-[11px] font-medium text-primary-900/50">{{ rightMember.role }}</p>
+          <p class="text-[11px] font-medium text-primary-900/70">{{ rightMember.role }}</p>
           <Transition name="fade" mode="out-in">
             <p
               :key="rightMember.id"
@@ -448,7 +387,7 @@ onBeforeUnmount(stopAutoSlide)
       </div>
     </div>
 
-    <!-- Carrousel mobile : sous 460px, l'arène à deux cartes ne tient plus —
+    <!-- Carrousel mobile : sous 460px, l'arène à deux cartes ne tient plus
          un seul profil à la fois, les 6 profils de toutes les BUs confondus. -->
     <div
       class="hidden max-[459px]:flex w-full flex-1 flex-col items-center justify-center gap-6 px-4"
@@ -474,16 +413,26 @@ onBeforeUnmount(stopAutoSlide)
             <div
               class="flex h-[clamp(200px,40dvh,350px)] w-52 shrink min-h-0 items-center justify-center overflow-hidden rounded-2xl bg-primary-950 [@media(max-height:690px)]:max-h-[25dvh]"
             >
-              <span class="font-display text-6xl font-extrabold text-white/10">{{
-                initials(currentMobileProfile.name)
-              }}</span>
+              <img
+                v-if="currentMobileProfile.photo"
+                :src="currentMobileProfile.photo"
+                :alt="currentMobileProfile.name"
+                class="h-full w-full object-cover"
+              />
+              <!-- decoratif : masque aux lecteurs d'ecran, ignore le test de contraste -->
+              <span
+                v-else
+                aria-hidden="true"
+                class="font-display text-6xl font-extrabold text-white/10"
+                >{{ initials(currentMobileProfile.name) }}</span
+              >
             </div>
 
             <div
               class="mt-4 [@media(max-height:690px)]:mt-2 min-h-[160px] w-full max-w-[18rem] flex flex-col justify-start text-center"
             >
               <p class="text-xl font-bold text-primary-950">{{ currentMobileProfile.name }}</p>
-              <p class="text-sm font-medium text-primary-900/50">{{ currentMobileProfile.role }}</p>
+              <p class="text-sm font-medium text-primary-900/70">{{ currentMobileProfile.role }}</p>
               <p
                 class="mt-1 text-base italic leading-snug text-primary-900/80 [@media(max-height:690px)]:text-sm [@media(max-height:690px)]:leading-tight"
               >
@@ -518,7 +467,7 @@ onBeforeUnmount(stopAutoSlide)
 
 <style scoped>
 /* `prefers-reduced-motion` : sans cette garde, la transition resterait
-   active — motion-reduce: n'existe pas en Tailwind pour les classes
+   active motion-reduce: n'existe pas en Tailwind pour les classes
    générées par <Transition>, d'où le média query CSS direct (cf. CLAUDE.md,
    neutralisation obligatoire des animations décoratives). */
 @media (prefers-reduced-motion: no-preference) {

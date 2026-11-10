@@ -19,7 +19,7 @@ import sportImg2 from '@/assets/images/photos/f-it-02.jpg'
 import sportImg3 from '@/assets/images/photos/f-it-03.jpg'
 
 /**
- * Section « Nos événements » — extraite de `HomeView.vue` (V1.0) pour être
+ * Section « Nos événements » - extraite de `HomeView.vue` (V1.0) pour être
  * réutilisée telle quelle sur `CandidateView.vue` (event accueil) : même
  * composant, pas une réécriture. Le `v-if` de profil (masqué pour le profil
  * `entreprise`) reste de la responsabilité de l'appelant, cf. `HomeView.vue`,
@@ -174,14 +174,15 @@ onBeforeUnmount(() => {
           class="mx-auto max-w-3xl text-center transition-all duration-700 ease-out motion-reduce:transition-none"
           :class="scrollRevealClass(evenementsReveal)"
         >
+          <!-- titre en gras -->
           <h2
-            class="mt-4 font-display text-3xl leading-tight text-balance text-primary-900 [@media(max-height:885px)]:text-2xl md:text-display"
+            class="mt-4 font-display font-bold text-3xl leading-tight text-balance text-primary-900 [@media(max-height:885px)]:text-2xl md:text-display"
           >
             Nos événements
           </h2>
           <p class="mt-4 text-sm leading-relaxed text-primary-900/60 md:text-lg">
             La cohésion ne s'arrête pas à la porte des bureaux&nbsp;: after-works, événements
-            sportifs et repas partagés rythment aussi la vie de nos équipes.
+            sportifs et repas partagés rythment aussi la vie de nos équipes à Wasquehal.
           </p>
         </header>
 
@@ -253,8 +254,8 @@ onBeforeUnmount(() => {
           Événements tech
         </h2>
         <p class="mt-4 text-sm leading-relaxed text-primary-900/60 md:text-lg">
-          Meetups, conférences, hackathons&nbsp;: retrouvez les rendez-vous auxquels participe
-          Faceel-IT.
+          Meetups, conférences, hackathons&nbsp;: retrouvez les rendez-vous tech auxquels participe
+          Faceel-IT dans les Hauts-de-France.
         </p>
         <RouterLink
           :to="{ name: 'evenements-tech' }"

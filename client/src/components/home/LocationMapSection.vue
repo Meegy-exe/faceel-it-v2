@@ -15,10 +15,11 @@ const infoReveal = useScrollReveal(infoEl)
     <h2
       class="shrink-0 mb-8 [@media(max-height:568px)]:mb-4 text-center font-display text-display text-balance text-white [@media(min-height:569px)_and_(max-height:690px)]:text-4xl [@media(max-height:568px)]:text-3xl lg:mb-12"
     >
-      Où nous trouver
+      <!-- seo local -->
+      Où nous trouver à Wasquehal, au coeur de la Métropole lilloise
     </h2>
 
-    <!-- Conteneur carte + contact — `flex-1 min-h-0` : occupe tout l'espace
+    <!-- Conteneur carte + contact - `flex-1 min-h-0` : occupe tout l'espace
          restant entre le titre et le bas de l'écran (le titre, lui, reste
          `shrink-0`). Empilé en mobile (`flex-col`, défaut), côte à côte à
          partir de `lg:` (`lg:flex-row`) pour retrouver la disposition
@@ -26,22 +27,26 @@ const infoReveal = useScrollReveal(infoEl)
     <div
       class="flex flex-1 min-h-0 flex-col lg:flex-none lg:flex-row lg:items-center lg:justify-center lg:gap-12"
     >
-      <!-- Hologramme France — tracé réel extrait de /france.svg, encadré dans un
+      <!-- Hologramme France - tracé réel extrait de /france.svg, encadré dans un
            halo circulaire, style blueprint/outline. `flex-1 min-h-0` : occupe
            tout l'espace restant face au bloc contact (`shrink-0`), c'est CE
            bloc qui cède de la place en premier sur un écran court. `lg:h-[600px]`
            : le SVG a besoin d'une hauteur CONCRÈTE (pas juste `max-h-full`) pour
-           que son propre `h-full` interne ait une base de résolution — en
+           que son propre `h-full` interne ait une base de résolution - en
            `lg:flex-row` l'axe transversal (hauteur) n'est plus piloté par
            `flex-1` (qui ne joue que sur la largeur, axe principal de la ligne). -->
       <div
         class="relative flex min-h-0 flex-1 items-center justify-center my-4 lg:my-0 lg:h-[600px] lg:w-auto lg:max-h-full lg:flex-none"
       >
         <div class="absolute inset-10 rounded-full bg-[#5EC6FF]/15 blur-3xl" />
+        <!-- fix focus svg : decoratif mais porte un vrai lien, neutralise le
+             focus natif du svg racine pour ne pas laisser d'element orphelin -->
         <svg
           viewBox="0 0 864 865"
           class="relative z-10 h-full max-h-full w-auto max-w-full object-contain lg:w-[500px]"
           aria-hidden="true"
+          focusable="false"
+          tabindex="-1"
         >
           <defs>
             <radialGradient id="mapHalo" cx="50%" cy="50%" r="50%">
@@ -63,7 +68,7 @@ const infoReveal = useScrollReveal(infoEl)
             stroke-width="1"
           />
 
-          <!-- Contour France (tracé réel /france.svg) — outline uniquement
+          <!-- Contour France (tracé réel /france.svg) - outline uniquement
                  (fill/stroke du fichier source écrasés pour garder le style
                  blueprint existant), flux lumineux animé. -->
           <path
@@ -76,7 +81,7 @@ const infoReveal = useScrollReveal(infoEl)
             stroke-linecap="round"
           />
 
-          <!-- Repère Lille — Hauts-de-France, position géographique réelle
+          <!-- Repère Lille - Hauts-de-France, position géographique réelle
                  (plus bas et à l'intérieur des terres que la pointe nord du
                  tracé). Cliquable : itinéraire vers les bureaux (Wasquehal,
                  métropole lilloise). -->
@@ -84,6 +89,7 @@ const infoReveal = useScrollReveal(infoEl)
             href="https://www.google.com/maps/dir/?api=1&destination=Faceel-it,+59290+Wasquehal"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Itinéraire vers Faceel-IT sur Google Maps"
             class="group cursor-pointer"
           >
             <circle cx="521" cy="58" r="24" fill="#12D80A" fill-opacity="0.3" class="ping-ring" />
@@ -103,7 +109,7 @@ const infoReveal = useScrollReveal(infoEl)
         </svg>
       </div>
 
-      <!-- Bloc contact — remplace l'ancien paragraphe générique (déplacé, lui,
+      <!-- Bloc contact - remplace l'ancien paragraphe générique (déplacé, lui,
            dans le bloc 'Cabinet de conseil...' du titre). `shrink-0` : contexte
            identique au titre, c'est le bloc carte au-dessus qui cède de la
            place en premier sur un écran court. `scale-95 origin-bottom` sous
@@ -123,7 +129,7 @@ const infoReveal = useScrollReveal(infoEl)
         <h3
           class="font-display text-2xl font-bold text-white sm:text-3xl lg:text-4xl [@media(max-height:568px)]:text-xl"
         >
-          Faceel IT - Siège social
+          Faceel IT - ESN, siège social à Wasquehal
         </h3>
         <p
           class="mt-1 text-sm text-white/50 sm:text-base lg:text-lg [@media(max-height:568px)]:text-xs"
@@ -236,7 +242,7 @@ const infoReveal = useScrollReveal(infoEl)
 <style scoped>
 /* `var(--color-primary-950)` plutôt que `theme('colors.primary.950')` :
    la variable est déjà générée globalement par le bloc `@theme` de
-   main.css (Tailwind v4) — zéro dépendance à un parseur de build,
+   main.css (Tailwind v4) - zéro dépendance à un parseur de build,
    contrairement à la classe utilitaire arbitraire précédente qui a
    échoué silencieusement en compilation. */
 .bg-core-glow {
@@ -261,7 +267,7 @@ const infoReveal = useScrollReveal(infoEl)
     }
   }
 
-  /* Respiration continue du libellé "Lille" — signale l'interactivité sans
+  /* Respiration continue du libellé "Lille" - signale l'interactivité sans
      attendre le survol. transform-box: fill-box ramène l'origine au centre
      de la boîte du <text> lui-même (pas du viewport SVG), condition requise
      pour que le mot grossisse sur place au lieu de dériver. */
@@ -280,7 +286,7 @@ const infoReveal = useScrollReveal(infoEl)
     }
   }
 
-  /* Contour statique (plus de flux lumineux animé) — trait plein en
+  /* Contour statique (plus de flux lumineux animé) - trait plein en
      permanence, seule la lueur douce est conservée. */
   .map-outline {
     filter: drop-shadow(0 0 4px rgba(94, 198, 255, 0.6));

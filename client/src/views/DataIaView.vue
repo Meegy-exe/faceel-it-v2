@@ -115,28 +115,82 @@ interface ExpertiseOffer {
 const EXPERTISE_OFFERS: ExpertiseOffer[] = [
   {
     name: 'Centre de formation',
-    headline: 'Rendre vos équipes autonomes',
+    headline: 'Rendre vos équipes autonomes **sur leurs outils data**',
     description:
-      'Des parcours conçus autour de vos outils Data & IA, pour que vos équipes maîtrisent leurs plateformes au quotidien.',
+      'Des **parcours de formation** conçus autour de vos outils Data & IA, pour que vos équipes maîtrisent leurs plateformes au quotidien.',
     iconPath: 'M22 10 12 5 2 10l10 5 10-5Z M6 12v5c3 2 9 2 12 0v-5',
   },
   {
     name: 'Assistance tech',
-    headline: 'Un expert à vos côtés',
+    headline: 'Un **expert data** à vos côtés',
     description:
-      'Un accompagnement réactif pour débloquer vos projets, fiabiliser vos plateformes et sécuriser vos mises en production.',
+      'Un **support technique** réactif pour débloquer vos **projets data**, fiabiliser vos plateformes et sécuriser vos mises en production.',
     iconPath:
       'M4 14v-2a8 8 0 0 1 16 0v2 M4 14h3v5H5a1 1 0 0 1-1-1v-4Z M20 14h-3v5h2a1 1 0 0 0 1-1v-4Z',
     featured: true,
   },
   {
     name: 'Centre de service',
-    headline: 'Vos plateformes data, pilotées dans la durée',
+    headline: 'Vos plateformes data, **maintenues et pilotées** dans la durée',
     description:
-      'Maintenance, évolutions et supervision de vos solutions, pour un patrimoine data fiable et aligné sur vos usages.',
+      '**Maintenance**, évolutions et supervision de vos **solutions data**, pour un patrimoine data fiable et aligné sur vos usages **métier**.',
     iconPath: 'M4 5h16v5H4Z M4 14h16v5H4Z M8 7.5h.01 M8 16.5h.01',
   },
 ]
+
+/* Contenu statique du fichier (jamais de saisie utilisateur) : **x** devient <strong>x</strong>. */
+const boldify = (text: string) => text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+
+interface IaCard {
+  title: string
+  description: string
+  iconPath: string
+}
+
+const IA_CARDS: IaCard[] = [
+  {
+    title: "Création d'agents **IA**",
+    description:
+      "Conception d'**assistants IA sur mesure**, connectés à vos données et à vos outils métier, pour automatiser les tâches à faible valeur ajoutée.",
+    iconPath:
+      'M12 3v2m0 14v2m9-9h-2M5 12H3m14.95-6.95-1.414 1.414M7.464 16.536l-1.414 1.414m0-11.314 1.414 1.414m9.072 9.072 1.414 1.414M12 8a4 4 0 100 8 4 4 0 000-8Z',
+  },
+  {
+    title: 'Amélioration continue',
+    description:
+      "Suivi, évaluation et optimisation des **solutions IA** déployées pour qu'elles gagnent en pertinence au fil des usages réels.",
+    iconPath: 'M17 2.1l4 4-4 4M3 12.6v-2a4 4 0 014-4h14M7 21.9l-4-4 4-4M21 11.4v2a4 4 0 01-4 4H3',
+  },
+  {
+    title: "Formation & adoption **de l'IA**",
+    description:
+      "Montée en compétences de vos équipes pour qu'elles s'approprient durablement les nouveaux outils et usages **de l'IA en entreprise**.",
+    iconPath: 'M12 14l9-5-9-5-9 5 9 5Zm0 0v7m-9-5.5V16a9 3 0 0018 0v-4.5',
+  },
+]
+
+/** Carrousel IA : défilement auto en pause au survol/focus (bouton "suivant"
+ *  en plus), désactivé si l'utilisateur demande moins d'animations. */
+const activeIaIndex = ref(0)
+let iaInterval: ReturnType<typeof setInterval> | undefined
+
+const stopIaCarousel = () => {
+  clearInterval(iaInterval)
+  iaInterval = undefined
+}
+const startIaCarousel = () => {
+  stopIaCarousel()
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  iaInterval = setInterval(() => {
+    activeIaIndex.value = (activeIaIndex.value + 1) % IA_CARDS.length
+  }, 5000)
+}
+const nextIaCard = () => {
+  activeIaIndex.value = (activeIaIndex.value + 1) % IA_CARDS.length
+  startIaCarousel()
+}
+onMounted(startIaCarousel)
+onUnmounted(stopIaCarousel)
 
 // liste offres data
 const allJobs = [
@@ -238,13 +292,15 @@ function goToSelectedJobDetail() {
         <h1
           class="animate-fade-up font-display text-4xl font-extrabold tracking-tight text-white motion-reduce:animate-none sm:text-6xl xl:text-7xl"
         >
-          BU Data & IA, votre expertise dans la métropole lilloise
+          Votre <strong>expert data et intelligence artificielle à Lille</strong>
         </h1>
         <p
           class="hero-lede mx-auto mt-6 max-w-3xl animate-fade-up text-base font-semibold leading-relaxed text-[#12D80A] motion-reduce:animate-none sm:text-xl xl:text-2xl [animation-delay:200ms]"
         >
-          Plus qu'une ESN, nous sommes un collectif de haut niveau. Transparence totale, chiffres
-          assumés, et une force de frappe technologique pour déployer vos solutions Data & IA.
+          Plus qu'une <strong>ESN</strong>, nous sommes un collectif de
+          <strong>consultants Data & IA</strong> de haut niveau
+          <strong>dans la métropole lilloise</strong>. Transparence totale, chiffres assumés, et une force de frappe
+          technologique pour déployer vos solutions Data & IA.
         </p>
       </div>
 
@@ -375,13 +431,10 @@ function goToSelectedJobDetail() {
             : 'translate-y-8 opacity-0'
         "
       >
-        <p class="text-sm font-bold uppercase tracking-widest text-accent-500 md:text-base">
-          Notre offre
-        </p>
         <h2
           class="mt-2 font-display text-5xl font-black tracking-tight text-[#000066] md:text-6xl xl:text-7xl"
         >
-          Expertise
+          <strong>Notre</strong> Expertise
         </h2>
       </div>
 
@@ -436,10 +489,10 @@ function goToSelectedJobDetail() {
             <h3
               class="expertise-headline mt-2 font-display text-lg font-bold leading-snug text-[#000066] md:text-2xl xl:text-3xl"
             >
-              {{ offer.headline }}
+              <span v-html="boldify(offer.headline)" />
             </h3>
             <p class="expertise-desc mt-3 text-sm leading-relaxed text-gray-600">
-              {{ offer.description }}
+              <span v-html="boldify(offer.description)" />
             </p>
           </div>
         </article>
@@ -481,18 +534,18 @@ function goToSelectedJobDetail() {
         <!-- Colonne droite : texte -->
         <div>
           <h2
-            class="font-display text-4xl font-black text-white md:text-5xl xl:text-6xl"
+            class="font-display text-2xl font-black text-white sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl"
             :class="
               isExecutionVisible
                 ? 'translate-y-0 opacity-100 transition-all duration-700 ease-out'
                 : 'translate-y-8 opacity-0'
             "
           >
-            Au-delà du conseil, une force d'exécution.
+            Au-delà du <strong>conseil data</strong>, une force d'exécution.
           </h2>
           <!-- glisse depuis la droite -->
           <div
-            class="mt-4 space-y-4 text-lg leading-relaxed text-white md:text-xl"
+            class="mt-3 space-y-3 text-sm leading-relaxed text-white sm:text-base md:mt-4 md:space-y-4 md:text-lg xl:text-xl"
             :class="
               isExecutionVisible
                 ? 'translate-x-0 opacity-100 transition-all duration-700 delay-150 ease-out'
@@ -500,17 +553,17 @@ function goToSelectedJobDetail() {
             "
           >
             <p>
-              Expertise technique de pointe, consultants certifiés sur les outils de référence,
+              Expertise technique de pointe, consultants certifiés sur les <strong>outils data</strong> de référence,
               pragmatisme assumé : nous testons et choisissons le bon outil pour chaque cas d'usage.
             </p>
             <p>
               Tout le potentiel de nos outils partenaires réside dans leur paramétrage spécifique et
-              leur interconnexion avec vos outils existants. Au plus près de vos équipes, nos
-              ingénieurs calibrent la solution à votre métier, vos données et votre environnement.
+              leur <strong>intégration à vos outils existants</strong>. Au plus près de vos équipes, nos
+              <strong>ingénieurs data</strong> calibrent la solution à votre métier, vos données et votre environnement.
             </p>
             <p>
-              Grâce à nos partenariats officiels, vous bénéficiez en continu des dernières
-              innovations et d'un accès premium aux éditeurs.
+              Grâce à nos <strong>partenariats officiels avec les éditeurs</strong>, vous bénéficiez en
+              continu des dernières <strong>innovations Data & IA</strong> et d'un accès premium à leurs équipes.
             </p>
           </div>
         </div>
@@ -560,9 +613,6 @@ function goToSelectedJobDetail() {
       <div
         class="flex flex-col justify-center bg-[#000066] p-8 pt-28 text-white sm:p-12 sm:pt-28 lg:p-16 lg:pt-28"
       >
-        <p class="font-mono text-sm font-bold uppercase tracking-widest text-accent-500">
-          [ÉQUIPE BU]
-        </p>
         <h2 class="mt-3 font-display text-4xl font-black text-balance md:text-5xl">
           Les experts Data &amp; IA
         </h2>
@@ -790,9 +840,8 @@ function goToSelectedJobDetail() {
                 : '-translate-x-8 opacity-0'
             "
           >
-            <p class="font-bold tracking-widest text-accent-500 uppercase">Parlons IA</p>
             <h2 class="mt-2 font-display text-[28px] font-black text-white sm:text-4xl md:text-6xl">
-              Vos projets, accélérés par l'intelligence artificielle.
+              Vos projets <strong>métier, accélérés</strong> par l'intelligence artificielle.
             </h2>
           </div>
           <!-- glisse depuis la droite -->
@@ -806,125 +855,90 @@ function goToSelectedJobDetail() {
           >
             <!-- texte raccourci -->
             <p class="text-base leading-relaxed text-white sm:text-lg">
-              De l'automatisation aux agents sur mesure, l'IA transforme vos processus métier.
-              Explorez ce potentiel avec nos experts.
+              De l'<strong>automatisation des processus</strong> aux <strong>agents IA sur mesure</strong>,
+              l'intelligence artificielle transforme vos processus métier. Explorez ce potentiel avec
+              nos <strong>experts IA</strong>.
             </p>
           </div>
         </div>
 
-        <!-- defilement horizontal ia -->
+        <!-- Carrousel : toutes les cartes sont empilées dans la même cellule de
+             grille (la plus haute fixe la hauteur), seul l'opacité change, d'où
+             aucun saut de hauteur de la section pendant la transition. -->
         <div
-          class="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 hide-scrollbar md:grid md:grid-cols-3 md:gap-8 md:overflow-visible md:pb-0"
+          :class="
+            isParlonsIaVisible
+              ? 'translate-y-0 opacity-100 transition-all duration-700 ease-out'
+              : 'translate-y-8 opacity-0 transition-none'
+          "
+          @mouseenter="stopIaCarousel"
+          @mouseleave="startIaCarousel"
+          @focusin="stopIaCarousel"
+          @focusout="startIaCarousel"
         >
-          <div
-            class="w-[85vw] shrink-0 snap-center rounded-[2rem] border-2 border-accent-500 bg-white p-5 md:w-auto md:p-10"
-            :class="
-              isParlonsIaVisible
-                ? 'translate-y-0 opacity-100 transition-all duration-700 ease-out'
-                : 'translate-y-8 opacity-0 transition-none'
-            "
-          >
+          <div class="mx-auto grid w-full max-w-2xl">
             <div
-              class="flex size-12 items-center justify-center rounded-2xl bg-accent-500 md:size-14"
-              aria-hidden="true"
+              v-for="(card, index) in IA_CARDS"
+              :key="card.title"
+              class="col-start-1 row-start-1 rounded-[2rem] border-2 border-accent-500 bg-white p-5 transition-opacity duration-500 ease-in-out motion-reduce:transition-none md:p-10"
+              :class="index === activeIaIndex ? 'opacity-100' : 'pointer-events-none opacity-0'"
+              :aria-hidden="index !== activeIaIndex"
             >
-              <svg
-                class="size-5 text-white md:size-6"
-                viewBox="0 0 24 24"
-                fill="none"
+              <div
+                class="flex size-12 items-center justify-center rounded-2xl bg-accent-500 md:size-14"
                 aria-hidden="true"
               >
-                <path
-                  d="M12 3v2m0 14v2m9-9h-2M5 12H3m14.95-6.95-1.414 1.414M7.464 16.536l-1.414 1.414m0-11.314 1.414 1.414m9.072 9.072 1.414 1.414M12 8a4 4 0 100 8 4 4 0 000-8Z"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
+                <svg
+                  class="size-5 text-white md:size-6"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    :d="card.iconPath"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <p
+                class="mt-5 font-display text-lg font-bold text-[#000066] md:mt-8 md:text-2xl"
+                v-html="boldify(card.title)"
+              />
+              <p
+                class="mt-3 text-sm leading-relaxed text-gray-800 md:text-base"
+                v-html="boldify(card.description)"
+              />
             </div>
-            <p class="mt-5 font-display text-lg font-bold text-[#000066] md:mt-8 md:text-2xl">
-              Création d'agents
-            </p>
-            <p class="mt-3 text-sm leading-relaxed text-gray-800 md:text-base">
-              Conception d'assistants sur mesure, connectés à vos données et à vos outils métier,
-              pour automatiser les tâches à faible valeur ajoutée.
-            </p>
           </div>
 
-          <div
-            class="w-[85vw] shrink-0 snap-center rounded-[2rem] border-2 border-accent-500 bg-white p-5 delay-150 md:w-auto md:p-10"
-            :class="
-              isParlonsIaVisible
-                ? 'translate-y-0 opacity-100 transition-all duration-700 ease-out'
-                : 'translate-y-8 opacity-0 transition-none'
-            "
-          >
-            <div
-              class="flex size-12 items-center justify-center rounded-2xl bg-accent-500 md:size-14"
-              aria-hidden="true"
+          <div class="mt-4 flex items-center justify-center gap-4 sm:mt-8">
+            <div class="flex gap-2" aria-hidden="true">
+              <span
+                v-for="(card, index) in IA_CARDS"
+                :key="card.title"
+                class="size-2 rounded-full transition-colors duration-500"
+                :class="index === activeIaIndex ? 'bg-[#12D80A]' : 'bg-white/40'"
+              />
+            </div>
+            <button
+              type="button"
+              aria-label="Carte suivante"
+              class="flex size-11 items-center justify-center rounded-full bg-[#12D80A] text-white transition-colors hover:bg-accent-400"
+              @click="nextIaCard"
             >
-              <svg
-                class="size-5 text-white md:size-6"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-              >
+              <svg class="size-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path
-                  d="M17 2.1l4 4-4 4M3 12.6v-2a4 4 0 014-4h14M7 21.9l-4-4 4-4M21 11.4v2a4 4 0 01-4 4H3"
+                  d="M5 12h14m-6-6 6 6-6 6"
                   stroke="currentColor"
-                  stroke-width="1.8"
+                  stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
                 />
               </svg>
-            </div>
-            <p class="mt-5 font-display text-lg font-bold text-[#000066] md:mt-8 md:text-2xl">
-              Amélioration continue
-            </p>
-            <p class="mt-3 text-sm leading-relaxed text-gray-800 md:text-base">
-              Suivi, évaluation et optimisation des solutions déployées pour qu'elles gagnent en
-              pertinence au fil des usages réels.
-            </p>
-          </div>
-
-          <!-- Troisième carte : contenu générique ajouté pour compléter la
-               grille à 3 colonnes de la maquette (les 2 premières reprennent
-               le contenu déjà existant). -->
-          <div
-            class="w-[85vw] shrink-0 snap-center rounded-[2rem] border-2 border-accent-500 bg-white p-5 delay-300 md:w-auto md:p-10"
-            :class="
-              isParlonsIaVisible
-                ? 'translate-y-0 opacity-100 transition-all duration-700 ease-out'
-                : 'translate-y-8 opacity-0 transition-none'
-            "
-          >
-            <div
-              class="flex size-12 items-center justify-center rounded-2xl bg-accent-500 md:size-14"
-              aria-hidden="true"
-            >
-              <svg
-                class="size-5 text-white md:size-6"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M12 14l9-5-9-5-9 5 9 5Zm0 0v7m-9-5.5V16a9 3 0 0018 0v-4.5"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-            <p class="mt-5 font-display text-lg font-bold text-[#000066] md:mt-8 md:text-2xl">
-              Formation &amp; adoption
-            </p>
-            <p class="mt-3 text-sm leading-relaxed text-gray-800 md:text-base">
-              Montée en compétences de vos équipes pour qu'elles s'approprient durablement les
-              nouveaux outils et usages IA au quotidien.
-            </p>
+            </button>
           </div>
         </div>
 
@@ -933,7 +947,7 @@ function goToSelectedJobDetail() {
             to="/contact-entreprise"
             class="rounded-full bg-[#12D80A] px-8 py-4 font-bold text-white transition-colors hover:bg-accent-400"
           >
-            Contacter nos experts
+            Contacter nos experts <strong>Data & IA</strong>
           </RouterLink>
         </div>
       </div>

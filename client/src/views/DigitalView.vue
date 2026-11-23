@@ -41,31 +41,77 @@ const heroTextReveal = useScrollReveal(heroTextEl)
 const heroImageEl = useTemplateRef<HTMLElement>('heroImageEl')
 const heroImageReveal = useScrollReveal(heroImageEl)
 
-// chiffres cles hero, affiches par deux sur mobile (grille complete des 4 sur desktop)
+// chiffres cles hero : une rangee de 4 des sm, rotation par paires en dessous
 const KPIS = [
-  { label: 'Collaborateurs', value: 'XX' },
-  { label: 'Dédiés au web', value: 'XX%' },
+  { label: 'Collaborateurs', value: '24' },
+  { label: 'Dédiés au web', value: '72%' },
   { label: 'Taux de turnover', value: '3%' },
   { label: "Développeurs certifiés sur l'IA", value: '100%' },
 ]
 
-// cycle stats
-const kpiIndex = ref(0)
+// rotation des chiffres cles par paires sous sm (fondu seul, pas de transform)
+const kpiPair = ref(0)
+const visibleKpis = computed(() => KPIS.slice(kpiPair.value * 2, kpiPair.value * 2 + 2))
 let kpiInterval: ReturnType<typeof setInterval> | undefined
-
-const visibleKpis = computed(() => [
-  KPIS[kpiIndex.value]!,
-  KPIS[(kpiIndex.value + 1) % KPIS.length]!,
-])
 
 onMounted(() => {
   kpiInterval = setInterval(() => {
-    kpiIndex.value = (kpiIndex.value + 1) % KPIS.length
-  }, 3500)
+    kpiPair.value = (kpiPair.value + 1) % (KPIS.length / 2)
+  }, 4500)
 })
 
 onUnmounted(() => {
   clearInterval(kpiInterval)
+})
+
+// section approche sous md : alternance paragraphe 1 / paragraphe 2 toutes les 5 s
+const showApproachPart2 = ref(false)
+let approachInterval: ReturnType<typeof setInterval> | undefined
+
+onMounted(() => {
+  approachInterval = setInterval(() => {
+    showApproachPart2.value = !showApproachPart2.value
+  }, 5000)
+})
+
+onUnmounted(() => {
+  clearInterval(approachInterval)
+})
+
+// offres sous md : une offre a la fois, rotation auto en pause au survol, bouton suivant
+const activeJobIndex = ref(0)
+let jobsInterval: ReturnType<typeof setInterval> | undefined
+
+const stopJobsCarousel = () => {
+  clearInterval(jobsInterval)
+  jobsInterval = undefined
+}
+const startJobsCarousel = () => {
+  stopJobsCarousel()
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  jobsInterval = setInterval(() => {
+    activeJobIndex.value = (activeJobIndex.value + 1) % Math.max(digitalJobs.value.length, 1)
+  }, 5000)
+}
+const nextJob = () => {
+  activeJobIndex.value = (activeJobIndex.value + 1) % Math.max(digitalJobs.value.length, 1)
+  startJobsCarousel()
+}
+onMounted(startJobsCarousel)
+onUnmounted(stopJobsCarousel)
+
+// intro hero sous lg : alternance partie 1 / partie 2 toutes les 5 s
+const showIntroPart2 = ref(false)
+let introInterval: ReturnType<typeof setInterval> | undefined
+
+onMounted(() => {
+  introInterval = setInterval(() => {
+    showIntroPart2.value = !showIntroPart2.value
+  }, 5000)
+})
+
+onUnmounted(() => {
+  clearInterval(introInterval)
 })
 
 // animations d'entree au scroll, en-tete section equipe
@@ -195,8 +241,7 @@ const TEAM_PROFILES = [
     name: 'Stéphanie Demarez',
     role: 'Directrice BU Digital',
     quote: [
-      '« Je ne cherche pas seulement un business',
-      'mais avant tout à créer une relation durable. »',
+      "« Écouter, comprendre, répondre juste... et recommencer ! C'est comme ça qu'une belle relation client se construit. »",
     ],
   },
 ]
@@ -294,7 +339,7 @@ function goToSelectedJobDetail() {
     <section
       id="hero"
       data-theme="dark"
-      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-[#000066] flex flex-col"
+      class="relative min-h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-[#000066] flex flex-col"
     >
       <!-- degrade deep ambient en fond -->
       <div
@@ -305,7 +350,7 @@ function goToSelectedJobDetail() {
       <!-- conteneur aligne sur la nav -->
       <!-- tasser hero mobile -->
       <div
-        class="grid w-full flex-1 grid-cols-1 items-stretch gap-4 px-4 pt-32 pb-4 sm:px-6 lg:gap-12 lg:px-8 lg:pb-8 lg:grid-cols-2 xl:px-12"
+        class="grid w-full grid-cols-1 items-stretch gap-4 px-4 pt-24 pb-2 sm:gap-6 sm:px-6 sm:pt-28 md:gap-8 lg:grid-cols-2 lg:gap-12 lg:px-8 lg:pt-32 lg:pb-8 xl:px-12"
       >
         <!-- colonne texte, prend toute la hauteur, fondu au scroll -->
         <div
@@ -320,26 +365,45 @@ function goToSelectedJobDetail() {
         >
           <!-- fix contraste texte : vert accent trop sombre une fois rendu sur navy -->
           <p class="mb-3 font-bold uppercase tracking-widest text-blue-100 lg:mb-6">BU Digital</p>
-          <h1 class="mb-4 font-display text-4xl font-black text-white lg:mb-8 lg:text-6xl">
-            Web & mobile, notre spécialité dans la métropole lilloise
+          <h1 class="mb-4 font-display text-2xl font-black leading-tight text-white sm:text-3xl md:text-4xl lg:mb-8 lg:text-5xl">
+            Web & mobile, notre spécialité à Lille
           </h1>
-          <p class="mb-6 text-lg text-white md:text-xl lg:mb-8">
-            Description générique sur deux à trois lignes présentant la Business Unit, ses missions
-            et ce qui la distingue au sein de Faceel-IT.
+          <!-- sous lg : les 2 parties s'alternent dans la meme cellule de grille (la plus haute
+               fixe la hauteur, donc aucun saut de layout) ; des lg : texte complet d'un bloc -->
+          <p
+            class="mb-6 grid max-w-xl text-sm leading-relaxed text-white sm:text-base lg:mb-8 lg:block lg:text-lg"
+          >
+            <span
+              class="col-start-1 row-start-1 transition-opacity duration-500 motion-reduce:transition-none"
+              :class="showIntroPart2 ? 'opacity-0 lg:opacity-100' : 'opacity-100'"
+              >La BU Digital accompagne nos clients stratégiques sur les métiers du développement et
+              du DevOps. Elle met à leur disposition des profils tech qui contribuent à leurs
+              projets de transformation digitale, de la conception applicative au
+              déploiement.</span
+            >
+            {{ ' ' }}
+            <span
+              class="col-start-1 row-start-1 transition-opacity duration-500 motion-reduce:transition-none"
+              :class="showIntroPart2 ? 'opacity-100' : 'opacity-0 lg:opacity-100'"
+              >Notre approche repose sur une bonne connaissance des enjeux de chaque client, des
+              offres adaptées et un suivi attentif de la qualité de service, en lien étroit avec les
+              directions comptes. La BU s'appuie sur des équipes engagées, accompagnées dans leur
+              montée en compétences.</span
+            >
           </p>
 
           <!-- liste d'arguments -->
-          <ul class="mt-6 flex flex-col gap-3 text-lg md:mt-8 md:text-xl lg:gap-4">
-            <li class="flex items-center gap-3 text-white">
-              <span class="text-accent-500" aria-hidden="true">&bull;</span>
+          <ul class="mt-2 flex flex-col gap-3 text-sm sm:text-base md:mt-4 lg:gap-4 lg:text-lg">
+            <li class="flex items-start gap-2.5 text-white">
+              <span class="shrink-0 text-accent-500" aria-hidden="true">&bull;</span>
               Expertise reconnue sur les technos du marché
             </li>
-            <li class="flex items-center gap-3 text-white">
-              <span class="text-accent-500" aria-hidden="true">&bull;</span>
+            <li class="flex items-start gap-2.5 text-white">
+              <span class="shrink-0 text-accent-500" aria-hidden="true">&bull;</span>
               Equipe soudée et proche de nos clients
             </li>
-            <li class="flex items-center gap-3 text-white">
-              <span class="text-accent-500" aria-hidden="true">&bull;</span>
+            <li class="flex items-start gap-2.5 text-white">
+              <span class="shrink-0 text-accent-500" aria-hidden="true">&bull;</span>
               Projets concrets, livrés avec exigence
             </li>
           </ul>
@@ -348,7 +412,7 @@ function goToSelectedJobDetail() {
           <!-- fix wcag button : primary-950 restait a 4.29, noir pur passe 6.8:1 -->
           <button
             type="button"
-            class="mt-auto hidden w-fit self-start rounded-full bg-accent-500 px-10 py-4 text-lg font-bold text-black shadow-soft transition-all duration-300 hover:scale-105 hover:shadow-glow md:inline-flex"
+            class="mt-8 hidden w-fit self-start rounded-full bg-accent-500 px-10 py-4 text-lg font-bold text-black shadow-soft transition-all duration-300 hover:scale-105 hover:shadow-glow md:inline-flex"
             @click="router.push({ name: 'offres', query: { bu: 'Digital' } })"
           >
             Découvrir nos offres
@@ -362,7 +426,7 @@ function goToSelectedJobDetail() {
           ref="heroImageEl"
           :src="imgHero"
           alt="Equipe Faceel-IT"
-          class="mt-2 max-h-[160px] w-full rounded-[2rem] object-cover shadow-2xl transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-2xl lg:mt-0 lg:ml-10 lg:h-full lg:max-h-none"
+          class="mx-auto h-44 w-full max-w-md rounded-2xl object-cover shadow-2xl transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-2xl sm:h-64 md:h-72 lg:ml-10 lg:mr-16 lg:mt-0 lg:h-full lg:max-h-[80vh] lg:max-w-none xl:mr-24"
           :class="
             scrollRevealClass(heroImageReveal, 'right', {
               offsetClass: 'translate-x-16',
@@ -374,38 +438,34 @@ function goToSelectedJobDetail() {
 
       <!-- conteneur externe, juste le padding de la nav -->
       <div class="px-4 sm:px-6 lg:px-8 xl:px-12">
-        <!-- metriques bu digital, cycle stats sur mobile -->
-        <!-- anim propre out-in -->
+        <!-- sous sm : 2 chiffres a la fois en fondu, hauteur reservee (pas de saut) -->
         <Transition
           mode="out-in"
-          enter-active-class="transition-all duration-300 ease-out"
-          leave-active-class="transition-all duration-300 ease-in"
-          enter-from-class="opacity-0 translate-x-4"
-          leave-to-class="opacity-0 -translate-x-4"
+          enter-active-class="transition-opacity duration-500 ease-out motion-reduce:transition-none"
+          leave-active-class="transition-opacity duration-300 ease-in motion-reduce:transition-none"
+          enter-from-class="opacity-0"
+          leave-to-class="opacity-0"
         >
-          <!-- fix hauteur saut : reserve l'espace entre les deux etats de l'animation -->
-          <!-- force premier plan, fix z-index couleur -->
           <div
-            :key="kpiIndex"
-            class="relative z-20 mt-8 grid min-h-[140px] w-full grid-cols-2 gap-8 px-8 pb-8 text-center transform-gpu md:hidden"
+            :key="kpiPair"
+            class="relative z-20 mt-3 mb-1 grid min-h-[84px] w-full grid-cols-2 gap-3 px-2 pb-2 text-center sm:hidden"
           >
             <div v-for="kpi in visibleKpis" :key="kpi.label">
-              <p class="font-display text-4xl font-bold text-accent-500">{{ kpi.value }}</p>
-              <p class="mt-2 text-sm text-white">{{ kpi.label }}</p>
+              <p class="font-display text-xl font-bold text-accent-500">{{ kpi.value }}</p>
+              <p class="mt-1 text-xs text-white">{{ kpi.label }}</p>
             </div>
           </div>
         </Transition>
 
-        <!-- grille complete, statique a partir de md -->
         <!-- force premier plan -->
         <div
-          class="relative z-20 mt-8 hidden w-full grid-cols-2 gap-8 px-8 pb-8 text-center md:grid md:px-16 lg:grid-cols-4 lg:px-32"
+          class="relative z-20 mt-10 hidden w-full grid-cols-4 gap-6 px-2 pb-8 text-center sm:grid md:px-8 lg:mt-16 lg:px-16 xl:px-32"
         >
           <div v-for="kpi in KPIS" :key="kpi.label">
-            <p class="font-display text-4xl font-bold text-accent-500 md:text-5xl">
+            <p class="font-display text-xl font-bold text-accent-500 sm:text-2xl lg:text-3xl">
               {{ kpi.value }}
             </p>
-            <p class="mt-2 text-sm text-white md:text-base">{{ kpi.label }}</p>
+            <p class="mt-1 text-xs text-white sm:text-sm">{{ kpi.label }}</p>
           </div>
         </div>
       </div>
@@ -512,10 +572,7 @@ function goToSelectedJobDetail() {
                 class="min-h-[100px] 2xl:min-h-[120px] w-full max-w-full overflow-hidden text-xs 2xl:text-lg italic text-primary-900/80 leading-relaxed"
               >
                 <span class="block whitespace-normal break-words"
-                  >« Je ne cherche pas seulement un business</span
-                >
-                <span class="block whitespace-normal break-words"
-                  >mais avant tout à créer une relation durable. »</span
+                  >« Écouter, comprendre, répondre juste... et recommencer ! C'est comme ça qu'une belle relation client se construit. »</span
                 >
               </p>
             </div>
@@ -537,8 +594,7 @@ function goToSelectedJobDetail() {
             <p class="text-sm font-bold text-primary-950">Stéphanie Demarez</p>
             <p class="text-[11px] font-medium text-primary-900/80">Directrice Commercial BU Digital</p>
             <p class="mt-1 min-h-[72px] text-xs italic leading-snug text-primary-900/80">
-              <span class="block">« Je ne cherche pas seulement un business</span>
-              <span class="block">mais avant tout à créer une relation durable. »</span>
+              <span class="block">« Écouter, comprendre, répondre juste... et recommencer ! C'est comme ça qu'une belle relation client se construit. »</span>
             </p>
           </div>
         </div>
@@ -681,7 +737,7 @@ function goToSelectedJobDetail() {
       <!-- en tete, fondu vers le haut -->
       <!-- compense hauteur navbar -->
       <p
-        class="mb-3 text-center font-bold uppercase tracking-widest text-accent-500 sm:mb-6"
+        class="mb-4 text-center text-sm font-bold uppercase tracking-widest text-accent-500 sm:mb-6 sm:text-base"
         :class="
           isApprocheVisible
             ? 'translate-y-0 opacity-100 transition-all duration-700 ease-out'
@@ -691,50 +747,74 @@ function goToSelectedJobDetail() {
         Notre approche
       </p>
       <h2
-        class="mx-auto mb-8 max-w-5xl text-center font-display text-3xl font-black leading-tight text-primary-900 sm:mb-24 sm:text-5xl lg:text-6xl"
+        class="mx-auto mb-6 max-w-5xl px-4 text-center font-display text-3xl font-black leading-snug text-primary-900 sm:mb-8 sm:text-4xl md:mb-24 lg:text-5xl"
         :class="
           isApprocheVisible
             ? 'translate-y-0 opacity-100 transition-all duration-700 delay-150 ease-out'
             : 'translate-y-4 opacity-0'
         "
       >
-        Le digital, pensé avec méthode et conçu
-        <span class="underline decoration-accent-500 decoration-4 underline-offset-[6px]"
-          >avec ambition</span
-        >, dans une démarche durable et collaborative.
+        Coder juste, déployer vite, opérer durablement,
+        <span
+          class="underline decoration-accent-500 decoration-[4px] underline-offset-4 [-webkit-box-decoration-break:clone] [box-decoration-break:clone]"
+          >avec l'IA comme accélérateur</span
+        >
       </h2>
 
-      <!-- deux colonnes de texte, rassemblement lateral -->
+      <!-- deux colonnes des md ; en dessous, les 2 paragraphes s'alternent en fondu dans la meme
+           cellule de grille (la plus haute fixe la hauteur, pas de saut de layout) -->
       <div
-        class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-6 px-6 sm:gap-10 md:grid-cols-2 md:gap-16"
+        class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-6 px-4 sm:px-6 md:grid-cols-2 md:gap-16"
       >
-        <p
-          class="text-lg leading-relaxed text-gray-700 md:text-xl"
+        <div
+          class="col-start-1 row-start-1 md:col-auto md:row-auto"
           :class="
             isApprocheVisible
               ? 'translate-x-0 opacity-100 transition-all duration-700 delay-300 ease-out'
               : '-translate-x-8 opacity-0'
           "
         >
-          Notre approche repose avant tout sur la compréhension de vos enjeux. Chaque projet est
-          pensé dans sa globalité afin de construire des solutions cohérentes,
-          <strong class="font-bold text-gray-900"
-            >adaptées à vos besoins et à vos objectifs.</strong
+          <p
+            class="text-lg leading-relaxed text-gray-700 transition-opacity duration-500 motion-reduce:transition-none sm:text-xl"
+            :class="showApproachPart2 ? 'opacity-0 md:opacity-100' : 'opacity-100'"
           >
-        </p>
-        <p
-          class="text-lg leading-relaxed text-gray-700 md:text-xl"
+            Notre approche commence par l'analyse de votre contexte technique : architecture
+            existante, stack, contraintes de production et maturité de vos pratiques. Chaque projet
+            est abordé de bout en bout, du développement applicatif jusqu'au déploiement, afin de
+            construire des solutions cohérentes, maintenables et alignées sur vos objectifs métier.
+          </p>
+        </div>
+        <div
+          class="col-start-1 row-start-1 md:col-auto md:row-auto"
           :class="
             isApprocheVisible
               ? 'translate-x-0 opacity-100 transition-all duration-700 delay-300 ease-out'
               : 'translate-x-8 opacity-0'
           "
         >
-          C'est pourquoi,
-          <strong class="font-bold text-gray-900">nous plaçons l'exigence et la créativité</strong>
-          au cœur de chaque projet, avec la volonté de concevoir des expériences digitales
-          pertinentes, performantes et évolutives.
-        </p>
+          <p
+            class="text-lg leading-relaxed text-gray-700 transition-opacity duration-500 motion-reduce:transition-none sm:text-xl"
+            :class="showApproachPart2 ? 'opacity-100' : 'opacity-0 md:opacity-100'"
+          >
+            Nous plaçons la qualité logicielle et l'automatisation au cœur de chaque projet : bonnes
+            pratiques de développement, CI/CD, infrastructure as code et monitoring. Nos équipes
+            intègrent l'IA dans leur quotidien, de l'assistance au code à la génération de tests, en
+            passant par l'analyse des incidents, pour livrer plus vite des applications
+            performantes, sécurisées et évolutives.
+          </p>
+        </div>
+      </div>
+
+      <!-- pagination de la rotation, sous md uniquement -->
+      <div class="mt-8 flex justify-center gap-2 md:hidden" aria-hidden="true">
+        <span
+          class="h-2 rounded-full bg-accent-500 transition-all duration-500 motion-reduce:transition-none"
+          :class="showApproachPart2 ? 'w-2 opacity-40' : 'w-6'"
+        />
+        <span
+          class="h-2 rounded-full bg-accent-500 transition-all duration-500 motion-reduce:transition-none"
+          :class="showApproachPart2 ? 'w-6' : 'w-2 opacity-40'"
+        />
       </div>
     </section>
 
@@ -742,7 +822,7 @@ function goToSelectedJobDetail() {
     <section
       id="stack"
       data-theme="dark"
-      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-[#000066] flex flex-col justify-start px-8 pt-24 pb-6 text-center md:justify-center lg:px-24"
+      class="relative h-dvh w-full shrink-0 snap-start snap-always overflow-hidden bg-[#000066] flex flex-col justify-center px-8 pt-24 pb-6 text-center lg:px-24"
     >
       <!-- halo core glow derriere la grille de logos -->
       <div
@@ -752,29 +832,29 @@ function goToSelectedJobDetail() {
 
       <!-- en tete massif, remonte en haut sur mobile -->
       <div class="text-center">
-        <p class="mb-2 text-center font-bold uppercase tracking-widest text-accent-500 sm:mb-4">
+        <p class="mb-3 text-center text-base font-bold uppercase tracking-widest text-accent-500 sm:mb-4 sm:text-lg">
           Un écosystème technologique au service de vos ambitions digitales
         </p>
         <h2
-          class="mb-6 font-display text-3xl font-black text-white sm:mb-16 sm:text-5xl md:text-7xl"
+          class="mb-8 font-display text-4xl font-black text-white sm:mb-16 sm:text-5xl md:text-7xl"
         >
           Notre expertise technologique
         </h2>
       </div>
 
       <!-- grille 2x2 tech mobile -->
-      <div class="mx-auto grid w-full max-w-[280px] grid-cols-2 gap-4 md:hidden">
+      <div class="mx-auto grid w-full max-w-sm grid-cols-2 gap-4 sm:max-w-md sm:gap-6 md:hidden">
         <div
           v-for="(stack, index) in mobileStacks"
           :key="index"
-          class="flex aspect-square w-full items-center justify-center rounded-2xl border border-transparent bg-white/10 p-4"
+          class="flex aspect-square w-full items-center justify-center rounded-2xl border border-transparent bg-white/10 p-6 sm:p-8"
         >
           <Transition mode="out-in" name="fade">
             <img
               :key="stack.name"
               :src="stack.icon"
               :alt="stack.name"
-              class="h-20 w-20 object-contain"
+              class="h-24 w-24 object-contain sm:h-28 sm:w-28"
               :class="{ 'brightness-0 invert': stack.needsInvert }"
             />
           </Transition>
@@ -829,13 +909,19 @@ function goToSelectedJobDetail() {
       <!-- calque data ia : carrousel horizontal mobile -->
       <div
         v-if="digitalJobs.length > 0"
-        class="mx-auto mt-4 flex w-full max-w-[1400px] snap-x snap-mandatory gap-4 overflow-x-auto pb-4 hide-scrollbar sm:mt-10 md:grid md:grid-cols-3 md:gap-12 md:overflow-visible md:pb-0"
+        class="mx-auto mt-4 w-full max-w-md sm:mt-10 md:max-w-[1400px]"
+        @mouseenter="stopJobsCarousel"
+        @mouseleave="startJobsCarousel"
       >
+      <!-- sous md : cartes superposees dans la meme cellule (la plus haute fixe la hauteur), fondu ;
+           des md : grille de 3 -->
+      <div class="grid md:grid-cols-3 md:gap-12">
         <!-- cache ombre mobile -->
         <div
           v-for="(job, index) in digitalJobs"
           :key="index"
-          class="relative flex w-[85vw] min-h-[260px] shrink-0 cursor-pointer snap-center flex-col justify-between rounded-[2rem] border border-gray-100 bg-white p-6 text-left shadow-none md:w-auto md:min-h-[400px] md:p-12 md:shadow-2xl"
+          class="relative col-start-1 row-start-1 flex min-h-[260px] w-full cursor-pointer flex-col justify-between rounded-[2rem] border border-gray-100 bg-white p-6 text-left shadow-none transition-opacity duration-500 motion-reduce:transition-none md:col-auto md:row-auto md:min-h-[400px] md:p-12 md:opacity-100 md:shadow-2xl md:pointer-events-auto"
+          :class="index === activeJobIndex ? 'opacity-100' : 'pointer-events-none opacity-0'"
           @click="openModal(job)"
         >
           <div>
@@ -866,11 +952,10 @@ function goToSelectedJobDetail() {
             </span>
           </div>
 
-          <!-- masque fleche mobile -->
-          <button
+                    <button
             type="button"
             aria-label="Voir la fiche complete de l'offre"
-            class="absolute bottom-6 right-6 hidden size-10 items-center justify-center rounded-full bg-[#000066] text-white transition-colors hover:bg-primary-700 md:flex"
+            class="absolute bottom-6 right-6 flex size-10 items-center justify-center rounded-full bg-[#000066] text-white transition-colors hover:bg-primary-700"
             @click.stop="goToJob(job.id)"
           >
             <svg
@@ -885,6 +970,29 @@ function goToSelectedJobDetail() {
             </svg>
           </button>
         </div>
+      </div>
+
+      <!-- sous md : pagination + bouton suivant -->
+      <div v-if="digitalJobs.length > 1" class="mt-4 flex items-center justify-center gap-4 md:hidden">
+        <div class="flex gap-2" aria-hidden="true">
+          <span
+            v-for="(job, index) in digitalJobs"
+            :key="job.id"
+            class="h-2 rounded-full bg-[#000066] transition-all duration-500 motion-reduce:transition-none"
+            :class="index === activeJobIndex ? 'w-6' : 'w-2 opacity-30'"
+          />
+        </div>
+        <button
+          type="button"
+          aria-label="Offre suivante"
+          class="flex size-10 items-center justify-center rounded-full bg-[#000066] text-white transition-colors hover:bg-primary-700"
+          @click="nextJob"
+        >
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" />
+          </svg>
+        </button>
+      </div>
       </div>
       <!-- fallback zero offre -->
       <p v-else class="mt-4 text-center text-primary-900/80 sm:mt-10">

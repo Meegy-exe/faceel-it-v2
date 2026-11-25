@@ -70,6 +70,10 @@ function writeSitemap() {
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Sous-chemin de publication (GitHub Pages : `/faceel-it-v2/`). Repli sur
+  // `/` pour le dev local et le build Docker (servi a la racine par Nginx).
+  base: process.env.VITE_BASE_PATH || '/',
+
   plugins: [
     vue(),
     tailwindcss(),
